@@ -7,10 +7,16 @@ class UploaderController < ApplicationController
 
 
   def download
-      @upload_file = UploadFile.find(params[:id].to_i)
-      filepath = @upload_file.file.current_path
-      stat = File::stat(filepath)
-      send_file(filepath, :filename => @upload_file.file.url.gsub(/.*\//,''), :length => stat.size)
+    @upload_file = UploadFile.find(params[:id].to_i)
+    filepath = @upload_file.file.current_path
+    stat = File::stat(filepath)
+    send_file(filepath, :filename => @upload_file.file.url.gsub(/.*\//,''), :length => stat.size)
+  end
+  def view
+    @upload_file = UploadFile.find(params[:id].to_i)
+    filepath = @upload_file.file.current_path
+    stat = File::stat(filepath)
+    send_file(filepath, :filename => @upload_file.file.url.gsub(/.*\//,''), :length => stat.size, :disposition => 'inline')
   end
   
   def upload_process

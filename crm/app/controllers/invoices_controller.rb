@@ -45,10 +45,11 @@ class InvoicesController < ApplicationController
 
   # 帳票出力処理
   def report
+    @invoice = Invoice.find(params[:id])
     report = Thinreports::Report.new layout: "app/reports/layouts/invoices.tlf"
     report.start_new_page
     report.page.values(
-    created_at: @invoice.try("@invoice.created_at"), 
+    created_at: @invoice.try(:created_at),
     company: @invoice.try("@invoice.company.company"), #@companyのcompany
     postnumber: @invoice.try("@invoice.company.postnumber"), #@companyのpostnumber
     address: @invoice.try("@invoice.company.address"), #@companyのaddress

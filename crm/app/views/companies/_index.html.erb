@@ -12,8 +12,8 @@
 <% @companies.each do |company| %>
 <tr>
 <td><%= check_box_tag "deletes[#{ company.id }]", company.id %></td>
-<td><%= link_to company.company, company_path(company) %></td>
-<td><%= link_to company.first_name, company_path(company) %></td>
+<td><%= link_to company.company, company_path(company), "data-turbolinks"=>"false" %></td>
+<td><%= link_to company.first_name, company_path(company), "data-turbolinks"=>"false" %></td>
 <td><%= company.tel %></td>
 <td><%= company.e_mail %></td>
 <td><%= link_to '編集', edit_company_path(company), class: 'command'%>

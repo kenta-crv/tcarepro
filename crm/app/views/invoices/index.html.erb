@@ -20,7 +20,7 @@
 			            	method: :delete, 
 			            	class: 'command',
 			            	data: { confirm: '本当に削除しますか？'} %>
-			            ｜<%= link_to 'pdf', report_invoice_path(@invoices, format: 'pdf') %>
+			            ｜<%= link_to 'pdf', report_invoice_path(invoice, format: 'pdf') %>
 			            	</td>
 
       		</tr>
