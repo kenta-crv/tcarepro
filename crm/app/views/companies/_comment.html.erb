@@ -1,27 +1,12 @@
 <% if comment.carriaup? %>
-<table class="comments" width="90%">
-  <tr>
-    <th colspan = "3">制度開始日</th>
-    <th colspan = "3">コメント</th>
-  </tr>
-  <tr>
-    <td colspan = "3"><%= comment.carriaup_start %></td>
-    <td colspan = "3"><%= comment.carriaup_comment %></td>
-  </tr>
-  <tr>
-    <th>申込者</th>
-    <th>進捗</th>
-    <th>入社日</th>
-    <th>転換日</th>
-    <th>支給開始日</th>
-    <th>編集/削除</th>
-  </tr>
   <tr>
     <td><%= comment.carriaup_each_name %></td>
     <td><%= comment.carriaup_progress %></td>
+    <td><%= comment.carriaup_start %></td>
     <td><%= comment.carriaup_each_limited_start %></td>
     <td><%= comment.carriaup_each_regular %></td>
     <td><%= comment.carriaup_each_supply %></td>
+    <td><%= comment.carriaup_comment %></td>
     <td class="comment-edit-detail" data-id="<%=comment.id %>" ><%= "編集" %> | <%= link_to '[削除]', company_comment_path(company_id: company.id, id: comment.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %></td>
   </tr>
 <tr id="<%=comment.id %>-comment-edit-detail-field" class="none comment-edit-detail-field">
@@ -29,7 +14,6 @@
     <%= render :partial => "companies/comment_carriaup_form", :locals => {:company => company, :comment => comment} %>
   </td>
 </tr>
-</table>
 
 
 <% end %>

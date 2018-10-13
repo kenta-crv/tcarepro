@@ -1,37 +1,36 @@
-<div class="scroll-table">
-<table width="90%">
-<tbody>
-<tr>
-<th></th>
-<th>会社名</th>
-<th>代表者姓</th>
-<th>電話番号</th>
-<th>メールアドレス</th>
-<th>編集/削除</th>
-</tr>
-<% @companies.each do |company| %>
-<tr>
-<td><%= check_box_tag "deletes[#{ company.id }]", company.id %></td>
-<td><%= link_to company.company, company_path(company), "data-turbolinks"=>"false" %></td>
-<td><%= link_to company.first_name, company_path(company), "data-turbolinks"=>"false" %></td>
-<td><%= company.tel %></td>
-<td><%= company.e_mail %></td>
-<td><%= link_to '編集', edit_company_path(company), class: 'command'%>
-		<%= link_to '削除', 
-		company_path(company), 
-		method: :delete, 
-		class: 'command',
-		data: { confirm: '本当に削除しますか？'} %></td>
+               <table width="90%">
+	            <tbody>
+		            <tr>
+			            <th>会社名</th>
+			            <th>代表者姓</th>
+		                <th>電話番号</th>
+			            <th>メールアドレス</th>
+			            <th>編集/削除</th>
+		            </tr>
+            
+    <% @companies.each do |company| %>
 
-</tr>
-<% end %>
+		            <tr>
+			            <td><%= link_to company.company, company_path(company) %>
+			            											
+			            </td>
+			            <td><%= link_to company.first_name, company_path(company) %></td>
+			            <td><%= company.tel %></td>
+			            <td><%= company.e_mail %></td>
+			            <td><%= link_to '編集', edit_company_path(company), class: 'command'%>
+			            <%= link_to '削除', 
+			            	company_path(company), 
+			            	method: :delete, 
+			            	class: 'command',
+			            	data: { confirm: '本当に削除しますか？'} %></td>
+			            	<% end %>
+		            </tr>
+		            <tr>
+                  <td colspan = "5">
+                  <%= paginate @companies %>
+                  </td>
+                </tr>
+	            </tbody>
+            </table>  
 
-<tr>
-<td colspan = "5">
-<%= paginate @companies %>
-</td>
-</tr>
-</tbody>
-</table> 
-
-</div>
+      

@@ -4,6 +4,13 @@ class UploaderController < ApplicationController
 
   def form
   end
+   
+  def upload
+    @upload_file = UploadFile.new( params.require(:upload_file).permit(:name, :file) )
+    @upload_file.save
+    redirect_to action: 'index'
+    @q = Company.ransack(params[:q])
+  end
 
 
   def download
@@ -12,13 +19,14 @@ class UploaderController < ApplicationController
     stat = File::stat(filepath)
     send_file(filepath, :filename => @upload_file.file.url.gsub(/.*\//,''), :length => stat.size)
   end
+  
   def view
     @upload_file = UploadFile.find(params[:id].to_i)
     filepath = @upload_file.file.current_path
     stat = File::stat(filepath)
     send_file(filepath, :filename => @upload_file.file.url.gsub(/.*\//,''), :length => stat.size, :disposition => 'inline')
   end
-  
+    
   def upload_process
   	#アップロードファイルを取得
   	file = params[:upfile]
@@ -39,4 +47,5 @@ class UploaderController < ApplicationController
   	#成功・エラーメッセージを保存
   	render plain: result
   end
+
 end

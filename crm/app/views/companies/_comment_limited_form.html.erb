@@ -1,39 +1,42 @@
 <%= form_for([company, comment]) do |f| %>
 
-<table width="100%">
+<table width="90%" class = "inside" >
 <tbody>
-  <caption class="heading">人材開発支援等助成金 有期実習型訓練</caption>
-  <tr>
-    <th colspan="3">進捗</th>
-    <th colspan="3">制度開始日</th>
-  </tr>
-  <tr>
-    <td colspan="3"><%= f.select(:limited_progress,[ ["A書類作成中(計画)","A書類作成中(計画)"], ["B書類返送待（計画）","B書類返送待（計画）"], ["C提出準備中（計画）","C提出準備中（計画）"], ["D提出中・受理（計画）","D提出中・受理（計画）"], ["E 制度案内済","E 制度案内済"], ["F 書類整理完了","F 書類整理完了"], ["G 書類作成中（支給）","G 書類作成中（支給）"], ["H
-      書類返送待（支給）","H 書類返送待（支給）"], ["I 提出準備中（支給）","I 提出準備中（支給）"], ["J 提出中・受理（支給）","J 提出中・受理（支給）"], ["K 入金","K 入金"], ["Zストップ案件","Zストップ案件"], ], selected: comment.limited_progress) %></td>
-    <td colspan="3"><%= f.date_field :limited_start, :value => comment.limited_start%></td>
-  </tr>
-  <tr>
-    <th>申込者</th>
-    <th>開始日</th>
-    <th>カリキュラム</th>
-    <th>OFF-JT</th>
-    <th>OJT</th>
-    <th>支給申請開始日</th>
-  </tr>
-  <tr>
+<tr>
+<th>申込者</th>
+<th>カリキュラム</th>
+<th>進捗</th>
+<th>制度開始日</th>
+<th>支給申請開始日</th>
+<th>コメント</th>
+</tr>
+<tr>
     <td><%= f.text_field :limited_each_name, :value => comment.limited_each_name %></td>
+    <td><%= f.select(:limited_each_curriculum,[ 
+["シャンプー・接客基礎講座","シャンプー・接客基礎講座"], 
+["ブロー・スタイリング講座","ブロー・スタイリング講座"], 
+["パーマ講座","パーマ講座"], 
+["カラー講座","カラー講座"], 
+["カット講座","カット講座"],
+ ], selected: comment.limited_each_curriculum) %></td>
+    <td><%= f.select(:limited_progress,[
+     ["1.申込フォーム到着","1.申込フォーム到着"], 
+["2.書類作成中(計画)","2.書類作成中(計画)"], 
+["3.書類返送待（計画）","3.書類返送待（計画）"], 
+["4.提出準備中（計画）","4.提出準備中（計画）"], 
+["5.提出中・受理（計画）","5.提出中・受理（計画）"], 
+["6.制度未実施","6.制度未実施"], 
+["7.制度実施済","7.制度実施済"], 
+["8.書類作成中（支給）","8.書類作成中（支給）"], 
+["9.書類返送待（支給）","9.書類返送待（支給）"], 
+["10.提出準備中（支給）","10.提出準備中（支給）"], 
+["11.提出中・受理（支給）","11.提出中・受理（支給）"], 
+["12.入金","12.入金"], 
+["13.ストップ案件","13.ストップ案件"], 
+ ], selected: comment.limited_progress) %></td> 
     <td><%= f.date_field :limited_each_start, :value => comment.limited_each_start %></td>
-    <td><%= f.select(:limited_each_curriculum,[ ["シャンプー・接客基礎講座","シャンプー・接客基礎講座"], ["ブロー・スタイリング講座","ブロー・スタイリング講座"], ["パーマ講座","パーマ講座"], ["カラー講座","カラー講座"], ["カット講座","カット講座"], ], selected: comment.limited_each_curriculum) %>
-    </td>
-    <td><%= f.number_field :limited_offjt_time, :value => comment.limited_offjt_time%>時間</td>
-    <td><%= f.number_field :limited_ojt_time, :value => comment.limited_ojt_time%>時間</td>
     <td><%= f.date_field :limited_supply, :value => comment.limited_supply%></td>
-  </tr>
-  <tr>
-    <th colspan="6">コメント</th>
-  </tr>
-  <tr>
-    <td colspan="6"><%= f.text_area :limited_comment, :value => comment.limited_comment%></td>
+    <td><%= f.text_area :limited_comment, :value => comment.limited_comment%></td>
   </tr>
   <tr>
     <%= f.hidden_field :status, :value => :limited %>

@@ -1,6 +1,7 @@
  <div class="beige-wrapper">
   
             <div class="heading"><h2>ドキュメントアップロード</h2>
+                <%= link_to '（ダウンロードはこちら）', action: "index" %>
             </div>
 
     <table width="90%">
@@ -16,12 +17,10 @@
         <td><%= f.file_field :file %></td>
       </tr>
       <tr>
-        <td colspan = "2"><%= f.submit "アップロード" %>
+        <td colspan = "2"><%= f.submit "アップロード" %><% end %>
         </td>
       </tr>
-      <% end %>
       </tbody>
     </table> 
-    
     </br>
     </br>

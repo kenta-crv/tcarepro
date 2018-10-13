@@ -1,38 +1,42 @@
 <%= form_for([company, comment]) do |f| %>
 
-<table width="90%">
-  <tbody>
-    <caption class="heading">キャリアアップ助成金 正社員化コース</caption>
-    <tr>
-      <th colspan="3">進捗</th>
-      <th colspan="3">制度開始日</th>
-    </tr>
-    <tr>
-      <td colspan="3"><%= f.select(:carriaup_progress,[ ["A書類作成中(計画)","A書類作成中(計画)"], ["B書類返送待（計画）","B書類返送待（計画）"], ["C提出準備中（計画）","C提出準備中（計画）"], ["D提出中・受理（計画）","D提出中・受理（計画）"], ["E 制度案内済","E 制度案内済"], ["F 書類整理完了","F 書類整理完了"], ["G 書類作成中（支給）","G 書類作成中（支給）"], ["H
-        書類返送待（支給）","H 書類返送待（支給）"], ["I 提出準備中（支給）","I 提出準備中（支給）"], ["J 提出中・受理（支給）","J 提出中・受理（支給）"], ["K 入金","K 入金"], ["Zストップ案件","Zストップ案件"], ], selected: comment.carriaup_progress) %></td>
-      <td colspan="3"><%= f.date_field :carriaup_start, :value => comment.carriaup_start %></td>
-    </tr>
-    <tr>
-      <th>申込者</th>
-      <th>入社日</th>
-      <th>転換日</th>
-      <th>支給申請開始日</th>
-    </tr>
-    <tr>
-      <td><%= f.text_field :carriaup_each_name, :value => comment.carriaup_each_name %></td>
+<table width="90%" class = "inside" >
+<tbody>
+<tr>
+<th>申込者</th>
+<th>進捗</th>
+<th>入社日</th>
+<th>制度開始日</th>
+<th>転換日</th>
+<th>支給申請日</th>
+<th>コメント</th>
+</tr>
+<tr>
+　  <td><%= f.text_field :carriaup_each_name, :value => comment.carriaup_each_name %></td>
+      <td colspan="3"><%= f.select(:carriaup_progress,[ 
+["1.申込フォーム到着","1.申込フォーム到着"], 
+["2.書類作成中(計画)","2.書類作成中(計画)"], 
+["3.書類返送待（計画）","3.書類返送待（計画）"], 
+["4.提出準備中（計画）","4.提出準備中（計画）"], 
+["5.提出中・受理（計画）","5.提出中・受理（計画）"], 
+["6.制度未実施","6.制度未実施"], 
+["7.制度実施済","7.制度実施済"], 
+["8.書類作成中（支給）","8.書類作成中（支給）"], 
+["9.書類返送待（支給）","9.書類返送待（支給）"], 
+["10.提出準備中（支給）","10.提出準備中（支給）"], 
+["11.提出中・受理（支給）","11.提出中・受理（支給）"], 
+["12.入金","12.入金"], 
+["13.ストップ案件","13.ストップ案件"], 
+], selected: comment.carriaup_progress) %></td>
+      <td><%= f.date_field :carriaup_start, :value => comment.carriaup_start %></td>
       <td><%= f.date_field :carriaup_each_limited_start, :value => comment.carriaup_each_limited_start %></td>
       <td><%= f.date_field :carriaup_each_regular, :value => comment.carriaup_each_regular %></td>
       <td><%= f.date_field :carriaup_each_supply, :value => comment.carriaup_each_supply %></td>
-    </tr>
-    <tr>
-      <th colspan="4">コメント</th>
-    </tr>
-    <tr>
-      <td colspan="4"><%= f.text_area :carriaup_comment, :value => comment.carriaup_comment %></td>
+      <td><%= f.text_area :carriaup_comment, :value => comment.carriaup_comment %></td>
     </tr>
     <tr>
       <%= f.hidden_field :status, :value => :carriaup %>
-      <th colspan="4">
+      <th colspan="7">
         <%= f.submit %>
       <%end%>
     </th>

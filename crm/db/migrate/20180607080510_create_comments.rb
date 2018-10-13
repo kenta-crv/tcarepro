@@ -6,14 +6,14 @@ class CreateComments < ActiveRecord::Migration[5.1]
       
       
 #画像貼り付け
-     t.string :picture #その他
-     t.string :approval_data #認定書控え
-     t.string :ahead_data #提出控え
-     t.string :term_data #有期雇用契約書
-     t.string :regular_data #正規雇用契約書
-     t.string :attendance_data #出勤簿
-     t.string :wage_data #賃金台帳
-     t.string :labor_data #就業規則
+     t.string :term_data #名称
+     t.string :picture #ファイル添付
+     t.string :approval_data #
+     t.string :ahead_data #
+     t.string :regular_data #
+     t.string :attendance_data #
+     t.string :wage_data #
+     t.string :labor_data #
       
 #申請者情報
 #有期実習型訓練

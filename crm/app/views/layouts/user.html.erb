@@ -26,7 +26,7 @@
         <strong><% current_user.email  %></strong>
             <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
 <% else %>
-            <%= link_to "ログイン", new_user_session_path%>
+            <%= link_to "ログイン", progress_company_path%>
  <% end %>
 
        </div>

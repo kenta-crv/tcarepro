@@ -1,15 +1,5 @@
 <% if comment3.system? %>
-
-<table class="comments" width="90%">
   <tr>
-    <th>制度</th>
-    <th>進捗</th>
-    <th>制度開始日</th>
-    <th>実施日</th>
-    <th>支給開始日</th>
-    <th>コメント</th>
-    <th>編集/削除</th>
-  </tr>
     <td><%= comment3.system_each_name %></td>
     <td><%= comment3.system_progress %></td>
     <td><%= comment3.system_start %></td>
@@ -24,6 +14,6 @@
     <%= render :partial => "companies/comment_system_form", :locals => {:company => company, :comment => comment3} %>
   </td>
 </tr>
-</table>
+
 <% end %>
 

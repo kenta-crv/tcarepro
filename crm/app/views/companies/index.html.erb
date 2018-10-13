@@ -1,24 +1,23 @@
 
-            <div class="heading"><h2>顧客一覧</h2>
+    <div class="heading"><h2>顧客一覧</h2>
             <p>Customer List  <%= link_to '(New regstration)', '/companies/new' %></p>
             </br>
             </br>
-                <%= search_form_for @q do |f|  %>
+            <%= search_form_for @q do |f|  %>
                 <%= f.search_field :company_cont,  type: "text"  %>
                 <%= submit_tag "検索" %>
             <%end%>
             </br>
             </br>
             </br>
-            <a href="#" class="square_btn">キャリアアップ助成金</a>
-            <a href="#" class="square_btn">有期実習型訓練</a>
-            <a href="#" class="square_btn">（企）職業能力評価制度</a>
-            <a href="#" class="square_btn">（形）職業能力評価制度</a>
-            <a href="#" class="square_btn">（形）セルフキャリアドッグ制度</a>
-            <a href="#" class="square_btn">（形）技能検定合格報奨金制度</a>
-            <a href="#" class="square_btn">（形）教育訓練休暇等制度</a>
-            <a href="#" class="square_btn">（人）セルフキャリアドッグ制度</a>
-            <a href="#" class="square_btn">（人）教育訓練休暇等制度</a>
+            <%= link_to 'キャリアアップ助成金', companies_path(company: '[desc]'), class:"square_btn" %>
+            <%= link_to '有期実習型訓練', companies_path(sort: '[]'), class:"square_btn" %>
+            <%= link_to '（企）職業能力評価制度', companies_path(sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）職業能力評価制度', companies_path(sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）セルフキャリアドッグ制度', companies_path(sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）教育訓練休暇等制度', companies_path(sort: '[]'), class:"square_btn" %>
+            <%= link_to '（人）セルフキャリアドッグ制度', companies_path(sort: '[]'), class:"square_btn" %>
+            <%= link_to '（人）教育訓練休暇等制度', companies_path(sort: '[]'), class:"square_btn" %>
             	</div>
 	<%= render 'index'%>
 </br>

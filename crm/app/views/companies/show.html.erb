@@ -23,13 +23,25 @@
 
 <div class="heading"><h3>人材開発支援等助成金 有期実習型訓練</h3>
 
+<table width="90%"> 
+<tbody>
+<tr>
+<th>申込者</th>
+<th>カリキュラム</th>
+<th>進捗</th>
+<th>制度開始日</th>
+<th>支給申請開始日</th>
+<th>コメント</th>
+<th>編集/削除</th>
+</tr>
 <%= render :partial => "companies/comment2", :collection => @company.comments, :as => "comment2", :locals => {:company => @company} %>
+</tbody>
+</table>
 
 </br>
 </br>
 
-<%= form_for([@company, @company.comments.build]) do |f| %>
-<table width="90%">
+<table width="90%" class = "inside" >
 <tbody>
 <tr>
 <th>申込者</th>
@@ -39,12 +51,32 @@
 <th>支給申請開始日</th>
 <th>コメント</th>
 </tr>
+
+<%= form_for([@company, @company.comments.build]) do |f| %>
 <tr>
 <td><%= f.text_field :limited_each_name %></td>
-<td><%= f.select(:limited_each_curriculum,[ ["シャンプー・接客基礎講座","シャンプー・接客基礎講座"], ["ブロー・スタイリング講座","ブロー・スタイリング講座"], ["パーマ講座","パーマ講座"], ["カラー講座","カラー講座"], ["カット講座","カット講座"], ]) %>
+<td><%= f.select(:limited_each_curriculum,[ 
+["シャンプー・接客基礎講座","シャンプー・接客基礎講座"], 
+["ブロー・スタイリング講座","ブロー・スタイリング講座"], 
+["パーマ講座","パーマ講座"], 
+["カラー講座","カラー講座"], 
+["カット講座","カット講座"], ]) %>
 </td>
-<td><%= f.select(:limited_progress,[ ["A書類作成中(計画)","A書類作成中(計画)"], ["B書類返送待（計画）","B書類返送待（計画）"], ["C提出準備中（計画）","C提出準備中（計画）"], ["D提出中・受理（計画）","D提出中・受理（計画）"], ["E 制度案内済","E 制度案内済"], ["F 書類整理完了","F 書類整理完了"], ["G 書類作成中（支給）","G 書類作成中（支給）"], ["H
-書類返送待（支給）","H 書類返送待（支給）"], ["I 提出準備中（支給）","I 提出準備中（支給）"], ["J 提出中・受理（支給）","J 提出中・受理（支給）"], ["K 入金","K 入金"], ["Zストップ案件","Zストップ案件"], ]) %></td>
+<td><%= f.select(:limited_progress,[ 
+["1.申込フォーム到着","1.申込フォーム到着"], 
+["2.書類作成中(計画)","2.書類作成中(計画)"], 
+["3.書類返送待（計画）","3.書類返送待（計画）"], 
+["4.提出準備中（計画）","4.提出準備中（計画）"], 
+["5.提出中・受理（計画）","5.提出中・受理（計画）"], 
+["6.制度未実施","6.制度未実施"], 
+["7.制度実施済","7.制度実施済"], 
+["8.書類作成中（支給）","8.書類作成中（支給）"], 
+["9.書類返送待（支給）","9.書類返送待（支給）"], 
+["10.提出準備中（支給）","10.提出準備中（支給）"], 
+["11.提出中・受理（支給）","11.提出中・受理（支給）"], 
+["12.入金","12.入金"], 
+["13.ストップ案件","13.ストップ案件"], 
+]) %></td>
 <td><%= f.date_field :limited_start%></td>
 <td><%= f.date_field :limited_supply%></td>
 <td><%= f.text_area :limited_comment%></td>
@@ -66,40 +98,67 @@
 
 <div class="heading"><h3>キャリアアップ助成金 正社員化コース</h3>
 
-<%= render :partial => "companies/comment", :collection => @company.comments, :as => "comment", :locals => {:company => @company} %>
 
 </br>
 </br>
-<%= form_for([@company, @company.comments.build]) do |f| %>
 
 <table width="90%">
 <tbody>
 <tr>
-<th colspan="1">進捗</th>
-<th colspan="1">制度開始日</th>
-<th colspan="2">コメント</th>
+<th>申込者</th>
+<th>進捗</th>
+<th>入社日</th>
+<th>制度開始日</th>
+<th>転換日</th>
+<th>支給申請日</th>
+<th>コメント</th>
+<th>編集/削除</th>
 </tr>
-<tr>
-<td colspan="1"><%= f.select(:carriaup_progress,[ ["A書類作成中(計画)","A書類作成中(計画)"], ["B書類返送待（計画）","B書類返送待（計画）"], ["C提出準備中（計画）","C提出準備中（計画）"], ["D提出中・受理（計画）","D提出中・受理（計画）"], ["E 制度案内済","E 制度案内済"], ["F 書類整理完了","F 書類整理完了"], ["G 書類作成中（支給）","G 書類作成中（支給）"], ["H
-書類返送待（支給）","H 書類返送待（支給）"], ["I 提出準備中（支給）","I 提出準備中（支給）"], ["J 提出中・受理（支給）","J 提出中・受理（支給）"], ["K 入金","K 入金"], ["Zストップ案件","Zストップ案件"], ]) %></td>
-<td colspan="1"><%= f.date_field :carriaup_start %></td>
-<td colspan="4"><%= f.text_area :carriaup_comment %></td>
-</tr>
+<%= render :partial => "companies/comment", :collection => @company.comments, :as => "comment", :locals => {:company => @company} %>
+</tbody>
+</table>
+
+</br>
+</br>
+
+<table width="90%" class = "inside" >
+<tbody>
 <tr>
 <th>申込者</th>
+<th>進捗</th>
 <th>入社日</th>
+<th>制度開始日</th>
 <th>転換日</th>
-<th>支給申請開始日</th>
+<th>支給申請日</th>
+<th>コメント</th>
 </tr>
+<%= form_for([@company, @company.comments.build]) do |f| %>
 <tr>
 <td><%= f.text_field :carriaup_each_name %></td>
+<td><%= f.select(:carriaup_progress,[ 
+["1.申込フォーム到着","1.申込フォーム到着"], 
+["2.書類作成中(計画)","2.書類作成中(計画)"], 
+["3.書類返送待（計画）","3.書類返送待（計画）"], 
+["4.提出準備中（計画）","4.提出準備中（計画）"], 
+["5.提出中・受理（計画）","5.提出中・受理（計画）"], 
+["6.制度未実施","6.制度未実施"], 
+["7.制度実施済","7.制度実施済"], 
+["8.書類作成中（支給）","8.書類作成中（支給）"], 
+["9.書類返送待（支給）","9.書類返送待（支給）"], 
+["10.提出準備中（支給）","10.提出準備中（支給）"], 
+["11.提出中・受理（支給）","11.提出中・受理（支給）"], 
+["12.入金","12.入金"], 
+["13.ストップ案件","13.ストップ案件"], 
+]) %></td>
+<td><%= f.date_field :carriaup_start %></td>
 <td><%= f.date_field :carriaup_each_limited_start %></td>
 <td><%= f.date_field :carriaup_each_regular %></td>
 <td><%= f.date_field :carriaup_each_supply %></td>
+<td><%= f.text_area :carriaup_comment %></td>
 </tr>
 <tr>
 <%= f.hidden_field :status, :value => :carriaup %>
-<th colspan="4">
+<th colspan="7">
 <%= f.submit %>
 </th>
 </tr>
@@ -121,14 +180,25 @@
 
 <div class="heading"><h3>各制度コース</h3>
 
+<table width = "90%">
+<tbody>
+  <tr>
+    <th>制度</th>
+    <th>進捗</th>
+    <th>制度開始日</th>
+    <th>実施日</th>
+    <th>支給開始日</th>
+    <th>コメント</th>
+    <th>編集/削除</th>
+  </tr>
 <%= render :partial => "companies/comment3", :collection => @company.comments, :as => "comment3", :locals => {:company => @company} %>
+</tbody>
+</table>
 
 </br>
 </br>
 
-<%= form_for([@company, @company.comments.build]) do |f| %>
-
-<table width="90%">
+<table width="90%" class ="inside">
 <tbody>
 <tr>
 <th>制度</th>
@@ -138,6 +208,8 @@
 <th>支給開始日</th>
 <th>コメント</th>
 </tr>
+
+<%= form_for([@company, @company.comments.build]) do |f| %>
 <tr>
 <td><%= f.select(:system_each_name,[ 
 ["（企）職業能力評価制度","（企）職業能力評価制度"], 
@@ -148,21 +220,25 @@
 ["（人）セルフキャリアドッグ制度）","（人）セルフキャリアドッグ制度"], 
 ["（人）技能検定合格報奨金制度","（人）技能検定合格報奨金制度"],
 ["（人）教育訓練休暇等制度","（人）教育訓練休暇等制度"],
+["東京都キャリアアップ助成金","東京都キャリアアップ助成金"], 
+["人事評価改善等助成金","人事評価改善等助成金"],
+["職場定着支援等助成金","職場定着支援等助成金"],
 ]) %>
 </td>
 <td><%= f.select(:system_progress,[ 
-["A書類作成中(計画)","A書類作成中(計画)"], 
-["B書類返送待（計画）","B書類返送待（計画）"], 
-["C提出準備中（計画）","C提出準備中（計画）"], 
-["D提出中・受理（計画）","D提出中・受理（計画）"], 
-["E 制度案内済","E 制度案内済"], 
-["F 書類整理完了","F 書類整理完了"], 
-["G 書類作成中（支給）","G 書類作成中（支給）"], 
-["H 書類返送待（支給）","H 書類返送待（支給）"], 
-["I 提出準備中（支給）","I 提出準備中（支給）"], 
-["J 提出中・受理（支給）","J 提出中・受理（支給）"], 
-["K 入金","K 入金"], 
-["Zストップ案件","Zストップ案件"],
+["1.申込フォーム到着","1.申込フォーム到着"], 
+["2.書類作成中(計画)","2.書類作成中(計画)"], 
+["3.書類返送待（計画）","3.書類返送待（計画）"], 
+["4.提出準備中（計画）","4.提出準備中（計画）"], 
+["5.提出中・受理（計画）","5.提出中・受理（計画）"], 
+["6.制度未実施","6.制度未実施"], 
+["7.制度実施済","7.制度実施済"], 
+["8.書類作成中（支給）","8.書類作成中（支給）"], 
+["9.書類返送待（支給）","9.書類返送待（支給）"], 
+["10.提出準備中（支給）","10.提出準備中（支給）"], 
+["11.提出中・受理（支給）","11.提出中・受理（支給）"], 
+["12.入金","12.入金"], 
+["13.ストップ案件","13.ストップ案件"], 
 ]) %>
 </td>
 <td><%= f.date_field :system_start %></td>
@@ -185,7 +261,8 @@
 </br>
 
 
-<!-- 対応履歴 -->
+															<!-- 対応履歴 -->
+																											
 <%= form_for([@company, @company.comments.build]) do |f| %>
 <table width="90%">
 	<tbody>
@@ -205,11 +282,11 @@
 	<% @company.comments.each do |comment| %>
 	<% if comment.body.present? %>
 		<tr> 
+			<td><%= comment.created_at%></td>
 			<td>
 				<div id="<%=comment.id %>-comment-body" class="comment-body">
 				<%= comment.body %></div>
 			</td>
-			<td><%= comment.created_at%></td>
 			<td><%= link_to '[削除]', company_comment_path(company_id: @company.id, id: comment.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %></td>
 	   </tr>
 		<% end %>
@@ -222,49 +299,64 @@
 </br>
 
 
-<!-- データ保存 -->
-<div class="beige-wrapper">
+														<!-- データ保存 -->
+														
 <table width="90%">
-<tbody>
-<tr>
-<th>データ添付</th>
-</tr>
-<tr>
-<%= form_for([@company, @company.comments.build]) do |f| %>
-<td>
-<%= f.file_field :picture, id: :book_picture %>
-<%= f.hidden_field :status, :value => :picture %>
-</td>
-</tr>
-<th colspan="4">
-<%= f.submit %>
-<% end %>
-</th>
-</tbody> 
+	<tbody>
+		<caption class="heading">データ添付</caption>
+		<tr>
+			<th colspan = "2">データ添付</th>
+		</tr>
+			<tr>
+				<%= form_for([@company, @company.comments.build]) do |f| %>
+			<td>
+				<%= f.text_field :term_data, id: :book_term_data %>
+				<%= f.hidden_field :status, :value => :term_data %>
+				<%= f.file_field :picture, id: :book_picture %>
+				<%= f.hidden_field :status, :value => :picture %>
+			</td>
+		</tr>
+		<tr>
+			<th colspan="4">
+				<%= f.submit %>
+			</th>
+		</tr>
+	</tbody> 
 </table> 
-<div class="beige-wrapper">
-<table width="90%">
-<tbody>
-<% if @company.comments.any? %>
-<% @company.comments.each do |comment| %> 
-<tr><% if comment.picture.present? %>
-<td>
-<%= comment.picture %> 
-<%= link_to '[削除]', company_comment_path(company_id: @company.id, id: comment.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %>
 <% end %>
-</td>
-</tr>
-<%end%>
-<%end%>
-</tbody> 
+
+
+<table width="90%"  data-turbolinks="false">
+	<tbody>
+				<% if @company.comments.any? %>
+				<% @company.comments.all.reverse_order.each do |comment| %> 
+				<% if comment.picture.present? %>
+		<tr>
+			<td>
+				<%= comment.term_data %> 
+			</td>
+			<td>
+				<%= link_to 'delete', company_comment_path(company_id: @company.id, id: comment.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %>
+			</td>
+			<td>
+				<%= link_to 'view', comments_view_company_path(comment), {action: "view", id: comment.id} %>
+			</td>
+			<td>
+				<%= link_to 'download',comments_pdf_company_path(comment), :class => 'btn btn-default btn-xs' %>   
+			</td>
+				<% end %>
+				<% end %>
+				<%end%>
+		</tr>
+	</tbody> 
 </table> 
 
-
-
-
-
-
-</div>
-</div>
 </br>
 </br>
+</div>
+
+														<!-- 請求書発行 -->
+														
+<table width="90%"  data-turbolinks="false">
+	<tbody>
+		

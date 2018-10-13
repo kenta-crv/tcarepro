@@ -38,5 +38,5 @@ class Comment < ApplicationRecord
   belongs_to :company
   as_enum :status, %i{normal limited carriaup system picture}
   
-  mount_uploader :approval_data,UploadFileUploader
+  mount_uploader :picture, UploadFileUploader
 end

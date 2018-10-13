@@ -12,7 +12,7 @@ class TodosController < ApplicationController
   
  
  def create
-    @todo = Todo.new(faq_params)
+    @todo = Todo.new(todo_params)
     if @todo.save
         # redirect
         redirect_to todos_path
@@ -47,7 +47,7 @@ class TodosController < ApplicationController
       :title, #タイトル
       :select, #選択 
       :deadline, #期限
-      :states, #ステータス
+      :state, #ステータス
       :name, #担当者
       :contents #コンテンツ
       )

@@ -2,6 +2,8 @@ class InvoicesController < ApplicationController
 
   def index
   	 @invoices = Invoice.all.order(created_at: 'desc')
+  	 @companies = Company.all
+  	
   end
   
   def show
@@ -49,7 +51,7 @@ class InvoicesController < ApplicationController
     report = Thinreports::Report.new layout: "app/reports/layouts/invoices.tlf"
     report.start_new_page
     report.page.values(
-    created_at: @invoice.try(:created_at),
+    created_at: @invoice.try(:created_at), 
     company: @invoice.try("@invoice.company.company"), #@companyのcompany
     postnumber: @invoice.try("@invoice.company.postnumber"), #@companyのpostnumber
     address: @invoice.try("@invoice.company.address"), #@companyのaddress

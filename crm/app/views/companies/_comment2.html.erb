@@ -1,15 +1,4 @@
 <% if comment2.limited? %>
-
-<table class="comments" width="90%">
-  <tr>
-    <th>申込者</th>
-    <th>カリキュラム</th>
-    <th>進捗</th>
-    <th>制度開始日</th>
-    <th>支給申請開始日</th>
-    <th>コメント</th>
-    <th>編集/削除</th>
-  </tr>
   <tr>
     <td><%= comment2.limited_each_name %></td>
     <td><%= comment2.limited_each_curriculum %></td>
@@ -24,5 +13,4 @@
     <%= render :partial => "companies/comment_limited_form", :locals => {:company => company, :comment => comment2} %>
   </td>
 </tr>
-</table>
 <% end %>

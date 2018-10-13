@@ -2,7 +2,22 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   layout :layout_by_resource
 
-  private
+# 例外処理
+    rescue_from ActiveRecord::RecordNotFound, with: :render_404
+    rescue_from ActionController::RoutingError, with: :render_404
+    #rescue_from Exception, with: :render_500
+
+  def render_404
+  render template: 'errors/error_404', status: 404, layout: 'application', content_type: 'text/html'
+end
+
+def render_500
+  render template: 'errors/error_500', status: 500, layout: 'application', content_type: 'text/html'
+end
+  
+
+
+      private
     # set for devise login redirector
     def after_sign_in_path_for(resource)
       case resource
@@ -10,14 +25,15 @@ class ApplicationController < ActionController::Base
         # put here for User first page direct path after signed in
         super
         #root_path
-        progress_company_path(resource.company)
+        '/companies/#{id}/progress'
       when Admin
         # your_admin_home_path
         super # 現在は暫定的に上位継承しています
-       companies_path
+      else
+        super
       end
     end
-
+    
     def after_sign_out_path_for(resource)
       case resource
       when User, :user, :users
@@ -47,5 +63,7 @@ class ApplicationController < ActionController::Base
       "application"
     end
   end
+  
+
 
 end

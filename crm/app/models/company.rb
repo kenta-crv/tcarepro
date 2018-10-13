@@ -39,7 +39,8 @@
 
 class Company < ApplicationRecord
     has_many :comments, dependent: :destroy
-    has_many :invoices    
+    has_many :upload_datum
+    belongs_to :invoice
     
 	
   def self.import(file)
