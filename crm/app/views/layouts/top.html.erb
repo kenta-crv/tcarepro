@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang = "ja">
  <head>
-       <title>勤怠管理システム『SMART』</title>
+       <title>助成金サポートなら抜群の実績と信頼の助成金サポート.jp</title>
               <meta charset="utf-8">
+              <meta http-equiv="X^UA-Compatible" content="IE=edge">
               <!--　レスポンシブの定義　-->
                <meta name="viewport" content="width=device-width, initial-scale=1,0">
-    
                <%= csrf_meta_tags %>
-
                 <%= stylesheet_link_tag    'application', media: 'all'%>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
                  <%= javascript_include_tag 'application' %>
@@ -20,22 +19,20 @@
                 <% end %>
       </div>
       <div class="header-right">
-        <!-- user/signed_in? はユーザーがログインしているか調べるdeviseのHelperメソッド -->
-            
+        <!-- user/signed_in? はユーザーがログインしているか調べるdeviseのHelperメソッド -->      
            <%= link_to  'ホーム', '/' %>
-            <%= link_to  '会社概要', '/company' %> 
-            <%= link_to  '問い合わせ', '/contact' %>
-           <%= link_to  '新規登録', '/users/sign_up'  %>
-           <%= link_to  'ログイン' ,'/users/sign_in'%>
-           
+           <%= link_to  '会社概要', '/company' %> 
+           <%= link_to  '問い合わせ', '/contact' %>
+           <%= link_to  '新規登録', '/companies/new'  %>
+           <%= link_to  'ログイン' ,'/users/sign_in'%>         
       </div>
     </div>
-
 </header>
 
 <body>
-<main>
-    <%= yield %>
-</main>
+    <main>
+        <%= yield %>
+    </main>
 </body>
 </html>
+

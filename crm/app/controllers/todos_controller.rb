@@ -3,21 +3,20 @@ class TodosController < ApplicationController
 
   def index
   	 @todos = Todo.all.order(created_at: 'desc')
-  	     @todo = Todo.new
+  	 @todo = Todo.new
   end
   
   def show
   	@todo = Todo.find(params[:id])
   end
   
- 
  def create
     @todo = Todo.new(todo_params)
     if @todo.save
         # redirect
         redirect_to todos_path
     else
-        render 'new'
+        render 'index'
     end
   end
   

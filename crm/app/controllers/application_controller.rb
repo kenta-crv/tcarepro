@@ -25,12 +25,11 @@ end
         # put here for User first page direct path after signed in
         super
         #root_path
-        '/companies/#{id}/progress'
+        progress_company_path(resource.company)
       when Admin
         # your_admin_home_path
         super # 現在は暫定的に上位継承しています
-      else
-        super
+       companies_path
       end
     end
     

@@ -37,6 +37,8 @@ class InvoicesController < ApplicationController
     end      
  end
  
+ 
+ 
  def destroy
     @invoice = Invoice.find(params[:id])
     @invoice.destroy

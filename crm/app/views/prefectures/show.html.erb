@@ -29,9 +29,7 @@
 			<th>電話番号</th>
 			<th>郵便番号</th>
 			<th>住所</th>
-		</tr>
-		<tr>
-			<th colspan = "4" >ポイント</th>
+			<th>ポイント</th>
 			<th>削除</th>
 		</tr>
 		<%  @prefecture.details.each do |detail|  %>
@@ -41,15 +39,14 @@
 			<td><%= detail.tel%></td>
 			<td><%= detail.post%></td>
 			<td><%= detail.address%></td>
-		</tr>
-		<tr>
-			<td colspan = "4"><%= detail.point%></td>
+			<td><%= detail.point%></td>
 			<td><%= link_to '削除', 
 			            	prefecture_detail_path(@prefecture, detail), 
 			            	method: :delete, 
 			            	class: 'command',
 			            	data: { confirm: '本当に削除しますか？'} %></td>
-		</tr>
+			            
+     		</tr>
 		<%end%>
 	</tbody>
 </table>
@@ -71,9 +68,7 @@
 			<th>電話番号</th>
 			<th>郵便番号</th>
 			<th>住所</th>
-		</tr>
-		<tr>
-			<th colspan = "5" >ポイント</th>
+			<th>ポイント</th>
 		</tr>
 		<tr>
 			   <td><%= f.select(:product_type,[
@@ -90,9 +85,7 @@
 			   <td><%= f.text_field :tel %></td>
 			   <td><%= f.text_field:post %></td>
 		       <td><%= f.text_area :address %></td>
-		 </tr>
-		<tr>
-			<td colspan = "5" ><%= f.text_area :point %></td>
+			<td><%= f.text_area :point %></td>
         </tr>
 			<td colspan="5">   <%= f.submit %>  </td>
 </table>

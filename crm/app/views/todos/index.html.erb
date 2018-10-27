@@ -1,100 +1,41 @@
-<div class="beige-wrapper">
-  
-            <div class="heading"><h2>TODO 一覧</h2>
-            <p>Todo List     <%= link_to '(New regstration)', '/todos/new' %></p></div>
+<div id="wrapper">
 
+    <div id="todos-left">
+        <ul>
+            <li>井上社会保険労務士</li>
+            <li>サイトー社会保険労務士</li>
+            <li>事務</li>
+            <li>営業</li>
+            <li>毎月業務</li>
+            <li>毎日業務</li>
+        </ul>
+    </div>
 
-    <table width="90%">
-     <tbody>
-      <tr>
-        <th></th>
-        <th>タイトル</th>
-        <th>選択</th>
-        <th>期限</th>
-        <th>状況</th>
-        <th>担当者</th>
-        <th>コンテンツ</th>
-        <th>削除</th>
-　  </tr>
-      <tr>
-      <% @todos.each do |todo|%>
-        <td><%= todo.execution  %></td>
-        <td><%= todo.title  %></td>
-        <td><%= todo.select  %></td>
-        <td><%= todo.deadline  %></td>
-        <td><%= todo.state  %></td>
-        <td><%= todo.name  %></td>
-        <td><%= todo.contents  %></td>
-        <td><%= link_to '編集', edit_todo_path(todo), class: 'command'%>
-			            ｜ <%= link_to '削除', 
-			            	todo_path(todo), 
-			            	method: :delete, 
-			            	class: 'command',
-			            	data: { confirm: '本当に削除しますか？'} %></td>
+    <div id="todos-center">
+        <div class="heading">
+            <h2>新規ToDo登録</h2>
+            <p>
+                <%= form_for @todo do |f|%>
+                    <%= f.text_field :title %>
+                    <%= f.submit '登録', data: { confirm: '登録しますか？'}%>
+                <%end%>
+            </p>
+        </div>
 
-      </tr>
-      <% end %>
-      </tbody>
-    </table> 
+        <ul>
+            <% @todos.each do |todo|%>
+            <li class="box"><%= todo.title  %>
+                                    <%= link_to '削除', 
+			            	            todo_path(todo), 
+			            	            method: :delete, 
+			            	            class: 'command',
+			            	            data: { confirm: '本当に削除しますか？'} %></li>
+            <% end %>
+        </ul>
+   </div>
 
 </div>
-<div class="beige-wrapper">
-</br>
-</br>
 
-            <div class="heading"><h2>新規TODO登録</h2>
-            <p>New TODO Registration</p></div>
-
-<%= form_for @todo do |f|%>
-
-    <table>
-     <tbody>
-      <tr>
-        <th></th>
-        <th>タイトル</th>
-        <th>選択</th>
-        <th>期限</th>
-        <th>状況</th>
-        <th>担当者</th>
-        <th>コンテンツ</th>
-　  </tr>
-　  <tr>
-　 　<td><%= f.select(:select,[
-        	   ["未実施","未実施"],
-               ["実行済","実行済"],
-                ]) %></td>
-        <td><%= f.text_field :title %></td>
-        <td><%= f.select(:select,[
-        	   ["事務","事務"],
-               ["井上社労士事務所","井上社労士事務所"],
-               ["サイトー社労士事務所","サイトー社労士事務所"],
-               ["営業","営業"],
-               ["その他雑務","その他雑務"],
-                ]) %></td>
-          <td><%= f.date_field :deadline %></td>
-         <td><%= f.select(:state,[
-        	   ["未実施","未実施"],
-        	   ["発送中","発送中"],
-               ["対応中","対応中"],
-               ["確認中","確認中"],
-               ["印鑑待","印鑑待"],
-                ]) %></td>
-        <td><%= f.select(:name,[
-        	   ["嘉門","嘉門"],
-               ["加藤","加藤"],
-               ["奥山","奥山"],
-               ["その他","その他"],
-                ]) %></td>
-        <td><%= f.text_area :contents %></td>
-　  </tr>
-        <tr>
-			<th colspan="7"> 
-				<%= f.submit '登録', data: { confirm: '登録しますか？'}%>
-			</th>
-		</tr>
-	</tbody>
- </table>
-<%end%>
-
- </div>
+    <div id="todos-right">
+    </div>
 

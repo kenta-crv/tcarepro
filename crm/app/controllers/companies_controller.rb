@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-before_action :authenticate_admin!, except: [:progress]
+before_action :authenticate_admin!, except: [:new, :progress]
 
 
   def index
@@ -20,6 +20,7 @@ before_action :authenticate_admin!, except: [:progress]
   def new
     @company = Company.new
     @q = Company.ransack(params[:q])
+    render :layout => 'top'
   end
 
  def create

@@ -3,11 +3,10 @@
  <head>
        <title>顧客管理システム</title>
               <meta charset="utf-8">
+              <meta http-equiv="X^UA-Compatible" content="IE=edge">
               <!--　レスポンシブの定義　-->
                <meta name="viewport" content="width=device-width, initial-scale=1,0">
-    
                <%= csrf_meta_tags %>
-
                 <%= stylesheet_link_tag    'application', media: 'all'%>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
                  <%= javascript_include_tag 'application' %>
@@ -25,7 +24,7 @@
            <%= link_to  '請求書' , '/invoices' %>
            <%= link_to  '労働局情報', '/prefectures' %>
            <%= link_to  'ファイル', '/uploader/form' %>
-           <%= link_to  'FAQ', 'https://cp.crold-valieat.jp/', :target=>["_blank"]  %>
+           <%= link_to  'FAQ', '/faqs/'  %>
            <%= link_to  'メール', 'https://mail.google.com/mail/u/0/#inbox', :target=>["_blank"] %>
            <%= link_to  'ToDo', '/todos/' %>
            <% if admin_signed_in? %>

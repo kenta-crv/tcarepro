@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
 
-  devise_for :reads
-  devise_for :users
-                                              #アップロード
 
+                                              #アップロード
+  resources :uploaders
+  
   get 'uploader/index'
   get 'uploader/form'
 post 'uploader/upload'
@@ -15,7 +15,8 @@ post 'uploader/upload'
                                             #ログイン切り替え
                                                                                  
   devise_for :admins      #管理者ログイン 
-
+  devise_for :reads
+  devise_for :users
 
 
                                          #問い合わせフォーム
@@ -28,7 +29,6 @@ post 'uploader/upload'
                                        #会社情報・就業規則情報
                    
       
-        get 'companies/:id/progress' => 'companies#progress'         
                                         
   resources :companies do
 
@@ -42,7 +42,7 @@ post 'uploader/upload'
     resources :comments, only: [:create, :destroy, :update, :download]
     member do
         #顧客側管理進捗
-      
+            get :progress
         #ファイルビュー・ダウンロード
       get 'comments/view'
       get 'comments/download/:id' => 'comments#download' ,as: :comments_pdf
