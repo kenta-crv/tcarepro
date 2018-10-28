@@ -26,14 +26,11 @@
   box-sizing: border-box;
 }
 
-/*書体はヒラギノフォントを利用します。*/
-
 body {
   margin: 0;
-  font-family: "Hiragino Kaku Gothic ProN";
+  font-family: "Hiragino Kaku Gothic ProN";  /*書体はヒラギノフォントを利用します。*/
   width: 100%;
-  /*【バックカラー】ブルー*/
-  background-color: rgba(241, 244, 248, 1.0);
+  background-color: rgba(241, 244, 248, 1.0);  /*【バックカラー】ブルー*/
 }
 
 a {
@@ -44,36 +41,27 @@ a {
   display: none;
 }
 
-/*ヘッダーの始まり*/
 
 /*ヘッダーのベース設定*/
-
 header {
   height: 65px;
   width: 100%;
-  /*【バックカラー】ブルー*/
-  background-color: rgba(0, 51, 204, 0.9);
+  background-color: rgba(0, 51, 204, 0.9);   /*【バックカラー】ブルー*/
   position: fixed;
   top: 0;
   z-index: 10;
 }
 
 /*ロゴ指定*/
-
-.menu_icon {
-  height: 65px;
+  .menu_icon {
+  height: 80px;
 }
 
 /*ロゴは左へ*/
-
 .header-left {
   float: left;
   display: flex;
   line-height: 65px;
-}
-
-.header_search{
-    margin-left:40px;
 }
 
 /*ヘッダーナビは右へ*/
@@ -97,17 +85,13 @@ header {
   transition: all 0.5s;
 }
 
-/*ヘッダーの上にマウスを置くと色変化*/
-
-.header-right a:hover {
-  /*【マウスオーバーカラー】ブルー*/
-  background-color: rgba(0, 162, 255, 0.9);
+  /*ヘッダーの上にマウスを置くと色変化*/
+ .header-right a:hover {
+  background-color: rgba(0, 162, 255, 0.9);   /*【マウスオーバーカラー】ブルー*/
 }
 
-/*ヘッダーの終わり*/
 
 /*エラー・編集コマンド共通*/
-
 .error {
   font-size: 12px;
   font-weight: bold;
@@ -118,12 +102,13 @@ header {
   font-size: 10px;
 }
 
-/*メインのサイズ*/
 
+/*メインのサイズ*/
 main {
   margin-top: 65px;
   margin-bottom: 100px;
 }
+
 
 /*テーブル共通*/
 
@@ -167,70 +152,16 @@ td {
   width: 350px;
 }
 
-.list_table {
-  margin-left: 370px;
-}
+
 
 /*必須項目*/
-
 .label {
-  background-color: orange;
-  /*オレンジ*/
   margin-left: 5px;
 }
 
-.infobox {
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50px;
-  height: 20em;
-  /* 高さを制限(※) */
-  width: 700px;
-  overflow: scroll;
-  /* スクロールバーを表示(※) */
-  border: #2CA676 3px border;
-  /* 枠線を追加 */
-  background-color: #fff;
-  /* 背景色を追加 */
-}
 
-.center {
-  text-align: center;
-}
-
-.box7 {
-  padding: 1.0em;
-  margin: 2em 0;
-  margin-left: 100px;
-  margin-right: 100px;
-  background: #2CA676;
-  ;
-  /*背景色*/
-  border-left: double 7px #4ec4d3;
-  /*左線*/
-  border-right: double 7px #4ec4d3;
-  /*右線*/
-  list-style-type: none;
-}
-
-.box7 li {
-  margin: 0;
-  padding: 0;
-}
-
-/*メイン*/
-
-.main-wrapper {
-  padding: 30px 50px 100px 0;
-  background-image: url(gata.jpg);
-  background-size: 40%;
-  background-repeat: no-repeat;
-  background-position: right bottom;
-  color: black;
-}
 
 /*幅・位置の指定*/
-
 .container {
   max-width: 1170px;
   width: 100%;
@@ -238,42 +169,9 @@ td {
   margin: 0 auto;
 }
 
-/*背景色を記述しています。*/
 
-.base-wrapper {
-  background-color: rgba(0, 180, 255, 0.6);
-  /*ブルー*/
-  padding-bottom: 50px;
-  text-align: center;
-}
-
-.sub-wrapper {
-  background-color: rgba(241, 244, 248, 1.0);
-  /*薄いブルー*/
-  padding-bottom: 50px;
-  text-align: center;
-}
-
-/*こんなお悩みありませんか？*/
-
-.list {
-  text-align: left;
-  font-size: 18px;
-  line-height: 40px;
-  font-weight: bold;
-  opacity: 0.8;
-  padding-left: 600px;
-}
-
-.image-left {
-  width: 400px;
-  margin-left: 60px;
-  margin-top: 25px;
-  float: left;
-}
 
 /* takigawa */
-
 li.progress-list-item {
   list-style-type: none;
 }

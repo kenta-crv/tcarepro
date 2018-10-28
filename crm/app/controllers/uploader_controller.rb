@@ -5,12 +5,21 @@ class UploaderController < ApplicationController
   def form
   end
 
+  def edit
+    @upload = Upload.find(params[:id])
+  end
+
   def upload
     @upload_file = UploadFile.new( params.require(:upload_file).permit(:name, :file) )
     @upload_file.save
     redirect_to action: 'index'
-    @q = Company.ransack(params[:q])
   end
+
+   def destroy
+    @upload = Upload.find(params[:id])
+    @upload.destroy
+    redirect_to uploads_path
+ end
 
 
   def download

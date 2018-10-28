@@ -40,6 +40,7 @@ class CompaniesController < ApplicationController
   def new
     @company = Company.new
     @q = Company.ransack(params[:q])
+    render :layout => 'top'
   end
 
  def create

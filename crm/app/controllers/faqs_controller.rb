@@ -1,16 +1,15 @@
 class FaqsController < ApplicationController
 
+  def faqs
+  end
 
   def index
   	 @faqs = Faq.all.order(created_at: 'desc')
+    @faq = Faq.new
   end
   
   def show
   	@faq = Faq.find(params[:id])
-  end
-  
-  def new
-    @faq = Faq.new
   end
  
  def create
@@ -19,7 +18,7 @@ class FaqsController < ApplicationController
         # redirect
         redirect_to faqs_path
     else
-        render 'new'
+        render 'index'
     end
   end
   

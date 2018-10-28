@@ -3,24 +3,23 @@
             <div class="heading"><h2>ドキュメントアップロード</h2>
                 <%= link_to '（ダウンロードはこちら）', action: "index" %>
             </div>
-
-    <table width="90%">
-     <tbody>
        <% @upload = UploadFile.new %>
     <%= form_for @upload, :url => {:action => :upload} do |f| %>
-      <tr>
-        <th>ファイル名</th>
-        <th>ファイル添付</th>
-　  </tr>
-      <tr>
-        <td><%= f.text_field :name %></td>
-        <td><%= f.file_field :file %></td>
-      </tr>
-      <tr>
-        <td colspan = "2"><%= f.submit "アップロード" %><% end %>
-        </td>
-      </tr>
-      </tbody>
+    <table width="90%">
+        <tbody>
+            <tr>
+                <th>ファイル名</th>
+                <th>ファイル添付</th>
+　       </tr>
+           <tr>
+                <td><%= f.text_field :name %></td>
+                <td><%= f.file_field :file %></td>
+           </tr>
+           <tr>
+                <td colspan = "2"><%= f.submit "アップロード" %></td>
+           </tr>
+        </tbody>
     </table> 
-    </br>
-    </br>
+    <% end %>
+</br>
+</br>
