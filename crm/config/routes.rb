@@ -1,15 +1,10 @@
 Rails.application.routes.draw do
 
-<<<<<<< HEAD
+  devise_for :admins      #管理者ログイン
   devise_for :reads
   devise_for :users
                                               #アップロード
   resources :uploader, only: [:edit, :update, :destroy]
-=======
->>>>>>> cde9e0e0e0be57a8f7865ce21ace715ab14634e3
-
-                                              #アップロード
-  resources :uploaders
 
   get 'uploader/index'
   get 'uploader/form'
@@ -20,17 +15,6 @@ Rails.application.routes.draw do
 
 
                                             #ログイン切り替え
-<<<<<<< HEAD
-
-  devise_for :admins      #管理者ログイン
-
-=======
-
-  devise_for :admins      #管理者ログイン
-  devise_for :reads
-  devise_for :users
->>>>>>> cde9e0e0e0be57a8f7865ce21ace715ab14634e3
-
 
                                          #問い合わせフォーム
 

@@ -62,9 +62,8 @@ id_checkes = function(ele){
   comment_ids = $("input[type='checkbox'].company-checkbox").filter(":checked").map(function(){
     return $(this).data()["commentId"];
   }).get();
-  console.log(comment_ids)
   $("#comment-destroy-link").attr("href", "/comments/bulk_destroy?" + $.param({"ids":comment_ids}));
-  $("#comment-uploads-link").attr("href", "/comments/bulk_update?" + $.param({"ids":comment_ids}));
+  $("#comment-uploads-link").attr("href", "/comments/bulk_edit?" + $.param({"ids":comment_ids}));
 
 
 }
@@ -89,15 +88,28 @@ $(document).on('turbolinks:load', function(event) {
         x = $('#company-show-update2').submit();
     	}
     } );
+    $(document).on("keypress", ".t-input-field", function (e) {
+      if ( e.which == 13 ) {
+        x = $('#todo-show-update').submit();
+    	}
+    });
     $(document).on("click", ".comment-edit", function () {
       data = $(this).data()
       $("#" + data.id + "-comment-body").toggle();
       $("#" + data.id + "-comment-edit-field").toggle();
     })
-        $(document).on("click", ".comment-edit-detail", function () {
+
+    $(document).on("click", ".comment-edit-detail", function () {
       data = $(this).data()
       $("#" + data.id + "-comment-edit-detail-field").toggle();
     })
+
+    $(document).on("change", "#form-bulk-edit", function () {
+      $(".form-bulk-edit-input").addClass("none")
+      v = $(this).val()
+      $("#form-" + v).removeClass("none")
+    })
+
 
 
     $("#company-index-table").tablesorter();
@@ -110,10 +122,16 @@ $(document).on('turbolinks:load', function(event) {
     });
 
     $(".modal-backdrop").click(function(){
-      console.log("Hi")
       $("#company-modal").modal("fade")
       $("#company-modal").modal("hide")
       $("#company-modal").modal("hidden")
+    });
+
+    $(".todos-left-item").click(function(){
+      $(".todos-left-item").removeClass("active")
+      $(this).addClass("active")
+      v = $(this).data()["v"]
+      $("#todo-select").val(v)
     });
 
 });

@@ -42,7 +42,14 @@ class CommentsController < ApplicationController
   end
 
   def bulk_update
-    @ids = params[:ids]
+    @ids = params[:ids].split(" ")
+    @ids.each do |id|
+      c = Comment.find(id.to_i)
+      c.update_attributes(
+        carriaup_progress: params[:carriaup_progress]
+      )
+    end
+    redirect_to request.referer
   end
 
   def bulk_destroy
