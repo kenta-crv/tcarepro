@@ -4,7 +4,6 @@
 #
 #  id           :integer          not null, primary key
 #  labor        :string
-#  minimum_wage :string
 #  product_type :string
 #  method       :string
 #  tel          :integer

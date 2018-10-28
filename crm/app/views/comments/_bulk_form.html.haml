@@ -1,0 +1,12 @@
+.container
+  .comment-modal-content
+    ="一括更新"
+    =form_tag comments_bulk_update_path, method: :put do
+      =hidden_field_tag :ids, {:value=>@ids}
+      .row
+        .col-5
+          =select_tag :maker, options_for_select([["メーカー", ""]]), {class: "form-control selectpicker", id: "search-form-1"}
+        .col-5
+          =select_tag :maker, options_for_select([["メーカー", ""]]), {class: "form-control selectpicker", id: "search-form-2"}
+        .col-2
+          =submit_tag "更新",  {class: "btn btn-primary"}

@@ -1,5 +1,4 @@
-<%= form_for company, method: :patch, remote: true, html:{id:"company-show-update"} do |f| %>
-<%= f.hidden_field :ajax, :value => true %>
+<%= form_for company, remote: true, html:{id:"company-show-update"} do |f| %>
 
 <table width="90%">
   <tbody>
@@ -7,161 +6,161 @@
     <tr>
       <th>会社名</th>
       <td id="company-show" class="td-show"><%= company.company %></td>
-      <td id="company-c-input-field" class="none c-input-field"><%= f.text_field :company, :value => company.company, :id=> "company-form-field", :class=>"c-input-field" %></td>
+      <td id="company-c-input-field" class="none c-input-field"><%= f.text_field :company, :id=> "company-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="company">編集</td>
       <th>メールアドレス</th>
       <td id="e_mail-show" class="td-show"><%= company.e_mail %></td>
-      <td id="e_mail-c-input-field" class="none c-input-field"><%= f.text_field :e_mail, :value => company.e_mail, :id=> "e_mail-form-field", :class=>"c-input-field" %></td>
+      <td id="e_mail-c-input-field" class="none c-input-field"><%= f.text_field :e_mail, :value => company.e_mail, :id=> "e_mail-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="e_mail">編集</td>
     </tr>
     <tr>
       <th>姓</th>
       <td id="first_name-show" class="td-show"><%= company.first_name%></td>
-      <td id="first_name-c-input-field" class="none c-input-field"><%= f.text_field :first_name, :value => company.first_name, :id=> "first_name-form-field", :class=>"c-input-field" %></td>
+      <td id="first_name-c-input-field" class="none c-input-field"><%= f.text_field :first_name, :value => company.first_name, :id=> "first_name-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="first_name">編集</td>
       <th>名</th>
       <td id="last_name-show" class="td-show"><%= company.last_name%></td>
-      <td id="last_name-c-input-field" class="none c-input-field"><%= f.text_field :last_name, :value => company.last_name, :id=> "last_name-form-field", :class=>"c-input-field" %></td>
+      <td id="last_name-c-input-field" class="none c-input-field"><%= f.text_field :last_name, :value => company.last_name, :id=> "last_name-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="last_name">編集</td>
     </tr>
     <tr>
       <th>セイ</th>
       <td id="first_kana-show" class="td-show"><%= company.first_kana%></td>
-      <td id="first_kana-c-input-field" class="none c-input-field"><%= f.text_field :first_kana, :value => company.first_kana, :id=> "first_kana-form-field", :class=>"c-input-field" %></td>
+      <td id="first_kana-c-input-field" class="none c-input-field"><%= f.text_field :first_kana, :value => company.first_kana, :id=> "first_kana-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="first_kana">編集</td>
       <th>メイ</th>
       <td id="last_kana-show" class="td-show"><%= company.last_kana%></td>
-      <td id="last_kana-c-input-field" class="none c-input-field"><%= f.text_field :last_kana, :value => company.last_kana, :id=> "last_kana-form-field", :class=>"c-input-field" %></td>
+      <td id="last_kana-c-input-field" class="none c-input-field"><%= f.text_field :last_kana, :value => company.last_kana, :id=> "last_kana-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="last_kana">編集</td>
     </tr>
     <tr>
       <th>電話番号</th>
       <td id="tel-show" class="td-show"><%= company.tel %></td>
-      <td id="tel-c-input-field" class="none c-input-field"><%= f.text_field :tel, :value => company.tel, :id=> "tel-form-field", :class=>"c-input-field" %></td>
+      <td id="tel-c-input-field" class="none c-input-field"><%= f.text_field :tel, :value => company.tel, :id=> "tel-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="tel">編集</td>
       <th>携帯番号</th>
       <td id="mobile-show" class="td-show"><%= company.mobile %></td>
-      <td id="mobile-c-input-field" class="none c-input-field"><%= f.text_field :mobile, :value => company.mobile, :id=> "mobile-form-field", :class=>"c-input-field" %></td>
+      <td id="mobile-c-input-field" class="none c-input-field"><%= f.text_field :mobile, :value => company.mobile, :id=> "mobile-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="mobile">編集</td>
     </tr>
     <tr>
       <th>FAX番号</th>
       <td id="fax-show" class="td-show"><%= company.fax %></td>
-      <td id="fax-c-input-field" class="none c-input-field"><%= f.text_field :fax, :value => company.fax, :id=> "fax-form-field", :class=>"c-input-field" %></td>
+      <td id="fax-c-input-field" class="none c-input-field"><%= f.text_field :fax, :value => company.fax, :id=> "fax-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="fax">編集</td>
       <th>郵便番号</th>
       <td id="postnumber-show" class="td-show">〒<%= company.postnumber%></td>
-      <td id="postnumber-c-input-field" class="none c-input-field"><%= f.text_field :postnumber, :value => company.postnumber, :id=> "postnumber-form-field", :class=>"c-input-field" %></td>
+      <td id="postnumber-c-input-field" class="none c-input-field"><%= f.text_field :postnumber, :value => company.postnumber, :id=> "postnumber-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="postnumber">編集</td>
     </tr>
     <tr>
       <th>都道府県</th>
       <td id="prefecture-show" class="td-show"><%= company.prefecture%></td>
-      <td id="prefecture-c-input-field" class="none c-input-field"><%= f.text_field :prefecture, :value => company.prefecture, :id=> "prefecture-form-field", :class=>"c-input-field" %></td>
+      <td id="prefecture-c-input-field" class="none c-input-field"><%= f.text_field :prefecture, :value => company.prefecture, :id=> "prefecture-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="prefecture">編集</td>
       <th>市町村</th>
       <td id="city-show" class="td-show"><%= company.city%></td>
-      <td id="city-c-input-field" class="none c-input-field"><%= f.text_field :city, :value => company.city, :id=> "city-form-field", :class=>"c-input-field" %></td>
+      <td id="city-c-input-field" class="none c-input-field"><%= f.text_field :city, :value => company.city, :id=> "city-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="city">編集</td>
     </tr>
     <tr>
       <th>市町村以降</th>
       <td id="town-show" class="td-show"><%= company.town%></td>
-      <td id="town-c-input-field" class="none c-input-field"><%= f.text_field :town, :value => company.town, :id=> "town-form-field", :class=>"c-input-field" %></td>
+      <td id="town-c-input-field" class="none c-input-field"><%= f.text_field :town, :value => company.town, :id=> "town-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="town">編集</td>
       <th>資本金</th>
       <td id="caption-show" class="td-show"><%= company.caption%>万円</td>
-      <td id="caption-c-input-field" class="none c-input-field"><%= f.text_field :caption, :value => company.caption, :id=> "caption-form-field", :class=>"c-input-field" %></td>
+      <td id="caption-c-input-field" class="none c-input-field"><%= f.text_field :caption, :value => company.caption, :id=> "caption-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="caption">編集</td>
     </tr>
     <tr>
       <th>労働保険番号</th>
       <td id="labor_number-show" class="td-show"><%= company.labor_number%></td>
-      <td id="labor_number-c-input-field" class="none c-input-field"><%= f.text_field :labor_number, :value => company.labor_number, :id=> "labor_number-form-field", :class=>"c-input-field" %></td>
+      <td id="labor_number-c-input-field" class="none c-input-field"><%= f.text_field :labor_number, :value => company.labor_number, :id=> "labor_number-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="labor_number">編集</td>
       <th>雇用保険番号</th>
       <td id="employment_number-show" class="td-show"><%= company.employment_number%></td>
-      <td id="employment_number-c-input-field" class="none c-input-field"><%= f.text_field :employment_number, :value => company.employment_number, :id=> "employment_number-form-field", :class=>"c-input-field" %></td>
+      <td id="employment_number-c-input-field" class="none c-input-field"><%= f.text_field :employment_number, :value => company.employment_number, :id=> "employment_number-form-field", :class=>"c-input-field2" %></td>
       <td class="edit-link-show" data-v="employment_number">編集</td>
     </tr>
   </tbody>
 </table>
-
+<% end %>
 
 </br>
 </br>
 
 
 <!-- 就業規則 -->
-
+<%= form_for company, remote: true, html:{id:"company-show-update2"} do |f| %>
 <table width="90%">
   <tbody>
     <caption class="heading">就業規則情報</caption>
     <tr>
       <th>会社名</th>
-      <td id="company-show" class="td-show"><%= company.company%></td>
-      <td id="company-c-input-field" class="none c-input-field"><%= f.text_field :company, :value => company.company, :id=> "company-form-field", :class=>"c-input-field" %></td>
-      <td class="edit-link-show" data-v="company">編集</td>
+      <td id="company2-show" class="td-show"><%= company.company%></td>
+      <td id="company2-c-input-field" class="none c-input-field"><%= f.text_field :company, :value => company.company, :id=> "company-form-field", :class=>"c-input-field" %></td>
+      <td class="edit-link-show" data-v="company2">編集</td>
       <th>試用期間開始</th>
-      <td id="trial_period-show" class="td-show"><%= company.trial_period%>ヶ月</td>
-      <td id="trial_period-c-input-field" class="none c-input-field"><%= f.text_field :trial_period, :value => company.trial_period, :id=> "trial_period-form-field", :class=>"c-input-field" %>ヶ月</td>
-      <td class="edit-link-show" data-v="trial_period">編集</td>
+      <td id="trial_period2-show" class="td-show"><%= company.trial_period%>ヶ月</td>
+      <td id="trial_period2-c-input-field" class="none c-input-field"><%= f.text_field :trial_period, :value => company.trial_period, :id=> "trial_period-form-field", :class=>"c-input-field" %>ヶ月</td>
+      <td class="edit-link-show" data-v="trial_period2">編集</td>
     </tr>
     <tr>
       <th>勤務開始時間</th>
-      <td id="work_start-show" class="td-show"><%= company.work_start%></td>
-      <td id="work_start-c-input-field" class="none c-input-field"><%= f.time_field :work_start, :value => company.work_start, :id=> "work_start-form-field", :class=>"c-input-field" %></td>
-      <td class="edit-link-show" data-v="work_start">編集</td>
+      <td id="work_start2-show" class="td-show"><%= company.work_start%></td>
+      <td id="work_start2-c-input-field" class="none c-input-field"><%= f.time_field :work_start, :value => company.work_start, :id=> "work_start-form-field", :class=>"c-input-field" %></td>
+      <td class="edit-link-show" data-v="work_start2">編集</td>
       <th>勤務終了時間</th>
-      <td id="work_out-show" class="td-show"><%= company.work_out%></td>
-      <td id="work_out-c-input-field" class="none c-input-field"><%= f.time_field :work_out, :value => company.work_out, :id=> "work_out-form-field", :class=>"c-input-field" %></td>
-      <td class="edit-link-show" data-v="work_out">編集</td>
+      <td id="work_out2-show" class="td-show"><%= company.work_out%></td>
+      <td id="work_out2-c-input-field" class="none c-input-field"><%= f.time_field :work_out, :value => company.work_out, :id=> "work_out-form-field", :class=>"c-input-field" %></td>
+      <td class="edit-link-show" data-v="work_out2">編集</td>
     </tr>
     <tr>
       <th>休憩開始時間</th>
-      <td id="break_in-show" class="td-show"><%= company.break_in%></td>
-      <td id="break_in-c-input-field" class="none c-input-field"><%= f.time_field :break_in, :value => company.break_in, :id=> "break_in-form-field", :class=>"c-input-field" %></td>
-      <td class="edit-link-show" data-v="break_in">編集</td>
+      <td id="break_in2-show" class="td-show"><%= company.break_in%></td>
+      <td id="break_in2-c-input-field" class="none c-input-field"><%= f.time_field :break_in, :value => company.break_in, :id=> "break_in-form-field", :class=>"c-input-field" %></td>
+      <td class="edit-link-show" data-v="break_in2">編集</td>
       <th>休憩終了時間</th>
-      <td id="break_out-show" class="td-show"><%= company.break_out%></td>
-      <td id="break_out-c-input-field" class="none c-input-field"><%= f.time_field :break_out, :value => company.break_out, :id=> "break_out-form-field", :class=>"c-input-field" %></td>
-      <td class="edit-link-show" data-v="break_out">編集</td>
+      <td id="break_out2-show" class="td-show"><%= company.break_out%></td>
+      <td id="break_out2-c-input-field" class="none c-input-field"><%= f.time_field :break_out, :value => company.break_out, :id=> "break_out-form-field", :class=>"c-input-field" %></td>
+      <td class="edit-link-show" data-v="break_out2">編集</td>
     </tr>
     <tr>
       <th>休日</th>
-      <td id="holiday-show" class="td-show"><%= company.holiday%></td>
-      <td id="holiday-c-input-field" class="none c-input-field"><%= f.select(:holiday, [["日曜日", "Sunday"],["月曜日", "Monday"],["火曜日", "Tuesday"],["水曜日", "Wednesday"],["木曜日", "Thursday"],["金曜日", "Friday"],["土曜日", "Saturday"],["なし", "None"]], :selected=> company.holiday, :id=> "holiday-form-field", :class=>"c-input-field") %></td>
-      <td class="edit-link-show" data-v="holiday">編集</td>
+      <td id="holiday2-show" class="td-show"><%= company.holiday%></td>
+      <td id="holiday2-c-input-field" class="none c-input-field"><%= f.select(:holiday, [["日曜日", "Sunday"],["月曜日", "Monday"],["火曜日", "Tuesday"],["水曜日", "Wednesday"],["木曜日", "Thursday"],["金曜日", "Friday"],["土曜日", "Saturday"],["なし", "None"]], :selected=> company.holiday, :id=> "holiday-form-field", :class=>"c-input-field") %></td>
+      <td class="edit-link-show" data-v="holiday2">編集</td>
       <th>支払方法</th>
-      <td id="method_payment-show" class="td-show"><%= company.method_payment%></td>
-      <td id="method_payment-c-input-field" class="none c-input-field"><%=  f.select(:method_payment, [["現金", "現金"],["口座振込", "口座振替"]], :selected=>company.method_payment, :id=> "method_payment-form-field", :class=>"c-input-field") %></td>
-      <td class="edit-link-show" data-v="method_payment">編集</td>
+      <td id="method_payment2-show" class="td-show"><%= company.method_payment%></td>
+      <td id="method_payment2-c-input-field" class="none c-input-field"><%=  f.select(:method_payment, [["現金", "現金"],["口座振込", "口座振替"]], :selected=>company.method_payment, :id=> "method_payment-form-field", :class=>"c-input-field") %></td>
+      <td class="edit-link-show" data-v="method_payment2">編集</td>
     </tr>
     <tr>
       <th>手当</th>
-      <td id="allowance-show" class="td-show"><%= company.allowance%></td>
-      <td id="allowance-c-input-field" class="none c-input-field"><%= f.text_field :allowance, :value => company.allowance, :id=> "allowance-form-field", :class=>"c-input-field" %></td>
-      <td class="edit-link-show" data-v="allowance">編集</td>
+      <td id="allowance2-show" class="td-show"><%= company.allowance%></td>
+      <td id="allowance2-c-input-field" class="none c-input-field"><%= f.text_field :allowance, :value => company.allowance, :id=> "allowance-form-field", :class=>"c-input-field" %></td>
+      <td class="edit-link-show" data-v="allowance2">編集</td>
       <th>手当詳細</th>
-      <td id="allowance_contents-show" class="td-show"><%= company.allowance_contents%></td>
-      <td id="allowance_contents-c-input-field" class="none c-input-field"><%= f.text_field :allowance_contents, :value => company.allowance_contents, :id=> "allowance_contents-form-field", :class=>"c-input-field" %></td>
-      <td class="edit-link-show" data-v="allowance_contents">編集</td>
+      <td id="allowance_contents2-show" class="td-show"><%= company.allowance_contents%></td>
+      <td id="allowance_contents2-c-input-field" class="none c-input-field"><%= f.text_field :allowance_contents, :value => company.allowance_contents, :id=> "allowance_contents-form-field", :class=>"c-input-field" %></td>
+      <td class="edit-link-show" data-v="allowance_contents2">編集</td>
     </tr>
     <tr>
       <th>給料締日</th>
-      <td id="closing_on-show" class="td-show"><%= company.closing_on%>日</td>
-      <td id="closing_on-c-input-field" class="none c-input-field"><%= f.number_field :closing_on, :value => company.closing_on, :id=> "closing_on-form-field", :class=>"c-input-field" %>日</td>
-      <td class="edit-link-show" data-v="closing_on">編集</td>
+      <td id="closing_on2-show" class="td-show"><%= company.closing_on%>日</td>
+      <td id="closing_on2-c-input-field" class="none c-input-field"><%= f.number_field :closing_on, :value => company.closing_on, :id=> "closing_on-form-field", :class=>"c-input-field" %>日</td>
+      <td class="edit-link-show" data-v="closing_on2">編集</td>
       <th>給料支払日</th>
-      <td id="payment_on-show" class="td-show"><%= company.payment_on%>日</td>
-      <td id="payment_on-c-input-field" class="none c-input-field"><%= f.number_field :payment_on, :value => company.payment_on, :id=> "payment_on-form-field", :class=>"c-input-field" %>日</td>
-      <td class="edit-link-show" data-v="payment_on">編集</td>
+      <td id="payment_on2-show" class="td-show"><%= company.payment_on%>日</td>
+      <td id="payment_on2-c-input-field" class="none c-input-field"><%= f.number_field :payment_on, :value => company.payment_on, :id=> "payment_on-form-field", :class=>"c-input-field" %>日</td>
+      <td class="edit-link-show" data-v="payment_on2">編集</td>
     </tr>
     <tr>
       <th>控除</th>
-      <td id="desuction-show" class="td-desuction" colspan="1"><%= company.desuction%></td>
-      <td colspan="1" id="desuction-c-input-field" class="none c-input-field">
-        <div id="desuction-form-field", class="c-input-field" >
+      <td id="desuction2-show" class="td-desuction" colspan="1"><%= company.desuction%></td>
+      <td colspan="1" id="desuction2-c-input-field" class="none c-input-field">
+        <div id="desuction2-form-field", class="c-input-field" >
           <%= radio_button :company, :desuction,'雇用保険'%>雇用保険
           <%= radio_button :company, :desuction,'厚生年金'%>厚生年金
           <%= radio_button :company, :desuction,'健康保険'%>健康保険
@@ -171,7 +170,7 @@
           <div><%= f.submit %> </div>
         </div>
       </td>
-      <td class="edit-link-show" data-v="desuction">編集</td>
+      <td class="edit-link-show" data-v="desuction2">編集</td>
     </tr>
   </tbody>
 </table>

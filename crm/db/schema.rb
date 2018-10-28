@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181011092839) do
+ActiveRecord::Schema.define(version: 20181027023301) do
 
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -152,18 +152,19 @@ ActiveRecord::Schema.define(version: 20181011092839) do
     t.string "item3"
     t.string "item4"
     t.string "item5"
-    t.string "price1"
-    t.string "price2"
-    t.string "price3"
-    t.string "price4"
-    t.string "price5"
-    t.string "quantity1"
-    t.string "quantity2"
-    t.string "quantity3"
-    t.string "quantity4"
-    t.string "quantity5"
+    t.integer "price1"
+    t.integer "price2"
+    t.integer "price3"
+    t.integer "price4"
+    t.integer "price5"
+    t.integer "quantity1"
+    t.integer "quantity2"
+    t.integer "quantity3"
+    t.integer "quantity4"
+    t.integer "quantity5"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "company_id"
   end
 
   create_table "prefectures", force: :cascade do |t|

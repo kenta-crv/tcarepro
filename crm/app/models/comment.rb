@@ -4,7 +4,16 @@
 #
 #  id                          :integer          not null, primary key
 #  body                        :string
+#  status                      :string           default("0")
+#  integer                     :string           default("0")
 #  picture                     :string
+#  approval_data               :string
+#  ahead_data                  :string
+#  term_data                   :string
+#  regular_data                :string
+#  attendance_data             :string
+#  wage_data                   :string
+#  labor_data                  :string
 #  limited_progress            :string
 #  limited_start               :string
 #  limited_each_name           :string
@@ -37,6 +46,6 @@
 class Comment < ApplicationRecord
   belongs_to :company
   as_enum :status, %i{normal limited carriaup system picture}
-  
+  SYSTEM_NAMES = ["（企）職業能力評価制度","（形）職業能力評価制度","（形）セルフキャリアドッグ制度","（形）技能検定合格報奨金制度","（形）教育訓練休暇等制度","（人）セルフキャリアドッグ制度","（人）技能検定合格報奨金制度","（人）教育訓練休暇等制度","東京都キャリアアップ助成金","人事評価改善等助成金","職場定着支援等助成金"]
   mount_uploader :picture, UploadFileUploader
 end

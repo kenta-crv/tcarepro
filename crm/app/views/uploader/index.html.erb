@@ -1,6 +1,6 @@
     <div class="heading"><h2>ドキュメントダウンロード</h2>
             </div>
-    
+
     <table width="90%" data-turbolinks="false">
      <tbody>
           <% UploadFile.all.reverse_order.each do |upload| %>
@@ -8,12 +8,16 @@
             <th>ファイル名</th>
             <td><%= link_to upload.name, {action: "view", id: upload.id} %></td>
             <td><%= link_to "download", {action: "download", id: upload.id} %></td>
+            <td><%= link_to '編集', edit_uploader_path(upload), class: 'command'%>
+              | <%= link_to '削除',
+  			            	uploader_path(upload),
+  			            	method: :delete,
+  			            	class: 'command',
+  			            	data: { confirm: '本当に削除しますか？'} %></td>
+
         </tr>
       <% end %>
       </tbody>
-    </table> 
+    </table>
 
  </div>
-
-
-

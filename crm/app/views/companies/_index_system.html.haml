@@ -1,0 +1,25 @@
+%table{width: "90%", class:"tablesorter", id:"company-index-table"}
+  %thead
+    %tr
+      %th
+      %th 会社名
+      %th 助成金名
+      %th 制度
+      %th 進捗
+      %th 制度開始日
+      %th 実施日
+      %th 支給申請開始日
+  %tbody
+    - comments.each do |comment|
+      %tr
+        %td= check_box 'company', 'check', {:id => "#{comment.company.id}", :class=>"company-checkbox", :data=>{:email=>"#{comment.company.e_mail}", :comment_id=>"#{comment.id}"}}, true, false
+        %td= link_to comment.company.company, company_path(comment.company)
+        %td= comment.system_subsidyname
+        %td= comment.system_each_name
+        %td= comment.system_progress
+        %td= comment.system_start
+        %td= comment.system_implementation
+        %td= comment.system_supply
+.companies-pagenate
+  = paginate comments
+/ <div class="modal fade" id="company-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"></div

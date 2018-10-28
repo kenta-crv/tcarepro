@@ -14,7 +14,7 @@ end
 def render_500
   render template: 'errors/error_500', status: 500, layout: 'application', content_type: 'text/html'
 end
-  
+
 
 
       private
@@ -23,7 +23,7 @@ end
       case resource
       when User
         # put here for User first page direct path after signed in
-        super
+        # super
         #root_path
         '/companies/#{id}/progress'
       when Admin
@@ -33,7 +33,7 @@ end
         super
       end
     end
-    
+
     def after_sign_out_path_for(resource)
       case resource
       when User, :user, :users
@@ -63,7 +63,7 @@ end
       "application"
     end
   end
-  
+
 
 
 end

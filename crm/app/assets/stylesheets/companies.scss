@@ -9,3 +9,25 @@
 .inside th{
 	background-color:#A4C6FF;
 }
+
+/* sorter */
+
+table.tablesorter thead tr th.headerSortUp:after,
+table.tablesorter thead tr th.headerSortDown:after,
+table.tablesorter thead tr th.header:after {
+  font-family: FontAwesome;
+}
+table.tablesorter thead tr th.header:after {
+  content: "  \f0dc";
+}
+table.tablesorter thead tr th.headerSortUp:after {
+  content: "  \f0de";
+}
+table.tablesorter thead tr th.headerSortDown:after {
+  content: "  \f0dd";
+}
+
+.companies-pagenate{
+	width: 90%;
+    margin: 0 auto;
+}

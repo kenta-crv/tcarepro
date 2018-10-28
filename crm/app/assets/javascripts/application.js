@@ -11,12 +11,15 @@
 // about supported directives.
 //
 //= require rails-ujs
-//= require turbolinks
-//= require_tree .
 //
 //= require jquery
 //= require jquery_ujs
 //= require_self
+//= require popper
+//= require bootstrap-sprockets
+//
+//= require turbolinks
+//= require_tree .
 //
 $(function() {
   $('.header-right').hover(function() {
@@ -45,6 +48,28 @@ $(function() {
 });
 
 
+id_checkes = function(ele){
+  ids = $("input[type='checkbox'].company-checkbox").filter(":checked").map(function(){
+    return $(this).attr("id");
+  }).get();
+  $("#company-destroy-link").attr("href", "/companies/bulk_destroy?" + $.param({"ids":ids}));
+  mails = $("input[type='checkbox'].company-checkbox").filter(":checked").map(function(){
+    return $(this).data()["email"];
+  }).get();
+  var params = $("#company-mail-link").attr("href").split("?")[1]
+  $("#company-mail-link").attr("href", "mailto:" + mails.join(",") + "?" + params);
+  // $("#company-mail-link").attr("href", "/companies/mail?" + $.param({"mails":mails}));
+  comment_ids = $("input[type='checkbox'].company-checkbox").filter(":checked").map(function(){
+    return $(this).data()["commentId"];
+  }).get();
+  console.log(comment_ids)
+  $("#comment-destroy-link").attr("href", "/comments/bulk_destroy?" + $.param({"ids":comment_ids}));
+  $("#comment-uploads-link").attr("href", "/comments/bulk_update?" + $.param({"ids":comment_ids}));
+
+
+}
+
+
 //takigawa
 $(document).on('turbolinks:load', function(event) {
 //$(document).on('ready', function(event) {
@@ -57,8 +82,11 @@ $(document).on('turbolinks:load', function(event) {
     $(".c-input-field").keypress( function ( e ) {
     	if ( e.which == 13 ) {
         x = $('#company-show-update').submit();
-        console.log(x)
-    		// return false;
+    	}
+    } );
+    $(".c-input-field2").keypress( function ( e ) {
+    	if ( e.which == 13 ) {
+        x = $('#company-show-update2').submit();
     	}
     } );
     $(document).on("click", ".comment-edit", function () {
@@ -70,4 +98,22 @@ $(document).on('turbolinks:load', function(event) {
       data = $(this).data()
       $("#" + data.id + "-comment-edit-detail-field").toggle();
     })
+
+
+    $("#company-index-table").tablesorter();
+    $(".company-checkbox").change(function(){
+      id_checkes()
+    });
+    $(".all-company-checkbox").click(function(){
+      $('.admin-checkbox').prop('checked', this.checked);
+      id_checkes()
+    });
+
+    $(".modal-backdrop").click(function(){
+      console.log("Hi")
+      $("#company-modal").modal("fade")
+      $("#company-modal").modal("hide")
+      $("#company-modal").modal("hidden")
+    });
+
 });
