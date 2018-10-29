@@ -4,7 +4,16 @@
 #
 #  id                          :integer          not null, primary key
 #  body                        :string
+#  status                      :string           default("0")
+#  integer                     :string           default("0")
 #  picture                     :string
+#  approval_data               :string
+#  ahead_data                  :string
+#  term_data                   :string
+#  regular_data                :string
+#  attendance_data             :string
+#  wage_data                   :string
+#  labor_data                  :string
 #  limited_progress            :string
 #  limited_start               :string
 #  limited_each_name           :string

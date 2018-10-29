@@ -22,20 +22,45 @@ class CommentsController < ApplicationController
         render 'edit'
      end
   end
-  
+
   def download
       @comment = Comment.find(params[:id].to_i)
       filepath = @comment.picture.current_path
       stat = File::stat(filepath)
       send_file(filepath, :filename => @comment.picture.url.gsub(/.*\//,''), :length => stat.size)
   end
-  
+
   def view
     @comment = Comment.find(params[:id].to_i)
     filepath = @comment.picture.current_path
     stat = File::stat(filepath)
     send_file(filepath, :filename => @comment.picture.url.gsub(/.*\//,''), :length => stat.size, :disposition => 'inline')
   end
+
+  def bulk_edit
+    @ids = params[:ids]
+  end
+
+  def bulk_update
+    @ids = params[:ids].split(" ")
+    @ids.each do |id|
+      c = Comment.find(id.to_i)
+      c.update_attributes(
+        carriaup_progress: params[:carriaup_progress]
+      )
+    end
+    redirect_to request.referer
+  end
+
+  def bulk_destroy
+    return unless params[:ids]
+    companies = Comment.where(id: params[:ids])
+    companies.each do |o|
+      o.destroy
+    end
+    redirect_to request.referer
+  end
+
 
   private
     def comment_params

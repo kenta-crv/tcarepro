@@ -1,36 +1,40 @@
-               <table width="90%">
-	            <tbody>
+
+               <table width="90%" class="tablesorter" id="company-index-table">
+                 <thead>
 		            <tr>
+                  <th></th>
 			            <th>会社名</th>
 			            <th>代表者姓</th>
 		                <th>電話番号</th>
 			            <th>メールアドレス</th>
 			            <th>編集/削除</th>
 		            </tr>
-            
+              </thead>
+                <tbody>
+
     <% @companies.each do |company| %>
 
 		            <tr>
+                  <td><%=check_box 'company', 'check', {:id => "#{company.id}", :class=>"company-checkbox", :data=>{:email=>"#{company.e_mail}"}}, true, false %></td>
+
 			            <td><%= link_to company.company, company_path(company) %>
-			            											
+
 			            </td>
 			            <td><%= link_to company.first_name, company_path(company) %></td>
 			            <td><%= company.tel %></td>
 			            <td><%= company.e_mail %></td>
 			            <td><%= link_to '編集', edit_company_path(company), class: 'command'%>
-			            <%= link_to '削除', 
-			            	company_path(company), 
-			            	method: :delete, 
+			            <%= link_to '削除',
+			            	company_path(company),
+			            	method: :delete,
 			            	class: 'command',
 			            	data: { confirm: '本当に削除しますか？'} %></td>
 			            	<% end %>
 		            </tr>
-		            <tr>
-                  <td colspan = "5">
-                  <%= paginate @companies %>
-                  </td>
-                </tr>
 	            </tbody>
-            </table>  
+            </table>
+            <div class="companies-pagenate">
+            <%= paginate @companies %>
+            </div>
 
-      
+<!-- <div class="modal fade" id="company-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"></div> -->

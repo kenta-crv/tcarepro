@@ -10,16 +10,33 @@
             </br>
             </br>
             </br>
-            <%= link_to 'キャリアアップ助成金', companies_path(company: '[desc]'), class:"square_btn" %>
-            <%= link_to '有期実習型訓練', companies_path(sort: '[]'), class:"square_btn" %>
-            <%= link_to '（企）職業能力評価制度', companies_path(sort: '[]'), class:"square_btn" %>
-            <%= link_to '（形）職業能力評価制度', companies_path(sort: '[]'), class:"square_btn" %>
-            <%= link_to '（形）セルフキャリアドッグ制度', companies_path(sort: '[]'), class:"square_btn" %>
-            <%= link_to '（形）教育訓練休暇等制度', companies_path(sort: '[]'), class:"square_btn" %>
-            <%= link_to '（人）セルフキャリアドッグ制度', companies_path(sort: '[]'), class:"square_btn" %>
-            <%= link_to '（人）教育訓練休暇等制度', companies_path(sort: '[]'), class:"square_btn" %>
+            <%= link_to 'キャリアアップ助成金', companies_path(type: "carrier", company: '[desc]'), class:"square_btn" %>
+            <%= link_to '有期実習型訓練', companies_path(type: "limited", sort: '[]'), class:"square_btn" %>
+            <%= link_to '（企）職業能力評価制度', companies_path(type: "system", i: 0, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）職業能力評価制度', companies_path(type: "system", i: 1, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）セルフキャリアドッグ制度', companies_path(type: "system", i: 2, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）教育訓練休暇等制度', companies_path(type: "system", i: 4, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（人）セルフキャリアドッグ制度', companies_path(type: "system", i: 5, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（人）教育訓練休暇等制度', companies_path(type: "system", i: 7, sort: '[]'), class:"square_btn" %>
             	</div>
-	<%= render 'index'%>
+            <%= mail_to "", '一括メール', id: "company-mail-link", body: "samplesample...", subject: "件名", class: "btn btn-primary" %>
+            <% case @type %>
+              <% when "carrier" %>
+                <%= link_to '一括更新', comments_bulk_edit_path, remote: true, id: "comment-uploads-link", class: "btn btn-primary" %>
+                <%= link_to '一括削除', comments_bulk_destroy_path, method: :delete, id: "comment-destroy-link", class: "btn btn-primary" %>
+                <div id="companies"><%= render partial: 'index_carrier', locals: {comments: @comments}%></div>
+              <% when "limited" %>
+                <%= link_to '一括更新', comments_bulk_edit_path, remote: true, id: "comment-uploads-link", class: "btn btn-primary" %>
+                <%= link_to '一括削除', comments_bulk_destroy_path, method: :delete, id: "comment-destroy-link", class: "btn btn-primary" %>
+                <div id="companies"><%= render partial: 'index_limited', locals: {comments: @comments}%></div>
+              <% when "system" %>
+                <%= link_to '一括更新', comments_bulk_edit_path, remote: true, id: "comment-uploads-link", class: "btn btn-primary" %>
+                <%= link_to '一括削除', comments_bulk_destroy_path, method: :delete, id: "comment-destroy-link", class: "btn btn-primary" %>
+                <div id="companies"><%= render partial: 'index_system', locals: {comments: @comments}%></div>
+              <% else %>
+　              <%= link_to '一括削除', bulk_destroy_companies_path, remote: true, id: "company-destroy-link", class: "btn btn-primary" %>
+	             <div id="companies"><%= render 'index'%></div>
+            <% end %>
 </br>
 </br>
 
@@ -35,3 +52,5 @@
         </tr><% end %>
     </tbody>
 </table>
+
+<div class="modal fade" id="company-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"></div>

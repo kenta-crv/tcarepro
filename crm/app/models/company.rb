@@ -40,9 +40,9 @@
 class Company < ApplicationRecord
     has_many :comments, dependent: :destroy
     has_many :upload_datum
-    belongs_to :invoice
-    
-	
+    has_many :invoices
+
+
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|
       # IDが見つかれば、レコードを呼び出し、見つかれなければ、新しく作成
@@ -87,7 +87,7 @@ class Company < ApplicationRecord
        "desuction" #控除
   		]
   end
-  
+
 
   def self.search(search) #self.でクラスメソッドとしている
     if search # Controllerから渡されたパラメータが!= nilの場合は、titleカラムを部分一致検索
@@ -96,5 +96,9 @@ class Company < ApplicationRecord
       Company.all #全て表示。
     end
   end
-  
+
+  def address
+    self.prefecture + self.city
+  end
+
 end

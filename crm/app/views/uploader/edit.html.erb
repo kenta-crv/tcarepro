@@ -1,0 +1,15 @@
+    <table width="90%">
+     <tbody>
+    <%= form_for @upload_file, url:{:controller =>"uploader", :action=>"update"} do |f| %>
+      <tr>
+        <th>ファイル名</th>
+　  </tr>
+      <tr>
+        <td><%= f.text_field :name %></td>
+      </tr>
+      <tr>
+        <td colspan = "2"><%= f.submit "変更" %><% end %>
+        </td>
+      </tr>
+      </tbody>
+    </table>

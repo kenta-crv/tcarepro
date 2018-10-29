@@ -1,10 +1,30 @@
 class CompaniesController < ApplicationController
-before_action :authenticate_admin!, except: [:new, :progress]
+#before_action :authenticate_admin!, except: [:progress]
 
 
   def index
+     @type = params[:type]
   	 @q = Company.ransack(params[:q])
   	 @companies = @q.result.page(params[:page]).per(100)
+     case @type
+     when "carrier" then
+       @comments = Comment
+        .where(company: @companies)
+        .where.not(carriaup_progress: nil)
+        .page(params[:page]).per(100)
+    when "limited" then
+      @comments = Comment
+       .where(company: @companies)
+       .where.not(limited_progress: nil)
+       .page(params[:page]).per(100)
+     when "system" then
+       @comments = Comment
+        .where(company: @companies)
+        .where(system_each_name: Comment::SYSTEM_NAMES[params[:i].to_i])
+        .page(params[:page]).per(100)
+     else
+       @comments = Comment.where(company: @companies).page(params[:page]).per(100)
+    end
   end
 
   def show
@@ -55,6 +75,18 @@ before_action :authenticate_admin!, except: [:new, :progress]
     @company = Company.find(params[:id])
     @company.destroy
     redirect_to companies_path
+ end
+
+ def bulk_destroy
+   return unless params[:ids]
+   companies = Company.where(id: params[:ids])
+   count = Company.all.count
+   companies.each do |o|
+     o.destroy
+   end
+   count = count - Company.all.count
+   flash[:notice] = count.to_s + "件が削除されました"
+   redirect_to companies_path
  end
 
  def import
