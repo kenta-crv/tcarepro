@@ -1,38 +1,11 @@
 <div id="wrapper">
   <div class="row">
     <div id="todos-left" class="col-4">
-        <ul class="list-group">
-            <li class="list-group-item todos-left-item" data-v="井上社会保険労務士">井上社会保険労務士</li>
-            <li class="list-group-item todos-left-item" data-v="サイトー社会保険労務士">サイトー社会保険労務士</li>
-            <li class="list-group-item todos-left-item" data-v="事務">事務</li>
-            <li class="list-group-item todos-left-item" data-v="営業">営業</li>
-            <li class="list-group-item todos-left-item" data-v="毎月業務">毎月業務</li>
-            <li class="list-group-item todos-left-item" data-v="毎日業務">毎日業務</li>
-        </ul>
+      <%= render partial: 'todos/todo_left' %>
     </div>
 
     <div id="todos-center" class="col-4">
-        <div class="heading">
-            <h2>新規ToDo登録</h2>
-            <p>
-                <%= form_for @todo do |f|%>
-                    <%= f.text_field :title %>
-                    <%= f.hidden_field :select,{id: "todo-select"} %>
-                    <%= f.submit '登録', data: { confirm: '登録しますか？'}%>
-                <%end%>
-            </p>
-        </div>
-
-        <ul>
-            <% @todos.each do |todo|%>
-            <li class="box"><%= link_to todo.title, todo_path(todo), remote: true  %>
-                            <%= link_to '削除',
-			            	            todo_path(todo),
-			            	            method: :delete,
-			            	            class: 'command',
-			            	            data: { confirm: '本当に削除しますか？'} %></li>
-            <% end %>
-        </ul>
+      <%= render partial: 'todos/todo_center' %>
    </div>
 
 

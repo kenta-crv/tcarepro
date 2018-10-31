@@ -127,11 +127,11 @@ $(document).on('turbolinks:load', function(event) {
       $("#company-modal").modal("hidden")
     });
 
-    $(".todos-left-item").click(function(){
-      $(".todos-left-item").removeClass("active")
-      $(this).addClass("active")
-      v = $(this).data()["v"]
-      $("#todo-select").val(v)
-    });
+    // $(".todos-left-item").click(function(){
+    //   $(".todos-left-item").removeClass("active")
+    //   $(this).addClass("active")
+    //   v = $(this).data()["v"]
+    //   $("#todo-select").val(v)
+    // });
 
 });
