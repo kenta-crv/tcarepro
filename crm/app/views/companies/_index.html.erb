@@ -1,4 +1,5 @@
-
+<%= mail_to "", '一括メール', id: "company-mail-link", body: "samplesample...", subject: "件名", class: "btn btn-primary" %>
+<%= link_to '一括削除', bulk_destroy_companies_path, remote: true, id: "company-destroy-link", class: "btn btn-primary",data: {confirm: "本当に削除しますか？"} %>
                <table width="90%" class="tablesorter" id="company-index-table">
                  <thead>
 		            <tr>
