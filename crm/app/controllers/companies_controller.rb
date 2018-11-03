@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-before_action :authenticate_admin!, except: [:progress]
+#before_action :authenticate_admin!, except: [:progress]
 
 
   def index
@@ -49,6 +49,7 @@ before_action :authenticate_admin!, except: [:progress]
         # redirect
         redirect_to companies_path
     else
+        logger.debug(@company.errors.full_messages)
         render 'new'
     end
   end
