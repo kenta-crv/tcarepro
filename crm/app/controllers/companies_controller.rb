@@ -61,6 +61,7 @@ class CompaniesController < ApplicationController
  def update
     @company = Company.find(params[:id])
     if !@company.update(company_params)
+       logger.debug(@company.errors)
        render 'edit'
        return
     end
