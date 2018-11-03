@@ -3,17 +3,19 @@ class InvoicesController < ApplicationController
   def index
   	 @invoices = Invoice.all.order(created_at: 'desc')
   	 @companies = Company.all
-  	
+
   end
-  
+
   def show
   	@invoice = Invoice.find(params[:id])
   end
-  
+
   def new
-    @invoice = Invoice.new
+    #invocieはcompanyに所属するため、これがないとそもそも生成されるべきではない
+    redirect_to companies_path if params[:company].blank?
+    @invoice = Invoice.new(company: @company)
   end
- 
+
  def create
     @invoice = Invoice.new(invoice_params)
     if @invoice.save
@@ -23,7 +25,7 @@ class InvoicesController < ApplicationController
         render 'new'
     end
   end
-  
+
   def edit
     @invoice = Invoice.find(params[:id])
   end
@@ -34,17 +36,17 @@ class InvoicesController < ApplicationController
         redirect_to invoices_path
     else
         render 'edit'
-    end      
+    end
  end
- 
- 
- 
+
+
+
  def destroy
     @invoice = Invoice.find(params[:id])
     @invoice.destroy
     redirect_to invoices_path
  end
- 
+
 
 
   # 帳票出力処理
@@ -53,13 +55,13 @@ class InvoicesController < ApplicationController
     report = Thinreports::Report.new layout: "app/reports/layouts/invoices.tlf"
     report.start_new_page
     report.page.values(
-    created_at: @invoice.try(:created_at), 
+    created_at: @invoice.try(:created_at),
     company: @invoice.try("@invoice.company.company"), #@companyのcompany
     postnumber: @invoice.try("@invoice.company.postnumber"), #@companyのpostnumber
     address: @invoice.try("@invoice.company.address"), #@companyのaddress
     first_name: @invoice.try("@invoice.company.first_name"), #@companyのfirst_name
     last_name: @invoice.try("@invoice.company.last_name"), #@companyのlast_name
-    
+
     )
     send_data(report.generate, filename: "#{@invoice}.pdf", type: "application/pdf")
   end
@@ -92,7 +94,7 @@ class InvoicesController < ApplicationController
         :quantity5 #数量
 
         )
-    end    
+    end
 
 
 

@@ -45,4 +45,8 @@ class Invoice < ApplicationRecord
 	def calc5
 		price5 * quantity5
 	end
+
+	def summary
+		self.calc1 + self.calc2 + self.calc3 + self.calc4 + self.calc5
+	end
 end
