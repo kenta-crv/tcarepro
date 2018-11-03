@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-#before_action :authenticate_admin!, except: [:progress]
+before_action :authenticate_admin!, except: [:progress]
 
 
   def index
