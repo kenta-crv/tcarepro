@@ -80,16 +80,19 @@ $(document).on('turbolinks:load', function(event) {
     });
     $(".c-input-field").keypress( function ( e ) {
     	if ( e.which == 13 ) {
+        console.log("c")
         x = $('#company-show-update').submit();
     	}
     } );
     $(".c-input-field2").keypress( function ( e ) {
     	if ( e.which == 13 ) {
+        console.log("c2")
         x = $('#company-show-update2').submit();
     	}
     } );
     $(document).on("keypress", ".t-input-field", function (e) {
       if ( e.which == 13 ) {
+        console.log("t")
         x = $('#todo-show-update').submit();
     	}
     });
