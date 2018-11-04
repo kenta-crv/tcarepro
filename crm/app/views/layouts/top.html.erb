@@ -19,12 +19,16 @@
                 <% end %>
       </div>
       <div class="header-right">
-        <!-- user/signed_in? はユーザーがログインしているか調べるdeviseのHelperメソッド -->      
+        <!-- user/signed_in? はユーザーがログインしているか調べるdeviseのHelperメソッド -->
            <%= link_to  'ホーム', '/' %>
-           <%= link_to  '会社概要', '/company' %> 
+           <%= link_to  '会社概要', '/company' %>
            <%= link_to  '問い合わせ', '/contact' %>
            <%= link_to  '新規登録', '/companies/new'  %>
-           <%= link_to  'ログイン' ,'/users/sign_in'%>         
+           <% if user_signed_in? %>
+            <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>  
+          <% else %>
+          <%= link_to  'ログイン' ,'/users/sign_in'%>
+          <% end %>
       </div>
     </div>
 </header>
@@ -35,4 +39,3 @@
     </main>
 </body>
 </html>
-

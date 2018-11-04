@@ -19,8 +19,7 @@ class TodosController < ApplicationController
  def create
     @todo = Todo.new(todo_params)
     if @todo.save
-        # redirect
-        redirect_to todos_path
+        redirect_to todos_path(selected: todo_params[:select])
     else
         render 'index'
     end

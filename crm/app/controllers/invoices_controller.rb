@@ -13,6 +13,8 @@ class InvoicesController < ApplicationController
   def new
     #invocieはcompanyに所属するため、これがないとそもそも生成されるべきではない
     redirect_to companies_path if params[:company].blank?
+    @company = Company.find(params[:company].to_i)
+    redirect_to companies_path if @company.blank?
     @invoice = Invoice.new(company: @company)
   end
 
