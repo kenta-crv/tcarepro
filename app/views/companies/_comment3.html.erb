@@ -6,7 +6,10 @@
     <td><%= comment3.system_implementation %></td>
     <td><%= comment3.system_supply %></td>
     <td><%= comment3.system_comment %></td>
-    <td class="comment-edit-detail" data-id="<%=comment3.id %>" ><%= "編集" %>｜<%= link_to '[削除]', company_comment_path(company_id: company.id, id: comment3.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %>
+    <td class="comment-edit-detail" data-id="<%=comment3.id %>" ><%= "編集" %>
+    ｜
+    <%= link_to '[編集]', edit_company_path(@company)  %>
+    <%= link_to '[削除]', company_comment_path(company_id: company.id, id: comment3.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %>
     </td>
 </tr>
 <tr id="<%=comment3.id %>-comment-edit-detail-field" class="none comment-edit-detail-field">
@@ -14,6 +17,5 @@
     <%= render :partial => "companies/comment_system_form", :locals => {:company => company, :comment => comment3} %>
   </td>
 </tr>
-
 <% end %>
 
