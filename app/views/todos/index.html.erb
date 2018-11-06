@@ -1,0 +1,22 @@
+<div id="wrapper">
+            <div class="heading"><h2>ToDoリスト</h2>
+            <p>Todo List</p>
+                <%= form_for @todo do |f|%>
+                    <%= f.text_field :title %>
+                    <%= f.hidden_field :select,{id: "todo-select"} %>
+                    <%= f.submit '登録', data: { confirm: '登録しますか？'}%>
+                <%end%></div>
+                
+  <div class="row">
+    <div id="todos-left" class="col-4">
+      <%= render partial: 'todos/todo_left' %>
+    </div>
+
+    <div id="todos-center" class="col-4">
+      <%= render partial: 'todos/todo_center' %>
+   </div>
+
+
+    <div id="todos-right" class="col-4">
+    </div>
+  </div>

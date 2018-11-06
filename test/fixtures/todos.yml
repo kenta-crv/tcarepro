@@ -1,0 +1,35 @@
+# == Schema Information
+#
+# Table name: todos
+#
+#  id         :integer          not null, primary key
+#  execution  :string
+#  title      :string
+#  select     :string
+#  deadline   :string
+#  state      :string
+#  name       :string
+#  contents   :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  execution: MyString
+  title: MyString
+  select: MyString
+  deadline: MyString
+  state: MyString
+  name: MyString
+  contents: MyString
+
+two:
+  execution: MyString
+  title: MyString
+  select: MyString
+  deadline: MyString
+  state: MyString
+  name: MyString
+  contents: MyString

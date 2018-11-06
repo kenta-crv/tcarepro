@@ -1,0 +1,77 @@
+.container
+  .comment-modal-content
+    ="一括更新"
+    =form_tag comments_bulk_update_path, method: :put do
+      =hidden_field_tag :ids, @ids
+      .row
+        .col-5
+          =select_tag :select, options_for_select([["選択する",""],
+                ["carriaup_progress", "carriaup_progress"],
+                ["limited_each_curriculum","limited_each_curriculum"],
+                ["limited_progress","limited_progress"],
+                ["system_each_name","system_each_name"],
+                ["system_progress","system_progress"],
+              ]), {class: "form-control selectpicker", id: "form-bulk-edit"}
+        .col-5
+          =select_tag :carriaup_progress, options_for_select([["選択する",""],
+              ["1.申込フォーム到着","1.申込フォーム到着"],
+              ["2.書類作成中(計画)","2.書類作成中(計画)"],
+              ["3.書類返送待（計画）","3.書類返送待（計画）"],
+              ["4.提出準備中（計画）","4.提出準備中（計画）"],
+              ["5.提出中・受理（計画）","5.提出中・受理（計画）"],
+              ["6.制度未実施","6.制度未実施"],
+              ["7.制度実施済","7.制度実施済"],
+              ["8.書類作成中（支給）","8.書類作成中（支給）"],
+              ["9.書類返送待（支給）","9.書類返送待（支給）"],
+              ["10.提出準備中（支給）","10.提出準備中（支給）"],
+              ["11.提出中・受理（支給）","11.提出中・受理（支給）"],
+              ["12.入金","12.入金"],
+              ["13.ストップ案件","13.ストップ案件"]]),{class: "form-control selectpicker form-bulk-edit-input", id: "form-carriaup_progress"}
+          =select_tag :limited_each_curriculum, options_for_select([["選択する",""],
+              ["シャンプー・接客基礎講座","シャンプー・接客基礎講座"],
+              ["ブロー・スタイリング講座","ブロー・スタイリング講座"],
+              ["パーマ講座","パーマ講座"],
+              ["カラー講座","カラー講座"],
+              ["カット講座","カット講座"]]), {class: "form-control selectpicker none form-bulk-edit-input", id: "form-limited_each_curriculum"}
+          =select_tag :limited_progress, options_for_select([["選択する",""],
+              ["1.申込フォーム到着","1.申込フォーム到着"],
+              ["2.書類作成中(計画)","2.書類作成中(計画)"],
+              ["3.書類返送待（計画）","3.書類返送待（計画）"],
+              ["4.提出準備中（計画）","4.提出準備中（計画）"],
+              ["5.提出中・受理（計画）","5.提出中・受理（計画）"],
+              ["6.制度未実施","6.制度未実施"],
+              ["7.制度実施済","7.制度実施済"],
+              ["8.書類作成中（支給）","8.書類作成中（支給）"],
+              ["9.書類返送待（支給）","9.書類返送待（支給）"],
+              ["10.提出準備中（支給）","10.提出準備中（支給）"],
+              ["11.提出中・受理（支給）","11.提出中・受理（支給）"],
+              ["12.入金","12.入金"],
+              ["13.ストップ案件","13.ストップ案件"]]), {class: "form-control selectpicker none form-bulk-edit-input", id: "form-limited_progress"}
+          =select_tag :system_each_name, options_for_select([["選択する",""],
+              ["（企）職業能力評価制度","（企）職業能力評価制度"],
+              ["（形）職業能力評価制度","（形）職業能力評価制度"],
+              ["（形）セルフキャリアドッグ制度","（形）セルフキャリアドッグ制度"],
+              ["（形）技能検定合格報奨金制度）","（形）技能検定合格報奨金制度"],
+              ["（形）教育訓練休暇等制度）","（形）教育訓練休暇等制度"],
+              ["（人）セルフキャリアドッグ制度）","（人）セルフキャリアドッグ制度"],
+              ["（人）技能検定合格報奨金制度","（人）技能検定合格報奨金制度"],
+              ["（人）教育訓練休暇等制度","（人）教育訓練休暇等制度"],
+              ["東京都キャリアアップ助成金","東京都キャリアアップ助成金"],
+              ["人事評価改善等助成金","人事評価改善等助成金"],
+              ["職場定着支援等助成金","職場定着支援等助成金"]]), {class: "form-control selectpicker none form-bulk-edit-input", id: "form-system_each_name"}
+          =select_tag :system_progress, options_for_select([["選択する",""],
+              ["1.申込フォーム到着","1.申込フォーム到着"],
+              ["2.書類作成中(計画)","2.書類作成中(計画)"],
+              ["3.書類返送待（計画）","3.書類返送待（計画）"],
+              ["4.提出準備中（計画）","4.提出準備中（計画）"],
+              ["5.提出中・受理（計画）","5.提出中・受理（計画）"],
+              ["6.制度未実施","6.制度未実施"],
+              ["7.制度実施済","7.制度実施済"],
+              ["8.書類作成中（支給）","8.書類作成中（支給）"],
+              ["9.書類返送待（支給）","9.書類返送待（支給）"],
+              ["10.提出準備中（支給）","10.提出準備中（支給）"],
+              ["11.提出中・受理（支給）","11.提出中・受理（支給）"],
+              ["12.入金","12.入金"],
+              ["13.ストップ案件","13.ストップ案件"]]), {class: "form-control selectpicker none form-bulk-edit-input", id: "form-system_progress"}
+          .col-2
+            =submit_tag "更新",  {class: "btn btn-primary"}

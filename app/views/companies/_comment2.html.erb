@@ -1,0 +1,16 @@
+<% if comment2.limited? %>
+  <tr>
+    <td><%= comment2.limited_each_name %></td>
+    <td><%= comment2.limited_each_curriculum %></td>
+    <td><%= comment2.limited_progress  %></td>
+    <td><%= comment2.limited_start %></td>
+    <td><%= comment2.limited_supply %></td>
+    <td><%= comment2.limited_comment %></td>
+    <td class="comment-edit-detail" data-id="<%=comment2.id %>" ><%= "編集" %>｜<%= link_to '[削除]', company_comment_path(company_id: company.id, id: comment2.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %></td>
+  </tr>
+<tr id="<%=comment2.id %>-comment-edit-detail-field" class="none comment-edit-detail-field">
+  <td colspan="7">
+    <%= render :partial => "companies/comment_limited_form", :locals => {:company => company, :comment => comment2} %>
+  </td>
+</tr>
+<% end %>

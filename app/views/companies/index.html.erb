@@ -1,0 +1,48 @@
+
+    <div class="heading"><h2>顧客一覧</h2>
+            <p>Customer List  <%= link_to '(New regstration)', '/companies/new' %></p>
+            </br>
+            </br>
+            <%= search_form_for @q do |f|  %>
+                <%= f.search_field :company_cont,  type: "text"  %>
+                <%= submit_tag "検索" %>
+            <%end%>
+            </br>
+            </br>
+            </br>
+            <%= link_to 'キャリアアップ助成金', companies_path(type: "carrier", company: '[desc]'), class:"square_btn" %>
+            <%= link_to '有期実習型訓練', companies_path(type: "limited", sort: '[]'), class:"square_btn" %>
+            <%= link_to '（企）職業能力評価制度', companies_path(type: "system", i: 0, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）職業能力評価制度', companies_path(type: "system", i: 1, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）セルフキャリアドッグ制度', companies_path(type: "system", i: 2, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（形）教育訓練休暇等制度', companies_path(type: "system", i: 4, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（人）セルフキャリアドッグ制度', companies_path(type: "system", i: 5, sort: '[]'), class:"square_btn" %>
+            <%= link_to '（人）教育訓練休暇等制度', companies_path(type: "system", i: 7, sort: '[]'), class:"square_btn" %>
+            	</div>
+            <% case @type %>
+              <% when "carrier" %>
+                <div id="companies"><%= render partial: 'index_carrier', locals: {comments: @comments}%></div>
+              <% when "limited" %>
+                <div id="companies"><%= render partial: 'index_limited', locals: {comments: @comments}%></div>
+              <% when "system" %>
+                <div id="companies"><%= render partial: 'index_system', locals: {comments: @comments}%></div>
+              <% else %>
+	             <div id="companies"><%= render 'index'%></div>
+            <% end %>
+</br>
+</br>
+
+            <div class="heading"><h2>新規インポート</h2>
+            <p>New Imort Registration</p></div>
+
+<table width= "90%">
+    <tbody>
+        <%= form_tag import_companies_path, multipart: true do %>
+        <tr>
+            <th><%= file_field_tag :file %></th>
+            <td><%= submit_tag "インポート" %></td>
+        </tr><% end %>
+    </tbody>
+</table>
+
+<div class="modal fade" id="company-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"></div>
