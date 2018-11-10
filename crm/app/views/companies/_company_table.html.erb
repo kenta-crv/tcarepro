@@ -1,5 +1,5 @@
 <%= form_for company, remote: true, html:{id:"company-show-update"} do |f| %>
-
+<%= f.hidden_field :ajax, :value=>true %>
 <table width="90%">
   <tbody>
     <caption class="heading">会社情報</caption>
@@ -93,6 +93,7 @@
 
 <!-- 就業規則 -->
 <%= form_for company, remote: true, html:{id:"company-show-update2"} do |f| %>
+<%= f.hidden_field :ajax, :value=>true %>
 <table width="90%">
   <tbody>
     <caption class="heading">就業規則情報</caption>
