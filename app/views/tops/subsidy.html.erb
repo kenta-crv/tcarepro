@@ -1,235 +1,371 @@
 
-														  <!--　メイン　-->
-
+											<!--　メイン　-->
   <div class="main-wrapper">
-     			 <h1>IT技術で申請の見える化を実現！</br>
-     			 助成金申請で抜群の実績！</h1></br>
-      			 <p>長期取引となる助成金申請だからこそ失敗したくない。</br>
-      			 キャリアアップ助成金を選ぶなら助成金サポート.jp</p>
-      			 </br>
- 	 	</div>
+     <h1>インターネットで申請を見える化</br>
+              キャリアアップ助成金で売上UP!!</h1></br>
+      <p>助成金申請をお考えなら安心の実績と進捗がいつでも確認出来る助成金サポート.jp！</br>更に、初回の着手金は後払い方式を採用しているため、無料となっております。</p>
   </div>
 
- 	<div class="base-wrapper">
+									<!--　問い合わせはこちら　-->
+   <div class="base-wrapper">
+      <%= link_to '/contact' do%>
  		<%= image_tag("ques.png", :class => "ques")%>
+ 	  <%end%>
    </div>
 
-
+							　<!--　キャリアアップ助成金って何？　-->
   <div class="sub-wrapper">
-
-            <div class="heading"><h2>Trouble Some</h2>
-            <p>こんなお悩みありませんか？</p></div>
-
-            <%= image_tag("trouble.jpg", :class => "image-left")%>
-
-            <ul class="list">
-                <li>どうせ助成金を貰うなら多くお金を残したい</li>
-                <li>労務管理に問題があり、助成金を過去に受給出来なかった</li>
-                <li>サービス業なので、そもそも労働時間が長く助成金に適しない</li>
-                <li>助成金を代行して貰うのは進捗が分からず正直不安</li>
-                <li>他の社労士で労務管理に問題があり断られた</li>
-                <li>どの助成金が自社適応するのか分からない</li>
-                <li>実績のある会社に任せたい</li>
-             </ul>
+    <div class="heading"><h2>What’s  Subsidy?</h2></br>
+      <p>~~そもそも助成金ってなんなの？~</p></div>
+        <%= image_tag("trouble.jpg", :class => "image-left")%>
+            <p class="list-right">助成金とは、国（厚生労働省）から支給される<span>返済不要</span>な支援金の事。主に国が指定する方法で会社で働く従業員に対して雇用・能力開発・正社員化・待遇改善等を行った企業に対して助成金が支給されます。また、基本的には条件を満たすことにより大半の会社で助成金を受給することが出来ます。</p>  
+            <div class="clear"></div>
+  </div>
+  
+  							　  <!--　どんな人が申請出来るの？　-->  
+ <div class="base-wrapper">
+    <div class="heading"><h2>Application Condition</h2></br>
+        <p>~どんな人が申請出来るの？~</p></div>
+          <ul class="list-left list-name">
+            <li>雇用保険に加入していること</li>
+            <li>社会保険が必須の業態の場合、社会保険に加入していること</li>
+            <li>半年以内に従業員を会社都合で解雇していないこと</li>
+            <li>三親等以内ではないこと</li>
+            <li>雇用保険加入より３年以内の従業員で実施すること</li>
+          </ul>
+        <%= image_tag("mousikomi.jpg", :class => "image-right")%>
+        <div class="clear"></div>
   </div>
 
 
-      <div class="base-wrapper">
-              <div class="heading"><h2>当社にお任せください！</h2>
-            </div>
-
-            <p>これまで助成金が不安、また受給出来なかった企業様も是非一度お問い合わせ下さい！</p>
-            </br>
-
-                <div class="five_column">
-                                        <%= image_tag("analytics.png", :width => "180")%>
-                                         <p>適正分析</br></br></br></br>analytics</p>
-                </div>
-                <div class="five_column">
-                                        <%= image_tag("information.png", :width => "180")%>
-                                         <p>申請案内</br></br></br></br>information</p>
-                </div>
-                <div class="five_column">
-                                        <%= image_tag("submission.png", :width => "180")%>
-                                         <p>提出サポート</br></br></br></br>submission</p>
-                </div>
-                <div class="five_column">
-                                        <%= image_tag("support.png", :width => "180")%>
-                                         <p>制度サポート</br></br></br></br>support</p>
-                </div>
-                <div class="five_column">
-                                        <%= image_tag("supply.png", :width => "180")%>
-                                         <p>支給申請</br></br></br></br>supply</p>
-                </div>
-
+					　<!--　雇用保険に加入している場合は申請すべし　-->
+  <div class="sub-wrapper">
+    <div class="heading"><h2>Reason For Application</h2></br>
+     <p>~雇用保険に加入している場合は申請すべし~</p></div>
+     </br></br>
+     <h5 class="middle-heading">実は雇用保険を支払っている場合、雇用保険の支払金額の中には助成金の積立金が含まれています。つまり助成金とは、国が予算を捻出しているのではなく、皆さんが支払っているお金が積み立てられて、支給されています。そのため、雇用保険に入っているのであれば、助成金は申請しておくことをお勧めします。</h5>
+      <div class="two_column">
+        <h4>従業員の失業保険</h4>
+        <div class="title-with">目的１</div>
+        <%= image_tag("sitsugyou.jpg", :class => "over-image")%>
+        <p>従業員が退職した際、次の仕事まで収入がないと生活が困窮してしまいます。それを防ぐために毎月会社と個人が雇用保険費用を出し合う事で、仕事が見つかるまでの一定期間、国から一部保険が支給されます。</p>
+      </div>
+      <div class="two_column">
+      <h4>来年度の助成金予算の確保</h4>
+      <div class="title-with">目的２</div>
+        <%= image_tag("subsidy-money.jpg", :class => "over-image")%>
+        <p>雇用保険には雇用保険に二事業と言うものが存在し、実は助成金として蓄えられています。一見、助成金と聞くと国が様々な税金から会社に割り振りを行なっていると思いますが、実は私たちの支払うお金が積み上げられたものが助成金となっているんですね。</p>
+      </div>
+                <div class="clear"></div>
+  </div>
+  
+  
+  					　　　　<!--　キャリアアップ助成金とは？　-->
+  <div class="base-wrapper">
+   <div class="mask">
+    <div class="heading"><h2>Carrier Up Subsidy</h2></br>
+     <p>~キャリアアップ助成金とは？~</p></div>
+     </br>
+     <h5 class="middle-heading">キャリアアップ助成金とは、『半年以上３年以内で雇用している有期雇用労働者（契約社員・アルバイト・パート）』を計画的に正社員に切り替えることで受給出来る助成金です。</h5>
+      <div class="two_column">
+        <h4>従業員を半年間雇用</h4>
+        <div class="title-with">其の１</div>
+        <%= image_tag("beginer.jpg", :class => "over-image")%>
+        <p>従業員を雇用した、または現従業員を対象とし、有期雇用契約を最低半年間を行いましょう。雇用方法は、パート・アルバイト・契約社員等、形態は問われません。尚、既に雇用保険加入より３年以上が経過している場合は対象外となります。</p>
+      </div>
+      <div class="two_column">
+      <h4>正社員雇用契約と昇格</h4>
+      <div class="title-with">其の２</div>
+        <%= image_tag("regular.jpg", :class => "over-image")%>
+        <p>半年間経過したら、給料を半年前と比較し、転換後半年間で５％給料をベースアップしましょう。アベレージで５％ベースアップを達成していれば、３の支給申請へ進む事ができます。尚、ベースアップの方法についてはお問い合わせ下さい。</p>
+      </div>
                       <div class="clear"></div>
+      <div class="two_column">
+        <h4>半年後支給申請</h4>
+        <div class="title-with">其の３</div>
+        <%= image_tag("mousikomi.jpg", :class => "over-image")%>
+        <p>正社員雇用より半年間経過したら、お金の申請を実際に行なって行きます。記入の手間は最小限に済むよう、弊社にてサポートさせて頂きます。</p>
+      </div>
+      <div class="two_column">
+      <h4>一定期間後入金</h4>
+      <div class="title-with">其の４</div>
+        <%= image_tag("money-subsidy.jpg", :class => "over-image")%>
+        <p>申請が終了すると、審査結果を待つのみとなります。基本的には都道府県により受給までは大きく異なり、実際最短で１ヶ月〜最長で２年ほど要する場合もあります。</p>
+      </div>
+                <div class="clear"></div>
   </div>
-
-  <div class="sub-wrapper">
-
-
-            <div class="heading"><h2>Five Strong Point</h2>
-            <p>弊社の５つの強み</p></div>
-
-
-　 　<div class="merit-title">
-              <%= image_tag("gizagiza.png", :class => "gizagiza") %>
-                    <div class="number">No.1</div>
-                            <h2>業界唯一！ITシステムにより申請を完全見える化します！</h2>
-                            <%= image_tag("efficiency.jpg", :class => "merit-image") %>
-                        <p>助成金申請は常に代行会社に任せているため特に新規取引の場合、本当に進んでいるのかの不安が常に付きまといます。当社も過去にお客様から多数の不安のお声を頂きました。ITコンサルも行う当社では、進捗の見える化に成功し、お客様が自身のIDでログインすることで、今どのような進捗状況で、いつ何をする必要があるのかをいつでも確かめて頂けるため、安心してお取引頂けます。</p>
-        </div>
-        <div class="merit-title">
-              <%= image_tag("gizagiza.png", :class => "gizagiza") %>
-                    <div class="number">No.2</div>
-                            <h2>圧倒的な実績！取引先の９０％が申請難易度の高いサービス業！</h2>
-                            <%= image_tag("good.jpg", :class => "merit-image") %>
-                        <p>助成金申請で一番高いハードルと言われているのは『労務管理』です。労務管理とは、雇用契約書・シフト表・賃金台帳・就業規則等の働く従業員を管理するものの総称となりますが、サービス業はお客様の入り状況によって残業が発生し、残業代の未払い等もあるため非常に申請が困難です。その中で当社では、取引先の殆どをサービス業が占めており、安心してご相談頂けます。</p>
-        </div>
-        <div class="merit-title">
-               <%= image_tag("gizagiza.png", :class => "gizagiza") %>
-                    <div class="number">No.3</div>
-                        <h2>コンサルティング会社ならではの労務管理が成功の鍵！</h2>
-                            <%= image_tag("management.jpg", :class => "merit-image") %>
-                        <p>残業を現在支払っている企業様。その残業代、『実は支払う必要のない可能性』があります。残業の未払い等は、助成金申請で最もリスクとなりますが、当社では、ただ申請するだけではなく、労務コンサルティングをしっかり行った上で申請を進めて行きます。この点を重視して行うため、申請難易度の高い案件も承ることができます。</p>
-        </div>
-        <div class="merit-title">
-               <%= image_tag("gizagiza.png", :class => "gizagiza") %>
-                    <div class="number">No.4</div>
-                        <h2><span>３年で700件以上サポート！他社には負けない圧倒的な実績とノウハウ！</h2>
-                           <%= image_tag("performance.jpg", :class => "merit-image") %>
-                        <p>当社では、IT化による業務効率化を計る事で、多くのお客様の受注を承ることが出来ます。また、多数の申請実績を持っている事もあり、申請に関するお問い合わせや申請のサポートについても安心してお任せいただけます。</p>
-        </div>
-        <div class="merit-title">
-               <%= image_tag("gizagiza.png", :class => "gizagiza") %>
-                    <div class="number">No.5</div>
-                        <h2>顔が見えないからこそ安心を！完全後払いシステム採用！</h2>
-                            <%= image_tag("price.jpg", :class => "merit-image") %>
-                        <p>当社では、対面でのご案内は行っておりません。信用をして先にお支払い頂く事は不安な点が多いと考え、完全後払い制度を導入しております。これは一つの申請が完了し、その申請の証明を持ってお客様にお支払いを頂く仕組みとなります。これにより、常に不安がなく、安心してお取引いただけます。（※完全成果報酬とは異なります。）</p>
-        </div>
  </div>
 
 
-
- 	<div class="base-wrapper">
- 		<%= image_tag("ques.png", :class => "ques")%>
+  					　　　　<!--　~申請にあたる重要ポイント~　-->
+  <div class="sub-wrapper">
+    <div class="heading"><h2>Success Point</h2></br>
+     <p>~~申請にあたる重要ポイント~~</p></div>
+     </br>
+     <h5 class="middle-heading">平成３０年度より、キャリアアップ助成金正社員化コースの助成金は以下の２点の要件が含まれました。※弊社以外のサイトでキャリアアップ助成金正社員化コースのHPを見た際、当条件が明記されていない場合が多く見受けられますが、ページ更新がされていないことが原因で、今年度申請の条件は以下が必須となります。</h5>
+      <div class="two_column">
+        <h4>転換時入社３年以内</h4>
+        <div class="title-with">目的１</div>
+        <%= image_tag("younger.jpg", :class => "over-image")%>
+        <p>入社または雇用保険より３年以上経過している場合、申請を行うことが出来ません。あくまで常識的な転換の範囲として、３年以内と言う範囲が設けられました。</p>
+      </div>
+      <div class="two_column">
+      <h4>給料を５%UP！</h4>
+      <div class="title-with">目的２</div>
+        <%= image_tag("saraly.jpg", :class => "over-image")%>
+        <p>正社員転換前後の半年間で、それぞれの給料を平均化した際、転換前に比べて、転換後の給料が５％UPしている必要があります。内容については、それぞれ企業ごとに確認方法が異なるため、別途お問い合わせ下さい。</p>
+      </div>
+                      <div class="clear"></div>
    </div>
 
 
+  					<!--　~パートタイマーは短時間正社員に出来る~　-->
+  <div class="base-wrapper">
+    <div class="heading"><h2>Part Timer</h2></br>
+     <p>~パートタイマーは短時間正社員に出来る~</p></div>
+     </br>
+     <h5 class="middle-heading">パートタイマーやアルバイトの雇用形態を一度見直してみませんか？現代では、正社員があるのと同様に『短時間正社員』と言うジャンルが存在します。これは通常の正社員より短い時間で働きながら、同様の待遇を受けられる労働者を指します。かつ以下の条件に当てはまることで申請が可能となります。</h5>
+            <table class="lp-table" width="90%">
+                <thead>
+                    <tr>
+                        <th>パターン</th>
+                        <th>正社員（例）</th>
+                        <th>短縮措置</th>
+                        <th>短時間正社員（例）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>❶１日の時間短縮型</th>
+                        <td>７時間勤務/日（以上）</td>
+                        <td>１時間以上短縮</td>
+                        <td>６時間勤務/日</td>
+                    </tr>
+                    <tr>
+                        <th>❷週時間短縮型</th>
+                        <td>３５時間勤務/週（以上）</td>
+                        <td>１割以上短縮</td>
+                        <td>３１．５時間勤務/週</td>
+                    </tr>
+                    <tr>
+                        <th>❸日数短縮型</th>
+                        <td>５日勤務/週（以上）</td>
+                        <td>１日以上短縮</td>
+                        <td>４日勤務/週</td>
+                    </tr>
+                </tbody>
+            </table>
+   </div>
+   
+   
+   									<!--　問い合わせはこちら　-->
+ 	<div class="sub-wrapper">
+ 		<%= link_to '/contact' do%>
+ 		<%= image_tag("ques.png", :class => "ques")%>
+ 	  <%end%>
+   </div>
+   
 
-     <div class="sub-wrapper">
+   									<!--　料金のご案内　-->
+  <div class="base-wrapper">
+    <div class="heading"><h2>Price Information</h2></br>
+      <p>~料金のご案内~</p></div>
+            <table class="lp-table" width="90%">
+                <thead>
+                    <tr>
+                        <th>1~3名申請の相場</th>
+                        <th>A社</th>
+                        <th class="big-face">助成金サポート.jp</th>
+                        <th>C社</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>着手金</th>
+                        <td>250,000円</td>
+                        <td class="sub-face">無料</br></br>後払い70,000円〜</td>
+                        <td>30,000円</td>
+                    </tr>
+                    <tr>
+                        <th>月額顧問費用</th>
+                        <td>0円</td>
+                        <td class="sub-face">0円</td>
+                        <td>30,000円</td>
+                    </tr>
+                    <tr>
+                        <th>成果報酬</th>
+                        <td>30％</td>
+                        <td class="sub-face">20%~25%</td>
+                        <td>20%</td>
+                    </tr>
+                    <tr>
+                        <th>就業規則</th>
+                        <td>別途〜</td>
+                        <td class="sub-face">無料</td>
+                        <td>別途〜</td>
+                    </tr>
+                     <tr>
+                        <th>解説</th>
+                        <td>初期費用＋成果報酬タイプと言われるこのプラン。比較的初期負担額が高く、成果報酬も高額になる傾向にあります。当社も過去はこのプランにて運営していましたが、取引を行う前に支払うため、詐欺会社が存在する場合も</td>
+                        <td>助成金サポート.jpでは、着手金として最初にお支払い頂く費用は頂いておらず、事前申請を行なった証明を元に費用を請求させて頂いております。そのため、成果に応じた料金体系となっており、安心して取引して頂けるプランとなります。また顧問費用も存在しないため、月々の負担がありません。</td>
+                        <td>顧問契約プランと言われ、初期費用負担は少ない傾向にあります。また、同様に成果報酬もA社タイプと比較しても安い場合が多いです。その代わり、顧問費用として月額費用がかかり、助成金自体入金まで１２〜１８ヶ月程かかるため、結果的に高額となる場合も多いようです。</td>
+                    </tr>
+                </tbody>
+            </table>
+  </div>
+  
+     									<!--　受給例　-->
+  <div class="sub-wrapper">
+    <div class="heading"><h2>Receiving Example</h2></br>
+      <p>~受給例~</p></div>
+            <table class="lp-table" width="90%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>通常受給額</th>
+                        <th>生産性目標達成時</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>受給額（1人申請あたり）</th>
+                        <td class="big-td">570,000円</td>
+                        <td class="big-td">720,000円</td>
+                    </tr>
+                     <tr>
+                        <th>解説</th>
+                        <td>通常受給出来る金額となります。</td>
+                        <td>3年前と比較し、従業員1人あたりの売上が向上している場合に受給額がアップします。尚、計算方法については厚生労働省の独自の計算方法により算出されます。</td>
+                    </tr>
+                </tbody>
+            </table>
+         </br></br>
+            <table class="lp-table" width="90%">
+                    <tr>
+                        <th>ex.生産性要件達成＋20名実施（１年度あたり20名が上限のため）</th>
+                    </tr>
+                    <tr>
+                        <td class="big-td"><span>720,000円×最大20名＝14,400,000円</span></td>
+                   </tr>
+                    <tr>
+                        <th>ex.生産性要件未達成＋従業員5名達成</th>
+                    </tr>
+                    <tr>
+                        <td class="big-td"><span>570,000円×5名＝2,850,000円</span></td>
+                   </tr>
+            </table>
+      </div>
+  </div>
 
-            <div class="heading"><h2>Past Record</h2>
-            <p>過去の実績</p></div>
+   		                		<!--　助成金サポート.jpの申請実績　-->
+  <div class="base-wrapper">
+    <div class="heading"><h2>Practice</h2></br>
+      <p>~助成金サポート.jpの申請実績~</p></div>
+      <table class="lp-table" width="90%">
+        <thead>
+            <tr>
+                <th>過去3年の申請数</th>
+                <th>受給率</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="big-td"><span>約７００件</span></td>
+                <td class="big-td"><span>９７．５％</span></td>
+            </tr>
+        </tbody>
+    </table>
+    </br></br>
+      <table class="lp-table" width="90%">
+        <thead>
+            <tr>
+                <th>美容院</th>
+                <th>飲食店</th>
+                <th>その他</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="big-td"><span>７５％</span></td>
+                <td class="big-td"><span>１０％</span></td>
+                <td class="big-td"><span>１５％</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <p>※一般的にサービス業は労務管理や助成金受給の難易度が高いと言われています。</p>
+  </div>
+  
+  
+     		                        		<!--　申請を見える化　-->
+  <div class="sub-wrapper">
+    <div class="heading"><h2>Looking Application</h2></br>
+      <p>~申請を見える化する安心を~</p></div>
+         </br></br>
+        <%= image_tag("gata.jpg", :class => "image-left")%>
+            <p class="list-right">助成金を申請する上で、一番不安なのは<span>『申請が見えない』</span>事。助成金は社労士の代行により進めているため、企業様からは今どこまで申請が進んでいるのかが分かりません。助成金サポート.jpでは、お申し込み頂いたお客様にログインIDを付与し、ログインして頂ければ、<span>現在どういう状態で、何が終わっていないのかをいつでも簡単に確認する</span>事ができます。</p>  
+            <div class="clear"></div>
+  </div>
 
-                <%= false ? image_tag("record.png", :class => "record_image") : ""%>
-
-        <div class="heading">
-            <h3>助成金サポート.jpでは過去３年間に約７００以上の申請実績!!</h3>
-　　　 <p>過去３年間で豊富な申請実績を保有し、各都道府県の独自の情報を保有しています。</p>
-        </div>
+  <div class="base-wrapper">
+    <div class="heading"><h2>Nationwide Correspondence</h2></br>
+      <p>~全国47都道府県対応~</p></div>
+         <p class="list-left">助成金を申請する際、近隣の企業しか受ける事が出来ないと思っていませんか？そんなことはありません。実は、申請スキームが整っている助成金会社の場合、他の都道府県でも申請を承ることが出来ます。弊社、助成金サポート.jpでは、東京都・千葉県・神奈川県・埼玉県の一都三県はもちろん、北は北海道から南は沖縄迄、全国47都道府県で申請を承っており、ご相談を承ることが出来ます。</p>
+        <%= image_tag("prefecture.jpg", :class => "image-right")%>
+        <div class="clear"></div>
     </div>
+  </div>
+  
+   									<!--　問い合わせはこちら　-->
+ 	<div class="sub-wrapper">
+ 		<%= link_to '/contact' do%>
+ 		<%= image_tag("ques.png", :class => "ques")%>
+ 	  <%end%>
+   </div>
 
+  <div class="base-wrapper">
+    <div class="heading"><h2>4 Step Complete Application Flow</h2></br>
+      <p>~４ステップで完了する申請フロー~</p></div>
+            <div class="two_column">
+        <h4>申し込みフォームを入力し送信</h4>
+        <div class="title-with">其の１</div>
+        <%= image_tag("inform.jpg", :class => "over-image")%>
+        <p>トラブル防止のため約款を十分にお読みの上、新規登録フォームより必要情報を入力し送信して下さい。入力する情報は主に会社情報・就業情報・申込内容となります。</p>
+      </div>
+      <div class="two_column">
+      <h4>当社から送付した書類に署名押印</h4>
+      <div class="title-with">其の２</div>
+        <%= image_tag("sign.png", :class => "over-image")%>
+        <p>お申し込みフォーム送信より内容に不備が無ければ、１〜３営業日以内に御社に書類を発送致します。署名・押印を頂いた上でご返送して頂きます。その後については当社と提携社労士で申請を進めさせて頂きますので、お待ち頂くのみとなります。</p>
+      </div>
+                      <div class="clear"></div>
+      <div class="two_column">
+        <h4>正社員に転換し半年間経過を待つ</h4>
+        <div class="title-with">其の３</div>
+        <%= image_tag("regular.jpg", :class => "over-image")%>
+        <p>申請が完了した段階で、弊社よりご連絡差し上げます。その後、御社にて対象となる従業員様の給料UPと正社員への切り替えをお願いします。尚、その後は半年間契約を継続するのみとなります。</p>
+      </div>
+      <div class="two_column">
+      <h4>半年後、支給申請の手続きを行う</h4>
+      <div class="title-with">其の４</div>
+        <%= image_tag("money-subsidy.jpg", :class => "over-image")%>
+        <p>半年経過後、弊社より書類を発送致します。必要事項に記入、必要書類の準備を頂きご返送下さい。書類の不備等で連絡回数が重なる場合も御座いますが、以上の最短４STEPで基本的には完了となります。</p>
+      </div>
+                <div class="clear"></div>
+  </div>
 
-         <div class="base-wrapper">
-
-            <div class="heading"><h2>Carrier Up Price</h2>
-            <p>キャリアアップ助成金の申請料金</p></div>
-
-            <table width="80%">
-        			<colgroup>
-            			<col width="25%">
-            			<col width="75%">
-       			　 </colgroup>
-	<tr>
-		<th>着手金</th>
-		<td class="more-strong">無料</td>
-	</tr>
-	<tr>
-		<th>計画受理後</th>
-		<td class="more-strong">70,000円〜（詳細をお問い合わせ下さい）</td>
-	</tr>
-	<tr>
-		<th>成果報酬</th>
-		<td class="more-strong">25%→20%（詳細はお問い合わせ下さい）</td>
-	</tr>
-	<tr>
-		<th>就業規則</th>
-		<td class="more-strong">無料</td>
-	</tr>
-</table>
-        </div>
-
-
-
-         <div class="sub-wrapper">
-
-            <div class="heading"><h2>Subsidy Flow</h2>
-            <p>助成金申請の流れ</p></div>
-
-                <div class="two_column">
-                                        <%= false ? image_tag("square.png", :class => "base-square") : ""%>
-                                        <h3>❶申し込みフォームを入力し送信</h3>
-                                        <%= false ? image_tag("form.jpg", :class => "over-image") : ""%>
-                </div>
-                <div class="two_column">
-                                        <%= false ? image_tag("square.png", :class => "base-square") : ""%>
-                                        <h3>❷当社から送付した書類に署名押印</h3>
-                                        <%= false ? image_tag("seal.jpg", :class => "over-image") : ""%>
-                </div>
-                <div class="two_column">
-                                        <%= false ? image_tag("square.png", :class => "base-square") : ""%>
-                                        <h3>❸正社員に転換し半年間経過を待つ</h3>
-                                        <%= image_tag("worker.jpg", :class => "over-image")%>
-                </div>
-                <div class="two_column">
-                                        <%= false ? image_tag("square.png", :class => "base-square") : ""%>
-                                        <h3>❹半年後、支給申請の手続きを行う</h3>
-                                        <%= false ? image_tag("money2.jpg", :class => "over-image") : ""%>
-                </div>
-
-                                      <div class="clear"></div>
-
-        </div>
-
-
-
-
-         <div class="base-wrapper">
-
-            <div class="heading"><h2>Nationwide Correspondence</h2>
-            <p>全国47都道府県対応</p></div>
-                <div class="side">
-                    <%= false ? image_tag("japan.jpg", :class => "image-left") : ""%>
-                    <p>東京・名古屋・大阪・福岡・仙台の主要都市はもちろんの事、北は北海道から南は沖縄まで全国47都道府県どこでも助成金申請サポートを受け付けしております。</p>
-                </div>
-            </div>
-
-        </div>
-
-
-
-
-
-         <div class="sub-wrapper">
-
-            <div class="heading"><h2>Free Consultation</h2>
-            <p>無料相談のご案内</p>
-            </br></br>
-            </div>
-
+  <div class="sub-wrapper">
+    <div class="heading"><h2>Free Consultation</h2>
+      <p>無料相談のご案内</p>
         <p>商品内容や内容についてご質問が御座いましたら以下迄お気軽にお問い合わせ下さい。</p>
-        <%= image_tag("ques.png", :class => "ques")%>
+        <%= link_to '/contact' do%>
+ 		<%= image_tag("ques.png", :class => "ques")%>
+ 	  <%end%>
         </div>
 
 
-                                                    <!--　以下フッター　-->
+                                     <!--　以下フッター　-->
   <footer>
-  									    <p>着手金無料・顧問料無料なら助成金サポート.jp</p>
+  	<p>着手金無料・顧問料無料なら助成金サポート.jp</p>
   </footer>
-
-
-                                            <!--　ジャバスクリプト読み込み　-->
+                         <!--　ジャバスクリプト読み込み　-->
 					<script src="script.js"></script>
-			</body>
-</html>

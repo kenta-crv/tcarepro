@@ -39,7 +39,7 @@ Rails.application.routes.draw do
     end
 
         #コメント、アップデート、進捗情報
-    resources :comments, only: [:create, :destroy, :update, :download]
+    resources :comments, only: [:create, :destroy, :update, :download, :edit]
       member do
         #顧客側管理進捗
             get :progress
