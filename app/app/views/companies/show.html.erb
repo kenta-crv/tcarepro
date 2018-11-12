@@ -300,6 +300,7 @@
 
 
 														<!-- データ保存 -->
+
 <%= form_for([@company, @company.comments.build]) do |f| %>
 <table width="90%">
 	<tbody>
@@ -308,7 +309,6 @@
 			<th colspan = "2">データ添付</th>
 		</tr>
 			<tr>
-				
 			<td>
 				<%= f.text_field :term_data, id: :book_term_data %>
 				<%= f.hidden_field :status, :value => :term_data %>

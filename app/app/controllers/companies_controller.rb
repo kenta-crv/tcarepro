@@ -69,7 +69,7 @@ class CompaniesController < ApplicationController
     if params[:company][:ajax].present?
       redirect_to company_path(@company)
     else
-      redirect_to company_path
+      redirect_to companies_path
     end
  end
 

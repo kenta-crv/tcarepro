@@ -1,0 +1,9 @@
+<ul class="list-group">
+    <% ["電話・メール","テレアポ・営業","事務","キャリアアップ助成金","キャリア形成促進助成金","人材開発支援等助成金","有期実習型訓練"].each do |v| %>
+      <% if @selected == v %>
+        <li class="list-group-item todos-left-item active"><%=link_to v, faqs_path(selected: v) %></li>
+      <% else %>
+        <li class="list-group-item s-left-item"><%=link_to v, faqs_path(selected: v) %></li>
+      <% end %>
+    <% end %>
+</ul>
