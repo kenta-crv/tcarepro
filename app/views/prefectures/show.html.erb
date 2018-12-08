@@ -1,4 +1,4 @@
-  <div class="beige-wrapper">
+
   
               <div class="heading"><h2>労働局詳細</h2>
             <p>Prefecture detail</p></div>
@@ -20,8 +20,15 @@
 </br>
 </br>
 
-<table width ="90%">
-<% if @prefecture.details.any? %>
+						<!--助成金毎 -->
+<h3 class="heading">助成金毎情報</h3>
+<table width="90%">
+			<col width ="20%">
+			<col width ="10%">
+			<col width ="15%">
+			<col width ="15%">
+			<col width ="30%">
+			<col width ="10%">
 	<tbody>
 		<tr>
 			<th>助成金名</th>
@@ -29,8 +36,7 @@
 			<th>電話番号</th>
 			<th>郵便番号</th>
 			<th>住所</th>
-			<th>ポイント</th>
-			<th>削除</th>
+			<th>編集/削除</th>
 		</tr>
 		<%  @prefecture.details.each do |detail|  %>
 		<tr>
@@ -39,36 +45,35 @@
 			<td><%= detail.tel%></td>
 			<td><%= detail.post%></td>
 			<td><%= detail.address%></td>
-			<td><%= detail.point%></td>
 			<td><%= link_to '削除', 
 			            	prefecture_detail_path(@prefecture, detail), 
 			            	method: :delete, 
 			            	class: 'command',
 			            	data: { confirm: '本当に削除しますか？'} %></td>
 			            
-     		</tr>
+     	</tr>
+     	<tr>
+     		<td colspan ="6"><%= detail.point%></td>
+     	</tr>
 		<%end%>
 	</tbody>
 </table>
-<%end%>
-</div>
 
-
-
-
-
-
-
+</br></br>
 <%= form_for ([@prefecture, @prefecture.details.build]) do |f| %>
 <table width ="90%">
 	<tbody>
+			<col width ="15%">
+			<col width ="10%">
+			<col width ="10%">
+			<col width ="10%">
+			<col width ="55%">
 		<tr>
 			<th>助成金名</th>
 			<th>提出方法</th>
 			<th>電話番号</th>
 			<th>郵便番号</th>
 			<th>住所</th>
-			<th>ポイント</th>
 		</tr>
 		<tr>
 			   <td><%= f.select(:product_type,[
@@ -84,18 +89,14 @@
                ]) %></td> 			   
 			   <td><%= f.text_field :tel %></td>
 			   <td><%= f.text_field:post %></td>
-		       <td><%= f.text_area :address %></td>
-			<td><%= f.text_area :point %></td>
+		       <td><%= f.text_field :address %></td>
+		</tr>
+		<tr>
+			<td colspan="5"><%= f.text_area :point %></td>
         </tr>
 			<td colspan="5">   <%= f.submit %>  </td>
 </table>
-
-
 <% end %>
 
-
-		</tr>
-	</tbody>
-</table>
 
 

@@ -5,13 +5,6 @@ class CommentsController < ApplicationController
     @company.comments.create(comment_params)
     redirect_to company_path(@company)
   end
-  
-  def destroy
-    @company = Company.find(params[:company_id])
-    @comment = @company.comments.find(params[:id])
-    @comment.destroy
-    redirect_to company_path(@company)
-  end
 
   def destroy
     @company = Company.find(params[:company_id])

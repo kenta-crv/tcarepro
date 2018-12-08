@@ -1,68 +1,71 @@
 <p id="notice"><%= notice %></p>
 
-<!-- 企業情報 -->
-
-
-<div class="heading">
-<h2>顧客詳細情報</h2>
+															
+															
+											<!-- 会社情報・就業規則 -->
+<div class="heading"><h2>顧客詳細情報</h2>
 <p>detailed information</p>
+            </br>
+            </br>
+            <%= search_form_for @q do |f|  %>
+                <%= f.search_field :company_cont,  type: "text"  %>
+                <%= submit_tag "検索" %>
+            <%end%>
+
 </div>
 
 
-
-<!-- 会社情報・就業規則 -->
 <%= render :partial => "companies/company_table", :locals => { company: @company } %>
-
 </br>
 </br>
 
 
-<!-- 人材開発支援等助成金 有期実習型訓練 -->
-
-<div class="beige-wrapper">
-
-<div class="heading"><h3>人材開発支援等助成金 有期実習型訓練</h3>
-
+								<!-- 人材開発支援等助成金 有期実習型訓練 -->
+<h3 class="heading">人材開発支援等助成金 有期実習型訓練</h3>
 <table width="90%">
-<tbody>
-<tr>
-<th>申込者</th>
-<th>カリキュラム</th>
-<th>進捗</th>
-<th>制度開始日</th>
-<th>支給申請開始日</th>
-<th>コメント</th>
-<th>編集/削除</th>
-</tr>
+			<col width ="10%">
+			<col width ="20%">
+			<col width ="15%">
+			<col width ="10%">
+			<col width ="10%">
+			<col width ="25%">
+			<col width ="10%">
+	<tbody>
+		<tr>
+			<th>申込者</th>
+			<th>カリキュラム</th>
+			<th>進捗</th>
+			<th>制度開始日</th>
+			<th>支給申請開始</th>
+			<th>コメント</th>
+			<th>編集/削除</th>
+		</tr>
 <%= render :partial => "companies/comment2", :collection => @company.comments, :as => "comment2", :locals => {:company => @company} %>
-</tbody>
+	</tbody>
 </table>
-
-</br>
-</br>
-
-<table width="90%" class = "inside" >
-<tbody>
-<tr>
-<th>申込者</th>
-<th>カリキュラム</th>
-<th>進捗</th>
-<th>制度開始日</th>
-<th>支給申請開始日</th>
-<th>コメント</th>
-</tr>
+</br></br>
 
 <%= form_for([@company, @company.comments.build]) do |f| %>
-<tr>
-<td><%= f.text_field :limited_each_name %></td>
-<td><%= f.select(:limited_each_curriculum,[
+<table width="90%" class = "inside" >
+	<tbody>
+		<tr>
+			<th>申込者</th>
+			<th>カリキュラム</th>
+			<th>進捗</th>
+			<th>制度開始日</th>
+			<th>支給申請開始日</th>
+			<th>コメント</th>
+		</tr>
+		<tr>
+			<td><%= f.text_field :limited_each_name %></td>
+			<td><%= f.select(:limited_each_curriculum,[
 ["シャンプー・接客基礎講座","シャンプー・接客基礎講座"],
 ["ブロー・スタイリング講座","ブロー・スタイリング講座"],
 ["パーマ講座","パーマ講座"],
 ["カラー講座","カラー講座"],
 ["カット講座","カット講座"], ]) %>
-</td>
-<td><%= f.select(:limited_progress,[
+			</td>
+			<td><%= f.select(:limited_progress,[
 ["1.申込フォーム到着","1.申込フォーム到着"],
 ["2.書類作成中(計画)","2.書類作成中(計画)"],
 ["3.書類返送待（計画）","3.書類返送待（計画）"],
@@ -77,65 +80,64 @@
 ["12.入金","12.入金"],
 ["13.ストップ案件","13.ストップ案件"],
 ]) %></td>
-<td><%= f.date_field :limited_start%></td>
-<td><%= f.date_field :limited_supply%></td>
-<td><%= f.text_area :limited_comment%></td>
-</tr>
-<tr>
-<%= f.hidden_field :status, :value => :limited %>
-<th colspan="6">
-<%= f.submit %>
-</th>
-</tr>
-</tbody>
+			<td><%= f.date_field :limited_start%></td>
+			<td><%= f.date_field :limited_supply%></td>
+			<td><%= f.text_area :limited_comment%></td>
+		</tr>
+		<tr>
+			<%= f.hidden_field :status, :value => :limited %>
+		<th colspan="6">
+			<%= f.submit %>
+		</th>
+		</tr>
+	</tbody>
 </table>
 <%end%>
 </div>
 </div>
 </br>
 
-<!-- キャリアアップ助成金 正社員化コース -->
-
-<div class="heading"><h3>キャリアアップ助成金 正社員化コース</h3>
-
-
-</br>
-</br>
-
-<table width="90%">
-<tbody>
-<tr>
-<th>申込者</th>
-<th>進捗</th>
-<th>入社日</th>
-<th>制度開始日</th>
-<th>転換日</th>
-<th>支給申請日</th>
-<th>コメント</th>
-<th>編集/削除</th>
-</tr>
+						<!-- キャリアアップ助成金 正社員化コース -->
+<h3 class="heading">キャリアアップ助成金 正社員化コース</h3>
+<table width="100%">
+			<col width ="10%">
+			<col width ="20%">
+			<col width ="10%">
+			<col width ="10%">
+			<col width ="10%">
+			<col width ="10%">
+			<col width ="20%">
+			<col width ="10%">
+	<tbody>
+		<tr>
+			<th>申込者</th>
+			<th>進捗</th>
+			<th>入社日</th>
+			<th>制度開始日</th>
+			<th>転換日</th>
+			<th>支給申請日</th>
+			<th>コメント</th>
+			<th>編集/削除</th>
+		</tr>
 <%= render :partial => "companies/comment", :collection => @company.comments, :as => "comment", :locals => {:company => @company} %>
-</tbody>
+	</tbody>
 </table>
-
-</br>
-</br>
-
-<table width="90%" class = "inside" >
-<tbody>
-<tr>
-<th>申込者</th>
-<th>進捗</th>
-<th>入社日</th>
-<th>制度開始日</th>
-<th>転換日</th>
-<th>支給申請日</th>
-<th>コメント</th>
-</tr>
+</br></br>
 <%= form_for([@company, @company.comments.build]) do |f| %>
-<tr>
-<td><%= f.text_field :carriaup_each_name %></td>
-<td><%= f.select(:carriaup_progress,[
+<table width="90%" class = "inside" >
+	<tbody>
+		<tr>
+			<th>申込者</th>
+			<th>進捗</th>
+			<th>入社日</th>
+			<th>制度開始日</th>
+			<th>転換日</th>
+			<th>支給申請日</th>
+			<th>コメント</th>
+		</tr>
+		<tr>
+			<td><%= f.text_field :carriaup_each_name %></td>
+			<td><%= f.select(:carriaup_progress,[
 ["1.申込フォーム到着","1.申込フォーム到着"],
 ["2.書類作成中(計画)","2.書類作成中(計画)"],
 ["3.書類返送待（計画）","3.書類返送待（計画）"],
@@ -150,13 +152,13 @@
 ["12.入金","12.入金"],
 ["13.ストップ案件","13.ストップ案件"],
 ]) %></td>
-<td><%= f.date_field :carriaup_start %></td>
-<td><%= f.date_field :carriaup_each_limited_start %></td>
-<td><%= f.date_field :carriaup_each_regular %></td>
-<td><%= f.date_field :carriaup_each_supply %></td>
-<td><%= f.text_area :carriaup_comment %></td>
-</tr>
-<tr>
+			<td><%= f.date_field :carriaup_start %></td>
+			<td><%= f.date_field :carriaup_each_limited_start %></td>
+			<td><%= f.date_field :carriaup_each_regular %></td>
+			<td><%= f.date_field :carriaup_each_supply %></td>
+			<td><%= f.text_area :carriaup_comment %></td>
+		</tr>
+		<tr>
 <%= f.hidden_field :status, :value => :carriaup %>
 <th colspan="7">
 <%= f.submit %>
@@ -198,6 +200,8 @@
 </br>
 </br>
 
+<%= form_for([@company, @company.comments.build]) do |f| %>
+
 <table width="90%" class ="inside">
 <tbody>
 <tr>
@@ -208,8 +212,6 @@
 <th>支給開始日</th>
 <th>コメント</th>
 </tr>
-
-<%= form_for([@company, @company.comments.build]) do |f| %>
 <tr>
 <td><%= f.select(:system_each_name,[
 ["（企）職業能力評価制度","（企）職業能力評価制度"],
@@ -300,10 +302,6 @@
 
 
 														<!-- データ保存 -->
-<<<<<<< HEAD
-=======
-
->>>>>>> 35d671c873e8a7dab3244bc0ff55b87de58d8bc3
 <%= form_for([@company, @company.comments.build]) do |f| %>
 <table width="90%">
 	<tbody>
@@ -312,10 +310,6 @@
 			<th colspan = "2">データ添付</th>
 		</tr>
 			<tr>
-<<<<<<< HEAD
-				
-=======
->>>>>>> 35d671c873e8a7dab3244bc0ff55b87de58d8bc3
 			<td>
 				<%= f.text_field :term_data, id: :book_term_data %>
 				<%= f.hidden_field :status, :value => :term_data %>

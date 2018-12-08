@@ -10,7 +10,7 @@
     <td class="comment-edit-detail" data-id="<%=comment.id %>" ><%= "編集" %> | <%= link_to '[削除]', company_comment_path(company_id: company.id, id: comment.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %></td>
   </tr>
 <tr id="<%=comment.id %>-comment-edit-detail-field" class="none comment-edit-detail-field">
-  <td colspan="6">
+  <td colspan="8">
     <%= render :partial => "companies/comment_carriaup_form", :locals => {:company => company, :comment => comment} %>
   </td>
 </tr>

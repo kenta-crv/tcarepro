@@ -5,25 +5,25 @@ class CompaniesController < ApplicationController
   def index
      @type = params[:type]
   	 @q = Company.ransack(params[:q])
-  	 @companies = @q.result.page(params[:page]).per(100)
+  	 @companies = @q.result.page(params[:page]).per(400)
      case @type
      when "carrier" then
        @comments = Comment
-        .where(company: @companies)
+        .where.not(company: nil)
         .where.not(carriaup_progress: nil)
-        .page(params[:page]).per(100)
+        .page(params[:page]).per(200)
     when "limited" then
       @comments = Comment
-       .where(company: @companies)
+       .where.not(company: nil)
        .where.not(limited_progress: nil)
-       .page(params[:page]).per(100)
+       .page(params[:page]).per(200)
      when "system" then
        @comments = Comment
-        .where(company: @companies)
+        .where.not(company: nil)
         .where(system_each_name: Comment::SYSTEM_NAMES[params[:i].to_i])
-        .page(params[:page]).per(100)
+        .page(params[:page]).per(200)
      else
-       @comments = Comment.where(company: @companies).page(params[:page]).per(100)
+       @comments = Comment.where(company: @companies).page(params[:page]).per(400)
     end
   end
 

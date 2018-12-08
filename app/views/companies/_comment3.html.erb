@@ -8,7 +8,6 @@
     <td><%= comment3.system_comment %></td>
     <td class="comment-edit-detail" data-id="<%=comment3.id %>" ><%= "編集" %>
     ｜
-    <%= link_to '[編集]', edit_company_path(@company)  %>
     <%= link_to '[削除]', company_comment_path(company_id: company.id, id: comment3.id), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？' } %>
     </td>
 </tr>

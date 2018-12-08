@@ -24,6 +24,7 @@ class PrefecturesController < ApplicationController
   
   def edit
     @prefecture = Prefecture.find(params[:id])
+    @drefecture = Detail.find(params[:id])
   end
 
  def update

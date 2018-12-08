@@ -6,6 +6,10 @@ class DetailsController < ApplicationController
 		redirect_to prefecture_path(@prefecture)	
 	end
 	
+  def edit
+       @detail = Detail.find(params[:id])
+  end
+	
 	def destroy
 		@prefecture = Prefecture.find(params[:prefecture_id])
 		@detail = @prefecture.details.find(params[:id])
