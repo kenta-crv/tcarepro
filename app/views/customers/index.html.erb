@@ -1,0 +1,152 @@
+<% case @type %>
+ <% when "call"%>
+  <%= render partial: "index_call" %>
+ <% when "prospect"%>
+  <%= render partial: "index_prospect" %>
+ <% when "crm"%>
+  <%= render partial: "index_crm" %>
+ <% else %>
+  <%= render "index" %>
+ <% end %>
+
+
+
+
+<div  class="heading"><h2>リスト検索</h2></div>
+
+<!--検索機能実装-->
+<%= search_form_for @q do |f| %>
+    <table width = "90%">
+      <col width="20%">
+      <col width="30%">
+      <col width="20%">
+      <col width="30%">
+      <tbody>
+          <tr>
+            <th colspan = "4">検索</th>
+          </tr>
+          <tr>
+            <th>会社名</th>
+            <td><%= f.search_field :company_cont, type: "text" %></td>
+            <th>店舗名</th>
+		    <td><%= f.search_field :store_cont, type: "text" %> </td>
+	      </tr>
+	      <tr>
+            <th>代表者</th>
+            <td><%= f.search_field :first_name_cont, type: "text" %></td>
+            <th>ダイヒョウ</th>
+            <td><%= f.search_field :first_kana_cont, type: "text" %></td>
+          </tr>
+          <tr>
+            <th>電話番号1</th>
+            <td><%= f.search_field :tel_cont, type: "text" %></td>
+            <th>電話番号2</th>
+            <td><%= f.search_field :tel2_cont, type: "text" %></td>
+          </tr>
+          <tr>
+            <th>FAX番号</th>
+            <td><%= f.search_field :fax_cont, type: "text" %></td>
+            <th>業種</th>
+            <td><%= f.search_field :industry_cont, type: "text" %></td>
+          </tr>
+          <tr>
+            <th>メール</th>
+            <td><%= f.search_field :mail_cont, type: "text" %></td>
+            <th>URL</th>
+            <td><%= f.search_field :url_cont, type: "text" %></td>
+          </tr>
+          <tr>
+            <th>人数</th>
+            <td><%= f.search_field :people_cont, type: "text" %></td>
+            <th>住所</th>
+            <td><%= f.search_field :address_cont, type: "text" %></td>
+          </tr>
+          <!-- #TPD #2018.12.14 -->
+          <tr>
+            <th>最終コール状態</th>
+            <td><%= select_tag "last_call[statu]", options_for_select( [""] + Call.StatuItems, @last_call_params[:statu] ) %></td>
+            <th>再コール日時</th>
+            <td></td>
+          </th>
+          <tr>
+            <th>最終コール日時（最初）</th>
+            <td>
+              <div class='input-group date' id='created_at_from_datetimepicker'>
+                    <%= text_field_tag "last_call[created_at_from]", @last_call_params[:created_at_from], class: "form-control" %>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+               </div>
+             </td>
+             <th>最終コール日時（最後）</th>
+            <td>
+              <div class='input-group date' id='created_at_to_datetimepicker'>
+                    <%= text_field_tag "last_call[created_at_to]", @last_call_params[:created_at_to], class: "form-control" %>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+               </div>
+                <%# text_field_tag "last_detail[created_at_from]", @last_detail_params[:created_at_from], class: "datetimepicker" %>
+                <%# text_field_tag "last_detail[created_at_to]", @last_detail_params[:created_at_to], class: "datetimepicker" %>
+            </td>
+          </tr>
+          <tr>
+            <th colspan = "4" ><%= f.submit '検索' %></th>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+<script>
+/*
+* #TPD
+* #2018.12.14
+* bootstrap DateTImePicker 設定 #2018.12.14
+*/
+$(function () {
+  $('#created_at_from_datetimepicker').datetimepicker({
+    format: 'YYYY-MM-DD hh:mm'
+  });
+  $('#created_at_to_datetimepicker').datetimepicker({
+    format: 'YYYY-MM-DD hh:mm',
+    useCurrent: false //Important! See issue #1075
+  });
+  $("#created_at_from_datetimepicker").on("dp.change", function (e) {
+    $('#created_at_to_datetimepicker').data("DateTimePicker").minDate(e.date);
+  });
+  $("#created_at_to_datetimepicker").on("dp.change", function (e) {
+    $('#created_at_from_datetimepicker').data("DateTimePicker").maxDate(e.date);
+  });
+});
+</script>
+<br>
+
+
+<div  class="heading"><h2>インポート</h2></div>
+
+   <%= form_tag import_customers_path, multipart: true do %>
+   <table width="90%">
+     <tbody>
+        <tr>
+           <th>CSVファイルインポート</th>
+        <tr>
+        <tr>
+           <td><%= file_field_tag :file %></td>
+        <tr>
+        <tr>
+           <th colspan="2"><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
+        </tr>
+    </tbody>
+   </table>
+
+   <table width="90%">
+     <tbody>
+        <tr>
+           <th>CSVファイルエクスポート</th>
+        <tr>
+        <tr>
+           <th colspan="2"><%= link_to 'エクスポート', customers_path(format: :csv), class: 'btn btn-danger' %></th>
+        </tr>
+    </tbody>
+   </table>
+<% end %>

@@ -14,82 +14,54 @@
 
 /*ベース情報*/
 @import "bootstrap";
-@import "comments.scss";
-@import "companies.scss";
+
 @import "contact.scss";
-@import "details.scss";
 @import "faqs.scss";
-@import "companies.scss";
 @import "scaffolds.scss";
-@import "tops.scss";
-* {
-  box-sizing: border-box;
-}
+
+$main_color:#821927;
+$sub_color:#8D3C4C;
+$gray_color:#e6ecf0;
+
+* {box-sizing: border-box;}
+a {text-decoration: none;}
+.none {display: none;}
+
 
 body {
   margin: 0;
   font-family: 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', 'MS PGothic', 'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif;  /*書体はヒラギノフォントを利用します。*/
   width: 100%;
-  background-color: rgba(241, 244, 248, 1.0);  /*【バックカラー】ブルー*/
 }
-
-a {
-  text-decoration: none;
-}
-
-.none {
-  display: none;
-}
-
-
 /*ヘッダーのベース設定*/
 header {
-  height: 65px;
   width: 100%;
-  background-color: rgba(0, 51, 204, 0.9);   /*【バックカラー】ブルー*/
+  background-color: $main_color;   /*【バックカラー】ブルー*/
   position: fixed;
   top: 0;
   z-index: 10;
+
+  .header-right {
+    float: right;
+    margin-right: -25px;
+    font-size: 15px;
+    text-shadow: 2px 3px 1px #000;
+
+    a {
+      line-height: 65px;
+      padding: 0 13px;
+      color: white;
+      display: block;
+      float: left;
+      position: relative;
+      transition: all 0.5s;
+      }
+
+      a:hover {
+       background-color: $sub_color;   /*【マウスオーバーカラー】ブルー*/
+     }
+    }
 }
-
-/*ロゴ指定*/
-  .menu_icon {
-  height: 80px;
-}
-
-/*ロゴは左へ*/
-.header-left {
-  float: left;
-  display: flex;
-  line-height: 65px;
-}
-
-/*ヘッダーナビは右へ*/
-
-.header-right {
-  float: right;
-  margin-right: -25px;
-  font-size: 15px;
-  text-shadow: 2px 3px 1px #000;
-}
-
-/*ヘッダーナビの位置設定*/
-
-.header-right a {
-  line-height: 65px;
-  padding: 0 13px;
-  color: white;
-  display: block;
-  float: left;
-  position: relative;
-  transition: all 0.5s;
-}
-
-  /*ヘッダーの上にマウスを置くと色変化*/
- .header-right a:hover {
-  background-color: rgba(0, 162, 255, 0.9);   /*【マウスオーバーカラー】ブルー*/
-}
-
 
 /*エラー・編集コマンド共通*/
 .error {
@@ -98,9 +70,7 @@ header {
   color: tomato;
 }
 
-.command {
-  font-size: 10px;
-}
+.command {font-size: 10px;}
 
 
 /*メインのサイズ*/
@@ -113,59 +83,52 @@ main {
 /*テーブル共通*/
 
 table, td, th {
-  border: 8px rgb(213, 243, 249) solid;
+  border: 8px white solid;
   /*ベージュ*/
   border-collapse: collapse;
   text-align: center;
   font-weight: normal;
   margin-left: auto;
   margin-right: auto;
+
+  caption {
+    font-weight: bold;
+    font-size: 18px;
+    }
+
+  td, th {
+    padding: 10px;
+    height: 15px;
+    font-size: 12px;
+    }
+
+  th {
+    background-color: $main_color;
+    color:white;
+    font-weight: bold;
+    width: 300px;
+    }
+
+  td {
+    background-color:$gray_color;
+    width: 200px;
+    }
+
+  .table_title {
+    margin-left: 330px;
+    background-color: transparent;
+    width: 350px;
+    }
+
+  textarea {
+    resize: none;
+    width:100%;
+    height:120px;
+    }
 }
-
-caption {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-td, th {
-  padding: 10px;
-  height: 15px;
-  font-size: 12px;
-}
-
-th {
-  /*ブルー*/
-  background-color: rgba(0, 180, 255, 0.8);
-  font-weight: bold;
-  width: 300px;
-}
-
-td {
-  /*グレー*/
-  background-color: #e6ecf0;
-  width: 200px;
-}
-
-.table_title {
-  margin-left: 330px;
-  background-color: transparent;
-  width: 350px;
-}
-
-
 
 /*必須項目*/
-.label {
-  margin-left: 5px;
-}
-
-
-textarea {
-  resize: none;
-  width:100%;
-  height:120px;
-}
-
+.label {margin-left: 5px;}
 
 /*幅・位置の指定*/
 .container {
@@ -175,44 +138,23 @@ textarea {
   margin: 0 auto;
 }
 
-
-
 /* takigawa */
 li.progress-list-item {
   list-style-type: none;
 }
-
 .inline-block{
   display: inline-block;
 }
 
-
 /*companies/commentデータ*/
-
 .list_display ul  {
     list-style-type: none;
  border: 1px solid #000000;
  padding: 5px;
 }
-
 .list_display ul  li {
     color: #43acff;
 }
-
-
-// .scroll{
-//   white-space: nowrap; /* tableのセル内にある文字の折り返しを禁止 */
-//   overflow: auto;　　　　/*tableをスクロールさせる*/
-// }
-// .scroll::-webkit-scrollbar{　　/*tableにスクロールバーを追加*/
-// height: 5px;
-// }
-// .scroll::-webkit-scrollbar-track{　　/*tableにスクロールバーを追加*/
-// background: #F1F1F1;
-// }
-// .scroll::-webkit-scrollbar-thumb {　　/*tableにスクロールバーを追加*/
-// background: #BCBCBC;
-// }
 
 .scroll-table {
   overflow: auto;
@@ -240,4 +182,235 @@ li.progress-list-item {
     -webkit-transform: translateY(4px);
     transform: translateY(4px);/*下に動く*/
     border-bottom: none;/*線を消す*/
+}
+
+
+
+
+
+                                                        /*題名共通*/
+.heading {
+  padding-top: 70px;
+  padding-bottom: 30px;
+  color: #5f5d60;
+  font-weight: bold;
+  text-align:center;
+        h2 {
+            font-size:30px;
+            font-weight:bold;
+        }
+        h3 {
+            font-size:24px;
+        }
+        span   {
+            color:red;
+        }
+}
+
+
+.main-wrapper {
+  padding: 30px 50px 100px 0;
+  background-image: url(main-top.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  width:100%;
+  color: white;
+    h1 {
+        opacity: 0.9;
+        font-size: 50px;
+        letter-spacing: 5px;
+        padding-left:30px;
+        line-height:100px;
+        font-weight:bold;
+        text-shadow: 3px 2px 3px #000;
+        }
+    p {
+        opacity: 0.9;
+        font-size: 18px;
+        margin-bottom: 40px;
+        padding-left:30px;
+        font-weight:bold;
+        line-height:50px;
+        text-shadow: 1px 2px 3px #000;
+    }
+}
+
+
+                                            /*背景色を記述しています。*/
+
+.base-wrapper {
+  background-color: rgba(0, 180, 255, 0.6);  /*ブルー*/
+  padding-bottom: 70px;
+  text-align: center;
+}
+.sub-wrapper {
+  background-color: rgba(241, 244, 248, 1.0);  /*グレー*/
+  padding-bottom: 70px;
+  text-align: center;
+}
+.company-wrapper{
+  padding-bottom: 70px;
+  background-image: url(company-img.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  color:white;
+      h1 {
+        opacity: 0.9;
+        font-size: 40px;
+        letter-spacing: 5px;
+        padding:50px 0 0 30px;
+        line-height:100px;
+        font-weight:bold;
+        text-shadow: 3px 2px 3px #000;
+        }
+}
+.inquiry-wrapper{
+  padding-bottom: 70px;
+  background-image: url(inquiry-img.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  color:white;
+      h1 {
+        opacity: 0.9;
+        font-size: 40px;
+        letter-spacing: 5px;
+        padding:50px 0 0 30px;
+        line-height:100px;
+        font-weight:bold;
+        text-shadow: 3px 2px 3px #000;
+        }
+}
+.middle-heading {
+       font-size:15px;
+       margin:0px 50px 30px;
+       line-height:30px;
+}
+
+
+                                            /*商品内容２カラム*/
+
+
+.two_column {
+  float: left;
+  width: 50%;
+  position: relative;
+    .over-image{
+        width:80%;
+    }
+    .front-color {
+        background-color: rgba(0, 180, 255, 0.6);
+    }
+    h4{
+      color: black;
+      background: #D6D5D5;  /*ブルー*/
+      line-height: 2.5;
+      font-weight:bold;
+      font-size:18px;
+      width:80%;
+      border-left : solid 100px #00A2FF;/*先の色＝アイコン裏の色*/
+      margin:auto;
+      }
+    p{
+      color: black;
+      width:80%;
+      margin:10px auto 50px;
+      }
+    .title-with{
+      color: white;
+      font-weight:bold;
+      font-size:18px;
+      position: absolute;
+      top:13px;
+      left:80px;
+    }
+}
+
+
+
+
+.clear {
+  clear: left;
+}
+
+footer {
+  padding-top: 30px;
+  padding-bottom: 20px;
+    p {
+        color: #b3aeb5;
+        font-size: 12px;
+    }
+}
+
+.ques {
+    width:65%;
+    margin-top:45px;
+}
+
+span {
+    color:red;
+}
+
+
+                                                     /*配置図*/
+
+.list-right {
+  text-align: left;
+  font-size: 18px;
+  line-height: 40px;
+  font-weight: bold;
+  opacity: 0.8;
+  padding:0 100px 0 550px;
+}
+.image-left {
+  width: 400px;
+  margin-left:70px;
+  float: left;
+  }
+.list-left {
+  width:500px;
+  font-size: 18px;
+  line-height: 40px;
+  font-weight: bold;
+  opacity: 0.8;
+  float: left;
+  padding:0 0 0 100px;
+}
+ .image-right {
+  width: 400px;
+  margin-right:70px;
+}
+.list-name {
+    text-align:left;
+}
+
+                                                        /*配置図*/
+.lp-table{
+    line-height:35px;
+    .big-face{
+        font-size:24px;
+        color:white;
+        background-color:red;
+
+        }
+    .sub-face{
+        font-size:21px;
+        font-weight:bold;
+        color:white;
+        background-color:#EF8CA7;
+        }
+    th {
+        font-size:18px;
+        background-color:#327BEE;
+        color:white;
+    }
+    .big-td{
+        color:black;
+        font-weight:bold;
+        font-size:24px;
+    }
+}
+
+.next {
+  float:right;
+  margin-right:10px;
 }

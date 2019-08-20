@@ -1,6 +1,5 @@
 class TodosController < ApplicationController
 
-
   def index
      if params[:selected]
        @selected = params[:selected]
@@ -58,6 +57,4 @@ class TodosController < ApplicationController
       :contents #コンテンツ
       )
     end
-
-
 end

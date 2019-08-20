@@ -1,9 +1,18 @@
 Rails.application.routes.draw do
 
-  devise_for :admins      #管理者ログイン
-  devise_for :reads
-  devise_for :users
-                                              #アップロード
+  root to: 'customers#index'
+  #ログイン切り替え
+  devise_for :admins       #使用者ログイン
+
+  resources :customers do
+        resources :calls
+    collection do
+      post :import
+      get :message
+    end
+  end
+
+                                                #アップロード
   resources :uploader, only: [:edit, :update, :destroy]
 
   get 'uploader/index'
@@ -12,52 +21,17 @@ Rails.application.routes.draw do
   get 'uploader/view'
   get 'uploader/download/:id' => 'uploader#download' ,as: :donwload_pdf
 
-
-
-                                            #ログイン切り替え
-
-                                         #問い合わせフォーム
-
   get 'contact' => 'contact#index'
   post 'contact/confirm' => 'contact#confirm'
   post 'contact/thanks' => 'contact#thanks'
 
 
-                                       #会社情報・就業規則情報
-
-
-        get 'companies/:id/progress' => 'companies#progress'
-
-  resources :companies do
-     get 'companies/thanks' => 'companies#thanks'
-
-        #CSVインポート
-    collection do
-        post :import
-        get :message
-        get :bulk_destroy
-    end
-
-        #コメント、アップデート、進捗情報
-    resources :comments, only: [:create, :destroy, :update, :download, :edit]
-      member do
-        #顧客側管理進捗
-            get :progress
-        #ファイルビュー・ダウンロード
-        get 'comments/view'
-        get 'comments/download/:id' => 'comments#download' ,as: :comments_pdf
-      end
- end
- delete 'comments/bulk_destroy'
- get 'comments/bulk_edit'
- put 'comments/bulk_update'
-
-                                            #労働局情報
-
+    #労働局情報
     resources :prefectures do
         resources :details
     end
-                                                #請求書
+
+    #請求書
     resources :invoices do
       member do
       #PDF生成
@@ -66,17 +40,11 @@ Rails.application.routes.draw do
     end
 
 
-                                                   #TODO
+  #TODO
   resources :todos
 
-                                                   #FAQ
+  #FAQ
   resources :faqs
-
-                                            #表側ページ
-
-  get '/' => 'tops#subsidy'
-  get '/company' => 'tops#company'
-
 
 
   get '*path', controller: 'application', action: 'render_404'

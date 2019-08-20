@@ -29,7 +29,6 @@ end
           super
         end
       when Admin
-        # your_admin_home_path
         super # 現在は暫定的に上位継承しています
        companies_path
       end
@@ -37,9 +36,6 @@ end
 
     def after_sign_out_path_for(resource)
       case resource
-      when User, :user, :users
-        new_user_session_path
-        # put here for User default page direct path after signed out
       when Admin, :admin, :admins
         new_admin_session_path
         # put here for Staff default page direct path after signed out

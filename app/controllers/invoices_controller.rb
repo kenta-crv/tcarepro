@@ -1,4 +1,5 @@
 class InvoicesController < ApplicationController
+  #before_action :authenticate_admin!
 
   def index
   	 @invoices = Invoice.all.order(created_at: 'desc')
@@ -58,37 +59,37 @@ class InvoicesController < ApplicationController
     report.start_new_page
     report.page.values(
     created_at: @invoice.try(:created_at),
-    company: @invoice.company.try(:company), 
-    first_name: @invoice.company.try(:first_name), 
-    postnumber: @invoice.company.try(:postnumber), 
-    address: @invoice.company.try(:address), 
-    address2: @invoice.company.try(:town), 
+    company: @invoice.company.try(:company),
+    first_name: @invoice.company.try(:first_name),
+    postnumber: @invoice.company.try(:postnumber),
+    address: @invoice.company.try(:address),
+    address2: @invoice.company.try(:town),
 
     item1: @invoice.try(:item1),
     price1: @invoice.try(:price1),
     quantity1: @invoice.try(:quantity1),
     total1: @invoice.try(:calc1),
-    
+
     item2: @invoice.try(:item2),
     price2: @invoice.try(:price2),
     quantity2: @invoice.try(:quantity2),
     total2: @invoice.try(:calc2),
-    
+
     item2: @invoice.try(:item2),
     price2: @invoice.try(:price2),
     quantity2: @invoice.try(:quantity2),
     total2: @invoice.try(:calc2),
-    
+
     item3: @invoice.try(:item3),
     price3: @invoice.try(:price3),
     quantity3: @invoice.try(:quantity3),
     total3: @invoice.try(:calc3),
-    
+
     item4: @invoice.try(:item4),
     price4: @invoice.try(:price4),
     quantity4: @invoice.try(:quantity4),
     total4: @invoice.try(:calc4),
-    
+
     item5: @invoice.try(:item5),
     price5: @invoice.try(:price5),
     quantity5: @invoice.try(:quantity5),

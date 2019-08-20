@@ -1,0 +1,45 @@
+<div  class="heading"><h2>コールリスト</h2></div>
+          <table width ="90%">
+              <tbody>
+                   <col width="25%">
+                   <col width="12%">
+                   <col width="25%">
+                   <col width="15%">
+                   <col width="15%">
+                   <col width="8%">
+                <tr>
+                  <th>会社名</th>
+                  <th>電話番号</th>
+                  <th>住所</th>
+                  <th>ステータス</th>
+                  <th>最終更新日</th>
+                  <th>編集/削除</th>
+                </tr>
+    <% @customers.each do |customer| %>
+                <tr>
+                  <td><%= link_to customer.company, customer_path(customer) %> </td>
+                  <td><%= customer.tel %></td>
+                  <td><%= customer.address %></td>
+                  <td>
+                    <%# customer.details.order('statu DESC').first.try(:statu) %>
+                    <%= customer.last_call.try(:statu) %>
+                  </td>
+                  <td>
+                    <%# post.details.order('updated_at DESC').first.try(:updated_at) %>
+                    <%= customer.last_call.try(:created_at) %>
+                  </td>
+                  <td><%= link_to '編集', edit_customer_path(customer), class: 'command'%>
+                  <%= link_to '削除',
+                    customer_path(customer),
+                    method: :delete,
+                    class: 'command',
+                    data: { confirm: '本当に削除しますか？'} %></td>
+                    <% end %>
+                </tr>
+                <tr>
+                  <th colspan = "6"><%= paginate @customers %></th>
+                </tr>
+              </tbody>
+            </table>
+
+</br>

@@ -1,9 +1,15 @@
     <div class="heading"><h2>ドキュメントダウンロード</h2>
+      <%= link_to '（アップロードはこちら）', action: "form" %>
             </div>
 
     <table width="90%" data-turbolinks="false">
      <tbody>
           <% UploadFile.all.reverse_order.each do |upload| %>
+        <tr>
+          <th>ファイル名</th>
+          <th>ダウンロード</th>
+          <th>編集/削除</th>
+        </tr>
         <tr>
             <th><%= link_to upload.name, {action: "view", id: upload.id} %></th>
             <td><%= link_to "download", {action: "download", id: upload.id} %></td>

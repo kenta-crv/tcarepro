@@ -1,25 +1,53 @@
 <div id="wrapper">
 
-        <div class="heading"><h2>FAQ リスト</h2>
-        <p>FAQ List</p>
-        
-        <%= form_for @faq do |f|%>
-            <%= f.text_field :title %>
-            <%= f.hidden_field :select,{id: "faq-select"} %>
-            <%= f.submit '登録', data: { confirm: '登録しますか？'}%>
-        <%end%></div>
-        
-  <div class="row">
-    <div id="todos-left" class="col-4">
-      <%= render partial: 'faqs/faq_left' %>
-    </div>
+  <div class="heading"><h2>FAQリスト</h2>
+    <p>FAQ List</p></div>
+      <table width="80%">
+        <col width= "30%">
+        <col width= "60%">
+        <col width= "10%">
+        <tr>
+          <th>題名</th>
+          <th>コンテンツ</th>
+          <th>削除</th>
+        </tr>
+          <% @faqs.each do |faq| %>
+        <tr>
+          <th><%= faq.title %></th>
+          <td><%= faq.contents %></td>
+          <td><%= link_to '削除',
+                faq_path(faq),
+                method: :delete,
+                class: 'command',
+                data: { confirm: '本当に削除しますか？'} %></td>
+        </tr>
+        <%end%>
+      </table>
 
-    <div id="todos-center" class="col-4">
-      <%= render partial: 'faqs/faq_center' %>
-   </div>
 
+<br>
+<br>
 
-    <div id="todos-right" class="col-4">
-    </div>
-  </div>
-
+      <div class="heading"><h2>FAQ新規登録</h2>
+        <p>FAQ regstration</p></div>
+  <%= form_for @faq do |f|%>
+    <table width="80%">
+      <tr>
+        <th>題名</th>
+        <th>種類</th>
+      </tr>
+      <tr>
+        <td><%= f.text_field :title %></td>
+        <td><%= f.text_field :select %></td>
+      </tr>
+      <tr>
+        <th colspan="2">内容</th>
+      </tr>
+      <tr>
+        <td colspan="2"><%= f.text_area :contents %></td>
+      </tr>
+      <tr>
+        <td colspan="2"><%= f.submit '登録', data: { confirm: '登録しますか？'}%></td>
+      </tr>
+    </table>
+  <%end%>

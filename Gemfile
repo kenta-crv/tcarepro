@@ -76,3 +76,6 @@ gem 'ransack'
 gem 'bootstrap', '~> 4.1.1'
 gem 'haml-rails'
 gem 'mini_racer'
+
+
+gem 'ransack'

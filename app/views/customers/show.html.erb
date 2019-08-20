@@ -1,0 +1,186 @@
+<% if prev_customer = @customer.prev_customer %>
+    <%= link_to "前へ", customer_path(prev_customer), class: "prev btn btn-danger" %>
+      <% end %>
+<% if next_customer = @customer.next_customer %>
+    <%= link_to "次へ", customer_path(next_customer), class: "next btn btn-danger" %>
+      <% end %>
+
+<div class="show-top">
+<div class="two_column">
+<table width="100%">
+		<col width="20%">
+		<col width="30%">
+		<col width="20%">
+		<col width="30%">
+	<tbody>
+		<tr>
+			<th colspan="4">顧客情報（<%= link_to("編集", edit_customer_path) %>）</th>
+		</tr>
+		<tr>
+			<th>会社名</th>
+			<td><%= @customer.company %></td>
+			<th>店舗名</th>
+			<td><%= @customer.store %></td>
+		</tr>
+		<tr>
+			<th>代表者</th>
+			<td><%= @customer.first_name %></td>
+			<th>フリガナ</th>
+			<td><%= @customer.first_kana %></td>
+		</tr>
+		<tr>
+			<th>電話番号１</th>
+			<td><%= @customer.tel %></td>
+			<th>電話番号２</th>
+			<td><%= @customer.tel2 %></td>
+		</tr>
+		<tr>
+			<th>FAX</th>
+			<td><%= @customer.fax %></td>
+			<th>業種</th>
+			<td><%= @customer.industry %></td>
+		</tr>
+		<tr>
+			<th>メール</th>
+			<td colspan="3"><%= @customer.mail %></td>
+		</tr>
+		<tr>
+			<th>URL</th>
+			<td colspan="3"><%= @customer.url %></td>
+		</tr>
+		<tr>
+			<th>人数</th>
+			<td><%= @customer.people %></td>
+			<th></th>
+			<td></td>
+		</tr>
+		<tr>
+			<th>住所</th>
+			<td colspan="3"><%= @customer.address %></td>
+		</tr>
+		<tr>
+			<th>備考</th>
+			<td><%= @customer.remarks %></td>
+      <th>顧客ステータス</th>
+			<td><%= @customer.status %></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+
+
+ <!--
+<div id="controls">
+  <div id="info">
+    <p class="instructions">Twilio Client</p>
+    <div id="client-name"></div>
+    <div id="output-selection">
+      <label>Ringtone Devices</label>
+      <select id="ringtone-devices" multiple></select>
+      <label>Speaker Devices</label>
+      <select id="speaker-devices" multiple></select><br/>
+      <a id="get-devices">Seeing unknown devices?</a>
+    </div>
+    <div id="log"></div>
+  </div>
+  <div id="call-controls">
+    <!-- <p class="instructions">Make a Call:</p>
+    <input id="phone-number" type="text" placeholder="Enter a phone # or client name" /> -->
+    <!-- <button id="button-call">Call</button>
+    <button id="button-hangup">Hangup</button>
+    <button id="button-onhold">OnHold</button>
+    <div id="volume-indicators">
+      <label>Mic Volume</label>
+      <div id="input-volume"></div><br/><br/>
+      <label>Speaker Volume</label>
+      <div id="output-volume"></div>
+    </div>
+  </div>
+</div>-->
+
+
+<div class="two_column">
+<table width="100%">
+		<col width="20%">
+		<col width="30%">
+		<col width="20%">
+		<col width="30%">
+	<tbody>
+		<tr>
+			<th colspan="4">コール</th>
+		</tr>
+		<tr>
+			<td colspan="3" class="call-font"><%= @customer.tel%></td>
+			<td>代表者：<%= @customer.first_name %><%= @customer.last_name %></br>
+			</td>
+		</tr>
+		<tr>
+			<th colspan ="4">
+					<button id="button-call" data-number="<%= @customer.tel %>">発信</button>
+        			<button id="button-hangup" data-number="<%= @customer.tel %>">保留</button>
+        			<button id="button-hangup" data-number="<%= @customer.tel %>">切断</button>
+        	</th>
+		</tr>
+	</tbody>
+</table>
+<%= form_for ([@customer, @customer.calls.build]) do |f| %>
+<table>
+	<tbody>
+		<tr>
+			<th colspan="4">情報入力</th>
+		</tr>
+		<tr>
+			<th>ステータス</th>
+			<td><%= f.select(:statu, Call.StatuItems) %></td>
+			<th>再コール日時</th>
+			<td><%= f.datetime_field :time %></td>
+		</tr>
+		<tr>
+			<th>コメント</th>
+			<td colspan ="4"><%= f.text_area :comment %></td>
+		</tr>
+		<tr>
+			<th colspan ="4"><%= f.submit %></th>
+		</tr>
+	</tbody>
+</table>
+<%end%>
+</div>
+
+
+<table width="100%">
+		<col width="15%">
+		<col width="10%">
+		<col width="15%">
+		<col width="15%">
+		<col width="25%">
+		<col width="10%">
+		<col width="10%">
+<% if @customer.calls.any? %>
+		<tr>
+			<th>日時</th>
+			<th>担当者</th>
+			<th>ステータス</th>
+			<th>次回連絡日</th>
+			<th>コメント</th>
+			<th>削除</th>
+		</tr>
+		<tr>
+		<% @customer.calls.each do |call| %>
+			<td><%= call.created_at %></td>
+			<td></td>
+			<td><%= call.statu %></td>
+			<td><%= call.time %></td>
+			<td><%= call.comment %></td>
+			<td><%= link_to '編集', edit_customer_call_path(@customer), class: 'command'%>
+			<%= link_to '削除',
+			            	customer_call_path(@customer) ,
+			            	method: :delete,
+			            	class: 'command',
+			            	data: { confirm: '本当に削除しますか？'} %></td>
+		</tr>
+<% end %>
+</table>
+<% end %>
+</div>
