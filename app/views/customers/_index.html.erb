@@ -12,8 +12,8 @@
  <tbody>
 <% @customers.each do |customer| %>
   <tr>
-	 <td><%= link_to customer.company, customer_path(customer) %></td>
-	 <td><%= link_to customer.first_name, customer_path(customer) %></td>
+   <td><%= link_to customer.company, customer_path(customer) %></td>
+ 	 <td><%= link_to customer.first_name, customer_path(customer) %></td>
 	 <td><%= customer.tel %></td>
 	 <td><%= customer.mail %></td>
 	 <td><%= link_to '編集', edit_customer_path(customer), class: 'command'%>

@@ -1,0 +1,27 @@
+<%= form_for [@customer, @call] do |f| %>
+<table width="100%">
+  <col width="15%">
+  <col width="10%">
+  <col width="15%">
+  <col width="15%">
+  <col width="25%">
+  <col width="10%">
+  <col width="10%">
+  <tr>
+    <th>担当者</th>
+    <th>ステータス</th>
+    <th>次回連絡日</th>
+    <th>コメント</th>
+  </tr>
+  <tr>
+    <td></td>
+    <td><%= f.select(:statu, Call.StatuItems) %></td>
+    <td><%= f.datetime_field :time %></td>
+    <td><%= f.text_area :comment %></td>
+  </tr>
+  <tr>
+     <th colspan="4"><%= f.submit %></th>
+  </tr>
+</table>
+</div>
+  <% end %>

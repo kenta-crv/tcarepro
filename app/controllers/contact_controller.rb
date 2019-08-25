@@ -1,10 +1,9 @@
 class ContactController < ApplicationController
-    layout 'top'
   def index
     @contact = Contact.new
     render :action => 'index'
   end
-   
+
   def confirm
     @contact = Contact.new(contact_params)
     if @contact.valid?
@@ -13,14 +12,14 @@ class ContactController < ApplicationController
       render :action => 'index'
     end
   end
-     
+
   def thanks
     @contact = Contact.new(contact_params)
     ContactMailer.received_email(@contact).deliver
-   
+
     render :action => 'thanks'
   end
-  
+
     private
    def contact_params
     params.require(:contact).permit(:name, :email, :message)

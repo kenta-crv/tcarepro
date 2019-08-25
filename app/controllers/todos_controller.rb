@@ -1,5 +1,5 @@
 class TodosController < ApplicationController
-
+  before_action :authenticate_admin!
   def index
      if params[:selected]
        @selected = params[:selected]

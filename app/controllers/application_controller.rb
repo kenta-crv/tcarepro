@@ -21,16 +21,9 @@ end
     # set for devise login redirector
     def after_sign_in_path_for(resource)
       case resource
-      when User
-        # put here for User first page direct path after signed in
-        if resource.company.present?
-          progress_company_path(resource.company)
-        else
-          super
-        end
       when Admin
         super # 現在は暫定的に上位継承しています
-       companies_path
+       root_path
       end
     end
 
@@ -55,8 +48,6 @@ end
 
   def layout_by_resource
     if devise_controller?
-       "top"
-    else
       "application"
     end
   end

@@ -79,3 +79,14 @@ gem 'mini_racer'
 
 
 gem 'ransack'
+
+gem 'dotenv-rails'
+gem 'faker'
+gem 'roo'
+
+
+#2018.12.14
+#gem 'therubyracer'
+gem 'bootstrap-sass', '~> 3.3.6'
+gem 'momentjs-rails', '>= 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.17.37'

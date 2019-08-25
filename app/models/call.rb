@@ -5,7 +5,7 @@ class Call < ApplicationRecord
     last_created_at = "SELECT sub_call.customer_id, MAX(sub_call.created_at) as last_created_at FROM calls as sub_call GROUP BY sub_call.customer_id";
     joins(
       "INNER JOIN (#{last_created_at}) AS sub ON sub.customer_id = calls.customer_id AND sub.last_created_at = calls.created_at"
-    ).group(:post_id)
+    ).group(:customer_id)
   }
 
   @@StatuItems = [
@@ -21,7 +21,6 @@ class Call < ApplicationRecord
     "従業員なしNG",
     "入社年月日NG",
     "永久NG",
-    "士業知人",
     "他社導入済"
   ]
   def self.StatuItems

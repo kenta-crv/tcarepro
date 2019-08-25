@@ -10,8 +10,6 @@
  <% end %>
 
 
-
-
 <div  class="heading"><h2>リスト検索</h2></div>
 
 <!--検索機能実装-->
@@ -61,7 +59,12 @@
             <th>住所</th>
             <td><%= f.search_field :address_cont, type: "text" %></td>
           </tr>
-          <!-- #TPD #2018.12.14 -->
+          <tr>
+            <th>備考</th>
+            <td><%= f.search_field :remarks_cont, type: "text" %></td>
+            <th>顧客(call/prospect/customer)</th>
+            <td><%= f.search_field :status_cont, type: "text" %></td>
+          </tr>
           <tr>
             <th>最終コール状態</th>
             <td><%= select_tag "last_call[statu]", options_for_select( [""] + Call.StatuItems, @last_call_params[:statu] ) %></td>
@@ -72,7 +75,7 @@
             <th>最終コール日時（最初）</th>
             <td>
               <div class='input-group date' id='created_at_from_datetimepicker'>
-                    <%= text_field_tag "last_call[created_at_from]", @last_call_params[:created_at_from], class: "form-control" %>
+                    <%= date_field_tag "last_call[created_at_from]", @last_call_params[:created_at_from], class: "form-control" %>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -81,7 +84,7 @@
              <th>最終コール日時（最後）</th>
             <td>
               <div class='input-group date' id='created_at_to_datetimepicker'>
-                    <%= text_field_tag "last_call[created_at_to]", @last_call_params[:created_at_to], class: "form-control" %>
+                    <%= date_field_tag "last_call[created_at_to]", @last_call_params[:created_at_to], class: "form-control" %>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>

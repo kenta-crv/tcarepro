@@ -1,5 +1,7 @@
+require 'rubygems'
+
 class CustomersController < ApplicationController
-  #before_action :authenticate_admin!
+  before_action :authenticate_admin!
 
   def index
     last_call_customer_ids = nil
@@ -13,22 +15,21 @@ class CustomersController < ApplicationController
       last_call_customer_ids = last_call.pluck(:customer_id)
     end
 
-    @type = params[:type]
     @q = Customer.ransack(params[:q])
     @customers = @q.result
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(100)
 
-    case @type
-    when "call" then
-      @customers = @q.result.where(status: "call").page(params[:page]).per(100)
-    when "prospect" then
-      @customers = @q.result.where(status: "prospect").page(params[:page]).per(100)
-    when "crm" then
-      @customers = @q.result.where(status: "crm").page(params[:page]).per(100)
-    else
-      @customers = @q.result.page(params[:page]).per(100)
-   end
+    #case
+    #when "call" then
+    #  @customers = @q.result.where(status: "call").page(params[:page]).per(100)
+    #when "prospect" then
+    #  @customers = @q.result.where(status: "prospect").page(params[:page]).per(100)
+    #when "crm" then
+    #  @customers = @q.result.where(status: "crm").page(params[:page]).per(100)
+    #else
+    #  @customers = @q.result.page(params[:page]).per(100)
+    #end
 
    respond_to do |format|
      format.html
@@ -38,6 +39,8 @@ class CustomersController < ApplicationController
 
   def show
     @customer = Customer.find(params[:id])
+    @call = Call.new
+    #@admin = @call.admin
   end
 
   def new
@@ -76,6 +79,14 @@ class CustomersController < ApplicationController
    Customer.import(params[:file])
    redirect_to customers_url, notice:"リストを追加しました"
  end
+
+ #def prev_customer
+  # @q.result.where("id < ?", id).last
+ #end
+
+ #def next_xustomer
+  # @q.result.where("id < ?", id).last
+ #end
 
   private
     def customer_params

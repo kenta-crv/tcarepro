@@ -124,7 +124,7 @@
 		</tr>
 	</tbody>
 </table>
-<%= form_for ([@customer, @customer.calls.build]) do |f| %>
+<%= form_for ([@customer, @call]) do |f| %>
 <table>
 	<tbody>
 		<tr>
@@ -173,9 +173,9 @@
 			<td><%= call.statu %></td>
 			<td><%= call.time %></td>
 			<td><%= call.comment %></td>
-			<td><%= link_to '編集', edit_customer_call_path(@customer), class: 'command'%>
+			<td><%= link_to '編集', edit_customer_call_path(@customer, call), class: 'command'%>
 			<%= link_to '削除',
-			            	customer_call_path(@customer) ,
+                    customer_call_path(@customer,call) ,
 			            	method: :delete,
 			            	class: 'command',
 			            	data: { confirm: '本当に削除しますか？'} %></td>

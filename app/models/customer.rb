@@ -1,4 +1,5 @@
 class Customer < ApplicationRecord
+  belongs_to :admin
   has_many :calls
 
   has_one :last_call, ->{
