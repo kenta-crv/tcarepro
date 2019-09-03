@@ -1,13 +1,49 @@
-<% case @type %>
- <% when "call"%>
-  <%= render partial: "index_call" %>
- <% when "prospect"%>
-  <%= render partial: "index_prospect" %>
- <% when "crm"%>
-  <%= render partial: "index_crm" %>
- <% else %>
-  <%= render "index" %>
- <% end %>
+<div  class="heading"><h2>コールリスト</h2></div>
+          <table width ="90%">
+              <tbody>
+                   <col width="25%">
+                   <col width="12%">
+                   <col width="25%">
+                   <col width="15%">
+                   <col width="15%">
+                   <col width="8%">
+                <tr>
+                  <th>会社名</th>
+                  <th>電話番号</th>
+                  <th>住所</th>
+                  <th>ステータス</th>
+                  <th>最終更新日</th>
+                  <th>編集/削除</th>
+                </tr>
+    <% @customers.each_with_index do |customer, index| %>
+                <tr>
+                  <td><%= link_to customer.company, customer_path(
+                                                    customer,
+                                                    prev_id: @customers[index-1]&.id,
+                                                    next_id: @customers[index+1]&.id)  %></td>
+                  <td><%= customer.tel %></td>
+                  <td><%= customer.address %></td>
+                  <td>
+                    <%# customer.details.order('statu DESC').first.try(:statu) %>
+                    <%= customer.last_call.try(:statu) %>
+                  </td>
+                  <td>
+                    <%# post.details.order('updated_at DESC').first.try(:updated_at) %>
+                    <%= customer.last_call.try(:created_at) %>
+                  </td>
+                  <td><%= link_to '編集', edit_customer_path(customer), class: 'command'%>
+                  <%= link_to '削除',
+                    customer_path(customer),
+                    method: :delete,
+                    class: 'command',
+                    data: { confirm: '本当に削除しますか？'} %></td>
+                    <% end %>
+                </tr>
+                <tr>
+                  <th colspan = "6"><%= paginate @customers %></th>
+                </tr>
+              </tbody>
+            </table>
 
 
 <div  class="heading"><h2>リスト検索</h2></div>
@@ -27,7 +63,7 @@
             <th>会社名</th>
             <td><%= f.search_field :company_cont, type: "text" %></td>
             <th>店舗名</th>
-		    <td><%= f.search_field :store_cont, type: "text" %> </td>
+		        <td><%= f.search_field :store_cont, type: "text" %> </td>
 	      </tr>
 	      <tr>
             <th>代表者</th>
@@ -69,13 +105,15 @@
             <th>最終コール状態</th>
             <td><%= select_tag "last_call[statu]", options_for_select( [""] + Call.StatuItems, @last_call_params[:statu] ) %></td>
             <th>再コール日時</th>
-            <td></td>
+            <td>
+                   <%= date_field_tag "last_call[time]", @last_call_params[:time]%>
+            </td>
           </th>
           <tr>
             <th>最終コール日時（最初）</th>
             <td>
               <div class='input-group date' id='created_at_from_datetimepicker'>
-                    <%= date_field_tag "last_call[created_at_from]", @last_call_params[:created_at_from], class: "form-control" %>
+                    <%= date_field_tag "last_call[created_at_from]", @last_call_params[:created_at_from], class: "from-control" %>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>

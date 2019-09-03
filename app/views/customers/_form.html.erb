@@ -45,14 +45,26 @@
 		  <td><%=text_field :customer, :address %></td>
 		</tr>
 		<tr>
-		  <th>備考</th>
-		  <td><%=text_area :customer, :remarks %></td>
+		  <th>メモ</th>
+		  <td><%=text_field :customer, :remarks %></td>
 			<th>顧客ステータス</th>
 			<td><%= f.select(:status, [
 				["call","call"],
 				["prospect","prospect"],
 				["crm","crm"]
 				]) %></td>
+		</tr>
+		<tr>
+		  <th>メモ１</th>
+		  <td><%=text_field :customer, :memo_1 %></td>
+			<th>メモ２</th>
+		  <td><%=text_field :customer, :memo_2 %></td>
+		</tr>
+		<tr>
+		  <th>メモ３</th>
+		  <td><%=text_field :customer, :memo_3 %></td>
+			<th></th>
+		  <td></td>
 		</tr>
 		<tr>
 			<th colspan ="4"><%=f.submit%></th>

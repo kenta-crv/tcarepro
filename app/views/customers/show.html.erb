@@ -1,8 +1,8 @@
-<% if prev_customer = @customer.prev_customer %>
-    <%= link_to "前へ", customer_path(prev_customer), class: "prev btn btn-danger" %>
+<% if @prev_customer&.id %>
+　　<%= link_to "前へ", customer_path(customer_id: @prev_customer.id), class: "prev btn btn-danger" %>
       <% end %>
-<% if next_customer = @customer.next_customer %>
-    <%= link_to "次へ", customer_path(next_customer), class: "next btn btn-danger" %>
+<% if @next_customer&.id %>
+　　<%= link_to "次へ", customer_path(next_id: @next_customer.id), class: "next btn btn-danger" %>
       <% end %>
 
 <div class="show-top">
@@ -42,28 +42,30 @@
 		</tr>
 		<tr>
 			<th>メール</th>
-			<td colspan="3"><%= @customer.mail %></td>
+			<td><%= @customer.mail %></td>
+      <th>人数</th>
+  		<td><%= @customer.people %></td>
 		</tr>
 		<tr>
 			<th>URL</th>
 			<td colspan="3"><%= @customer.url %></td>
 		</tr>
 		<tr>
-			<th>人数</th>
-			<td><%= @customer.people %></td>
-			<th></th>
-			<td></td>
-		</tr>
-		<tr>
 			<th>住所</th>
 			<td colspan="3"><%= @customer.address %></td>
 		</tr>
 		<tr>
-			<th>備考</th>
+			<th>メモ</th>
 			<td><%= @customer.remarks %></td>
-      <th>顧客ステータス</th>
-			<td><%= @customer.status %></td>
+      <th>メモ１</th>
+			<td><%= @customer.memo_1 %></td>
 		</tr>
+    <tr>
+      <th>メモ２</th>
+			<td><%= @customer.memo_2 %></td>
+      <th>メモ３</th>
+			<td><%= @customer.memo_3 %></td>
+    </tr>
 	</tbody>
 </table>
 </div>

@@ -1,5 +1,6 @@
 class Call < ApplicationRecord
   belongs_to :customer
+  #belongs_to :admin
 
   scope :joins_last_call, -> {
     last_created_at = "SELECT sub_call.customer_id, MAX(sub_call.created_at) as last_created_at FROM calls as sub_call GROUP BY sub_call.customer_id";
@@ -9,6 +10,7 @@ class Call < ApplicationRecord
   }
 
   @@StatuItems = [
+    "",
     "着信のみ",
     "オーナー不在",
     "再コール",

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     end
   end
 
+
                                                 #アップロード
   resources :uploader, only: [:edit, :update, :destroy]
 

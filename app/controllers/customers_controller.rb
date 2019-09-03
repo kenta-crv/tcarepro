@@ -6,10 +6,11 @@ class CustomersController < ApplicationController
   def index
     last_call_customer_ids = nil
     @last_call_params = {}
-    if !params[:last_call].blank?
+    if params[:last_call] && !params[:last_call].values.all?(&:blank?)
       @last_call_params = params[:last_call]
       last_call = Call.joins_last_call
       last_call = last_call.where(statu: @last_call_params[:statu]) if !@last_call_params[:statu].blank?
+      last_call = last_call.where(time: @last_call_params[:time]) if !@last_call_params[:time].blank?
       last_call = last_call.where("calls.created_at >= ?", @last_call_params[:created_at_from]) if !@last_call_params[:created_at_from].blank?
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
       last_call_customer_ids = last_call.pluck(:customer_id)
@@ -40,7 +41,10 @@ class CustomersController < ApplicationController
   def show
     @customer = Customer.find(params[:id])
     @call = Call.new
-    #@admin = @call.admin
+    #admin = Admin.find(params[:admin_id])
+    #@call = admin.calls
+    @prev_customer = Customer.find_by(id: params[:id])
+    @next_customer = Customer.find_by(id: params[:id])
   end
 
   def new
@@ -109,7 +113,11 @@ class CustomersController < ApplicationController
         :address, #住所
         :caption, #資本金
         :remarks, #備考
-        :status #ステータス
+        :status, #ステータス
+        :memo1, #ステータス
+        :memo2, #ステータス
+        :memo3, #ステータス
+        :memo4 #ステータス
        )
     end
 

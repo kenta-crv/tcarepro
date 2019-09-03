@@ -10,6 +10,7 @@ end
 gem 'rails', '~> 5.1.6'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
+#gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets
@@ -75,7 +76,6 @@ gem 'kaminari'
 gem 'ransack'
 gem 'bootstrap', '~> 4.1.1'
 gem 'haml-rails'
-gem 'mini_racer'
 
 
 gem 'ransack'
@@ -85,8 +85,4 @@ gem 'faker'
 gem 'roo'
 
 
-#2018.12.14
-#gem 'therubyracer'
-gem 'bootstrap-sass', '~> 3.3.6'
-gem 'momentjs-rails', '>= 2.9.0'
-gem 'bootstrap3-datetimepicker-rails', '~> 4.17.37'
+gem 'bootstrap-sass',       '3.2.0.0'

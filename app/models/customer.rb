@@ -1,5 +1,5 @@
 class Customer < ApplicationRecord
-  belongs_to :admin
+  #belongs_to :admin
   has_many :calls
 
   has_one :last_call, ->{
@@ -32,11 +32,5 @@ class Customer < ApplicationRecord
     end
   end
 
-  def next_customer
-    Customer.where("id > ?", id).first
-  end
 
-  def prev_customer
-    Customer.where("id < ?", id).last
-  end
 end
