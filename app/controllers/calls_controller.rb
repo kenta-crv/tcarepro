@@ -24,7 +24,7 @@ class CallsController < ApplicationController
   def create
 	  #@customer = Customer.find(params[:customer_id])
   	if @customer.calls.create(call_params)
-	    redirect_to customer_path(@customer)
+	    redirect_to customer_path
     end
   end
 
@@ -41,7 +41,7 @@ class CallsController < ApplicationController
  		:statu, #ステータス
  		:time, #再コール
  		:comment #コメント
- 		)
+  ).merge(admin: current_admin)
  	end
 
  end

@@ -10,7 +10,8 @@ class CustomersController < ApplicationController
       @last_call_params = params[:last_call]
       last_call = Call.joins_last_call
       last_call = last_call.where(statu: @last_call_params[:statu]) if !@last_call_params[:statu].blank?
-      last_call = last_call.where(time: @last_call_params[:time]) if !@last_call_params[:time].blank?
+      last_call = last_call.where("calls.time >= ?", @last_call_params[:time_from]) if !@last_call_params[:time_from].blank?
+      last_call = last_call.where("calls.time <= ?", @last_call_params[:time_to]) if !@last_call_params[:time_to].blank?
       last_call = last_call.where("calls.created_at >= ?", @last_call_params[:created_at_from]) if !@last_call_params[:created_at_from].blank?
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
       last_call_customer_ids = last_call.pluck(:customer_id)
@@ -36,13 +37,16 @@ class CustomersController < ApplicationController
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "tasks-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
    end
+
+   #@customer = Customer.find(params[:id])
+   @call = Call.new
+   @prev_customer = Customer.find_by(id: params[:id])
+   @next_customer = Customer.find_by(id: params[:id])
   end
 
   def show
     @customer = Customer.find(params[:id])
     @call = Call.new
-    #admin = Admin.find(params[:admin_id])
-    #@call = admin.calls
     @prev_customer = Customer.find_by(id: params[:id])
     @next_customer = Customer.find_by(id: params[:id])
   end
@@ -54,7 +58,7 @@ class CustomersController < ApplicationController
   def create
     @customer = Customer.new(customer_params)
      if @customer.save
-       redirect_to customers_path
+       redirect_to customer_path
      else
        render 'new'
      end

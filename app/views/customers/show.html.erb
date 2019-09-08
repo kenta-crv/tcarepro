@@ -171,7 +171,7 @@
 		<tr>
 		<% @customer.calls.each do |call| %>
 			<td><%= call.created_at %></td>
-			<td></td>
+			<td><%= call.admin&.user_name %></td>
 			<td><%= call.statu %></td>
 			<td><%= call.time %></td>
 			<td><%= call.comment %></td>

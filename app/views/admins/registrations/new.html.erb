@@ -7,20 +7,21 @@
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= devise_error_messages! %>
 			<table>
-        			<colgroup>
-            			<col width="40%">
-            			<col width="60%">
-       			　 </colgroup>
-        		<tr>
+        <colgroup>
+          <col width="40%">
+        	<col width="60%">
+     　 </colgroup>
+        <tr>
           <th>ユーザーネーム<span class="label label-blue">必須</span></br>
     						<small>山田太郎</small></th>
     			<td> <%= f.text_field :user_name %></td>
-    			</tr>
+    		</tr>
+        <tr>
 					<th>ログインアドレス<span class="label label-blue">必須</span></br>
 									<small>aaa@crold-valieat.jp</small></th>
 					<td> <%= f.email_field :email, autofocus: true, autocomplete: "email" %></td>
-			  	</tr>
-        		<tr>
+			  </tr>
+        <tr>
 					<th>パスワード<span class="label label-blue">必須</span></br>
 									<small>*******</small></th>
 					<td><% if @minimum_password_length %>
@@ -36,7 +37,7 @@
 					</td>
 				</tr>
 				<tr>
-									<th colspan="2">  <%= f.submit "同意して登録" %></th>
+					<th colspan="2"><%= f.submit "同意して登録" %></th>
 				</tr>
 </table>
 
