@@ -19,17 +19,188 @@
                 <tr>
                   <td><%= link_to customer.company, customer_path(customer,
                                                     prev_id: @customers[index-1]&.id,
-                                                    next_id: @customers[index+1]&.id)
-                                                      %>
+                                                    next_id: @customers[index+1]&.id,
+                                                    )%>
 
-<!--
-                        class: "js-modal-open"
-                      <div class="modal js-modal">
-                        <div class="modal__bg js-modal-close"></div>
-                        　<div class="modal__content">
-                          <a class="js-modal-close" href="">×</a>
-                        </div>
-                      </div> -->
+
+
+
+
+                    <!--ユーザー情報の詳細ボタンを作る-->
+                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                      data-target="#sampleModal"
+                      data-id="<%= customer.id %>"
+                      data-password="<%= customer.company %>"
+                      data-name="<%= customer.tel %>">
+                    詳細
+                    </button>
+
+                  <!--【モーダル】ログインボタンを押した後の表示-->
+                    <div class="modal fade" id="sampleModal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
+                      <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+
+                           <div class="modal-body">
+
+                           <!--ID、Password、Nameそれぞれをまとめたテーブルを作る-->
+                           <% if @prev_customer&.id %>
+                           　　<%= link_to "前へ", customer_path(customer_id: @prev_customer.id), class: "prev btn btn-danger" %>
+                                 <% end %>
+                           <% if @next_customer&.id %>
+                           　　<%= link_to "次へ", customer_path(next_id: @next_customer.id), class: "next btn btn-danger" %>
+                                 <% end %>
+
+                         <div class="two_column">
+                           <table width="100%">
+                              <col width="20%">
+                              <col width="30%">
+                              <col width="20%">
+                              <col width="30%">
+                            <tbody>
+                              <tr>
+                                <th colspan="4">顧客情報（<%= link_to("編集", @edit_customer_path) %>）</th>
+                              </tr>
+                              <tr>
+                                <th>会社名</th>
+                                <td><%= customer.company %></td>
+                                <th>店舗名</th>
+                                <td><%= customer.store %></td>
+                              </tr>
+                              <tr>
+                                <th>代表者</th>
+                                <td><%= customer.first_name %></td>
+                                <th>フリガナ</th>
+                                <td><%= customer.first_kana %></td>
+                              </tr>
+                              <tr>
+                                <th>電話番号１</th>
+                                <td><%= customer.tel %></td>
+                                <th>電話番号２</th>
+                                <td><%= customer.tel2 %></td>
+                              </tr>
+                              <tr>
+                                <th>FAX</th>
+                                <td><%= customer.fax %></td>
+                                <th>業種</th>
+                                <td><%= customer.industry %></td>
+                              </tr>
+                              <tr>
+                                <th>メール</th>
+                                <td><%= customer.mail %></td>
+                                 <th>人数</th>
+                                <td><%= customer.people %></td>
+                              </tr>
+                              <tr>
+                                <th>URL</th>
+                                <td colspan="3"><%= customer.url %></td>
+                              </tr>
+                              <tr>
+                                <th>住所</th>
+                                <td colspan="3"><%= customer.address %></td>
+                              </tr>
+                              <tr>
+                                <th>メモ</th>
+                                <td><%= customer.remarks %></td>
+                                 <th>メモ１</th>
+                                <td><%= customer.memo_1 %></td>
+                              </tr>
+                               <tr>
+                                 <th>メモ２</th>
+                                <td><%= customer.memo_2 %></td>
+                                 <th>メモ３</th>
+                                <td><%= customer.memo_3 %></td>
+                               </tr>
+                            </tbody>
+                           </table>
+                          </div>
+
+                          <div class="two_column">
+                           <table width="100%">
+                              <col width="20%">
+                              <col width="30%">
+                              <col width="20%">
+                              <col width="30%">
+                            <tbody>
+                              <tr>
+                                <th colspan="4">コール</th>
+                              </tr>
+                              <tr>
+                                <td colspan="3" class="call-font"><%= customer.tel%></td>
+                                <td>代表者：<%= customer.first_name %><%= customer.last_name %></td>
+                              </tr>
+                              <tr>
+                                <th colspan ="4">
+                                    <button id="button-call" data-number="<%= customer.tel %>">発信</button>
+                                        <button id="button-hangup" data-number="<%= customer.tel %>">保留</button>
+                                        <button id="button-hangup" data-number="<%= customer.tel %>">切断</button>
+                                </th>
+                              </tr>
+                          <%= form_for ([customer, @call]) do |f| %>
+
+                              <tr>
+                                <th colspan="4">情報入力</th>
+                              </tr>
+                              <tr>
+                                <th>ステータス</th>
+                                <td><%= f.select(:statu, Call.StatuItems) %></td>
+                                <th>再コール日時</th>
+                                <td><%= f.datetime_field :time %></td>
+                              </tr>
+                              <tr>
+                                <th>コメント</th>
+                                <td colspan ="4"><%= f.text_area :comment %></td>
+                              </tr>
+                              <tr>
+                                <th colspan ="4"><%= f.submit %></th>
+                              </tr>
+                            </tbody>
+                           </table>
+                           <%end%>
+                           </div>
+
+                           <table width="100%">
+                              <col width="15%">
+                              <col width="10%">
+                              <col width="15%">
+                              <col width="15%">
+                              <col width="25%">
+                              <col width="10%">
+                              <col width="10%">
+                           <% if customer.calls.any? %>
+                              <tr>
+                                <th>日時</th>
+                                <th>担当者</th>
+                                <th>ステータス</th>
+                                <th>次回連絡日</th>
+                                <th>コメント</th>
+                                <th>削除</th>
+                              </tr>
+                              <tr>
+                              <% customer.calls.each do |call| %>
+                                <td><%= call.created_at %></td>
+                                <td><%= call.admin&.user_name %></td>
+                                <td><%= call.statu %></td>
+                                <td><%= call.time %></td>
+                                <td><%= call.comment %></td>
+                                <td><%= link_to '編集', edit_customer_call_path(customer, call), class: 'command'%>
+                                <%= link_to '削除',
+                                               customer_call_path(customer,call) ,
+                                              method: :delete,
+                                              class: 'command',
+                                              data: { confirm: '本当に削除しますか？'} %></td>
+                              </tr>
+                           <% end %>
+                           </table>
+                           <% end %>
+
+
+                           </div>
+                       </div>
+                     </div>
+
+
+
+
                   </td>
                   <td><%= customer.tel %></td>
                   <td><%= customer.address %></td>
@@ -56,182 +227,6 @@
             </table>
 
 
-
-            <!--初期設定@usersはControllerで定義しておく-->
-            <% @customers.each do |customer| %>
-
-              <!--ユーザー情報の詳細ボタンを作る-->
-              <button type="button" class="btn btn-primary" data-toggle="modal"
-                data-target="#sampleModal"
-                data-id="<%= customer.id %>"
-                data-password="<%= customer.company %>"
-                data-name="<%= customer.tel %>">
-              詳細
-              </button>
-
-<!--【モーダル】ログインボタンを押した後の表示-->
-              <div class="modal fade" id="sampleModal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                  <div class="modal-content">
-
-                     <div class="modal-body">
-
-                     <!--ID、Password、Nameそれぞれをまとめたテーブルを作る-->
-                     <% if @prev_customer&.id %>
-                     　　<%= link_to "前へ", customer_path(customer_id: @prev_customer.id), class: "prev btn btn-danger" %>
-                           <% end %>
-                     <% if @next_customer&.id %>
-                     　　<%= link_to "次へ", customer_path(next_id: @next_customer.id), class: "next btn btn-danger" %>
-                           <% end %>
-
-                   <div class="two_column">
-                     <table width="100%">
-                     		<col width="20%">
-                     		<col width="30%">
-                     		<col width="20%">
-                     		<col width="30%">
-                     	<tbody>
-                     		<tr>
-                     			<th colspan="4">顧客情報（<%= link_to("編集", @edit_customer_path) %>）</th>
-                     		</tr>
-                     		<tr>
-                     			<th>会社名</th>
-                     			<td><%= customer.company %></td>
-                     			<th>店舗名</th>
-                     			<td><%= customer.store %></td>
-                     		</tr>
-                     		<tr>
-                     			<th>代表者</th>
-                     			<td><%= customer.first_name %></td>
-                     			<th>フリガナ</th>
-                     			<td><%= customer.first_kana %></td>
-                     		</tr>
-                     		<tr>
-                     			<th>電話番号１</th>
-                     			<td><%= customer.tel %></td>
-                     			<th>電話番号２</th>
-                     			<td><%= customer.tel2 %></td>
-                     		</tr>
-                     		<tr>
-                     			<th>FAX</th>
-                     			<td><%= customer.fax %></td>
-                     			<th>業種</th>
-                     			<td><%= customer.industry %></td>
-                     		</tr>
-                     		<tr>
-                     			<th>メール</th>
-                     			<td><%= customer.mail %></td>
-                           <th>人数</th>
-                       		<td><%= customer.people %></td>
-                     		</tr>
-                     		<tr>
-                     			<th>URL</th>
-                     			<td colspan="3"><%= customer.url %></td>
-                     		</tr>
-                     		<tr>
-                     			<th>住所</th>
-                     			<td colspan="3"><%= customer.address %></td>
-                     		</tr>
-                     		<tr>
-                     			<th>メモ</th>
-                     			<td><%= customer.remarks %></td>
-                           <th>メモ１</th>
-                     			<td><%= customer.memo_1 %></td>
-                     		</tr>
-                         <tr>
-                           <th>メモ２</th>
-                     			<td><%= customer.memo_2 %></td>
-                           <th>メモ３</th>
-                     			<td><%= customer.memo_3 %></td>
-                         </tr>
-                     	</tbody>
-                     </table>
-                    </div>
-
-                    <div class="two_column">
-                     <table width="100%">
-                     		<col width="20%">
-                     		<col width="30%">
-                     		<col width="20%">
-                     		<col width="30%">
-                     	<tbody>
-                     		<tr>
-                     			<th colspan="4">コール</th>
-                     		</tr>
-                     		<tr>
-                     			<td colspan="3" class="call-font"><%= customer.tel%></td>
-                     			<td>代表者：<%= customer.first_name %><%= customer.last_name %></td>
-                     		</tr>
-                     		<tr>
-                     			<th colspan ="4">
-                     					<button id="button-call" data-number="<%= customer.tel %>">発信</button>
-                             			<button id="button-hangup" data-number="<%= customer.tel %>">保留</button>
-                             			<button id="button-hangup" data-number="<%= customer.tel %>">切断</button>
-                          </th>
-                     		</tr>
-                    <%= form_for ([customer, @call]) do |f| %>
-
-                     		<tr>
-                     			<th colspan="4">情報入力</th>
-                     		</tr>
-                     		<tr>
-                     			<th>ステータス</th>
-                     			<td><%= f.select(:statu, Call.StatuItems) %></td>
-                     			<th>再コール日時</th>
-                     			<td><%= f.datetime_field :time %></td>
-                     		</tr>
-                     		<tr>
-                     			<th>コメント</th>
-                     			<td colspan ="4"><%= f.text_area :comment %></td>
-                     		</tr>
-                     		<tr>
-                     			<th colspan ="4"><%= f.submit %></th>
-                     		</tr>
-                     	</tbody>
-                     </table>
-                     <%end%>
-                     </div>
-
-                     <table width="100%">
-                     		<col width="15%">
-                     		<col width="10%">
-                     		<col width="15%">
-                     		<col width="15%">
-                     		<col width="25%">
-                     		<col width="10%">
-                     		<col width="10%">
-                     <% if customer.calls.any? %>
-                     		<tr>
-                     			<th>日時</th>
-                     			<th>担当者</th>
-                     			<th>ステータス</th>
-                     			<th>次回連絡日</th>
-                     			<th>コメント</th>
-                     			<th>削除</th>
-                     		</tr>
-                     		<tr>
-                     		<% customer.calls.each do |call| %>
-                     			<td><%= call.created_at %></td>
-                     			<td><%= call.admin&.user_name %></td>
-                     			<td><%= call.statu %></td>
-                     			<td><%= call.time %></td>
-                     			<td><%= call.comment %></td>
-                     			<td><%= link_to '編集', edit_customer_call_path(customer, call), class: 'command'%>
-                     			<%= link_to '削除',
-                                         customer_call_path(customer,call) ,
-                     			            	method: :delete,
-                     			            	class: 'command',
-                     			            	data: { confirm: '本当に削除しますか？'} %></td>
-                     		</tr>
-                     <% end %>
-                     </table>
-                     <% end %>
-
-
-                     </div>
-                 </div>
-               </div>
-            <% end %>
 
 <div  class="heading"><h2>リスト検索</h2></div>
 

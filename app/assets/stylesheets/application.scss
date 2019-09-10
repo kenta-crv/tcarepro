@@ -414,26 +414,3 @@ span {
   float:right;
   margin-right:10px;
 }
-
-
-
-
-.modal{
-    display: none;
-    height: 100vh;
-    position: fixed;
-    width: 100%;
-}
-.modal__bg{
-    background: rgba(0,0,0,0.8);
-    height: 100vh;
-    position: absolute;
-    width: 100%;
-}
-.modal__content{
-    background: #fff;
-    padding: 40px;
-    position: absolute;
-    width: 95%;
-    height:100%;
-}

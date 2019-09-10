@@ -140,11 +140,6 @@ $(document).on('turbolinks:load', function(event) {
 
 
 
-こがかわいいし 不思議ゼロです。池上9時ですいです   まずすぎうん
-
-
-
-
 
 <script>
   // ボタンがクリックされてモーダルが開いたら作動
