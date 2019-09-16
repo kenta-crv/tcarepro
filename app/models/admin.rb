@@ -5,4 +5,5 @@ class Admin < ApplicationRecord
          :recoverable, :rememberable, :validatable
   #has_many :customers
   has_many :calls
+  has_many :customers_search_orders
 end

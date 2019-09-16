@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190903010455) do
+ActiveRecord::Schema.define(version: 20190911153606) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -69,6 +69,15 @@ ActiveRecord::Schema.define(version: 20190903010455) do
     t.string "memo_3"
     t.string "memo_4"
     t.string "memo_5"
+  end
+
+  create_table "customers_search_orders", force: :cascade do |t|
+    t.integer "admin_id"
+    t.integer "customer_id"
+    t.integer "prev_customer_id"
+    t.integer "next_customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "faqs", force: :cascade do |t|

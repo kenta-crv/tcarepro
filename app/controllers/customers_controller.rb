@@ -16,32 +16,19 @@ class CustomersController < ApplicationController
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
       last_call_customer_ids = last_call.pluck(:customer_id)
     end
-
+    #@customers_search_orders = Customer.ransack(params[:customers_search_orders])
     @q = Customer.ransack(params[:q])
     @customers = @q.result
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(100)
-
-    #case
-    #when "call" then
-    #  @customers = @q.result.where(status: "call").page(params[:page]).per(100)
-    #when "prospect" then
-    #  @customers = @q.result.where(status: "prospect").page(params[:page]).per(100)
-    #when "crm" then
-    #  @customers = @q.result.where(status: "crm").page(params[:page]).per(100)
-    #else
-    #  @customers = @q.result.page(params[:page]).per(100)
-    #end
 
    respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "tasks-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
    end
 
-   #@customer = Customer.find(params[:id])
-   @call = Call.new
-   @prev_customer = Customer.find_by(id: params[:id])
-   @next_customer = Customer.find_by(id: params[:id])
+   @customers_search_orders = Customers_search_order.find(customers_search_order_id)
+   @customers = @customers_search_order.customers.order('published_at, id desc')
   end
 
   def show
