@@ -1,9 +1,23 @@
-<% if @prev_customer&.id %>
-　　<%= link_to "前へ", customer_path(customer_id: @prev_customer.id), class: "prev btn btn-danger" %>
+<table class="header-table">
+  <tr>
+    <th>
+      <% if @prev_customer&.id %>
+        <%= link_to "前へ", customer_path(id: @prev_customer.id, customer_ids: @customer_ids), class:"prev btn btn-danger" %>
       <% end %>
-<% if @next_customer&.id %>
-　　<%= link_to "次へ", customer_path(next_id: @next_customer.id), class: "next btn btn-danger" %>
+    </th>
+    <th>本日：<%= @call.call_count_today %>Call</th>
+    <th>見込獲得数：<%= @call.protect_count_today %>件</th>
+    <th>アポ数：<%= @call.app_count_today %>件</th>
+    <th>見込獲得率：<%= @call.protect_convertion.ceil(2) %>%</th>
+    <th>アポ獲得率：<%= @call.app_convertion.ceil(2) %>%</th>
+    <th>
+      <% if @next_customer&.id %>
+        <%= link_to "次へ", customer_path(id: @next_customer.id, customer_ids: @customer_ids), class:"next btn btn-danger" %>
       <% end %>
+    </th>
+  </tr>
+</table>
+
 
 <div class="show-top">
 <div class="two_column">

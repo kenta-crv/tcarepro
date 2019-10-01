@@ -73,6 +73,8 @@ gem 'annotate'
 gem 'simple_enum'
 
 gem 'kaminari'
+#gem 'will_paginate'
+
 gem 'ransack'
 gem 'bootstrap', '~> 4.1.1'
 gem 'haml-rails'

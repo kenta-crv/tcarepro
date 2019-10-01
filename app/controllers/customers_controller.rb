@@ -21,21 +21,40 @@ class CustomersController < ApplicationController
     @customers = @q.result
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(100)
+    @customers_ids = @customers.ids
 
    respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "tasks-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
    end
 
-   @customers_search_orders = Customers_search_order.find(customers_search_order_id)
-   @customers = @customers_search_order.customers.order('published_at, id desc')
+   # @customers_search_orders = CustomersSearchOrder.find(customers_search_order_id)
+   # @customers = @customers_search_order.customers.order('published_at, id desc')
   end
 
   def show
     @customer = Customer.find(params[:id])
     @call = Call.new
-    @prev_customer = Customer.find_by(id: params[:id])
-    @next_customer = Customer.find_by(id: params[:id])
+    @customer_ids = params[:customer_ids]
+    current_index = @customer_ids.index(params[:id].to_s)
+
+    if current_index > 0 && current_index + 1 < @customer_ids.size
+      prev_index = current_index - 1
+      prev_customer_id = @customer_ids[prev_index]
+      @prev_customer = Customer.find_by(id: prev_customer_id)
+
+      next_index = current_index + 1
+      next_customer_id = @customer_ids[next_index]
+      @next_customer = Customer.find_by(id: next_customer_id)
+    elsif current_index == 0
+      next_index = current_index + 1
+      next_customer_id = @customer_ids[next_index]
+      @next_customer = Customer.find_by(id: next_customer_id)
+    elsif current_index + 1 == @customer_ids.size
+      prev_index = current_index - 1
+      prev_customer_id = @customer_ids[prev_index]
+      @prev_customer = Customer.find_by(id: prev_customer_id)
+    end
   end
 
   def new

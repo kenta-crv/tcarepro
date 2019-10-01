@@ -35,7 +35,48 @@ class Call < ApplicationRecord
     @@StatuItems
   end
 
-  def count
-    @call = Call.all.count(params[:id])
+  def call_count_today
+    #Call.count(:id)
+    Call
+      .where('created_at > ?', Time.current.beginning_of_day)
+      .where('created_at < ?', Time.current.end_of_day).count
+
   end
+
+  def protect_count_today #本日獲得見込数
+    Call
+      .where(statu: "見込み客")
+      .where('created_at > ?', Time.current.beginning_of_day)
+      .where('created_at < ?', Time.current.end_of_day)
+      .count
+  end
+
+  def protect_convertion
+    (self.protect_count_today.to_f / self.call_count_today.to_f) * 100
+  end
+
+  def app_count_today
+    Call
+      .where(statu: "APP")
+      .where('created_at > ?', Time.current.beginning_of_day)
+      .where('created_at < ?', Time.current.end_of_day)
+      .count
+  end
+
+  def app_convertion
+    (self.app_count_today.to_f / self.call_count_today.to_f) * 100
+  end
+
+  def date_count
+    Call.group("DATE_FORMAT(created_at, '%Y-%m-%d')").count
+  end
+
+  def week_count
+    Call.group("WEEK(created_at)").count
+  end
+
+  def month_count
+    Call.group("MONTH(created_at)").count
+  end
+
 end

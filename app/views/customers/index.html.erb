@@ -15,12 +15,11 @@
                   <th>最終更新日</th>
                   <th>編集/削除</th>
                 </tr>
-    <% @customers.each_with_index do |customer, index| %>
+    <% @customers.each do |customer| %>
                 <tr>
-                  <td><%= link_to customer.company, customer_path(customer,
-                                                    prev_id: @customers[index-1]&.id,
-                                                    customers_search_order_customers(@customer_search_order, @customer.prev) if @customer.prev,
-                                                    customers_search_order_customers(@customer_search_order, @customer.next) if @customer.next
+                  <td><%= link_to customer.company, customer_path(
+                                                    customer,
+                                                    customer_ids: @customers_ids
                                                     )%>
                   </td>
                   <td><%= customer.tel %></td>
