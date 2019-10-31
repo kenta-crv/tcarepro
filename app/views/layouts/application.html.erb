@@ -22,23 +22,10 @@
  <div class="container">
       <div class="header-right">
            <%= link_to  'TOP', '#' %>
-           <%= link_to  'New', '/customers/new' %>
-           　<!--分析や各Todoを表示（SFA分析をここに配置）-->
-           <%= link_to  'MobileCTI', customers_path(type:"call", company:"[desc]") %>
-           　<!--CTIをそのまま転用-->
-           <%= link_to  'CRM', customers_path(type:"crm", company:"[desc]") %>
-           　<!--全案件対応出来るように-->
-           <%= link_to  'MailDM', '' %>
-           　<!--メールDMをCRMから移行-->
-           <%= link_to  'FAXDM', '' %>
-           　<!--FAXDMはメールDMとベースは同じ-->
+           <%= link_to  'CTI', customers_path %>
+           <%= link_to  'CRM', crms_path %>
            <%= link_to  'File', '/uploader/form' %>
-           　<!--微修正のみ-->
            <%= link_to  'FAQ', '/faqs/'  %>
-           　<!--もう少し使いやすく-->
-           <%= link_to  'Mail', 'https://mail.google.com/mail/u/0/#inbox', :target=>["_blank"] %>
-           <%= link_to  'ToDo', '/todos/' %>
-           　<!--実用性を持たせる-->
            <% if admin_signed_in? %>
       　　　  <strong><% current_admin.email  %></strong>
         　 <%= link_to "logout", destroy_admin_session_path, method: :delete %>

@@ -1,14 +1,17 @@
 Rails.application.routes.draw do
 
   root to: 'customers#index'
+  delete :customers, to: 'customers#destroy_all'
   #ログイン切り替え
   devise_for :admins       #使用者ログイン
 
+  resources :crms
   resources :customers do
         resources :calls
     collection do
       post :import
       get :message
+      get :bulk_destroy
     end
   end
 

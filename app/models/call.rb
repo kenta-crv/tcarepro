@@ -15,6 +15,7 @@ class Call < ApplicationRecord
     ).group(:customer_id)
   }
 
+
   @@StatuItems = [
     "",
     "着信のみ",

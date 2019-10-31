@@ -40,7 +40,8 @@ class CallsController < ApplicationController
  		params.require(:call).permit(
  		:statu, #ステータス
  		:time, #再コール
- 		:comment #コメント
+ 		:comment, #コメント
+    :item_select => []
   ).merge(admin: current_admin)
  	end
 

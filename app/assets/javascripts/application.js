@@ -12,6 +12,7 @@
 //
 //= require rails-ujs
 //
+//= require select2
 //= require jquery
 //= require jquery_ujs
 //= require_self
@@ -136,4 +137,11 @@ $(document).on('turbolinks:load', function(event) {
     //   $("#todo-select").val(v)
     // });
 
+});
+
+
+
+
+$(document).ready(function() {
+  $('.mySelect2').select2();
 });

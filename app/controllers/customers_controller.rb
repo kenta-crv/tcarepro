@@ -89,6 +89,15 @@ class CustomersController < ApplicationController
     redirect_to customers_path
  end
 
+ def destroy_all
+   checked_data = params[:deletes].keys #checkデータを受け取る
+   if Customer.destroy(checked_data)
+     redirect_to customers_path
+   else
+     render action: 'index'
+   end
+ end
+
  def import
    Customer.import(params[:file])
    redirect_to customers_url, notice:"リストを追加しました"
@@ -128,6 +137,7 @@ class CustomersController < ApplicationController
         :memo2, #ステータス
         :memo3, #ステータス
         :memo4 #ステータス
+        
        )
     end
 

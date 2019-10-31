@@ -1,13 +1,17 @@
 <div  class="heading"><h2>コールリスト</h2></div>
+<%= form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do %>
+
           <table width ="90%">
               <tbody>
-                   <col width="25%">
+                   <col width="10%">
+                   <col width="18%">
                    <col width="12%">
-                   <col width="25%">
                    <col width="15%">
                    <col width="15%">
-                   <col width="8%">
+                   <col width="15%">
+                   <col width="12%">
                 <tr>
+                  <th><%= submit_tag '一括削除' %></th>
                   <th>会社名</th>
                   <th>電話番号</th>
                   <th>住所</th>
@@ -15,12 +19,14 @@
                   <th>最終更新日</th>
                   <th>編集/削除</th>
                 </tr>
-    <% @customers.each do |customer| %>
+    <% @customers.each_with_index do |customer, index| %>
                 <tr>
+                  <td><%= check_box_tag "deletes[#{customer.id}]", customer.id %></td>
                   <td><%= link_to customer.company, customer_path(
-                                                    customer,
-                                                    customer_ids: @customers_ids
-                                                    )%>
+                                                      customer,
+                                                      customer_ids: @customers_ids
+                                                    )
+                                                    %>
                   </td>
                   <td><%= customer.tel %></td>
                   <td><%= customer.address %></td>
@@ -38,15 +44,14 @@
                     method: :delete,
                     class: 'command',
                     data: { confirm: '本当に削除しますか？'} %></td>
-                    <% end %>
+                  <% end %>
                 </tr>
                 <tr>
                   <th colspan = "6"><%= paginate @customers %></th>
                 </tr>
               </tbody>
             </table>
-
-
+<% end %>
 
 <div  class="heading"><h2>リスト検索</h2></div>
 
@@ -105,7 +110,7 @@
           </tr>
           <tr>
             <th>最終コール状態</th>
-            <td><%= select_tag "last_call[statu]", options_for_select( [""] + Call.StatuItems, @last_call_params[:statu] ) %></td>
+            <td><%= select_tag "last_call[statu]", options_for_select( [""] + Call.StatuItems, @last_call_params[:statu]), multiple: true %></td>
 　　　　　　　<th></th>
             <td></td>
           </tr>
@@ -187,28 +192,16 @@ $(function () {
 
 <div  class="heading"><h2>インポート</h2></div>
 
-   <%= form_tag import_customers_path, multipart: true do %>
+<%= form_tag import_customers_path, multipart: true do %>
    <table width="90%">
      <tbody>
         <tr>
-           <th>CSVファイルインポート</th>
-        <tr>
+           <th colspan="3">CSVファイルインポート</th>
+        </tr>
         <tr>
            <td><%= file_field_tag :file %></td>
-        <tr>
-        <tr>
-           <th colspan="2"><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
-        </tr>
-    </tbody>
-   </table>
-
-   <table width="90%">
-     <tbody>
-        <tr>
-           <th>CSVファイルエクスポート</th>
-        <tr>
-        <tr>
-           <th colspan="2"><%= link_to 'エクスポート', customers_path(format: :csv), class: 'btn btn-danger' %></th>
+           <th><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
+           <th><%= link_to 'エクスポート', customers_path(format: :csv), class: 'btn btn-danger' %></th>
         </tr>
     </tbody>
    </table>

@@ -1,0 +1,2 @@
+class Crm < ApplicationRecord
+end
