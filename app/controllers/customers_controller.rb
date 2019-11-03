@@ -64,7 +64,7 @@ class CustomersController < ApplicationController
   def create
     @customer = Customer.new(customer_params)
      if @customer.save
-       redirect_to customer_path
+       redirect_to customers_path
      else
        render 'new'
      end
@@ -137,7 +137,7 @@ class CustomersController < ApplicationController
         :memo2, #ステータス
         :memo3, #ステータス
         :memo4 #ステータス
-        
+
        )
     end
 
