@@ -1,2 +1,24 @@
-%h1 Crms#index
-%p Find me in app/views/crms/index.html.haml
+<div  class="heading"><h2>顧客一覧</h2></div>
+<table width="90%">
+  <tr>
+    <th>会社名</th>
+    <th>代表者</th>
+    <th>電話番号</th>
+    <th>メールアドレス</th>
+    <th>編集/削除</th>
+  </tr>
+  <% @crms.each do |crm| %>
+  <tr>
+    <td><%= link_to crm.company, crm_path(crm) %></td>
+    <td><%= crm.first_name %><%= crm.last_name %></td>
+    <td><%= crm.tel %></td>
+    <td><%= crm.mail %></td>
+    <td><%= link_to '編集', edit_crm_path(crm), class: 'command'%>
+    <%= link_to '削除',
+      crm_path(crm),
+      method: :delete,
+      class: 'command',
+      data: { confirm: '本当に削除しますか？'} %></td>
+  </tr>
+  <% end %>
+</table>

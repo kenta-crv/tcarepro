@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   devise_for :admins       #使用者ログイン
 
   resources :crms
+  resources :progresses
+
   resources :customers do
         resources :calls
     collection do
@@ -18,7 +20,6 @@ Rails.application.routes.draw do
 
                                                 #アップロード
   resources :uploader, only: [:edit, :update, :destroy]
-
   get 'uploader/index'
   get 'uploader/form'
   post 'uploader/upload'

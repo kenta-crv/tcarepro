@@ -6,9 +6,8 @@
 
 # タイムゾーンを東京(JST +9:00)に設定
 # config.time_zone = 'Tokyo'
-
 require_relative 'boot'
-require 'csv' 
+require 'csv'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -19,6 +18,8 @@ module Smart
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
+    config.generators.template_engine = :slim
+
         config.time_zone = 'Tokyo'
         config.i18n.load_path +=
             Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]

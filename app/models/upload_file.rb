@@ -11,4 +11,5 @@
 
 class UploadFile < ApplicationRecord
 	 mount_uploader :file, UploadFileUploader
+	 validates :name, presence: true
 end

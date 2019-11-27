@@ -1,26 +1,34 @@
 <%= form_for @crm do |f| %>
 <table>
   <tr>
-    <th>会社名</th>
-    <td><%= f.text_field :company %></td>
-    <th>メールアドレス</th>
-    <td><%= f.text_field :mail %></td>
-  </tr>
-  <tr>
     <th>代表者</th>
     <td><%= f.text_field :first_name %><%= f.text_field :last_name %></td>
     <th>ダイヒョウシャ</th>
     <td><%= f.text_field :first_kana %><%= f.text_field :last_kana %></td>
   </tr>
   <tr>
+  <tr>
+    <th>担当者</th>
+    <td><%= f.text_field :first_name %><%= f.text_field :last_name %></td>
+    <th>タントウシャ</th>
+    <td><%= f.text_field :first_kana %><%= f.text_field :last_kana %></td>
+  </tr>
+  </tr>
+  <tr>
     <th>電話番号</th>
     <td><%= f.telephone_field :tel %></td>
+    <th>担当者連絡先</th>
+    <td></td>
+  <tr>
     <th>FAX番号</th>
     <td><%= f.telephone_field :fax %></td>
+    <th>URL</th>
+    <td></td>
+  </tr>
   </tr>
   <tr>
     <th>郵便番号</th>
-    <td><%= f.number_field :postnumber %></td>
+    <td>〒<%= f.number_field :postnumber %></td>
     <th>都道府県</th>
     <td><%= f.text_field :prefecture %></td>
   </tr>
@@ -33,23 +41,8 @@
   <tr>
     <th>ビル名</th>
     <td><%= f.text_field :building %></td>
-    <th>商材</th>
+    <th>取扱商材</th>
     <td><%= f.text_field :item %></td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <th>担当者</th>
-    <td><%= f.text_field :first_name %><%= f.text_field :last_name %></td>
-    <th>タントウシャ</th>
-    <td><%= f.text_field :first_kana %><%= f.text_field :last_kana %></td>
-  </tr>
-  <tr>
-    <th>担当者連絡先</th>
-    <td><%= f.telephone_field :tel %></td>
-    <th></th>
-    <td></td>
   </tr>
   <tr>
     <td colspan ="4"><%= f.submit '登録する' %></td>

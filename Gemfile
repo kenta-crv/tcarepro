@@ -61,10 +61,10 @@ gem 'devise'
 # Thinreports
 gem 'thinreports'
 
-
+gem 'slim-rails'
 gem 'redis'
 gem 'redis-rails'
-
+gem 'pry-rails'
 
 gem 'carrierwave'
 

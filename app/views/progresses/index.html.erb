@@ -1,0 +1,24 @@
+<div class="heading"><h2>進捗一覧</h2></div>
+
+  <table width="90%">
+    <tr>
+      <th>会社名</th>
+      <th>ステータス</th>
+      <th>単価</th>
+      <th>件数</th>
+      <th>次回営業日</th>
+      <th>編集/削除</th>
+    </tr>
+    <% @progresses.each do |progress| %>
+    <tr>
+     <td></td>
+     <td><%= progress.statu %></td>
+     <td><%= progress.price %></td>
+     <td><%= progress.number %></td>
+     <td><%= progress.next %></td>
+     <td><%= link_to "編集", edit_progress_path(progress) %>
+         <%= link_to "削除", progress_path(progress), method: :delete, datas: {confirm: "本当に削除しますか？"} %>
+     </td>
+   </tr>
+   <% end %>
+  </table>

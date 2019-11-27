@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191005043553) do
+ActiveRecord::Schema.define(version: 20191126111753) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -131,6 +131,22 @@ ActiveRecord::Schema.define(version: 20191005043553) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "company_id"
+  end
+
+  create_table "progresses", force: :cascade do |t|
+    t.integer "crm_id"
+    t.string "statu"
+    t.string "price"
+    t.string "number"
+    t.string "history"
+    t.string "area"
+    t.string "target"
+    t.string "next"
+    t.string "content"
+    t.string "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_progresses_on_crm_id"
   end
 
   create_table "todos", force: :cascade do |t|

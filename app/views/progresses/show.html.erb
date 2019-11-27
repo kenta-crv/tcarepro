@@ -1,0 +1,42 @@
+<div class="heading"><h2>進捗</h2></div>
+  <table>
+   <tr>
+     <th>ステータス</th>
+     <td><%= @progress.statu %></td>
+     <th>過去アポ利用履歴</th>
+     <td><%= @progress.history %></td>
+   </tr>
+   <tr>
+     <th>単価</th>
+     <td><%= @progress.price %></td>
+     <th>件数</th>
+     <td><%= @progress.number %></td>
+   </tr>
+   <tr>
+   <tr>
+     <th>エリア</th>
+     <td><%= @progress.area %></td>
+     <th>対象者</th>
+     <td><%= @progress.target %></td>
+   </tr>
+   </tr>
+   <tr>
+     <th>次回営業日</th>
+     <td><%= @progress.next %></td>
+     <th></th>
+     <td></td>
+   <tr>
+     <th colspan ="2">サービス内容</th>
+     <td colspan ="2"><%= @progress.content %></td>
+   </tr>
+   <tr>
+     <th colspan ="2">コメント</th>
+     <td colspan ="2"><%= @progress.comment %></td>
+   </tr>
+   <tr>
+     <th colspan ="2">編集/削除</th>
+     <td colspan ="2"><%= link_to "編集", edit_progress_path(progress) %>
+                      <%= link_to "削除", progress_path(progress), method: :delete, datas: {confirm: "本当に削除しますか？"} %></td>
+   </tr>
+  </table>
+<% end %>
