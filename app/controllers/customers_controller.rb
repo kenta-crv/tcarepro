@@ -55,6 +55,9 @@ class CustomersController < ApplicationController
       prev_customer_id = @customer_ids[prev_index]
       @prev_customer = Customer.find_by(id: prev_customer_id)
     end
+
+    # 自動発信を行うかどうかのフラグ
+    @is_auto_call = (params[:is_auto_call] == 'true')
   end
 
   def new

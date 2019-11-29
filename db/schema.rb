@@ -149,6 +149,20 @@ ActiveRecord::Schema.define(version: 20191126111753) do
     t.index ["crm_id"], name: "index_progresses_on_crm_id"
   end
 
+  create_table "smartphone_logs", force: :cascade do |t|
+    t.string "token", null: false
+    t.string "log_data", null: false
+    t.datetime "created_at", null: false
+  end
+
+  create_table "smartphones", force: :cascade do |t|
+    t.string "device_name", null: false
+    t.string "token", null: false
+    t.boolean "delete_flag", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "todos", force: :cascade do |t|
     t.string "execution"
     t.string "title"

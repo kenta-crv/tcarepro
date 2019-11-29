@@ -1,0 +1,2 @@
+class SmartphoneLog < ApplicationRecord
+end
