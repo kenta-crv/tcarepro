@@ -51,6 +51,15 @@ Rails.application.routes.draw do
   #FAQ
   resources :faqs
 
+  # API
+  namespace :api do
+    namespace :v1 do
+      resources :smartphones
+      namespace :smartphone_logs do
+        post '/' , :action => 'create'
+      end
+    end
+  end
 
   get '*path', controller: 'application', action: 'render_404'
 

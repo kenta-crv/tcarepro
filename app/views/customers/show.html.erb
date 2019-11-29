@@ -133,10 +133,14 @@
 		</tr>
 		<tr>
 			<th colspan ="4">
-					<button id="button-call" data-number="<%= @customer.tel %>">発信</button>
-        			<button id="button-hangup" data-number="<%= @customer.tel %>">保留</button>
-        			<button id="button-hangup" data-number="<%= @customer.tel %>">切断</button>
-        	</th>
+				<%= select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect{ |o| [ o.device_name, o.token ] }), :include_blank => '（選択してください）') %>
+				<button id="button-call" data-number="<%= @customer.tel %>">発信</button>
+				<button id="button-hangup" data-number="<%= @customer.tel %>" disabled>保留</button>
+				<button id="button-hangup" data-number="<%= @customer.tel %>" disabled>切断</button>
+				<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
+					<input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %> />&nbsp;「次へ」「前へ」ボタン押下時に自動発信する
+				</label>
+			</th>
 		</tr>
 	</tbody>
 </table>
@@ -200,3 +204,71 @@
 </table>
 <% end %>
 </div>
+
+<script>
+$(function() {
+
+  // 前回選択時の発信先を初期設定する
+  for (var cookie of document.cookie.split(';')) {
+    var keyValue = cookie.split('=');
+    if (keyValue[0] == 'token') {
+      $('select#token').val(keyValue[1]);
+    }
+  }
+
+  $('a.prev,a.next').on('click', function(event) {
+    var href = $(this).prop('href');
+    href += '&is_auto_call=' + $('input#check-auto-call').prop('checked');
+    $(this).prop('href', href);
+  });
+
+  // 発信要求送信先端末選択時のイベント
+  $('select#token').on('change', function(event) {
+    // 「発信」「保留」「切断」ボタンの使用可否を制御
+    var token = $(this).find('option:selected').val();
+    var isNotSelected = (token == '');
+    $(':button#button-call,:button#button-hang-up,input#check-auto-call').prop('disabled', isNotSelected);
+    // 選択したトークンをCookieに保存
+    if (!isNotSelected) {
+      document.cookie = 'token=' + token + ';max-age=' + (60 * 60 * 24 * 30);
+    }
+  }).triggerHandler('change');
+
+  // 「発信」ボタンクリック時のイベント
+  $(':button#button-call').on('click', function(event) {
+    // トークンを取得
+    var token = $('select#token').children(':selected').val();
+    // 電話番号を取得
+    var telephone = $(this).data('number').replace(/-/g, '');
+    // Push通知を送信
+    $.ajax({
+      type: 'post',
+      url: 'https://fcm.googleapis.com/fcm/send',
+      headers: { Authorization: 'key=AAAAeBZ_DsA:APA91bHFa3RIOMEUyj-lYVOjU6AF60NZRxWkJZXvOSVZw8tUTYq2Rvb7a4CvUOV3XGi_Oc0ZS7HptHhXPeozTnlt1zaunIUXgwEJ6j3bYpVsQ10tHg9SqKUYnZLhVtBkGb1X0tvyxG8S' },
+      contentType: 'application/json',
+      data: JSON.stringify({ "to": token, "priority": "high", "time_to_live": 0, "data": { "telephone": telephone.replace(/-/g, ''), "date": new Date().getTime() } }),
+    })
+    .done((data, textStatus, jqXHR) => {
+      if (data.failure > 0) {
+        alert('発信先の端末が無効です。\n正しい端末が登録されているかご確認ください。');
+      } else {
+        // nop
+      }
+      console.log('done', jqXHR.status);
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+      alert('発信時にエラーが発生しました。\nシステム管理者にお問い合わせください。\n\nエラーコード：' + jqXHR.status);
+      console.log('fail', jqXHR.status);
+    })
+    .always(() => {
+      // nop
+    });
+  });
+
+  // 自動発信を行うかどうか
+  if (<%= @is_auto_call %>) {
+    $(':button#button-call').triggerHandler('click');
+  }
+
+});
+</script>
