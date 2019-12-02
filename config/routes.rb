@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   #ログイン切り替え
   devise_for :admins       #使用者ログイン
 
-  resources :crms
+  resources :crms do
+    resources :comments
+  end
   resources :progresses
 
   resources :customers do

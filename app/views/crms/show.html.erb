@@ -99,12 +99,116 @@
    </tr>
   </table>
 
-<div class="heading"><h2>ファイル添付</h2></div>
 
-<div class="heading"><h2>faq</h2></div>
+
+
+<div class="heading"><h2>ファイル添付</h2></div>
+   <table width="80%">
+    <tbody>
+       <tr>
+         <th>名称</th>
+         <th>閲覧</th>
+         <th>ダウンロード</th>
+         <th>削除</th>
+       </tr>
+    　 <tr>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
+     　</tr>
+    </tbody>
+   </table>
+
+
+
+
+
+<div class="heading"><h2>コメント</h2></div>
+<table width="80%">
+ <tbody>
+   <tr>
+     <th>内容</th>
+     <th>編集/削除</th>
+   </tr>
+   <% if @crm.comments.any? %>
+    <% @crm.comments.each do |comment| %>
+    <tr>
+      <th width="90%"><%= comment.body %></th>
+      <td width="10%"><%= link_to '削除',
+                      crm_comment_path(crm_id: @crm.id, id: comment.id),
+                      method: :delete,
+                      data: { confirm: '本当に削除しますか？'} %></td>
+     </tr>
+    <% end %>
+   <% end %>
+   <%= form_for ([@crm, @crm.comments.build]) do |f| %>
+ 　 <tr>
+     <td width="90%"><%= f.text_area :body %></td>
+     <td width="10%"><%= f.submit '登録' %></td>
+  　</tr>
+ </tbody>
+</table>
+　<% end %>
+
+
+<div class="heading"><h2>FAQ</h2></div>
+<table width="80%">
+ <tbody>
+    <col width= "20%">
+    <col width= "70%">
+    <col width= "10%">
+    <tr>
+      <th>タイトル</th>
+      <th>内容</th>
+      <th>編集/削除</th>
+    </tr>
+ 　 <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+  　</tr>
+ </tbody>
+</table>
+
+
 
 <div class="heading"><h2>請求書</h2></div>
+  <table width="80%">
+   <tbody>
+      <tr>
+        <th>請求日</th>
+        <th>内容</th>
+        <th>金額</th>
+        <th>入金日</th>
+        <th>編集/削除</th>
+      </tr>
+   　 <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    　</tr>
+   </tbody>
+  </table>
 
 <div class="heading"><h2>獲得一覧</h2></div>
-
-<div class="heading"><h2>送付状</h2></div>
+   <table width="80%">
+    <tbody>
+       <tr>
+         <th>獲得日</th>
+         <th>訪問日</th>
+         <th>会社名</th>
+         <th>状況</th>
+         <th>獲得者</th>
+       </tr>
+    　 <tr>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
+     　</tr>
+    </tbody>
+   </table>

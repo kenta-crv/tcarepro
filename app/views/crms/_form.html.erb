@@ -1,6 +1,12 @@
 <%= form_for @crm do |f| %>
 <table>
   <tr>
+    <th>会社名</th>
+    <td><%= f.text_field :company %></td>
+    <th>メールアドレス</th>
+    <td><%= f.email_field :mail %></td>
+  </tr>
+  <tr>
     <th>代表者</th>
     <td><%= f.text_field :first_name %><%= f.text_field :last_name %></td>
     <th>ダイヒョウシャ</th>

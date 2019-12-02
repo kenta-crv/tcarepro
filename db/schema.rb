@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191126111753) do
+ActiveRecord::Schema.define(version: 20191201143916) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -35,6 +35,14 @@ ActiveRecord::Schema.define(version: 20191126111753) do
     t.integer "admin_id"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.integer "crm_id"
+    t.string "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_comments_on_crm_id"
   end
 
   create_table "contacts", force: :cascade do |t|
@@ -106,6 +114,16 @@ ActiveRecord::Schema.define(version: 20191126111753) do
     t.string "contents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "images", force: :cascade do |t|
+    t.integer "crm_id"
+    t.string "name"
+    t.string "views"
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_images_on_crm_id"
   end
 
   create_table "invoices", force: :cascade do |t|
