@@ -29,8 +29,12 @@ class ApplicationController < ActionController::Base
     def after_sign_in_path_for(resource)
       case resource
       when Admin
-        super # 現在は暫定的に上位継承しています
-       root_path
+         #super # 現在は暫定的に上位継承しています
+         root_path
+      when User
+         root_path
+      else
+         super
       end
     end
 
@@ -38,6 +42,9 @@ class ApplicationController < ActionController::Base
       case resource
       when Admin, :admin, :admins
         new_admin_session_path
+        # put here for Staff default page direct path after signed out
+      when User, :user, :users
+        new_user_session_path
         # put here for Staff default page direct path after signed out
       else
         super

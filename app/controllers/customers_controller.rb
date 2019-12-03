@@ -139,8 +139,8 @@ class CustomersController < ApplicationController
         :memo1, #ステータス
         :memo2, #ステータス
         :memo3, #ステータス
-        :memo4 #ステータス
-
+        :memo4, #ステータス
+        :choice
        )
     end
 end

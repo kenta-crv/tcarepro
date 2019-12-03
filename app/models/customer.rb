@@ -16,11 +16,11 @@ class Customer < ApplicationRecord
   end
 
   def self.updatable_attributes
-    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status"]
+    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "choice"]
   end
 
   def self.csv_attributes
-    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status"]
+    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "choice"]
   end
 
   def self.generate_csv
@@ -30,6 +30,17 @@ class Customer < ApplicationRecord
         csv << csv_attributes.map{|attr| task.send(attr)}
       end
     end
+  end
+
+  @@ChoiceItems = [
+    "SORAIRO関東",
+    "SORAIRO九州",
+    "ティンロンジャパン",
+    "アイアットOEC"
+  ]
+
+  def self.ChoiceItems
+    @@ChoiceItems
   end
 
 
