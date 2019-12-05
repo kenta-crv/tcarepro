@@ -12,11 +12,16 @@ class Api::V1::SmartphonesController < ApiController
   end
 
   def create
-    smartphone = Smartphone.new(smartphone_params)
-    if smartphone.save
-      render json: { status: 'SUCCESS', data: smartphone }
+    # 既に登録されているトークンは登録しない
+    if Smartphone.find_by(token: smartphone_params[:token], delete_flag: false) != nil
+      render json: { status: 'ERROR', data: 'has already been registered.' }
     else
-      render json: { status: 'ERROR', data: smartphone.errors }
+      smartphone = Smartphone.new(smartphone_params)
+      if smartphone.save
+        render json: { status: 'SUCCESS', data: smartphone }
+      else
+        render json: { status: 'ERROR', data: smartphone.errors }
+      end
     end
   end
 
