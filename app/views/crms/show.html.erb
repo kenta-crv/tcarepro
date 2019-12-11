@@ -1,5 +1,9 @@
 <div  class="heading"><h2>顧客情報</h2></div>
-  <table>
+  <table width="90%">
+    <col width="20%">
+    <col width="30%">
+    <col width="20%">
+    <col width="30%">
    <tr>
      <th>会社名</th>
      <td><%= @crm.company %></td>
@@ -63,39 +67,43 @@
 
 
 <div class="heading"><h2>進捗</h2></div>
-  <table>
+<table width="90%">
+  <col width="20%">
+  <col width="30%">
+  <col width="20%">
+  <col width="30%">
    <tr>
      <th>ステータス</th>
-     <td></td>
+     <td><%= @crm.statu %></td>
      <th>過去アポ利用履歴</th>
-     <td></td>
+     <td><%= @crm.history %></td>
    </tr>
    <tr>
      <th>単価</th>
-     <td></td>
+     <td><%= @crm.price %></td>
      <th>件数</th>
-     <td></td>
+     <td><%= @crm.number %></td>
    </tr>
    <tr>
    <tr>
      <th>エリア</th>
-     <td></td>
+     <td><%= @crm.area %></td>
      <th>対象者</th>
-     <td></td>
+     <td><%= @crm.target %></td>
    </tr>
    </tr>
    <tr>
      <th>次回営業日</th>
-     <td></td>
+     <td><%= @crm.next %></td>
      <th></th>
      <td></td>
    <tr>
-     <th colspan="2">サービス内容</th>
-     <td colspan="2"></td>
+     <th>サービス内容</th>
+     <td colspan="3"><%= @crm.content %></td>
    </tr>
    <tr>
-     <th colspan="2">コメント</th>
-     <td colspan="2"></td>
+     <th>コメント</th>
+     <td colspan="3"><%= @crm.comment %></td>
    </tr>
   </table>
 
@@ -103,112 +111,177 @@
 
 
 <div class="heading"><h2>ファイル添付</h2></div>
-   <table width="80%">
-    <tbody>
+<% if @crm.images.any? %>
+<table width="90%">
        <tr>
          <th>名称</th>
          <th>閲覧</th>
          <th>ダウンロード</th>
          <th>削除</th>
        </tr>
+  <% @crm.images.all.reverse_order.each do |image| %>
+  <% if image.image.present? %>
     　 <tr>
-         <td></td>
-         <td></td>
-         <td></td>
-         <td></td>
+         <td><%= image.name %></td>
+         <td><%= link_to 'view', images_view_crm_path(image), {action: 'view', id: image.id} %></td>
+         <td><%= link_to 'download', images_pdf_crm_path(image)  %></td>
+         <td><%= link_to "削除", crm_image_path(crm_id: @crm.id, id: image.id),
+                                method: :delete,
+                                data: { confirm: '本当に削除しますか？'} %></td>
      　</tr>
-    </tbody>
-   </table>
-
-
+  <% end %>
+  <% end %>
+</table>
+<% end %>
+<%= form_for ([@crm, @crm.images.build]) do |f| %>
+<table width="90%">
+    　 <tr>
+         <td><%= f.text_field :name %><%= f.hidden_field :views, :value => :name %></td>
+         <td><%= f.file_field :image, id: :book_image %><%= f.hidden_field :views, :value => :image %></td>
+         <td><%= f.submit "登録" %></td>
+     　</tr>
+</table>
+<% end %>
 
 
 
 <div class="heading"><h2>コメント</h2></div>
-<table width="80%">
- <tbody>
+<table width="90%">
+   <col width="90%">
+   <col width="10%">
    <tr>
      <th>内容</th>
      <th>編集/削除</th>
    </tr>
-   <% if @crm.comments.any? %>
+<% if @crm.comments.any? %>
     <% @crm.comments.each do |comment| %>
     <tr>
-      <th width="90%"><%= comment.body %></th>
-      <td width="10%"><%= link_to '削除',
+      <th><%= comment.body %></th>
+      <td><%= link_to '削除',
                       crm_comment_path(crm_id: @crm.id, id: comment.id),
                       method: :delete,
                       data: { confirm: '本当に削除しますか？'} %></td>
      </tr>
-    <% end %>
-   <% end %>
+     <% end %>
+<% end %>
+</table>
+<table width="90%">
+  <col width="90%">
+  <col width="10%">
    <%= form_for ([@crm, @crm.comments.build]) do |f| %>
  　 <tr>
-     <td width="90%"><%= f.text_area :body %></td>
-     <td width="10%"><%= f.submit '登録' %></td>
-  　</tr>
- </tbody>
+     <td><%= f.text_area :body %></td>
+     <td><%= f.submit '登録' %></td>_
+   </tr>
 </table>
 　<% end %>
 
 
 <div class="heading"><h2>FAQ</h2></div>
-<table width="80%">
- <tbody>
-    <col width= "20%">
-    <col width= "70%">
-    <col width= "10%">
+<table width="90%">
+   <col width="45%">
+   <col width="45%">
+   <col width="10%">
+   <tr>
+     <th>Q</th>
+     <th>A</th>
+     <th>編集/削除</th>
+   </tr>
+<% if @crm.faqs.any? %>
+    <% @crm.faqs.each do |faq| %>
     <tr>
-      <th>タイトル</th>
-      <th>内容</th>
-      <th>編集/削除</th>
-    </tr>
- 　 <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-  　</tr>
- </tbody>
+      <td><%= faq.question %></td>
+      <td><%= faq.answer %></td>
+      <td><%= link_to '削除',
+                      crm_faq_path(crm_id: @crm.id, id: faq.id),
+                      method: :delete,
+                      data: { confirm: '本当に削除しますか？'} %></td>
+     </tr>
+     <% end %>
+<% end %>
 </table>
+<table width="90%">
+  <col width="45%">
+  <col width="45%">
+  <col width="10%">
+<%= form_for ([@crm, @crm.faqs.build]) do |f| %>
+ 　 <tr>
+     <td><%= f.text_field :question %></td>
+     <td><%= f.text_field :answer %></td>
+     <td><%= f.submit '登録' %></td>_
+   </tr>
+</table>
+<% end %>
 
-
-
-<div class="heading"><h2>請求書</h2></div>
-  <table width="80%">
-   <tbody>
-      <tr>
-        <th>請求日</th>
-        <th>内容</th>
-        <th>金額</th>
-        <th>入金日</th>
-        <th>編集/削除</th>
-      </tr>
-   　 <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    　</tr>
-   </tbody>
-  </table>
 
 <div class="heading"><h2>獲得一覧</h2></div>
-   <table width="80%">
-    <tbody>
-       <tr>
-         <th>獲得日</th>
-         <th>訪問日</th>
-         <th>会社名</th>
-         <th>状況</th>
-         <th>獲得者</th>
-       </tr>
-    　 <tr>
-         <td></td>
-         <td></td>
-         <td></td>
-         <td></td>
-         <td></td>
-     　</tr>
-    </tbody>
-   </table>
+<table width="90%">
+   <col width="20%">
+   <col width="20%">
+   <col width="20%">
+   <col width="20%">
+   <col width="20%">
+   <tr>
+     <th>会社名</th>
+     <th>獲得日</th>
+     <th>獲得者</th>
+     <th>ステータス</th>
+     <th>編集/削除</th>
+   </tr>
+<% if @crm.acquisitions.any? %>
+    <% @crm.acquisitons.each do |acquisition| %>
+    <tr>
+      <td><%= acquisiton.company %></td>
+      <td><%= acquisiton.day %></td>
+      <td><%= acquisiton.name %></td>
+      <td><%= acquisiton.statu %></td>
+      <td><%= link_to '削除',
+                      crm_faq_path(crm_id: @crm.id, id: acquisition.id),
+                      method: :delete,
+                      data: { confirm: '本当に削除しますか？'} %></td>
+     </tr>
+     <% end %>
+<% end %>
+</table>
+<table width="90%">
+  <col width="20%">
+  <col width="20%">
+  <col width="20%">
+  <col width="20%">
+  <col width="20%">
+   <%= form_for ([@crm, @crm.acquisitions.build]) do |f| %>
+ 　 <tr>
+     <td><%= f.text_field :company %></td>
+     <td><%= f.text_field :day %></td>
+     <td><%= f.text_field :name %></td>
+     <td><%= f.text_field :statu %></td>
+     <td><%= f.submit '登録' %></td>
+   </tr>
+</table>
+<% end %>
+
+
+
+<div class="heading"><h2>請求書</h2><%= link_to "新規登録", new_crm_invoice_path(@crm) %></div>
+  <table width="90%">
+   <tbody>
+      <tr>
+        <th>件名</th>
+        <th>入金日</th>
+        <th>請求額</th>
+        <th>編集/削除</th>
+      </tr>
+<% if @crm.invoices.any? %>
+    <% @crm.invoices.each do |invoice| %>
+   　 <tr>
+        <td><%= invoice.subject %></td>
+        <td><%= invoice.statu %></td>
+        <td><%= invoice.total %></td>
+        <td><%= link_to "削除", crm_faq_path(crm_id: @crm.id, id: acquisition.id),
+                               method: :delete,
+                               data: { confirm: '本当に削除しますか？'} %></td>
+      </tr>
+    <% end %>
+<% end %>
+   </tbody>
+</table>

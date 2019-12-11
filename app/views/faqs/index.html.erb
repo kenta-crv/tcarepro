@@ -13,8 +13,8 @@
         </tr>
           <% @faqs.each do |faq| %>
         <tr>
-          <th><%= faq.title %></th>
-          <td><%= faq.contents %></td>
+          <th><%= faq.question %></th>
+          <td><%= faq.answer %></td>
           <td><%= link_to '削除',
                 faq_path(faq),
                 method: :delete,
@@ -37,14 +37,14 @@
         <th>種類</th>
       </tr>
       <tr>
-        <td><%= f.text_field :title %></td>
+        <td><%= f.text_field :question %></td>
         <td><%= f.text_field :select %></td>
       </tr>
       <tr>
         <th colspan="2">内容</th>
       </tr>
       <tr>
-        <td colspan="2"><%= f.text_area :contents %></td>
+        <td colspan="2"><%= f.text_area :answer %></td>
       </tr>
       <tr>
         <td colspan="2"><%= f.submit '登録', data: { confirm: '登録しますか？'}%></td>

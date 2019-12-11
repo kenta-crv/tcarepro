@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191202104229) do
+ActiveRecord::Schema.define(version: 20191208050111) do
+
+  create_table "acquisitions", force: :cascade do |t|
+    t.integer "crm_id"
+    t.string "company"
+    t.string "day"
+    t.string "name"
+    t.string "statu"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_acquisitions_on_crm_id"
+  end
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -66,6 +77,15 @@ ActiveRecord::Schema.define(version: 20191202104229) do
     t.string "town"
     t.string "building"
     t.string "item"
+    t.string "statu"
+    t.string "price"
+    t.string "number"
+    t.string "history"
+    t.string "area"
+    t.string "target"
+    t.string "next"
+    t.string "content"
+    t.string "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -110,11 +130,13 @@ ActiveRecord::Schema.define(version: 20191202104229) do
   end
 
   create_table "faqs", force: :cascade do |t|
-    t.string "title"
+    t.integer "crm_id"
+    t.string "question"
     t.string "select"
-    t.string "contents"
+    t.string "answer"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_faqs_on_crm_id"
   end
 
   create_table "images", force: :cascade do |t|
@@ -128,6 +150,7 @@ ActiveRecord::Schema.define(version: 20191202104229) do
   end
 
   create_table "invoices", force: :cascade do |t|
+    t.integer "crm_id"
     t.string "status"
     t.string "deadline"
     t.string "payment"
@@ -149,7 +172,7 @@ ActiveRecord::Schema.define(version: 20191202104229) do
     t.integer "quantity5"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "company_id"
+    t.index ["crm_id"], name: "index_invoices_on_crm_id"
   end
 
   create_table "progresses", force: :cascade do |t|

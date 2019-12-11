@@ -112,7 +112,7 @@
             <th>最終コール状態</th>
             <td><%= select_tag "last_call[statu]", options_for_select( [""] + Call.StatuItems, @last_call_params[:statu]), multiple: true %></td>
 　　　　　　　<th>企業選択</th>
-            <td><%= select_tag :choice_cont, options_for_select( [""] + Customer.ChoiceItems), multiple: true  %></td>
+            <td><%= f.collection_select :choice_cont, Customer.ChoiceItems,:to_s,:to_s, {include_blank: '選択してください'}%></td>
           </tr>
           <tr>
             <th>見込コール日時（最初）</th>

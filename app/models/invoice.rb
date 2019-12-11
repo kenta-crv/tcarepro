@@ -28,7 +28,7 @@
 #
 
 class Invoice < ApplicationRecord
-	belongs_to :company
+	belongs_to :crm
 
 	def calc1
 		price1 * quantity1
@@ -49,11 +49,11 @@ class Invoice < ApplicationRecord
 	def summary
 		self.calc1 + self.calc2 + self.calc3 + self.calc4 + self.calc5
 	end
-	
+
 	def tax
 		(self.calc1 + self.calc2 + self.calc3 + self.calc4 + self.calc5) * 0.08
 	end
-	
+
 	def total
 		(self.calc1 + self.calc2 + self.calc3 + self.calc4 + self.calc5) * 1.8
 	end

@@ -57,7 +57,17 @@ private
         :city, #市町村
         :town, #番地
         :building, #ビル名・号室
-        :item #取引商品
+        :item, #取引商品
+
+        :statu, #ステータス
+        :price, #単価
+        :number, #件数
+        :history, #過去アポ利用履歴
+        :area, #ターゲットエリア
+        :target, #対象者
+        :next, #次回営業日
+        :content, #サービス内容
+        :comment #コメント
     )
   end
 end

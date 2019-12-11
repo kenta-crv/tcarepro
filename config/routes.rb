@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'acquisitions/show'
+
   root to: 'customers#index'
   delete :customers, to: 'customers#destroy_all'
   #ログイン切り替え
@@ -7,7 +9,12 @@ Rails.application.routes.draw do
   devise_for :users
 
   resources :crms do
-    resources :comments
+    resources :comments, :faqs, :invoices, :acquisitions
+    resources :images
+     member do
+      get 'images/view'
+      get 'images/download/:id' => 'images#download', as: :images_pdf
+     end
   end
   resources :progresses
 

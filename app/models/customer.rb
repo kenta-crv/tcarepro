@@ -33,10 +33,10 @@ class Customer < ApplicationRecord
   end
 
   @@ChoiceItems = [
-    "SORAIRO関東",
-    "SORAIRO九州",
-    "ティンロンジャパン",
-    "アイアットOEC"
+    [1,"SORAIRO関東"],
+    [2,"SORAIRO九州"],
+    [3,"ティンロンジャパン"],
+    [4,"アイアットOEC"]
   ]
 
   def self.ChoiceItems

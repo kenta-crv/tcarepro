@@ -1,56 +1,22 @@
 class InvoicesController < ApplicationController
   before_action :authenticate_admin!
 
-  def index
-  	 @invoices = Invoice.all.order(created_at: 'desc')
-  	 @companies = Company.all
-
-  end
-
   def show
-  	@invoice = Invoice.find(params[:id])
-  end
-
-  def new
-    #invocieはcompanyに所属するため、これがないとそもそも生成されるべきではない
-    redirect_to companies_path if params[:company].blank?
-    @company = Company.find(params[:company].to_i)
-    redirect_to companies_path if @company.blank?
-    @invoice = Invoice.new(company: @company)
-  end
-
- def create
-    @invoice = Invoice.new(invoice_params)
-    if @invoice.save
-        # redirect
-        redirect_to invoices_path
-    else
-        render 'new'
-    end
-  end
-
-  def edit
     @invoice = Invoice.find(params[:id])
   end
 
- def update
-    @invoice = Invoice.find(params[:id])
-     if @invoice.update(invoice_params)
-        redirect_to invoices_path
-    else
-        render 'edit'
-    end
- end
+  def create
+    @crm = Crm.find(params[:crm_id])
+    @invoice = @crm.invoices.create(invoice_params)
+    redirect_to crm_path(@crm)
+  end
 
-
-
- def destroy
-    @invoice = Invoice.find(params[:id])
+  def destroy
+    @crm = Crm.find(params[:crm_id])
+    @invoice = @crm.invoices.find(params[:id])
     @invoice.destroy
-    redirect_to invoices_path
- end
-
-
+    redirect_to crm_path(@crm)
+  end
 
   # 帳票出力処理
   def report

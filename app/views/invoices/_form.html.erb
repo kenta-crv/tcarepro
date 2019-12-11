@@ -1,25 +1,5 @@
-<%= form_for @invoice do |f|%>
+<%= form_for ([@crm, @crm.invoices.build]) do |f|%>
 
-<table>
-	<tbody>
-		<tr>
-			<th>会社名</th>
-				<td><%=@invoice.company.company%></td>
-				<th>代表者名</th>
-				<td><%=@invoice.company.first_name %></td>
-		 </tr>
-			<tr>
-				<th>郵便番号</th>
-				<td><%=@invoice.company.postnumber %></td>
-				<th>住所</th>
-				<td><%=@invoice.company.address %></td>
-			</tr>
-			<tr>
-				<th>電話番号</th>
-				<td><%=@invoice.company.tel %></td>
-				<th>FAX番号</th>
-				<td><%=@invoice.company.fax %></td>
-			</tr>
 
 	  <tr>
 	    <th>ステータス</th>
