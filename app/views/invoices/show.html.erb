@@ -3,32 +3,30 @@
             <div class="heading"><h2>請求書詳細</h2>
             <p>Invoice Detail</p></div>
 
-<table>
+<table width="90%">
 	<tbody>
 	  <tr>
 	    <th>会社名</th>
-        <td><%=@invoice.company.company %></td>
+        <td><%=@crm.company %></td>
         <th>代表者名</th>
-        <td><%=@invoice.company.first_name %></td>
+        <td><%=@crm.first_name %> <%=@crm.last_name %></td>
      </tr>
       <tr>
+        <th>電話番号</th>
+        <td><%=@crm.tel %></td>
         <th>郵便番号</th>
-        <td><%=@invoice.company.postnumber %></td>
-        <th>住所</th>
-        <td><%=@invoice.company.address %></td>
+        <td><%=@crm.postnumber %></td>
       </tr>
       <tr>
-        <th>市町村移行</th>
-        <td><%=@invoice.company.town %></td>
-        <th>電話番号</th>
-        <td><%=@invoice.company.tel %></td>
+        <th>住所</th>
+        <td colspan="3"><%=@crm.prefecture %><%=@crm.city %><%=@crm.town %><%=@crm.building %></td>
       </tr>
 	</tbody>
 </table>
 
             </br> </br>
 
-<table>
+<table width="90%">
 	<tbody>
 	  <tr>
 	    <th>ステータス</th>
@@ -45,7 +43,7 @@
 	</tbody>
 </table>
 
-<table>
+<table width="90%">
 	<tbody>
       <tr>
         <th>商品名</th>

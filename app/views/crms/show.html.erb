@@ -115,7 +115,6 @@
 <table width="90%">
        <tr>
          <th>名称</th>
-         <th>閲覧</th>
          <th>ダウンロード</th>
          <th>削除</th>
        </tr>
@@ -123,8 +122,7 @@
   <% if image.image.present? %>
     　 <tr>
          <td><%= image.name %></td>
-         <td><%= link_to 'view', images_view_crm_path(image), {action: 'view', id: image.id} %></td>
-         <td><%= link_to 'download', images_pdf_crm_path(image)  %></td>
+         <td><%= link_to 'download', images_pdf_crm_path(image), download: "ダウンロードしました。"  %></td>
          <td><%= link_to "削除", crm_image_path(crm_id: @crm.id, id: image.id),
                                 method: :delete,
                                 data: { confirm: '本当に削除しますか？'} %></td>
@@ -274,10 +272,10 @@
 <% if @crm.invoices.any? %>
     <% @crm.invoices.each do |invoice| %>
    　 <tr>
-        <td><%= invoice.subject %></td>
-        <td><%= invoice.statu %></td>
+        <td><%= link_to invoice.subject, crm_invoice_path(@crm,invoice) %></td>
+        <td><%= invoice.status %></td>
         <td><%= invoice.total %></td>
-        <td><%= link_to "削除", crm_faq_path(crm_id: @crm.id, id: acquisition.id),
+        <td><%= link_to "削除", crm_invoice_path(crm_id: @crm.id, id: invoice.id),
                                method: :delete,
                                data: { confirm: '本当に削除しますか？'} %></td>
       </tr>

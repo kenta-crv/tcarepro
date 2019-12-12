@@ -1,4 +1,5 @@
 class ImagesController < ApplicationController
+
   def create
     @crm = Crm.find(params[:crm_id])
     @image = @crm.images.create(image_params)
@@ -20,10 +21,10 @@ class ImagesController < ApplicationController
   end
 
   def view
-    @comment = Comment.find(params[:id].to_i)
-    filepath = @comment.picture.current_path
+    @image = Image.find(params[:id].to_i)
+    filepath = @image.image.current_path
     stat = File::stat(filepath)
-    send_file(filepath, :filename => @image.image.url.gsub(/.*\//,''), :length => stat.size, :disposition => 'inline')
+    send_file(filepath, :filename => @image.file.url.gsub(/.*\//,''), :length => stat.size, :disposition => 'inline')
   end
 
   private

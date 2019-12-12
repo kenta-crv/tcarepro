@@ -1,8 +1,13 @@
 class InvoicesController < ApplicationController
   before_action :authenticate_admin!
+  def new
+    @crm = Crm.find(params[:crm_id])
+    @invoice = @crm.invoices.new
+  end
 
   def show
-    @invoice = Invoice.find(params[:id])
+    @crm = Crm.find(params[:crm_id])
+    @invoice = @crm.invoices.find(params[:id])
   end
 
   def create
