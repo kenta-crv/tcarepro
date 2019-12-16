@@ -18,7 +18,10 @@
 </head>
 <header>
  <div class="container">
-      <div class="header-right">
+      <div class="header-left">
+        <%= link_to "/" do %>
+          <%= image_tag "rogo.png", width:"200px" %>
+        <% end %>
            <%= link_to  'TOP', '#' %>
            <%= link_to  'CTI', customers_path %>
            <%= link_to  'CRM', crms_path %>
@@ -36,7 +39,12 @@
 　　　　　　　　<% else %>
       　　　<%= link_to "staff", new_user_session_path%>
  　　　　　　　 <% end %>
-       </div>
+      </div>
+      <div class="header-right">
+        <%= link_to customers_path(type: "call_look", customer: '[desc]', target:'_blank') do %>
+          <%= image_tag "look.png", width:"140px" %>
+        <% end %>
+      </div>
     </div>
 </header>
 

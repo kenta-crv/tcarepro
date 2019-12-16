@@ -18,19 +18,14 @@ class Call < ApplicationRecord
 
   @@StatuItems = [
     "",
-    "着信のみ",
-    "オーナー不在",
-    "再コール",
-    "見込み客",
-    "FAX APP",
-    "Mail APP",
+    "着信留守",
+    "担当者不在",
+    "見込",
     "APP",
     "フロントNG",
     "クロージングNG",
-    "従業員なしNG",
-    "入社年月日NG",
-    "永久NG",
-    "他社導入済"
+    "根本的NG",
+    "永久NG"
   ]
   def self.StatuItems
     @@StatuItems
@@ -41,12 +36,11 @@ class Call < ApplicationRecord
     Call
       .where('created_at > ?', Time.current.beginning_of_day)
       .where('created_at < ?', Time.current.end_of_day).count
-
   end
 
   def protect_count_today #本日獲得見込数
     Call
-      .where(statu: "見込み客")
+      .where(statu: "見込")
       .where('created_at > ?', Time.current.beginning_of_day)
       .where('created_at < ?', Time.current.end_of_day)
       .count
@@ -79,5 +73,6 @@ class Call < ApplicationRecord
   def month_count
     Call.group("MONTH(created_at)").count
   end
+
 
 end

@@ -1,0 +1,11 @@
+<table class="header-table">
+  <tr>
+    <th>
+    </th>
+    <th>本日：<%= @call.call_count_today %>Call</th>
+    <th>見込獲得数：<%= @call.protect_count_today %>件</th>
+    <th>アポ数：<%= @call.app_count_today %>件</th>
+    <th>見込獲得率：<%= @call.protect_convertion.ceil(2) %>%</th>
+    <th>アポ獲得率：<%= @call.app_convertion.ceil(2) %>%</th>
+  </tr>
+</table>

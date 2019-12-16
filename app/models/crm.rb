@@ -5,4 +5,31 @@ class Crm < ApplicationRecord
   has_many :faqs
   has_many :images
   has_many :invoices
+
+  def self.import(file)
+      CSV.foreach(file.path, headers:true) do |row|
+       crm = find_by(id: row["id"]) || new
+       crm.attributes = row.to_hash.slice(*updatable_attributes)
+       next if self.where(tel: crm.tel).count > 0
+       crm.save!
+      end
+  end
+
+  def self.updatable_attributes
+    ["company","first_name","last_name","first_kana","last_kana","tel","mobile","fax","mail","postnumber","prefecture","city","town","building","item","statu","price","number","history","area","target","next", "content","comment","choice"]
+  end
+
+  def self.csv_attributes
+    ["company","first_name","last_name","first_kana","last_kana","tel","mobile","fax","mail","postnumber","prefecture","city","town","building","item","statu","price","number","history","area","target","next", "content","comment","choice"]
+  end
+
+  def self.generate_csv
+    CSV.generate(headers:true) do |csv|
+      csv << csv_attributes
+      all.each do |task|
+        csv << csv_attributes.map{|attr| task.send(attr)}
+      end
+    end
+  end
+
 end

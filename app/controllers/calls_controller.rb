@@ -35,6 +35,11 @@ class CallsController < ApplicationController
     redirect_to customer_path(@customer)
   end
 
+
+  def analytics
+  end
+
+
   private
  	def call_params
  		params.require(:call).permit(

@@ -23,13 +23,16 @@ class CustomersController < ApplicationController
     @customers = @customers.page(params[:page]).per(100)
     @customers_ids = @customers.ids
 
-   respond_to do |format|
+    respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "tasks-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-   end
+    end
 
-   # @customers_search_orders = CustomersSearchOrder.find(customers_search_order_id)
-   # @customers = @customers_search_order.customers.order('published_at, id desc')
+    @type = params[:type]
+    case @type
+    when "call_look" then
+      @calls = Call.where(statu: "見込").page(params[:page]).per(100)
+    end
   end
 
   def show
@@ -55,7 +58,6 @@ class CustomersController < ApplicationController
       prev_customer_id = @customer_ids[prev_index]
       @prev_customer = Customer.find_by(id: prev_customer_id)
     end
-
     # 自動発信を行うかどうかのフラグ
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
@@ -105,6 +107,7 @@ class CustomersController < ApplicationController
    Customer.import(params[:file])
    redirect_to customers_url, notice:"リストを追加しました"
  end
+
 
  #def prev_customer
   # @q.result.where("id < ?", id).last

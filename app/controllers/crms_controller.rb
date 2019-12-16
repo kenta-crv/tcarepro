@@ -40,6 +40,11 @@ class CrmsController < ApplicationController
     redirect_to crms_path
  end
 
+ def import
+   Crm.import(params[:file])
+   redirect_to crms_url, notice:"リストを追加しました"
+ end
+
 private
  def crm_params
   params.require(:crm).permit(
@@ -67,7 +72,8 @@ private
         :target, #対象者
         :next, #次回営業日
         :content, #サービス内容
-        :comment #コメント
+        :comment, #コメント
+        :choice
     )
   end
 end

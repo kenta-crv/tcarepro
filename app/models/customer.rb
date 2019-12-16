@@ -1,13 +1,12 @@
 class Customer < ApplicationRecord
   #belongs_to :admin
   has_many :calls
-
   has_one :last_call, ->{
     order("created_at desc")
   }, class_name: :Call
 
   def self.import(file)
-       CSV.foreach(file.path, headers:true) do |row|
+      CSV.foreach(file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
        next if self.where(tel: customer.tel).count > 0
@@ -42,6 +41,4 @@ class Customer < ApplicationRecord
   def self.ChoiceItems
     @@ChoiceItems
   end
-
-
 end

@@ -1,14 +1,17 @@
 Rails.application.routes.draw do
 
   get 'acquisitions/show'
+  get 'calls/analytics' => 'calls#analytics'
 
-  root to: 'customers#index'
   delete :customers, to: 'customers#destroy_all'
   #ログイン切り替え
   devise_for :admins       #使用者ログイン
   devise_for :users
 
   resources :crms do
+    collection do
+      post :import
+    end
     resources :comments, :faqs, :invoices, :acquisitions
     resources :images
      member do
@@ -16,10 +19,10 @@ Rails.application.routes.draw do
       get 'images/download/:id' => 'images#download', as: :images_pdf
      end
   end
-  resources :progresses
 
   resources :customers do
-        resources :calls
+        resources :calls do
+        end
     collection do
       post :import
       get :message

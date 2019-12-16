@@ -42,9 +42,7 @@ header {
   top: 0;
   z-index: 10;
 
-  .header-right {
-    float: right;
-    margin-right: -25px;
+  .header-left {
     font-size: 15px;
     text-shadow: 2px 3px 1px #000;
 
@@ -62,6 +60,12 @@ header {
        background-color: $sub_color;   /*【マウスオーバーカラー】ブルー*/
      }
     }
+
+    .header-right {
+      float: right;
+      font-size: 15px;
+      text-shadow: 2px 3px 1px #000;
+      }
 }
 
 /*エラー・編集コマンド共通*/
