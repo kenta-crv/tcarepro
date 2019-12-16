@@ -31,7 +31,7 @@ class CustomersController < ApplicationController
     @type = params[:type]
     case @type
     when "call_look" then
-      @calls = Call.where(statu: "見込").page(params[:page]).per(100)
+      @calls = Call.where.not(statu: nil)
     end
   end
 

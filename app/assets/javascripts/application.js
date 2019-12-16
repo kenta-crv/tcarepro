@@ -20,3 +20,9 @@
 //= require turbolinks
 //= require_tree .
 //
+<script>
+/*
+* #TPD
+* #2018.12.14
+* bootstrap DateTImePicker 設定 #2018.12.14
+*/
