@@ -165,28 +165,7 @@
       </tbody>
     </table>
 
-<script>
-/*
-* #TPD
-* #2018.12.14
-* bootstrap DateTImePicker 設定 #2018.12.14
-*/
-$(function () {
-  $('#created_at_from_datetimepicker').datetimepicker({
-    format: 'YYYY-MM-DD hh:mm'
-  });
-  $('#created_at_to_datetimepicker').datetimepicker({
-    format: 'YYYY-MM-DD hh:mm',
-    useCurrent: false //Important! See issue #1075
-  });
-  $("#created_at_from_datetimepicker").on("dp.change", function (e) {
-    $('#created_at_to_datetimepicker').data("DateTimePicker").minDate(e.date);
-  });
-  $("#created_at_to_datetimepicker").on("dp.change", function (e) {
-    $('#created_at_from_datetimepicker').data("DateTimePicker").maxDate(e.date);
-  });
-});
-</script>
+
 <br>
 
 
