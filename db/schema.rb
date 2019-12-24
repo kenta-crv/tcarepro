@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191208050111) do
+ActiveRecord::Schema.define(version: 20191224065611) do
 
   create_table "acquisitions", force: :cascade do |t|
     t.integer "crm_id"
@@ -119,6 +119,12 @@ ActiveRecord::Schema.define(version: 20191208050111) do
     t.string "memo_4"
     t.string "memo_5"
     t.string "choice"
+    t.string "old_date"
+    t.string "title"
+    t.string "old_statu"
+    t.string "other"
+    t.string "url_2"
+    t.string "extraction_date"
   end
 
   create_table "customers_search_orders", force: :cascade do |t|

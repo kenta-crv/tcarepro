@@ -146,7 +146,13 @@ class CustomersController < ApplicationController
         :memo_2, #ステータス
         :memo_3, #ステータス
         :memo_4, #ステータス
-        :choice
+        :choice, #会社分類
+        :old_date, #インポート前コール日
+        :title, #取得タイトル
+        :old_statu, #古いステータス
+        :other, #その他
+        :url_2, #url2
+        :extraction_date #抽出日
        )
     end
 end

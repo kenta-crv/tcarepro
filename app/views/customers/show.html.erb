@@ -22,10 +22,10 @@
 <div class="show-top">
 <div class="two_column">
 <table width="100%">
-		<col width="20%">
-		<col width="30%">
-		<col width="20%">
-		<col width="30%">
+		<col width="25%">
+		<col width="25%">
+		<col width="25%">
+		<col width="25%">
 	<tbody>
 		<tr>
 			<th colspan="4">顧客情報（<%= link_to("編集", edit_customer_path) %>）</th>
@@ -33,52 +33,41 @@
 		<tr>
 			<th>会社名</th>
 			<td><%= @customer.company %></td>
-			<th>店舗名</th>
-			<td><%= @customer.store %></td>
-		</tr>
-		<tr>
 			<th>代表者</th>
-			<td><%= @customer.first_name %></td>
-			<th>フリガナ</th>
-			<td><%= @customer.first_kana %></td>
+			<td><%= @customer.first_name %>(<%= @customer.first_kana %>)</td>
 		</tr>
 		<tr>
-			<th>電話番号１</th>
-			<td><%= @customer.tel %></td>
-			<th>電話番号２</th>
-			<td><%= @customer.tel2 %></td>
-		</tr>
-		<tr>
-			<th>FAX</th>
-			<td><%= @customer.fax %></td>
 			<th>業種</th>
 			<td><%= @customer.industry %></td>
-		</tr>
-		<tr>
-			<th>メール</th>
-			<td><%= @customer.mail %></td>
       <th>人数</th>
   		<td><%= @customer.people %></td>
 		</tr>
-		<tr>
-			<th>URL</th>
-			<td colspan="3"><%= @customer.url %></td>
-		</tr>
-		<tr>
+    <tr>
 			<th>住所</th>
 			<td colspan="3"><%= @customer.address %></td>
 		</tr>
 		<tr>
-			<th>メモ</th>
-			<td><%= @customer.remarks %></td>
-      <th>メモ１</th>
-			<td><%= @customer.memo_1 %></td>
+			<td><%= mail_to @customer.mail, "Mail", class:"btn btn-danger" %></td>
+			<td><%= link_to "URL", @customer.url, target:"_blank", class:"btn btn-danger" %></td>
+			<td><%= link_to "URL2", @customer.url, target:"_blank", class:"btn btn-danger" %></td>
+		</tr>
+		<tr>
+			<th>過去履歴</th>
+			<td><%= @customer.old_statu %></td>
+      <th>抽出日</th>
+			<td><%= @customer.extraction_date %></td>
 		</tr>
     <tr>
-      <th>メモ２</th>
+      <th>過去架電日</th>
+			<td><%= @customer.old_date %></td>
+      <th>タイトル</th>
+			<td><%= @customer.title %></td>
+    </tr>
+    <tr>
+      <th>備考</th>
 			<td><%= @customer.memo_2 %></td>
-      <th>メモ３</th>
-			<td><%= @customer.memo_3 %></td>
+      <th>その他</th>
+			<td><%= @customer.other %></td>
     </tr>
 	</tbody>
 </table>
@@ -127,12 +116,8 @@
 			<th colspan="4">コール</th>
 		</tr>
 		<tr>
-			<td colspan="3" class="call-font"><%= @customer.tel%></td>
-			<td>代表者：<%= @customer.first_name %><%= @customer.last_name %></br>
-			</td>
-		</tr>
-		<tr>
-			<th colspan ="4">
+			<td class="call-font"><%= @customer.tel%></td>
+			<th>
 				<%= select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect{ |o| [ o.device_name, o.token ] }), :include_blank => '（選択してください）') %>
 				<button id="button-call" data-number="<%= @customer.tel %>">発信</button>
 				<button id="button-hangup" data-number="<%= @customer.tel %>" disabled>保留</button>
@@ -158,7 +143,7 @@
 		</tr>
 		<tr>
 			<th>コメント</th>
-			<td colspan ="4"><%= f.text_area :comment %></td>
+			<td colspan ="4" class="comment"><%= f.text_area :comment %></td>
 		</tr>
 		<tr>
 			<th colspan ="4"><%= f.submit %></th>

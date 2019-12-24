@@ -26,3 +26,4 @@ doc/
 .DS_Store
 .idea
 .secret
+/db/development.sqlite3
