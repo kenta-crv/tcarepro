@@ -1,0 +1,22 @@
+<div  class="heading"><h2>見込リスト一覧</h2></div>
+
+<% @calls.each do |call| %>
+
+          <table width ="90%">
+
+                <tr>
+                  <th>会社名</th>
+                  <th>電話番号</th>
+                  <th>担当者</th>
+                  <th>ステータス</th>
+                  <th>時間</th>
+                </tr>
+                <tr>
+                  <td><%= link_to call.customer.company, customer_path(call.customer, customer_ids: @customers_ids)%></td>
+                  <td><%= call.customer.tel %></td>
+                  <td><%= call.admin.user_name %></td>
+                  <td><%= call.statu %></td>
+                  <td><%= call.time %></td>
+              </tbody>
+            </table>
+<% end %>

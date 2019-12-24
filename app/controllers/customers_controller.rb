@@ -21,43 +21,46 @@ class CustomersController < ApplicationController
     @customers = @q.result
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(100)
-    @customers_ids = @customers.ids
+    #@customers_ids = @customers.ids
+
+    @type = params[:type]
+    case @type
+    when "call_look" then
+      @calls = Call.where(statu: "見込")
+    end
 
     respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "tasks-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
     end
 
-    @type = params[:type]
-    case @type
-    when "call_look" then
-      @calls = Call.where.not(statu: nil)
-    end
   end
 
   def show
     @customer = Customer.find(params[:id])
     @call = Call.new
-    @customer_ids = params[:customer_ids]
-    current_index = @customer_ids.index(params[:id].to_s)
+    @prev_customer = Customer.where("id > ?", @customer.id).first
+    @next_customer = Customer.where("id < ?", @customer.id).last
+#    @customer_ids = params[:customer_ids]
+    #current_index = @customer_ids.index(params[:id].to_s)
+#
+#    if current_index > 0 && current_index + 1 < @customer_ids.size
+#      prev_index = current_index - 1
+#      prev_customer_id = @customer_ids[prev_index]
+#      @prev_customer = Customer.find_by(id: prev_customer_id)
 
-    if current_index > 0 && current_index + 1 < @customer_ids.size
-      prev_index = current_index - 1
-      prev_customer_id = @customer_ids[prev_index]
-      @prev_customer = Customer.find_by(id: prev_customer_id)
-
-      next_index = current_index + 1
-      next_customer_id = @customer_ids[next_index]
-      @next_customer = Customer.find_by(id: next_customer_id)
-    elsif current_index == 0
-      next_index = current_index + 1
-      next_customer_id = @customer_ids[next_index]
-      @next_customer = Customer.find_by(id: next_customer_id)
-    elsif current_index + 1 == @customer_ids.size
-      prev_index = current_index - 1
-      prev_customer_id = @customer_ids[prev_index]
-      @prev_customer = Customer.find_by(id: prev_customer_id)
-    end
+#      next_index = current_index + 1
+#      next_customer_id = @customer_ids[next_index]
+#      @next_customer = Customer.find_by(id: next_customer_id)
+#    elsif current_index == 0
+#      next_index = current_index + 1
+#      next_customer_id = @customer_ids[next_index]
+#      @next_customer = Customer.find_by(id: next_customer_id)
+#    elsif current_index + 1 == @customer_ids.size
+#      prev_index = current_index - 1
+#      prev_customer_id = @customer_ids[prev_index]
+#      @prev_customer = Customer.find_by(id: prev_customer_id)
+#    end
     # 自動発信を行うかどうかのフラグ
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
@@ -108,20 +111,20 @@ class CustomersController < ApplicationController
    redirect_to customers_url, notice:"リストを追加しました"
  end
 
+ def analytics
+   @call.call_count_today
+ end
 
- #def prev_customer
-  # @q.result.where("id < ?", id).last
- #end
+ def self.call_count_today
+   Call.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+ end
 
- #def next_xustomer
-  # @q.result.where("id < ?", id).last
- #end
 
   private
     def customer_params
       params.require(:customer).permit(
         :company, #会社名
-        :store, #店舗名
+        :store, #店舗名  #
         :first_name, #代表者
         :last_name, #名前
         :first_kana, #ミョウジ
@@ -139,10 +142,10 @@ class CustomersController < ApplicationController
         :caption, #資本金
         :remarks, #備考
         :status, #ステータス
-        :memo1, #ステータス
-        :memo2, #ステータス
-        :memo3, #ステータス
-        :memo4, #ステータス
+        :memo_1, #ステータス
+        :memo_2, #ステータス
+        :memo_3, #ステータス
+        :memo_4, #ステータス
         :choice
        )
     end

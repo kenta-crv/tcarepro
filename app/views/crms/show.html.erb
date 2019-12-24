@@ -144,6 +144,7 @@
 
 
 <div class="heading"><h2>コメント</h2></div>
+<% if @crm.comments.any? %>
 <table width="90%">
    <col width="90%">
    <col width="10%">
@@ -151,7 +152,6 @@
      <th>内容</th>
      <th>編集/削除</th>
    </tr>
-<% if @crm.comments.any? %>
     <% @crm.comments.each do |comment| %>
     <tr>
       <th><%= comment.body %></th>
@@ -163,10 +163,10 @@
      <% end %>
 <% end %>
 </table>
+<%= form_for ([@crm, @crm.comments.build]) do |f| %>
 <table width="90%">
   <col width="90%">
   <col width="10%">
-   <%= form_for ([@crm, @crm.comments.build]) do |f| %>
  　 <tr>
      <td><%= f.text_area :body %></td>
      <td><%= f.submit '登録' %></td>_
@@ -176,6 +176,7 @@
 
 
 <div class="heading"><h2>FAQ</h2></div>
+<% if @crm.faqs.any? %>
 <table width="90%">
    <col width="45%">
    <col width="45%">
@@ -185,7 +186,6 @@
      <th>A</th>
      <th>編集/削除</th>
    </tr>
-<% if @crm.faqs.any? %>
     <% @crm.faqs.each do |faq| %>
     <tr>
       <td><%= faq.question %></td>
@@ -198,11 +198,11 @@
      <% end %>
 <% end %>
 </table>
+<%= form_for ([@crm, @crm.faqs.build]) do |f| %>
 <table width="90%">
   <col width="45%">
   <col width="45%">
   <col width="10%">
-<%= form_for ([@crm, @crm.faqs.build]) do |f| %>
  　 <tr>
      <td><%= f.text_field :question %></td>
      <td><%= f.text_field :answer %></td>
@@ -213,26 +213,29 @@
 
 
 <div class="heading"><h2>獲得一覧</h2></div>
+<% if @crm.acquisitions.any? %>
 <table width="90%">
    <col width="20%">
    <col width="20%">
+   <col width="0%">
+   <col width="10%">
    <col width="20%">
-   <col width="20%">
-   <col width="20%">
+   <col width="10%">
    <tr>
      <th>会社名</th>
      <th>獲得日</th>
      <th>獲得者</th>
      <th>ステータス</th>
+     <th>最終更新日</th>
      <th>編集/削除</th>
    </tr>
-<% if @crm.acquisitions.any? %>
-    <% @crm.acquisitons.each do |acquisition| %>
+    <% @crm.acquisitions.each do |acquisition| %>
     <tr>
-      <td><%= acquisiton.company %></td>
-      <td><%= acquisiton.day %></td>
-      <td><%= acquisiton.name %></td>
-      <td><%= acquisiton.statu %></td>
+      <td><%= acquisition.company %></td>
+      <td><%= acquisition.day %></td>
+      <td><%= acquisition.name %></td>
+      <td><%= acquisition.statu %></td>
+      <td><%= acquisition.created_at %></td>
       <td><%= link_to '削除',
                       crm_faq_path(crm_id: @crm.id, id: acquisition.id),
                       method: :delete,
@@ -241,18 +244,23 @@
      <% end %>
 <% end %>
 </table>
+<%= form_for ([@crm, @crm.acquisitions.build]) do |f| %>
 <table width="90%">
   <col width="20%">
   <col width="20%">
   <col width="20%">
   <col width="20%">
   <col width="20%">
-   <%= form_for ([@crm, @crm.acquisitions.build]) do |f| %>
  　 <tr>
      <td><%= f.text_field :company %></td>
-     <td><%= f.text_field :day %></td>
+     <td><%= f.datetime_field :day %></td>
      <td><%= f.text_field :name %></td>
-     <td><%= f.text_field :statu %></td>
+     <td><%= f.select(:statu,[
+             "アポ",
+             "業種NG",
+             "キャンセル",
+             "要確認"
+             ]) %></td>
      <td><%= f.submit '登録' %></td>
    </tr>
 </table>

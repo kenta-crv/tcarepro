@@ -15,6 +15,7 @@ class CreateCrms < ActiveRecord::Migration[5.1]
       t.string :city #市町村
       t.string :town #番地
       t.string :building #ビル名・号室
+      t.string :url #ビル名・号室
       t.string :item #取引商品
 
       t.string :statu #ステータス

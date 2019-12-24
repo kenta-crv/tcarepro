@@ -15,11 +15,11 @@ class Customer < ApplicationRecord
   end
 
   def self.updatable_attributes
-    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "choice"]
+    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "memo_1", "memo_2", "memo_3", "memo_4", "choice"]
   end
 
   def self.csv_attributes
-    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "choice"]
+    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "memo_1", "memo_2", "memo_3", "memo_4","choice"]
   end
 
   def self.generate_csv
@@ -40,5 +40,13 @@ class Customer < ApplicationRecord
 
   def self.ChoiceItems
     @@ChoiceItems
+  end
+
+  def prev_customer
+    @customer.result.where("id > ?", id).last
+  end
+
+  def next_customer
+    @customer.result.where("id > ?", id).last
   end
 end

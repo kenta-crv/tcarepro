@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20191208050111) do
     t.string "city"
     t.string "town"
     t.string "building"
+    t.string "url"
     t.string "item"
     t.string "statu"
     t.string "price"

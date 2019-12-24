@@ -24,7 +24,7 @@ class CallsController < ApplicationController
   def create
 	  #@customer = Customer.find(params[:customer_id])
   	if @customer.calls.create(call_params)
-	    redirect_to customer_path(@next_customer)
+	    redirect_to customer_path(id: @next_customer.id, customer_ids: @customer_ids)
     end
   end
 
@@ -36,8 +36,6 @@ class CallsController < ApplicationController
   end
 
 
-  def analytics
-  end
 
 
   private

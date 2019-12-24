@@ -5,19 +5,19 @@ class AcquisitionsController < ApplicationController
 
   def create
     @crm = Crm.find(params[:crm_id])
-    @acquisiton = @crm.acquisitons.create(acquisiton_params)
+    @acquisition = @crm.acquisitions.create(acquisition_params)
     redirect_to crm_path(@crm)
   end
 
   def destroy
     @crm = Crm.find(params[:crm_id])
-    @acquisiton = @crm.acquisitons.find(params[:id])
-    @acquisiton.destroy
+    @acquisition = @crm.acquisitions.find(params[:id])
+    @acquisition.destroy
     redirect_to crm_path(@crm)
   end
 
   def acquisition_params
-    params.require(:acquisiton).permit(
+    params.require(:acquisition).permit(
       :company, #会社名
       :day, #獲得日
       :name, #獲得者

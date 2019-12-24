@@ -16,11 +16,11 @@ class Crm < ApplicationRecord
   end
 
   def self.updatable_attributes
-    ["company","first_name","last_name","first_kana","last_kana","tel","mobile","fax","mail","postnumber","prefecture","city","town","building","item","statu","price","number","history","area","target","next", "content","comment","choice"]
+    ["company","first_name","last_name","first_kana","last_kana","tel","mobile","fax","mail","postnumber","prefecture","city","town","building","url","item","statu","price","number","history","area","target","next", "content","comment"]
   end
 
   def self.csv_attributes
-    ["company","first_name","last_name","first_kana","last_kana","tel","mobile","fax","mail","postnumber","prefecture","city","town","building","item","statu","price","number","history","area","target","next", "content","comment","choice"]
+    ["company","first_name","last_name","first_kana","last_kana","tel","mobile","fax","mail","postnumber","prefecture","city","town","building","url","item","statu","price","number","history","area","target","next", "content","comment"]
   end
 
   def self.generate_csv

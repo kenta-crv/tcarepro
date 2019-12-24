@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
 
   get 'acquisitions/show'
-  get 'calls/analytics' => 'calls#analytics'
   root to: 'customers#index'
+  get 'customers/analytics' => 'customers#analytics'
   delete :customers, to: 'customers#destroy_all'
   #ログイン切り替え
   devise_for :admins       #使用者ログイン
