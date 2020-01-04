@@ -61,6 +61,7 @@ private
         :prefecture, #都道府県
         :city, #市町村
         :town, #番地
+        :url, #番地
         :building, #ビル名・号室
         :item, #取引商品
 

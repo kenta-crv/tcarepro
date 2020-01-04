@@ -29,6 +29,7 @@ class CustomersController < ApplicationController
       @calls = Call.where(statu: "見込")
     end
 
+
     respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "tasks-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
@@ -39,8 +40,10 @@ class CustomersController < ApplicationController
   def show
     @customer = Customer.find(params[:id])
     @call = Call.new
-    @prev_customer = Customer.where("id > ?", @customer.id).first
-    @next_customer = Customer.where("id < ?", @customer.id).last
+    @q = Customer.ransack(params[:q]).result
+    @prev_customer = @q.where("id < ?", @customer.id).last
+    @next_customer = Customer.where("id > ?", @customer.id).first
+
 #    @customer_ids = params[:customer_ids]
     #current_index = @customer_ids.index(params[:id].to_s)
 #

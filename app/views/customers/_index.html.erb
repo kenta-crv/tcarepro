@@ -22,11 +22,7 @@
     <% @customers.each_with_index do |customer, index| %>
                 <tr>
                   <td><%= check_box_tag "deletes[#{customer.id}]", customer.id %></td>
-                  <td><%= link_to customer.company, customer_path(
-                                                      customer,
-                                                      customer_ids: @customers_ids
-                                                    )
-                                                    %>
+                  <td><%= link_to customer.company, customer_path(customer,q: params[:q].to_s)%>
                   </td>
                   <td><%= customer.tel %></td>
                   <td><%= customer.address %></td>

@@ -28,7 +28,7 @@
      <th>電話番号</th>
      <td><%= @crm.tel %></td>
      <th>担当者連絡先</th>
-     <td></td>
+     <td><%= @crm.mobile %></td>
    <tr>
      <th>FAX番号</th>
      <td><%= @crm.fax %></td>
@@ -237,7 +237,7 @@
       <td><%= acquisition.statu %></td>
       <td><%= acquisition.created_at %></td>
       <td><%= link_to '削除',
-                      crm_faq_path(crm_id: @crm.id, id: acquisition.id),
+                      crm_acquisition_path(crm_id: @crm.id, id: acquisition.id),
                       method: :delete,
                       data: { confirm: '本当に削除しますか？'} %></td>
      </tr>
