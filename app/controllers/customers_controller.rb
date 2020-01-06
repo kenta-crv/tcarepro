@@ -1,5 +1,4 @@
 require 'rubygems'
-
 class CustomersController < ApplicationController
   before_action :authenticate_admin!
 
@@ -27,7 +26,7 @@ class CustomersController < ApplicationController
     @type = params[:type]
     case @type
     when "call_look" then
-      @calls = Call.where(statu: "見込")
+      @calls = Call.where(statu: '見込').where
     end
 
 

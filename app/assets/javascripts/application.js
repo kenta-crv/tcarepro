@@ -20,7 +20,7 @@
 //= require turbolinks
 //= require_tree .
 //
-<script>
+
 /*
 * #TPD
 * #2018.12.14

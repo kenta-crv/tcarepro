@@ -47,7 +47,13 @@
             <th>備考</th>
             <td><%= f.search_field :remarks_cont, type: "text" %></td>
             <th>取引先</th>
-            <td><%= f.collection_select :choice_cont, Customer.ChoiceItems,:to_s,:to_s, {include_blank: '選択してください'}%></td>
+            <td><%= f.search_field :choice_cont, type: "text" %></td>
+          </tr>
+          <tr>
+            <th>過去ステータス</th>
+            <td><%= f.search_field :old_statu_cont, type: "text" %></td>
+            <th>抽出日</th>
+            <td><%= f.search_field :extraction_date_cont, type: "text" %></td>
           </tr>
           <tr>
             <th>最終コール状態</th>

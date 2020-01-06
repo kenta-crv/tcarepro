@@ -32,7 +32,7 @@ class Customer < ApplicationRecord
   end
 
   @@ChoiceItems = [
-    "SORAIRO","1",
+    [1,"SORAIRO関東"],
     [2,"SORAIRO九州"],
     [3,"ティンロンジャパン"],
     [4,"アイアットOEC"]
