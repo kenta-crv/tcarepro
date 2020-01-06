@@ -22,24 +22,12 @@
           <tr>
             <th>会社名</th>
             <td><%= f.search_field :company_cont, type: "text" %></td>
-            <th>店舗名</th>
-		        <td><%= f.search_field :store_cont, type: "text" %> </td>
-	      </tr>
-	      <tr>
-            <th>代表者</th>
-            <td><%= f.search_field :first_name_cont, type: "text" %></td>
             <th>ダイヒョウ</th>
             <td><%= f.search_field :first_kana_cont, type: "text" %></td>
           </tr>
           <tr>
-            <th>電話番号1</th>
+            <th>電話番号</th>
             <td><%= f.search_field :tel_cont, type: "text" %></td>
-            <th>電話番号2</th>
-            <td><%= f.search_field :tel2_cont, type: "text" %></td>
-          </tr>
-          <tr>
-            <th>FAX番号</th>
-            <td><%= f.search_field :fax_cont, type: "text" %></td>
             <th>業種</th>
             <td><%= f.search_field :industry_cont, type: "text" %></td>
           </tr>
@@ -58,14 +46,12 @@
           <tr>
             <th>備考</th>
             <td><%= f.search_field :remarks_cont, type: "text" %></td>
-            <th>顧客(call/prospect/customer)</th>
-            <td><%= f.search_field :status_cont, type: "text" %></td>
+            <th>取引先</th>
+            <td><%= f.collection_select :choice_cont, Customer.ChoiceItems,:to_s,:to_s, {include_blank: '選択してください'}%></td>
           </tr>
           <tr>
             <th>最終コール状態</th>
             <td><%= select_tag "last_call[statu]", options_for_select( [""] + Call.StatuItems, @last_call_params[:statu]), multiple: true %></td>
-　　　　　　　<th>企業選択</th>
-            <td><%= f.collection_select :choice_cont, Customer.ChoiceItems,:to_s,:to_s, {include_blank: '選択してください'}%></td>
           </tr>
           <tr>
             <th>見込コール日時（最初）</th>

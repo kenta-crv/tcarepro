@@ -10,25 +10,13 @@
       </tr>
 	  <tr>
 	    <th>会社名</th>
-		<td><%=text_field :customer, :company %> </td>
-		<th>店舗名</th>
-		<td><%=text_field :customer, :store %> </td>
+		  <td><%=text_field :customer, :company %> </td>
+	 	  <th>代表者</th>
+		  <td><%=text_field :customer, :first_name %></td>
 	  </tr>
 	  <tr>
-		 <th>代表者</th>
-		 <td><%=text_field :customer, :first_name %></td>
-		 <th>ダイヒョウ</th>
-		 <td><%=text_field :customer, :first_kana %></td>
-	  </tr>
-	  <tr>
-		 <th>電話番号1</th>
+		 <th>電話番号</th>
 		 <td><%=telephone_field :customer, :tel %></td>
-		 <th>電話番号2</th>
-		 <td><%=telephone_field :customer, :tel2 %></td>
-	  </tr>
-	  <tr>
-		 <th>FAX番号2</th>
-		 <td><%=telephone_field :customer, :fax %></td>
 		 <th>業種</th>
 		 <td><%=text_field :customer, :industry %></td>
 	  </tr>
@@ -45,26 +33,21 @@
 		  <td><%=text_field :customer, :address %></td>
 		</tr>
 		<tr>
-		  <th>メモ</th>
+		  <th>備考</th>
 		  <td><%=text_field :customer, :remarks %></td>
-			<th>顧客ステータス</th>
-			<td><%= f.select(:status, [
-				["call","call"],
-				["prospect","prospect"],
-				["crm","crm"]
+			<th>取引先</th>
+			<td><%= f.select(:choice, [
+				["SORAIRO関東"],
+				["SORAIRO九州"],
+				["ティンロンジャパン"],
+				["アイアットOEC"],
 				]) %></td>
 		</tr>
 		<tr>
-		  <th>メモ１</th>
-		  <td><%=text_field :customer, :memo_1 %></td>
-			<th>メモ２</th>
-		  <td><%=text_field :customer, :memo_2 %></td>
-		</tr>
-		<tr>
-		  <th>メモ３</th>
-		  <td><%=text_field :customer, :memo_3 %></td>
-			<th></th>
-		  <td></td>
+		  <th>過去履歴</th>
+		  <td><%=text_field :customer, :old_statu %></td>
+			<th>その他</th>
+		  <td><%=text_field :customer, :other %></td>
 		</tr>
 		<tr>
 			<th colspan ="4"><%=f.submit%></th>

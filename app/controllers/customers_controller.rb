@@ -19,6 +19,7 @@ class CustomersController < ApplicationController
     #@customers_search_orders = Customer.ransack(params[:customers_search_orders])
     @q = Customer.ransack(params[:q])
     @customers = @q.result
+    #binding.pry
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(100)
     #@customers_ids = @customers.ids
@@ -41,6 +42,7 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
     @call = Call.new
     @q = Customer.ransack(params[:q]).result
+    #binding.pry
     @prev_customer = @q.where("id < ?", @customer.id).last
     @next_customer = Customer.where("id > ?", @customer.id).first
 

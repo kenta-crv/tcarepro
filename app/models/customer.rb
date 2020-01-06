@@ -32,7 +32,7 @@ class Customer < ApplicationRecord
   end
 
   @@ChoiceItems = [
-    [1,"SORAIRO関東"],
+    "SORAIRO","1",
     [2,"SORAIRO九州"],
     [3,"ティンロンジャパン"],
     [4,"アイアットOEC"]
@@ -42,11 +42,5 @@ class Customer < ApplicationRecord
     @@ChoiceItems
   end
 
-  def prev_customer
-    @customer.result.where("id > ?", id).last
-  end
 
-  def next_customer
-    @customer.result.where("id > ?", id).last
-  end
 end
