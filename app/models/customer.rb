@@ -37,10 +37,23 @@ class Customer < ApplicationRecord
     [3,"ティンロンジャパン"],
     [4,"アイアットOEC"]
   ]
-
   def self.ChoiceItems
     @@ChoiceItems
   end
 
+  @@old_status = [
+    ["",""],
+    [0,"不在"],
+    [1,"担当者不在"],
+    [2,"見込"],
+    [3,"折返待"],
+    ["app","APP"],
+    ["ng_now","今は結構"],
+    ["ng_foreign","外国人NG"],
+    ["ng_front","フロントNG"]
+  ]
+  def self.Old_status
+    @@old_status
+  end
 
 end

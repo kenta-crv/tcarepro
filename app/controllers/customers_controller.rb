@@ -15,18 +15,14 @@ class CustomersController < ApplicationController
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
       last_call_customer_ids = last_call.pluck(:customer_id)
     end
-    #@customers_search_orders = Customer.ransack(params[:customers_search_orders])
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    #binding.pry
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(100)
-    #@customers_ids = @customers.ids
-
     @type = params[:type]
     case @type
     when "call_look" then
-      @calls = Call.where(statu: '見込').where
+      @calls = Call.where(statu: '見込').order(:created_at).last
     end
 
 
@@ -44,7 +40,7 @@ class CustomersController < ApplicationController
     #binding.pry
     @prev_customer = @q.where("id < ?", @customer.id).last
     @next_customer = @q.where("id > ?", @customer.id).first
-
+    @is_auto_call = (params[:is_auto_call] == 'true')
 #    @customer_ids = params[:customer_ids]
     #current_index = @customer_ids.index(params[:id].to_s)
 #
@@ -66,7 +62,6 @@ class CustomersController < ApplicationController
 #      @prev_customer = Customer.find_by(id: prev_customer_id)
 #    end
     # 自動発信を行うかどうかのフラグ
-    @is_auto_call = (params[:is_auto_call] == 'true')
   end
 
   def new

@@ -35,9 +35,6 @@ class CallsController < ApplicationController
     redirect_to customer_path(@customer)
   end
 
-
-
-
   private
  	def call_params
  		params.require(:call).permit(
