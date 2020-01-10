@@ -22,6 +22,7 @@ class CustomersController < ApplicationController
     @type = params[:type]
     case @type
     when "call_look" then
+      @customers = @customers.page(params[:page]).per(100)
       @calls = Call.where(statu: '見込').order(:created_at).last
     end
 
@@ -35,33 +36,12 @@ class CustomersController < ApplicationController
 
   def show
     @customer = Customer.find(params[:id])
-    @call = Call.new
+    call = params.fetch(:q, {}).permit(:statu)
+    @call = Call.new(call)
     @q = Customer.ransack(params[:q]).result
-    #binding.pry
     @prev_customer = @q.where("id < ?", @customer.id).last
     @next_customer = @q.where("id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
-#    @customer_ids = params[:customer_ids]
-    #current_index = @customer_ids.index(params[:id].to_s)
-#
-#    if current_index > 0 && current_index + 1 < @customer_ids.size
-#      prev_index = current_index - 1
-#      prev_customer_id = @customer_ids[prev_index]
-#      @prev_customer = Customer.find_by(id: prev_customer_id)
-
-#      next_index = current_index + 1
-#      next_customer_id = @customer_ids[next_index]
-#      @next_customer = Customer.find_by(id: next_customer_id)
-#    elsif current_index == 0
-#      next_index = current_index + 1
-#      next_customer_id = @customer_ids[next_index]
-#      @next_customer = Customer.find_by(id: next_customer_id)
-#    elsif current_index + 1 == @customer_ids.size
-#      prev_index = current_index - 1
-#      prev_customer_id = @customer_ids[prev_index]
-#      @prev_customer = Customer.find_by(id: prev_customer_id)
-#    end
-    # 自動発信を行うかどうかのフラグ
   end
 
   def new
@@ -154,4 +134,5 @@ class CustomersController < ApplicationController
         :extraction_date #抽出日
        )
     end
+
 end

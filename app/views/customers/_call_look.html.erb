@@ -8,14 +8,15 @@
                   <th>ステータス</th>
                   <th>時間</th>
                 </tr>
-                <% @calls.each do |call| %>
-
+              <% @customers.each do |customer| %>
                 <tr>
-                  <td><%= link_to call.customer.company, customer_path(call.customer, customer_ids: @customers_ids)%></td>
+                  <td><%= link_to customer.company, customer_path(customer)%></td>
                   <td><%= call.customer.tel %></td>
+                  <% @calls.each do |call| %>
                   <td><%= call.admin.user_name %></td>
                   <td><%= call.statu %></td>
                   <td><%= call.time %></td>
-              </tr>
+                </tr>
+                <% end %>
               <% end %>
             </table>

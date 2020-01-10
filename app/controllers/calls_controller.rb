@@ -4,6 +4,11 @@ class CallsController < ApplicationController
   before_action :authenticate_admin!
   def load_customer
     @customer = Customer.find(params[:customer_id])
+    @q = Customer.ransack(params[:q]).result
+    call = params.permit(q: {})
+    @call = Call.new(call)
+    @next_customer = @q.where("id > ?", @customer.id).first
+    @is_auto_call = (params[:is_auto_call] == 'true')
   end
 
   def load_call
@@ -13,18 +18,17 @@ class CallsController < ApplicationController
   def edit
   end
 
-  def update
-    if @call.update(call_params)
-      redirect_to customer_path(@customer)
-    else
-      render 'edit'
+  def create
+  	if @customer.calls.create(call_params)
+	    redirect_to customer_path(id: @customer.id, q: params[:q])
     end
   end
 
-  def create
-	  #@customer = Customer.find(params[:customer_id])
-  	if @customer.calls.create(call_params)
-	    redirect_to customer_path(@customer)
+  def update
+    if @call.update(call_params)
+      redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!)
+    else
+      render 'edit'
     end
   end
 

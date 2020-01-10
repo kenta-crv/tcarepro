@@ -42,7 +42,6 @@ class Customer < ApplicationRecord
   end
 
   @@old_status = [
-    ["",""],
     [0,"不在"],
     [1,"担当者不在"],
     [2,"見込"],
