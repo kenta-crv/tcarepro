@@ -235,7 +235,7 @@ $(function() {
     })
     .done((data, textStatus, jqXHR) => {
       if (data.failure > 0) {
-        alert('発信先の端末が無効です。\n正しい端末が登録されているかご確認ください。');
+        alert('発信先の端末が無効です。\n正しい端末が登録されているかご確認ください。\n\nエラー内容：' + data.results[0].error);
       } else {
         // nop
       }
