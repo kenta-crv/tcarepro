@@ -23,7 +23,9 @@ class CustomersController < ApplicationController
     case @type
     when "call_look" then
       @customers = @customers.page(params[:page]).per(100)
-      @calls = Call.where(statu: '見込').order(:created_at).last
+      @customers = @customers.calls.where(statu: "見込").page(params[:page]).per(50).order(progress: 'ASC')
+      #@customers = @customers.where(statu: '見込')
+      #@calls = Call.where(statu: '見込').order(:created_at).last
     end
 
 
@@ -36,9 +38,11 @@ class CustomersController < ApplicationController
 
   def show
     @customer = Customer.find(params[:id])
-    call = params.fetch(:q, {}).permit(:statu)
-    @call = Call.new(call)
     @q = Customer.ransack(params[:q]).result
+    call = params.fetch(params[:q], {}).permit(:statu)
+    #binding.pry
+    @call = Call.new(call)
+
     @prev_customer = @q.where("id < ?", @customer.id).last
     @next_customer = @q.where("id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
