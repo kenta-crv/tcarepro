@@ -201,11 +201,11 @@ $(function() {
     }
   }
 
-  $$('a.prev,a.next').on('click', function(event) {
-  var href = $(this).prop('href');
-  href += '/' + $('input#check-auto-call').prop('checked');
-  $(this).prop('href', href);
-});
+  $('a.prev,a.next').on('click', function(event) {
+    var href = $(this).prop('href');
+    href += '/' + $('input#check-auto-call').prop('checked');
+    $(this).prop('href', href);
+  });
 
   // 発信要求送信先端末選択時のイベント
   $('select#token').on('change', function(event) {
