@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       get :bulk_destroy
     end
   end
+  get 'customers/:id/:is_auto_call' => 'customers#show'
 
 
                                                 #アップロード
