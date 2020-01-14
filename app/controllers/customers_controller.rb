@@ -39,10 +39,7 @@ class CustomersController < ApplicationController
   def show
     @customer = Customer.find(params[:id])
     @q = Customer.ransack(params[:q]).result
-    call = params.fetch(params[:q], {}).permit(:statu)
-    #binding.pry
-    @call = Call.new(call)
-
+    @call = Call.new
     @prev_customer = @q.where("id < ?", @customer.id).last
     @next_customer = @q.where("id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')

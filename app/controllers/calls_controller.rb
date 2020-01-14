@@ -19,7 +19,7 @@ class CallsController < ApplicationController
 
   def create
   	if @customer.calls.create(call_params)
-	    redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!)
+	    redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!)
     end
   end
 
