@@ -129,7 +129,7 @@
 		</tr>
 	</tbody>
 </table>
-<%= form_for ([@customer, @call]) do |f| %>
+<%= form_for([@customer, @call], url: customer_calls_path(customer_id: @customer, q: params[:q].permit!)) do |f| %>
 <table>
 	<tbody>
 		<tr>
