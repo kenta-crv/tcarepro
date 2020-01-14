@@ -203,8 +203,12 @@ $(function() {
 
   $('a.prev,a.next').on('click', function(event) {
     var href = $(this).prop('href');
-    href += '/' + $('input#check-auto-call').prop('checked');
-    $(this).prop('href', href);
+    var s = href.split('?');
+    var url = s[0] + '/' + $('input#check-auto-call').prop('checked');
+    if (s.length > 1) {
+      url += '?' + s[1];
+    }
+    $(this).prop('href', url);
   });
 
   // 発信要求送信先端末選択時のイベント
