@@ -5,8 +5,7 @@ class CallsController < ApplicationController
   def load_customer
     @customer = Customer.find(params[:customer_id])
     @q = Customer.ransack(params[:q]).result
-    call = params.permit(q: {})
-    @call = Call.new(call)
+    @call = Call.new
     @next_customer = @q.where("id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
@@ -20,7 +19,7 @@ class CallsController < ApplicationController
 
   def create
   	if @customer.calls.create(call_params)
-	    redirect_to customer_path(id: @customer.id, q: params[:q])
+	    redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!)
     end
   end
 
