@@ -120,8 +120,6 @@
 			<th>
 				<%= select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect{ |o| [ o.device_name, o.token ] }), :include_blank => '（選択してください）') %>
 				<button id="button-call" data-number="<%= @customer.tel %>">発信</button>
-				<button id="button-hangup" data-number="<%= @customer.tel %>" disabled>保留</button>
-				<button id="button-hangup" data-number="<%= @customer.tel %>" disabled>切断</button>
 				<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
 					<input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %> />&nbsp;「次へ」「前へ」ボタン押下時に自動発信する
 				</label>
@@ -129,7 +127,7 @@
 		</tr>
 	</tbody>
 </table>
-<%= form_for([@customer, @call], url: customer_calls_path(customer_id: @next_customer, q: params[:q].permit!)) do |f| %>
+<%= form_for([@customer, @call], url: customer_calls_path(customer_id: @customer, q: params[:q]&.permit!)) do |f| %>
 <table>
 	<tbody>
 		<tr>
@@ -180,7 +178,7 @@
 			<td><%= call.comment %></td>
 			<td><%= link_to '編集', edit_customer_call_path(@customer, call), class: 'command'%>
 			<%= link_to '削除',
-                    customer_call_path(@customer,call) ,
+                    customer_call_path(@customer, call) ,
 			            	method: :delete,
 			            	class: 'command',
 			            	data: { confirm: '本当に削除しますか？'} %></td>

@@ -19,16 +19,6 @@ class CustomersController < ApplicationController
     @customers = @q.result
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(100)
-    @type = params[:type]
-    case @type
-    when "call_look" then
-      @customers = @customers.page(params[:page]).per(100)
-      @customers = @customers.calls.where(statu: "見込").page(params[:page]).per(50).order(progress: 'ASC')
-      #@customers = @customers.where(statu: '見込')
-      #@calls = Call.where(statu: '見込').order(:created_at).last
-    end
-
-
     respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "tasks-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }

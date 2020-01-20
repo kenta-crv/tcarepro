@@ -46,12 +46,10 @@
           <tr>
             <th>備考</th>
             <td><%= f.search_field :remarks_cont, type: "text" %></td>
-            <th>取引先</th>
-            <td><%= f.collection_select :choice_in, Customer.ChoiceItems, :first, :second, {include_blank: '選択してください'}, multiple: true %>
-</td>
-          </tr>
-          <tr>
-            <th>抽出日</th>
+            <!--<th>取引先</th>
+            <td><%= f.collection_select :choice_in, Customer.ChoiceItems, :first, :second, {include_blank: '選択してください'}, multiple: true %></td>-->
+
+            <th>抽出日(1/1)</th>
             <td><%= f.search_field :extraction_date_cont, type: "text" %></td>
           </tr>
           <tr>
@@ -99,10 +97,16 @@
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
-               </div>
+              </div>
                 <%# text_field_tag "last_detail[created_at_from]", @last_detail_params[:created_at_from], class: "datetimepicker" %>
                 <%# text_field_tag "last_detail[created_at_to]", @last_detail_params[:created_at_to], class: "datetimepicker" %>
             </td>
+          </tr>
+          <tr>
+            <th>最終コール日時（最初）</th>
+             <td><%= f.date_field :created_at_gteq, class: 'date-picker' %></td>
+             <th>最終コール日時（最後）</th>
+             <td><%= f.date_field :created_at_lteq, class: 'date-picker' %></td>
           </tr>
           <tr>
             <th colspan = "4" ><%= f.submit '検索' %></th>

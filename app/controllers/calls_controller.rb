@@ -25,7 +25,7 @@ class CallsController < ApplicationController
 
   def update
     if @call.update(call_params)
-      redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!)
+      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!)
     else
       render 'edit'
     end
@@ -35,7 +35,8 @@ class CallsController < ApplicationController
     @customer = Customer.find(params[:customer_id])
     @call = @customer.calls.find(params[:id])
     @call.destroy
-    redirect_to customer_path(@customer)
+    binding.pry
+    redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!)
   end
 
   private
