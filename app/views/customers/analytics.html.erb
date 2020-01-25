@@ -1,11 +1,96 @@
-<table class="header-table">
+<br>
+<br>
+<table class="header-table" width="90%">
   <tr>
-    <th>
-    </th>
-    <th>本日：<%= @call.call_count_today %>Call</th>
-    <th>見込獲得数：<%= @call.protect_count_today %>件</th>
-    <th>アポ数：<%= @call.app_count_today %>件</th>
-    <th>見込獲得率：<%= @call.protect_convertion.ceil(2) %>%</th>
-    <th>アポ獲得率：<%= @call.app_convertion.ceil(2) %>%</th>
+    <th colspan="5">１日のコール状況</th>
   </tr>
+  <tr>
+    <th>コール数</th>
+    <th>見込獲得数</th>
+    <th>アポ数</th>
+    <th>見込獲得数</th>
+    <th>アポ獲得率</th>
+  </tr>
+  <tr>
+    <td><%= @call_count_today %>Call</td>
+    <td><%= @protect_count_today %>件</td>
+    <td><%= @app_count_today %>件</td>
+    <td><%= @protect_convertion_today.ceil(2) %>%</td>
+    <td><%= @app_convertion_today.ceil(2) %>%</td>
+  </tr>
+</table>
+
+<br>
+<br>
+<br>
+<br>
+
+<table class="header-table" width="90%">
+  <tr>
+    <th colspan="5">１週間のコール状況</th>
+  </tr>
+  <tr>
+    <th>コール数</th>
+    <th>見込獲得数</th>
+    <th>アポ数</th>
+    <th>見込獲得数</th>
+    <th>アポ獲得率</th>
+  </tr>
+  <tr>
+    <td><%= @call_count_week %>Call</td>
+    <td><%= @protect_count_week %>件</td>
+    <td><%= @app_count_week %>件</td>
+    <td><%= @protect_convertion_week.ceil(2) %>%</td>
+    <td><%= @app_convertion_week.ceil(2) %>%</td>
+  </tr>
+</table>
+
+<br>
+<br>
+<br>
+<br>
+
+<table class="header-table" width="90%">
+  <tr>
+    <th colspan="5">１ヶ月のコール状況</th>
+  </tr>
+  <tr>
+    <th>コール数</th>
+    <th>見込獲得数</th>
+    <th>アポ数</th>
+    <th>見込獲得数</th>
+    <th>アポ獲得率</th>
+  </tr>
+  <tr>
+    <td><%= @call_count_month %>Call</td>
+    <td><%= @protect_count_month %>件</td>
+    <td><%= @app_count_month %>件</td>
+    <td><%= @protect_convertion_month.ceil(2) %>%</td>
+    <td><%= @app_convertion_month.ceil(2) %>%</td>
+  </tr>
+</table>
+
+<br>
+<br>
+<br>
+<br>
+
+<table class="header-table" width="90%">
+  <tr>
+    <th colspan="5">スタッフ別コール</th>
+  </tr>
+  <tr>
+    <th>スタッフ名</th>
+    <th>コール数</th>
+    <th>見込み数</th>
+    <th>APP数</th>
+  </tr>
+  <% @admins.each do |admin| %>
+  <tr>
+    <td><%= admin.user_name %></td>
+    <td><%= admin.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+  </tr>
+  <%end%>
 </table>

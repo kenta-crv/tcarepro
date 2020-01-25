@@ -82,12 +82,29 @@ class CustomersController < ApplicationController
  end
 
  def analytics
-   @call.call_count_today
+   @call = Call.all
+   #today
+   @call_count_today  = @call.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @protect_count_today = @call.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
+   @app_count_today = @call.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
+   #week
+   @call_count_week  = @call.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @protect_count_week = @call.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
+   @app_count_week = @call.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
+   #month
+   @call_count_month = @call.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day).count
+   @protect_count_month = @call.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+   @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
+   @app_count_month = @call.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+   @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
+   @admins = Admin.all
+   #@calls = @admin.calls.build
  end
 
- def self.call_count_today
-   Call.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
- end
 
 
   private
