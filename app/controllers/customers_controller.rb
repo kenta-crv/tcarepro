@@ -82,29 +82,47 @@ class CustomersController < ApplicationController
  end
 
  def analytics
-   @call = Call.all
+   @calls = Call.all
    #today
-   @call_count_today  = @call.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
-   @protect_count_today = @call.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @call_count_today  = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @protect_count_today = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
    @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
-   @app_count_today = @call.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @app_count_today = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
    @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
    #week
-   @call_count_week  = @call.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
-   @protect_count_week = @call.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @call_count_week  = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @protect_count_week = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
    @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
-   @app_count_week = @call.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @app_count_week = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
    @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
    #month
-   @call_count_month = @call.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day).count
-   @protect_count_month = @call.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+   @call_count_month = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day).count
+   @protect_count_month = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
    @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
-   @app_count_month = @call.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+   @app_count_month = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
    @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
    @admins = Admin.all
-   #@calls = @admin.calls.build
+   #statu内容簡素化
+   @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
+   @youbi = @calls.where('created_at::wday = ?', Time.zone.now.wday).to_s
  end
 
+ def export
+   @calls = Call.all
+   call_attributes = ["id", "statu", "time", "comment"]
+   generate_call =
+   CSV.generate(headers:true) do |csv|
+     csv << call_attributes
+     @calls.each do |task|
+       csv << call_attributes.map{|attr| task.send(attr)}
+     end
+   end
+   respond_to do |format|
+      format.html
+      #binding.pry
+      format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+   end
+ end
 
 
   private

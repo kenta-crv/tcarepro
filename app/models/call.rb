@@ -16,6 +16,8 @@ class Call < ApplicationRecord
   }
 
 
+
+
   @@StatuItems = [
     "",
     "着信留守",
