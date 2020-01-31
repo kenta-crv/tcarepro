@@ -19,7 +19,7 @@ class Call < ApplicationRecord
 
 
   @@StatuItems = [
-    "",
+    nil,
     "着信留守",
     "担当者不在",
     "見込",

@@ -104,7 +104,7 @@ class CustomersController < ApplicationController
    @admins = Admin.all
    #statu内容簡素化
    @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
-   @youbi = @calls.where('created_at::wday = ?', Time.zone.now.wday).to_s
+   @day_of_the_week = @calls.where('DAYOFWEEK(created_at) = ?', Date.today.wday+1)
  end
 
  def export

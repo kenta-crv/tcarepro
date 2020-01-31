@@ -184,22 +184,6 @@ ActiveRecord::Schema.define(version: 20200123142004) do
     t.index ["crm_id"], name: "index_invoices_on_crm_id"
   end
 
-  create_table "progresses", force: :cascade do |t|
-    t.integer "crm_id"
-    t.string "statu"
-    t.string "price"
-    t.string "number"
-    t.string "history"
-    t.string "area"
-    t.string "target"
-    t.string "next"
-    t.string "content"
-    t.string "comment"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["crm_id"], name: "index_progresses_on_crm_id"
-  end
-
   create_table "smartphone_logs", force: :cascade do |t|
     t.string "token", null: false
     t.string "log_data", null: false
@@ -224,15 +208,6 @@ ActiveRecord::Schema.define(version: 20200123142004) do
     t.string "contents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "upload_data", force: :cascade do |t|
-    t.string "name"
-    t.string "file"
-    t.integer "company_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["company_id"], name: "index_upload_data_on_company_id"
   end
 
   create_table "upload_files", force: :cascade do |t|

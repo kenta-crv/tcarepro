@@ -49,8 +49,8 @@
             <!--<th>取引先</th>
             <td><%= f.collection_select :choice_in, Customer.ChoiceItems, :first, :second, {include_blank: '選択してください'}, multiple: true %></td>-->
 
-            <th>抽出日(1/1)</th>
-            <td><%= f.search_field :extraction_date_cont, type: "text" %></td>
+            <th>未コール</th>
+            <td><%= f.search_field :call_created_at_null, type: 'checkbox', value: 'true' %></td>
           </tr>
           <tr>
             <th>最終コール状態</th>
@@ -90,7 +90,7 @@
                     </span>
                </div>
              </td>
-             <th>最終コール日時（最後）</th>
+            <th>最終コール日時（最後）</th>
             <td>
               <div class='input-group date' id='created_at_to_datetimepicker'>
                     <%= date_field_tag "last_call[created_at_to]", @last_call_params[:created_at_to], class: "form-control" %>
@@ -114,8 +114,6 @@
         <% end %>
       </tbody>
     </table>
-
-
 <br>
 
 
