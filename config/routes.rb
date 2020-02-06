@@ -7,8 +7,11 @@ Rails.application.routes.draw do
 
   delete :customers, to: 'customers#destroy_all'
   #ログイン切り替え
-  devise_for :admins       #使用者ログイン
+  devise_for :admins
+
+
   devise_for :users
+
 
   resources :crms do
     collection do

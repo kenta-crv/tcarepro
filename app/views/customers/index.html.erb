@@ -50,7 +50,7 @@
             <td><%= f.collection_select :choice_in, Customer.ChoiceItems, :first, :second, {include_blank: '選択してください'}, multiple: true %></td>-->
 
             <th>未コール</th>
-            <td><%= f.search_field :call_created_at_null, type: 'checkbox', value: 'true' %></td>
+            <td><%= f.search_field :calls_id_null, type: 'checkbox', value: 'true' %></td>
           </tr>
           <tr>
             <th>最終コール状態</th>

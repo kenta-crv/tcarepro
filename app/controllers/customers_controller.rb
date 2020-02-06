@@ -30,8 +30,8 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
     @q = Customer.ransack(params[:q]).result
     @call = Call.new
-    @prev_customer = @q.where("id < ?", @customer.id).last
-    @next_customer = @q.where("id > ?", @customer.id).first
+    @prev_customer = @q.where("customers.id < ?", @customer.id).last
+    @next_customer = @q.where("customers.id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
 
@@ -104,12 +104,31 @@ class CustomersController < ApplicationController
    @admins = Admin.all
    #statu内容簡素化
    @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
-   @day_of_the_week = @calls.where('DAYOFWEEK(created_at) = ?', Date.today.wday+1)
+
+   today = Time.zone.today
+   all_monday = today.all_month.select(&:monday?)
+   all_monday_all_day = all_monday.map(&:all_day)
+   @call_count_month_monday = @calls.where(created_at: all_monday_all_day)
+   all_tuesday = today.all_month.select(&:tuesday?)
+   all_tuesday_all_day = all_monday.map(&:all_day)
+   @call_count_month_tuesday = @calls.where(created_at: all_tuesday_all_day).count
+   all_wednesday = today.all_month.select(&:wednesday?)
+   all_wednesday_all_day = all_monday.map(&:all_day)
+   @call_count_month_wednesday = @calls.where(created_at: all_wednesday_all_day).count
+   all_thursday = today.all_month.select(&:thursday?)
+   all_thursday_all_day = all_thursday.map(&:all_day)
+   @call_count_month_thursday = @calls.where(created_at: all_thursday_all_day).count
+   all_friday = today.all_month.select(&:friday?)
+   all_friday_all_day = all_friday.map(&:all_day)
+   @call_count_month_friday = @calls.where(created_at: all_friday_all_day).count
+
+
+
  end
 
  def export
    @calls = Call.all
-   call_attributes = ["id", "statu", "time", "comment"]
+   call_attributes = ["customer_id" ,"statu", "time", "comment"]
    generate_call =
    CSV.generate(headers:true) do |csv|
      csv << call_attributes

@@ -2,10 +2,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   layout :layout_by_resource
 
+
 # 例外処理
   rescue_from ActiveRecord::RecordNotFound, with: :render_404
   rescue_from ActionController::RoutingError, with: :render_404
-  #rescue_from Exception, with: :render_500
+  rescue_from Exception, with: :render_500
 
   def render_404
     render template: 'errors/error_404', status: 404, layout: 'application', content_type: 'text/html'
@@ -18,10 +19,9 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
-
-    def configure_permitted_parameters
-      devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name])
-    end
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name])
+  end
 
 
   private
@@ -29,7 +29,6 @@ class ApplicationController < ActionController::Base
     def after_sign_in_path_for(resource)
       case resource
       when Admin
-         #super # 現在は暫定的に上位継承しています
          root_path
       when User
          root_path
@@ -42,10 +41,8 @@ class ApplicationController < ActionController::Base
       case resource
       when Admin, :admin, :admins
         new_admin_session_path
-        # put here for Staff default page direct path after signed out
       when User, :user, :users
         new_user_session_path
-        # put here for Staff default page direct path after signed out
       else
         super
       end

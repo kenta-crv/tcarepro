@@ -9,7 +9,7 @@ class Customer < ApplicationRecord
       CSV.foreach(file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
-       next if self.where(tel: customer.tel).count > 0
+       #next if self.where(tel: customer.tel).count > 0
        customer.save!
       end
   end
@@ -31,18 +31,6 @@ class Customer < ApplicationRecord
     end
   end
 
-  def call_attributes
-     ["id", "statu", "time", "comment"]
-  end
-
-  def call_generate
-    CSV.generate(headers:true) do |csv|
-      cvs << call_attributes
-      all.each do |task|
-        csv << call_attributes.map{|attr| task.send(attr)}
-      end
-    end
-  end
 
   @@ChoiceItems = [
     [1,"SORAIRO関東"],
