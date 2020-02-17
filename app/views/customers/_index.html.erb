@@ -4,19 +4,21 @@
           <table width ="90%">
               <tbody>
                    <col width="10%">
-                   <col width="18%">
-                   <col width="12%">
+                   <col width="15%">
+                   <col width="10%">
+                   <col width="15%">
+                   <col width="10%">
                    <col width="15%">
                    <col width="15%">
-                   <col width="15%">
-                   <col width="12%">
+                   <col width="10%">
                 <tr>
                   <th><%= submit_tag '一括削除' %></th>
                   <th>会社名</th>
                   <th>電話番号</th>
                   <th>住所</th>
                   <th>ステータス</th>
-                  <th>最終更新日</th>
+                  <th>ステータス更新日</th>
+                  <th>アップデート日</th>
                   <th>編集/削除</th>
                 </tr>
     <% @customers.each_with_index do |customer, index| %>
@@ -27,6 +29,7 @@
                   <td><%= customer.address %></td>
                   <td><%= customer.last_call.try(:statu) %></td>
                   <td><%= customer.last_call.try(:created_at) %></td>
+                  <td><%= customer.updated_at %></td>
                   <td><%= link_to '編集', edit_customer_path(customer), class: 'command'%>
                       <%= link_to '削除',
                        customer_path(customer),

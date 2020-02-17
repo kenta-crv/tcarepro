@@ -1,5 +1,5 @@
 class Call < ApplicationRecord
-  belongs_to :customer
+  belongs_to :customer#, primary_key: :customer_tel, foreign_key: :customer_tel
   belongs_to :admin
   scope :times_last_call, -> {
     last_time = "SELECT sub_call.customer_id, MAX(sub_call.time) as last_time FROM calls as sub_call GROUP BY sub_call.customer_id";
@@ -23,6 +23,7 @@ class Call < ApplicationRecord
     "担当者不在",
     "見込",
     "APP",
+    "キャンセル",
     "フロントNG",
     "クロージングNG",
     "根本的NG",

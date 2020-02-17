@@ -6,7 +6,7 @@ class CallsController < ApplicationController
     @customer = Customer.find(params[:customer_id])
     @q = Customer.ransack(params[:q]).result
     @call = Call.new
-    @next_customer = @q.where("id > ?", @customer.id).first
+    @next_customer = @q.where("customers.id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
 

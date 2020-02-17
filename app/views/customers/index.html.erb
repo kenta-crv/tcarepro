@@ -109,6 +109,12 @@
              <td><%= f.date_field :created_at_lteq, class: 'date-picker' %></td>
           </tr>
           <tr>
+            <th>最終アップデート日時（最初）</th>
+             <td><%= f.date_field :updated_at_gteq, class: 'date-picker' %></td>
+             <th>最終アップデート日時（最後）</th>
+             <td><%= f.date_field :updated_at_lteq, class: 'date-picker' %></td>
+          </tr>
+          <tr>
             <th colspan = "4" ><%= f.submit '検索' %></th>
           </tr>
         <% end %>

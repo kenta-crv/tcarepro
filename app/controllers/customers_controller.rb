@@ -176,7 +176,8 @@ class CustomersController < ApplicationController
         :old_statu, #古いステータス
         :other, #その他
         :url_2, #url2
-        :extraction_date #抽出日
+        :extraction_date, #抽出日
+        :customer_tel
        )
     end
 
