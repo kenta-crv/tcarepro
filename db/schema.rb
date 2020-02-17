@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200208145328) do
+ActiveRecord::Schema.define(version: 20200217065013) do
 
   create_table "acquisitions", force: :cascade do |t|
     t.integer "crm_id"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20200208145328) do
     t.integer "admin_id"
     t.integer "crm_id"
     t.integer "customer_tel_id"
+    t.string "customer_tel"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
@@ -185,6 +186,26 @@ ActiveRecord::Schema.define(version: 20200208145328) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["crm_id"], name: "index_invoices_on_crm_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "title"
+    t.string "list"
+    t.string "tab"
+    t.string "within"
+    t.string "without"
+    t.string "warning"
+    t.string "remarks"
+    t.string "company"
+    t.string "name"
+    t.string "name_kana"
+    t.string "tel"
+    t.string "address"
+    t.string "url"
+    t.string "mail"
+    t.string "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "smartphone_logs", force: :cascade do |t|

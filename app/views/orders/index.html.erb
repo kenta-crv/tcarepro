@@ -1,0 +1,22 @@
+<table width="90%">
+  <tr>
+    <th>実施名</th>
+    <th>スプレッドシートリスト名</th>
+    <th>スプレッドシートタブ名</th>
+    <th>編集/削除</th>
+  </tr>
+<% @orders.each do |order| %>
+  <tr>
+    <td><%= link_to order.title, order_path(order) %></td>
+    <td><%= order.list %></td>
+    <td><%= order.tab %></td>
+    <td><%= link_to "編集", edit_order_path(order), class: 'command' %>
+        <%= link_to "削除", order_path(order),
+                           method: :delete,
+                           class: 'command',
+                           data: { confirm: '本当に削除しますか？' }
+                            %></td>
+  </tr>
+</table>
+
+<% end %>
