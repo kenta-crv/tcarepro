@@ -1,6 +1,6 @@
 class Customer < ApplicationRecord
   #belongs_to :admin
-  has_many :calls
+  has_many :calls, foreign_key: 'tel', class_name: 'Calls' 
   has_one :last_call, ->{
     order("created_at desc")
   }, class_name: :Call
