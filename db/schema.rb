@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200217065013) do
+ActiveRecord::Schema.define(version: 20200203030844) do
 
   create_table "acquisitions", force: :cascade do |t|
     t.integer "crm_id"
@@ -46,12 +46,9 @@ ActiveRecord::Schema.define(version: 20200217065013) do
     t.datetime "updated_at", null: false
     t.integer "admin_id"
     t.integer "crm_id"
-    t.integer "customer_tel_id"
-    t.string "customer_tel"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
-    t.index ["customer_tel_id"], name: "index_calls_on_customer_tel_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -82,7 +79,6 @@ ActiveRecord::Schema.define(version: 20200217065013) do
     t.string "city"
     t.string "town"
     t.string "building"
-    t.string "url"
     t.string "item"
     t.string "statu"
     t.string "price"
@@ -188,24 +184,20 @@ ActiveRecord::Schema.define(version: 20200217065013) do
     t.index ["crm_id"], name: "index_invoices_on_crm_id"
   end
 
-  create_table "orders", force: :cascade do |t|
-    t.string "title"
-    t.string "list"
-    t.string "tab"
-    t.string "within"
-    t.string "without"
-    t.string "warning"
-    t.string "remarks"
-    t.string "company"
-    t.string "name"
-    t.string "name_kana"
-    t.string "tel"
-    t.string "address"
-    t.string "url"
-    t.string "mail"
-    t.string "message"
+  create_table "progresses", force: :cascade do |t|
+    t.integer "crm_id"
+    t.string "statu"
+    t.string "price"
+    t.string "number"
+    t.string "history"
+    t.string "area"
+    t.string "target"
+    t.string "next"
+    t.string "content"
+    t.string "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_progresses_on_crm_id"
   end
 
   create_table "smartphone_logs", force: :cascade do |t|
@@ -232,6 +224,15 @@ ActiveRecord::Schema.define(version: 20200217065013) do
     t.string "contents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "upload_data", force: :cascade do |t|
+    t.string "name"
+    t.string "file"
+    t.integer "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_upload_data_on_company_id"
   end
 
   create_table "upload_files", force: :cascade do |t|

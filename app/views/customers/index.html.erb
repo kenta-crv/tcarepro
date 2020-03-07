@@ -46,9 +46,6 @@
           <tr>
             <th>備考</th>
             <td><%= f.search_field :remarks_cont, type: "text" %></td>
-            <!--<th>取引先</th>
-            <td><%= f.collection_select :choice_in, Customer.ChoiceItems, :first, :second, {include_blank: '選択してください'}, multiple: true %></td>-->
-
             <th>未コール</th>
             <td><%= f.search_field :calls_id_null, type: 'checkbox', value: 'true' %></td>
           </tr>

@@ -125,98 +125,74 @@
   </tr>
   <tr>
     <th>09:00~10:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','10:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
   <tr>
     <th>10:00~11:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','11:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
   <tr>
     <th>11:00~12:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','12:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
   <tr>
     <th>13:00~14:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','14:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
   <tr>
     <th>14:00~15:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','15:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
   <tr>
     <th>15:00~16:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','16:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
   <tr>
     <th>16:00~17:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','17:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
   <tr>
     <th>17:00~18:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','18:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
   <tr>
     <th>18:00~19:00</th>
-    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count.to_f * 100, precision: 1) %></td>
-    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','19:00:00').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "不在").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "見込").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count.to_f * 100, precision: 1) %></td>
+    <td><%= number_to_percentage(@calls.where(statu: "NG").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
 </table>
-
-<br>
-<br>
-<br>
-<br>
-
-<table class="header-table" width="90%">
-  <tr>
-    <th colspan="6">時間別コール</th>
-  </tr>
-  <tr>
-    <th></th>
-    <th>不在</th>
-    <th>担当不在</th>
-    <th>見込</th>
-    <th>APP</th>
-    <th>NG</th>
-  </tr>
-  <tr>
-    <th>月曜日</th>
-
-
-<%= @call_count_month_monday %>
-<%= @call_count_month_friday %>

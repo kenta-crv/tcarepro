@@ -32,4 +32,19 @@ class Crm < ApplicationRecord
     end
   end
 
+
+  @@sfa_status = [
+    ["契約","契約"],
+    ["見込高","見込高"],
+    ["見込中","見込中"],
+    ["見込低","見込低"],
+    ["未提案","未提案"],
+    ["対象外","対象外"],
+    ["NG","NG"],
+    ["返答待","返答待"]
+  ]
+
+  def self.SfaStatus
+    @@sfa_status
+  end
 end

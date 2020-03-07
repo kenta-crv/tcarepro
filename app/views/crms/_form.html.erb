@@ -8,47 +8,24 @@
   </tr>
   <tr>
     <th>代表者</th>
-    <td><%= f.text_field :first_name %><%= f.text_field :last_name %></td>
-    <th>ダイヒョウシャ</th>
-    <td><%= f.text_field :first_kana %><%= f.text_field :last_kana %></td>
-  </tr>
-  <tr>
-  <tr>
+    <td><%= f.text_field :first_name %></td>
     <th>担当者</th>
-    <td><%= f.text_field :first_name %><%= f.text_field :last_name %></td>
-    <th>タントウシャ</th>
-    <td><%= f.text_field :first_kana %><%= f.text_field :last_kana %></td>
-  </tr>
+    <td><%= f.text_field :first_name %></td>
   </tr>
   <tr>
     <th>電話番号</th>
     <td><%= f.telephone_field :tel %></td>
-    <th>担当者連絡先</th>
+    <th>携帯番号</th>
     <td><%= f.telephone_field :mobile %></td>
   <tr>
-    <th>FAX番号</th>
-    <td><%= f.telephone_field :fax %></td>
     <th>URL</th>
-    <td></td>
-  </tr>
-  </tr>
-  <tr>
-    <th>郵便番号</th>
-    <td>〒<%= f.number_field :postnumber %></td>
-    <th>都道府県</th>
-    <td><%= f.text_field :prefecture %></td>
-  </tr>
-  <tr>
-    <th>市町村</th>
-    <td><%= f.text_field :city %></td>
-    <th>番地</th>
-    <td><%= f.text_field :town %></td>
-  </tr>
-  <tr>
-    <th>ビル名</th>
-    <td><%= f.text_field :building %></td>
+    <td><%= f.text_field :url %></td>
     <th>取扱商材</th>
     <td><%= f.text_field :item %></td>
+  </tr>
+  <tr>
+    <th>住所</th>
+    <td colspan="3"><%= f.text_field :prefecture, class:"long-text" %></td>
   </tr>
 </table>
 
@@ -57,36 +34,36 @@
 <table>
    <tr>
      <th>ステータス</th>
-     <td><%= f.text_field :statu %></td>
+     <td><%= f.select(:statu, Crm.SfaStatus,  include_blank: true) %></td>
      <th>過去アポ利用履歴</th>
-     <td><%= f.text_field :history %></td>
+     <td><%= f.radio_button :history, "Yes" %>ある
+        <%= f.radio_button :history, "No" %>ない
+        <%= f.radio_button :history, "what" %>不明</td>
    </tr>
    <tr>
-     <th>単価</th>
-     <td><%= f.text_field :price %></td>
+     <th>見積金額</th>
+     <td><%= f.number_field :price %>円</td>
      <th>件数</th>
-     <td><%= f.text_field :number %></td>
+     <td><%= f.number_field :number %>件</td>
    </tr>
-   <tr>
    <tr>
      <th>エリア</th>
      <td><%= f.text_field :area %></td>
-     <th>対象者</th>
+     <th>アポイントレベル</th>
      <td><%= f.text_field :target %></td>
-   </tr>
    </tr>
    <tr>
      <th>次回営業日</th>
-     <td><%= f.text_field :next %></td>
+     <td><%= f.datetime_field :next %></td>
      <th></th>
      <td></td>
    <tr>
-     <th colspan ="2">サービス内容</th>
-     <td colspan ="2"><%= f.text_area :content %></td>
+     <th>サービス内容</th>
+     <td colspan ="3"><%= f.text_area :content, class:"big-area" %></td>
    </tr>
    <tr>
-     <th colspan ="2">コメント</th>
-     <td colspan ="2"><%= f.text_area :comment %></td>
+     <th>コメント</th>
+     <td colspan ="3"><%= f.text_area :comment, class:"big-area" %></td>
    </tr>
    <tr>
      <td colspan ="4"><%= f.submit "登録" %></td>

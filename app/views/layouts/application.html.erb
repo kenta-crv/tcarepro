@@ -22,11 +22,9 @@
         <%= link_to "/" do %>
           <%= image_tag "rogo.png", width:"200px" %>
         <% end %>
-           <%= link_to  'TOP', '#' %>
            <%= link_to  'CTI', customers_path %>
            <%= link_to  'CRM', crms_path %>
-           <%= link_to  'File', '/uploader/form' %>
-           <%= link_to  'FAQ', '/faqs/'  %>
+           <%= link_to  'File', '/uploader/index' %>
            <% if admin_signed_in? %>
       　　　  <strong><% current_admin.email  %></strong>
            <%= link_to "admin", destroy_admin_session_path, method: :delete %>

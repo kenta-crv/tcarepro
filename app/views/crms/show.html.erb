@@ -13,50 +13,23 @@
    <tr>
      <th>代表者</th>
      <td><%= @crm.first_name %><%= @crm.last_name %></td>
-     <th>ダイヒョウシャ</th>
-     <td><%= @crm.first_kana %><%= @crm.last_kana %></td>
-   </tr>
-   <tr>
-   <tr>
      <th>担当者</th>
      <td><%= @crm.first_name %><%= @crm.last_name %></td>
-     <th>タントウシャ</th>
-     <td><%= @crm.first_kana %><%= @crm.last_kana %></td>
-   </tr>
    </tr>
    <tr>
      <th>電話番号</th>
      <td><%= @crm.tel %></td>
-     <th>担当者連絡先</th>
+     <th>携帯番号</th>
      <td><%= @crm.mobile %></td>
    <tr>
-     <th>FAX番号</th>
-     <td><%= @crm.fax %></td>
      <th>URL</th>
-     <td></td>
-   </tr>
-   <tr>
-     <th>郵便番号</th>
-     <td>〒<%= @crm.postnumber %></td>
-     <th>都道府県</th>
-     <td><%= @crm.prefecture %></td>
-   </tr>
-   <tr>
-     <th>市町村</th>
-     <td><%= @crm.city %></td>
-     <th>番地</th>
-     <td><%= @crm.town %></td>
-   </tr>
-   <tr>
-     <th>ビル名</th>
-     <td><%= @crm.building %></td>
+     <td><%= @crm.url %></td>
      <th>取扱商材</th>
      <td><%= @crm.item %></td>
    </tr>
    <tr>
-     <th>進捗</th>
-     <td></td>
-     <th>編集/削除</th>
+     <th>住所</th>
+     <td colspan="2"><%= @crm.prefecture %><%= @crm.city %><%= @crm.town %><%= @crm.building %></td>
      <td><%= link_to "編集", edit_crm_path(@crm), class:"btn btn-danger" %>
         　<%= link_to "削除", crm_path(@crm), method: :delete, data: {confirm: "本当に削除しますか？"}, class:"btn btn-danger" %>
      </td>
@@ -79,18 +52,17 @@
      <td><%= @crm.history %></td>
    </tr>
    <tr>
-     <th>単価</th>
-     <td><%= @crm.price %></td>
+     <th>見積金額</th>
+     <td><%= @crm.price %>円</td>
      <th>件数</th>
-     <td><%= @crm.number %></td>
+     <td><%= @crm.number %>件</td>
    </tr>
    <tr>
    <tr>
-     <th>エリア</th>
+     <th>アポイントレベル</th>
      <td><%= @crm.area %></td>
      <th>対象者</th>
      <td><%= @crm.target %></td>
-   </tr>
    </tr>
    <tr>
      <th>次回営業日</th>

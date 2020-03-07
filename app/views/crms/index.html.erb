@@ -1,18 +1,26 @@
 <div  class="heading"><h2>顧客一覧</h2>(<%= link_to "新規登録", new_crm_path %>)</div>
 <table width="90%">
+  <col width="20%">
+  <col width="15%">
+  <col width="15%">
+  <col width="20%">
+  <col width="20%">
+  <col width="10%">
   <tr>
     <th>会社名</th>
     <th>代表者</th>
     <th>電話番号</th>
-    <th>メールアドレス</th>
-    <th>編集/削除</th>
+    <th>ステータス</th>
+    <th>次回営業日</th>
+    <th>編集 | 削除</th>
   </tr>
   <% @crms.each do |crm| %>
   <tr>
     <td><%= link_to crm.company, crm_path(crm) %></td>
     <td><%= crm.first_name %><%= crm.last_name %></td>
     <td><%= crm.tel %></td>
-    <td><%= crm.mail %></td>
+    <td><%= crm.statu %></td>
+    <td><%= crm.next %></td>
     <td><%= link_to '編集', edit_crm_path(crm), class: 'command'%>
     <%= link_to '削除',
       crm_path(crm),

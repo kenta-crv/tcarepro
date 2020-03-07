@@ -2,7 +2,6 @@
 <%= form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do %>
 
           <table width ="90%">
-              <tbody>
                    <col width="10%">
                    <col width="15%">
                    <col width="10%">
@@ -11,6 +10,7 @@
                    <col width="15%">
                    <col width="15%">
                    <col width="10%">
+              <thead>
                 <tr>
                   <th><%= submit_tag '一括削除' %></th>
                   <th>会社名</th>
@@ -21,6 +21,7 @@
                   <th>アップデート日</th>
                   <th>編集/削除</th>
                 </tr>
+              </thead>
     <% @customers.each_with_index do |customer, index| %>
                 <tr>
                   <td><%= check_box_tag "deletes[#{customer.id}]", customer.id %></td>
@@ -41,6 +42,5 @@
                 <tr>
                   <th colspan="7"><%= paginate @customers %></th>
                 </tr>
-              </tbody>
             </table>
 <% end %>
