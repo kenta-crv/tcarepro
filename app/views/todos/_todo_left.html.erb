@@ -1,9 +1,0 @@
-<ul class="list-group">
-    <% ["井上社会保険労務士","サイトー社会保険労務士","事務","営業","毎月業務","毎日業務"].each do |v| %>
-      <% if @selected == v %>
-        <li class="list-group-item todos-left-item active"><%=link_to v, todos_path(selected: v) %></li>
-      <% else %>
-        <li class="list-group-item todos-left-item"><%=link_to v, todos_path(selected: v) %></li>
-      <% end %>
-    <% end %>
-</ul>

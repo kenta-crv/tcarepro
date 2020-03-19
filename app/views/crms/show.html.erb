@@ -23,7 +23,7 @@
      <td><%= @crm.mobile %></td>
    <tr>
      <th>URL</th>
-     <td><%= @crm.url %></td>
+     <td><%= @crm.fax %></td>
      <th>取扱商材</th>
      <td><%= @crm.item %></td>
    </tr>
@@ -147,43 +147,6 @@
 　<% end %>
 
 
-<div class="heading"><h2>FAQ</h2></div>
-<% if @crm.faqs.any? %>
-<table width="90%">
-   <col width="45%">
-   <col width="45%">
-   <col width="10%">
-   <tr>
-     <th>Q</th>
-     <th>A</th>
-     <th>編集/削除</th>
-   </tr>
-    <% @crm.faqs.each do |faq| %>
-    <tr>
-      <td><%= faq.question %></td>
-      <td><%= faq.answer %></td>
-      <td><%= link_to '削除',
-                      crm_faq_path(crm_id: @crm.id, id: faq.id),
-                      method: :delete,
-                      data: { confirm: '本当に削除しますか？'} %></td>
-     </tr>
-     <% end %>
-<% end %>
-</table>
-<%= form_for ([@crm, @crm.faqs.build]) do |f| %>
-<table width="90%">
-  <col width="45%">
-  <col width="45%">
-  <col width="10%">
- 　 <tr>
-     <td><%= f.text_field :question %></td>
-     <td><%= f.text_field :answer %></td>
-     <td><%= f.submit '登録' %></td>_
-   </tr>
-</table>
-<% end %>
-
-
 <div class="heading"><h2>獲得一覧</h2></div>
 <% if @crm.acquisitions.any? %>
 <table width="90%">
@@ -237,29 +200,3 @@
    </tr>
 </table>
 <% end %>
-
-
-
-<div class="heading"><h2>請求書</h2><%= link_to "新規登録", new_crm_invoice_path(@crm) %></div>
-  <table width="90%">
-   <tbody>
-      <tr>
-        <th>件名</th>
-        <th>入金日</th>
-        <th>請求額</th>
-        <th>編集/削除</th>
-      </tr>
-<% if @crm.invoices.any? %>
-    <% @crm.invoices.each do |invoice| %>
-   　 <tr>
-        <td><%= link_to invoice.subject, crm_invoice_path(@crm,invoice) %></td>
-        <td><%= invoice.status %></td>
-        <td><%= invoice.total %></td>
-        <td><%= link_to "削除", crm_invoice_path(crm_id: @crm.id, id: invoice.id),
-                               method: :delete,
-                               data: { confirm: '本当に削除しますか？'} %></td>
-      </tr>
-    <% end %>
-<% end %>
-   </tbody>
-</table>

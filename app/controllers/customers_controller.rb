@@ -76,11 +76,6 @@ class CustomersController < ApplicationController
    end
  end
 
- def import
-   Customer.import(params[:file])
-   redirect_to customers_url, notice:"リストを追加しました"
- end
-
  def analytics
    @calls = Call.all
    #today
@@ -105,6 +100,7 @@ class CustomersController < ApplicationController
    #statu内容簡素化
    @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
 
+
    today = Time.zone.today
    all_monday = today.all_month.select(&:monday?)
    all_monday_all_day = all_monday.map(&:all_day)
@@ -121,28 +117,17 @@ class CustomersController < ApplicationController
    all_friday = today.all_month.select(&:friday?)
    all_friday_all_day = all_friday.map(&:all_day)
    @call_count_month_friday = @calls.where(created_at: all_friday_all_day).count
-
-
-
  end
 
- def export
-   @calls = Call.all
-   call_attributes = ["customer_id" ,"statu", "time", "comment"]
-   generate_call =
-   CSV.generate(headers:true) do |csv|
-     csv << call_attributes
-     @calls.each do |task|
-       csv << call_attributes.map{|attr| task.send(attr)}
-     end
-   end
-   respond_to do |format|
-      format.html
-      #binding.pry
-      format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-   end
+ def import
+   Customer.import(params[:file])
+   redirect_to customers_url, notice:"リストを追加しました"
  end
 
+ def call_import
+   Customer.import(params[:call_file])
+   redirect_to customers_url, notice:"リストを追加しました"
+ end
 
   private
     def customer_params

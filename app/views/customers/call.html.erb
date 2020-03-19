@@ -1,11 +1,12 @@
-<%= form_tag import_customers_path, multipart: true do %>
+<div class="heading"><h2>インポート・エクスポート</h2></div>
+<%= form_tag customers_call_path, multipart: true do %>
    <table width="90%">
      <tbody>
         <tr>
            <th colspan="3">CSVファイルインポート</th>
         </tr>
         <tr>
-           <td><%= file_field_tag :file %></td>
+           <td><%= file_field_tag :call_file %></td>
            <th><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
            <th><%= link_to 'エクスポート', customers_export_path(format: :csv), class: 'btn btn-danger' %></th>
         </tr>

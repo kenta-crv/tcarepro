@@ -3,7 +3,11 @@ Rails.application.routes.draw do
   get 'acquisitions/show'
   root to: 'customers#index'
   get 'customers/analytics' => 'customers#analytics'
-  get 'customers/export' => 'customers#export'
+  get 'customers/call' => 'customers#call' do
+    collection do
+      post :call_import
+    end
+  end
 
   delete :customers, to: 'customers#destroy_all'
   #ログイン切り替え
@@ -30,6 +34,7 @@ Rails.application.routes.draw do
         end
     collection do
       post :import
+      post :call_import
       get :message
       get :bulk_destroy
     end

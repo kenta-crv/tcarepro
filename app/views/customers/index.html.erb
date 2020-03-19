@@ -126,12 +126,30 @@
    <table width="90%">
      <tbody>
         <tr>
-           <th colspan="3">CSVファイルインポート</th>
+           <th colspan="3">CUSTOMER_CSVファイルインポート</th>
         </tr>
         <tr>
            <td><%= file_field_tag :file %></td>
            <th><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
            <th><%= link_to 'エクスポート', customers_path(format: :csv), class: 'btn btn-danger' %></th>
+        </tr>
+    </tbody>
+   </table>
+<% end %>
+
+<br>
+<br>
+
+<%= form_tag call_import_customers_path, multipart: true do %>
+   <table width="90%">
+     <tbody>
+        <tr>
+           <th colspan="3">CALL_CSVファイルインポート</th>
+        </tr>
+        <tr>
+           <td><%= file_field_tag :call_file %></td>
+           <th><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
+           <th><%= link_to 'エクスポート', customers_path(format: :csv_call), class: 'btn btn-danger' %></th>
         </tr>
     </tbody>
    </table>

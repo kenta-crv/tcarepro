@@ -18,7 +18,9 @@ class CallsController < ApplicationController
   end
 
   def create
-  	if @customer.calls.create(call_params)
+  	#if @customer.calls.create(call_params)
+    if @call = @customer.calls.create(call_params)
+    @call.update_attribute(:customer_tel, @customer.tel)
 	    redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!)
     end
   end

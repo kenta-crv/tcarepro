@@ -55,7 +55,7 @@ private
         #:last_kana, #代表者カナ
         :tel, #電話番号
         :mobile, #携帯番号
-        #:fax, #FAX番号
+        :fax, #FAX番号
         :mail, #メールアドレス
         #:postnumber, #郵便番号
         :prefecture, #都道府県
@@ -64,7 +64,6 @@ private
         :url, #番地
         #:building, #ビル名・号室
         :item, #取引商品
-        
         :statu, #ステータス
         :price, #単価
         :number, #件数
