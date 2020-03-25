@@ -18,18 +18,6 @@ class Customer < ApplicationRecord
     ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "memo_1", "memo_2", "memo_3", "memo_4", "choice", "old_date", "title", "old_statu", "other", "url_2", "extraction_date"]
   end
 
-#call_import
-  def  self.call_import(call_file)
-    CSV.foreach(call_file.path, headers: true) do |row|
-      call = find_by(id: row["id"]) || new
-      call.attributes = row.to_hash.slice(*call_attributes)
-      call.save!
-    end
-  end
-  def self.call_attributes
-    ["customer_id", "customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
-  end
-
 #customer_export
   def self.generate_csv
     CSV.generate(headers:true) do |csv|
@@ -41,22 +29,6 @@ class Customer < ApplicationRecord
   end
   def self.csv_attributes
     ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "memo_1", "memo_2", "memo_3", "memo_4","choice", "old_date", "title", "old_statu", "other", "url_2", "extraction_date"]
-  end
-#call_export
-  def self.generate_call
-    CSV.generate(headers:true) do |csv|
-      csv << call_attributes
-      @calls.each do |task|
-        csv << call_attributes.map{|attr| task.send(attr)}
-      end
-    end
-    respond_to do |format|
-       format.html
-       format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-    end
-  end
-  def self.call_attributes
-    ["customer_id", "customer_tel" ,"statu", "time", "comment", "created_at","updated_at"] #admin.user_nameは？
   end
 
   @@ChoiceItems = [

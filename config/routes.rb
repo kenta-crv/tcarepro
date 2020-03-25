@@ -1,27 +1,24 @@
 Rails.application.routes.draw do
 
-  get 'acquisitions/show'
   root to: 'customers#index'
   get 'customers/analytics' => 'customers#analytics'
-  get 'customers/call' => 'customers#call' do
-    collection do
-      post :call_import
-    end
-  end
 
   delete :customers, to: 'customers#destroy_all'
   #ログイン切り替え
-  devise_for :admins
-
-
-  devise_for :users
-
+  devise_for :admins, controllers: {
+    registrations: 'admins/registrations'
+  }
+  resources :admins, only: [:show]
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
+  resources :users, only: [:show]
 
   resources :crms do
     collection do
       post :import
     end
-    resources :comments, :faqs, :invoices, :acquisitions
+    resources :comments, :acquisitions
     resources :images
      member do
       get 'images/view'
@@ -53,27 +50,6 @@ Rails.application.routes.draw do
   get 'contact' => 'contact#index'
   post 'contact/confirm' => 'contact#confirm'
   post 'contact/thanks' => 'contact#thanks'
-
-
-    #労働局情報
-    resources :prefectures do
-        resources :details
-    end
-
-    #請求書
-    resources :invoices do
-      member do
-      #PDF生成
-        get :report
-      end
-    end
-
-  resources :orders
-  #TODO
-  resources :todos
-
-  #FAQ
-  resources :faqs
 
   # API
   namespace :api do

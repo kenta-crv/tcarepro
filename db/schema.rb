@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200307145721) do
+ActiveRecord::Schema.define(version: 20200323153831) do
 
   create_table "acquisitions", force: :cascade do |t|
     t.integer "crm_id"
@@ -130,25 +130,6 @@ ActiveRecord::Schema.define(version: 20200307145721) do
     t.string "extraction_date"
   end
 
-  create_table "customers_search_orders", force: :cascade do |t|
-    t.integer "admin_id"
-    t.integer "customer_id"
-    t.integer "prev_customer_id"
-    t.integer "next_customer_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "faqs", force: :cascade do |t|
-    t.integer "crm_id"
-    t.string "question"
-    t.string "select"
-    t.string "answer"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["crm_id"], name: "index_faqs_on_crm_id"
-  end
-
   create_table "images", force: :cascade do |t|
     t.integer "crm_id"
     t.string "name"
@@ -157,32 +138,6 @@ ActiveRecord::Schema.define(version: 20200307145721) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["crm_id"], name: "index_images_on_crm_id"
-  end
-
-  create_table "invoices", force: :cascade do |t|
-    t.integer "crm_id"
-    t.string "status"
-    t.string "deadline"
-    t.string "payment"
-    t.string "subject"
-    t.string "item1"
-    t.string "item2"
-    t.string "item3"
-    t.string "item4"
-    t.string "item5"
-    t.integer "price1"
-    t.integer "price2"
-    t.integer "price3"
-    t.integer "price4"
-    t.integer "price5"
-    t.integer "quantity1"
-    t.integer "quantity2"
-    t.integer "quantity3"
-    t.integer "quantity4"
-    t.integer "quantity5"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["crm_id"], name: "index_invoices_on_crm_id"
   end
 
   create_table "progresses", force: :cascade do |t|
@@ -215,18 +170,6 @@ ActiveRecord::Schema.define(version: 20200307145721) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "todos", force: :cascade do |t|
-    t.string "execution"
-    t.string "title"
-    t.string "select"
-    t.string "deadline"
-    t.string "state"
-    t.string "name"
-    t.string "contents"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "upload_data", force: :cascade do |t|
     t.string "name"
     t.string "file"
@@ -244,9 +187,9 @@ ActiveRecord::Schema.define(version: 20200307145721) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "user_name", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "user_name"
     t.string "select"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"

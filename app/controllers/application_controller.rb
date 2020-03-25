@@ -1,7 +1,11 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   layout :layout_by_resource
+  #before_action :set_user
 
+  #def set_user
+  #  @user = User.find(params[:id])
+  #end
 
 # 例外処理
   rescue_from ActiveRecord::RecordNotFound, with: :render_404
@@ -20,7 +24,7 @@ class ApplicationController < ActionController::Base
 
   protected
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, :select])
   end
 
 
@@ -29,9 +33,9 @@ class ApplicationController < ActionController::Base
     def after_sign_in_path_for(resource)
       case resource
       when Admin
-         root_path
+         admin_path(@admin.id)
       when User
-         root_path
+         user_path(@user.id)
       else
          super
       end

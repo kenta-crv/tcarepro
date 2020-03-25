@@ -52,22 +52,12 @@
 			<td><%= link_to "URL2", @customer.url_2, target:"_blank", class:"btn btn-danger" %></td>
 		</tr>
 		<tr>
-			<th>過去履歴</th>
-			<td><%= @customer.old_statu %></td>
-      <th>抽出日</th>
-			<td><%= @customer.extraction_date %></td>
-		</tr>
-    <tr>
-      <th>過去架電日</th>
-			<td><%= @customer.old_date %></td>
       <th>タイトル</th>
-			<td><%= @customer.title %></td>
+			<td colspan="3"><%= @customer.title %></td>
     </tr>
     <tr>
       <th>備考</th>
-			<td><%= @customer.remarks %></td>
-      <th>その他</th>
-			<td><%= @customer.other %></td>
+			<td colspan="3"><%= @customer.remarks %></td>
     </tr>
 	</tbody>
 </table>

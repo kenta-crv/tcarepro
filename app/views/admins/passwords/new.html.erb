@@ -1,5 +1,5 @@
   <div class="beige-wrapper">
-  
+
             <div class="heading"><h2>パスワードを忘れた場合</h2>
             <p>Forgot your password?</p></div>
 
@@ -15,13 +15,12 @@
 					<th>メールアドレス<span class="label label-blue">必須</span></br>
 									<small>aaa@crold-valieat.jp</small></th>
 					<td><%= f.email_field :email, autofocus: true, autocomplete: "email" %></td>
-				</tr>		
+				</tr>
         					<tr>
 									<th colspan="2"><%= f.submit "パスワードを再発行しますか？"%></th>
-				</tr>		
+				</tr>
 </table>
 <% end %>
-
-<%= render "admins/shared/links" %>
-
+<div class="center">
+  <%= render "admins/shared/links" %>
 </div>

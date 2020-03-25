@@ -1,7 +1,9 @@
 class CrmsController < ApplicationController
   before_action :authenticate_admin!
   def index
-		@crms = Crm.all.order(created_at: 'desc')
+    @q = Crm.ransack(params[:q])
+    @crms = @q.result
+		@crms = @crms.all.order(created_at: 'desc')
 	end
 
 	def show

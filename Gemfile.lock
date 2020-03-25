@@ -107,10 +107,6 @@ GEM
       haml (>= 4.0.6, < 6.0)
       html2haml (>= 1.0.1)
       railties (>= 5.1)
-    hirb (0.7.3)
-    hirb-unicode (0.0.5)
-      hirb (~> 0.5)
-      unicode-display_width (~> 0.1.1)
     html2haml (2.2.0)
       erubis (~> 2.7.0)
       haml (>= 4.0, < 6)
@@ -274,7 +270,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sqlite3 (1.4.1)
+    sqlite3 (1.4.2)
     temple (0.8.1)
     thinreports (0.10.3)
       prawn (~> 2.2.0)
@@ -289,7 +285,6 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.1.20)
       execjs (>= 0.3.0, < 3)
-    unicode-display_width (0.1.1)
     warden (1.2.8)
       rack (>= 2.0.6)
     web-console (3.7.0)
@@ -317,8 +312,6 @@ DEPENDENCIES
   dotenv-rails
   faker
   haml-rails
-  hirb
-  hirb-unicode
   jbuilder (~> 2.5)
   jquery-rails
   kaminari

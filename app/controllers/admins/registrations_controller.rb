@@ -7,12 +7,13 @@ class Admins::RegistrationsController < Devise::RegistrationsController
 
 
   def after_sign_up_path_for(resource)
-    "/user/#{current_user.id}"
+    "/admin/#{current_admin.id}"
   end
 
   private
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, :select])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:user_name, :select])#追記
   end
 
   # GET /resource/sign_up
@@ -28,7 +29,7 @@ class Admins::RegistrationsController < Devise::RegistrationsController
   # GET /resource/edit
   # def edit
   #   super
-  # end
+   #end
 
   # PUT /resource
   # def update
@@ -36,9 +37,9 @@ class Admins::RegistrationsController < Devise::RegistrationsController
   # end
 
   # DELETE /resource
-  # def destroy
-  #   super
-  # end
+   def destroy
+     super
+   end
 
   # GET /resource/cancel
   # Forces the session data which is usually expired after sign
@@ -49,7 +50,11 @@ class Admins::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+   protected
+
+   def after_update_path_for(resource)
+     admin_path(id: current_admin.id)
+   end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params

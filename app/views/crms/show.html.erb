@@ -126,7 +126,7 @@
    </tr>
     <% @crm.comments.each do |comment| %>
     <tr>
-      <th><%= comment.body %></th>
+      <td><%= comment.body %></td>
       <td><%= link_to '削除',
                       crm_comment_path(crm_id: @crm.id, id: comment.id),
                       method: :delete,

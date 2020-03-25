@@ -24,18 +24,12 @@
         <% end %>
            <%= link_to  'CTI', customers_path %>
            <%= link_to  'CRM', crms_path %>
-           <%= link_to  'File', '/uploader/index' %>
-           <% if admin_signed_in? %>
-      　　　  <strong><% current_admin.email  %></strong>
-           <%= link_to "admin", destroy_admin_session_path, method: :delete %>
-　　　　　　   <% else %>
-       　  <%= link_to "admin", new_admin_session_path%>
- 　　　　　　　<% end %>
+           <%= link_to  'ファイル', '/uploader/index' %>
            <% if user_signed_in? %>
       　　　  <strong><% current_user.email  %></strong>
-        　 <%= link_to "staff", destroy_user_session_path, method: :delete %>
+           <%= link_to "マイページ", user_path(@user) %>
 　　　　　　　　<% else %>
-      　　　<%= link_to "staff", new_user_session_path%>
+      　　　<%= link_to "ログイン", new_user_session_path%>
  　　　　　　　 <% end %>
       </div>
     </div>

@@ -21,9 +21,20 @@ class CustomersController < ApplicationController
     @customers = @customers.page(params[:page]).per(100)
     respond_to do |format|
      format.html
-     format.csv{ send_data @customers.generate_csv, filename: "tasks-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+     format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
     end
-
+    call_attributes = ["admin_id", "customer_id", "customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
+    generate_call =
+      CSV.generate(headers:true) do |csv|
+        csv << call_attributes
+        all.each do |task|
+          csv << call_attributes.map{|attr| task.send(attr)}
+        end
+      end
+    respond_to do |format_to|
+     format_to.html
+     format_to.csv{ send_data @calls.generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+    end
   end
 
   def show
@@ -125,7 +136,7 @@ class CustomersController < ApplicationController
  end
 
  def call_import
-   Customer.import(params[:call_file])
+   Call.call_import(params[:call_file])
    redirect_to customers_url, notice:"リストを追加しました"
  end
 

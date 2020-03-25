@@ -1,0 +1,25 @@
+<div class="beige-wrapper">
+
+          <div class="heading"><h2>アカウント情報</h2>
+
+
+  <table>
+    <colgroup>
+      <col width="40%">
+      <col width="60%">
+ 　 </colgroup>
+    <tr>
+      <th>セレクトエージェント</th>
+      <td><%= @admin.select %></td>
+    </tr>
+    <tr>
+      <th>ユーザーネーム</th>
+      <td><%= @admin.user_name %></td>
+    </tr>
+    <tr>
+      <th>ログインアドレス</th>
+      <td><%= @admin.email %></td>
+    </tr>
+</table>
+<br>
+<%= link_to "アカウント情報編集", edit_admin_registration_path, class:"btn btn-danger" %>

@@ -16,7 +16,18 @@ class Call < ApplicationRecord
   }
 
 
+  #call_import
+    def  self.call_import(call_file)
+      CSV.foreach(call_file.path, headers: true) do |row|
+        call = Call.find_by(id: row["id"]) || new
+        call.attributes = row.to_hash.slice(*call_attributes)
+        call.save!
+      end
+    end
 
+    def self.call_attributes
+      ["admin_id", "customer_id", "customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
+    end
 
   @@StatuItems = [
     "着信留守",
