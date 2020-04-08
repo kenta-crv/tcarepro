@@ -1,0 +1,26 @@
+<%= form_for @knowledge do |f| %>
+<table width="90%">
+   <col width ="30%">
+   <col width ="70%">
+  <tr>
+    <th>題名</th>
+    <td><%= f.text_field :title, class:"long-text" %></td>
+  </tr>
+   <tr>
+    <th>セレクト</th>
+    <td><%= f.text_field :select, class:"long-text" %></td>
+  </tr>
+   <tr>
+    <th>担当者</th>
+    <td><%= f.text_field :name, class:"long-text" %></td>
+  </tr>
+   <tr>
+    <th>本文</th>
+    <td><%= f.text_area :answer, class:"big-area" %></td>
+  </tr>
+   <tr>
+     <td colspan ="4"><%= f.submit "登録" %></td>
+   </tr>
+  </table>
+
+<% end %>

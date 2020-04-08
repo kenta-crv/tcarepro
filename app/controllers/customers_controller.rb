@@ -1,6 +1,7 @@
 require 'rubygems'
 class CustomersController < ApplicationController
   before_action :authenticate_admin!
+  before_action :authenticate_user!
 
   def index
     last_call_customer_ids = nil
@@ -18,24 +19,13 @@ class CustomersController < ApplicationController
     @q = Customer.ransack(params[:q])
     @customers = @q.result
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
-    @customers = @customers.page(params[:page]).per(100)
+    @customers = @customers.page(params[:page]).per(30)
     respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
     end
-    call_attributes = ["admin_id", "customer_id", "customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
-    generate_call =
-      CSV.generate(headers:true) do |csv|
-        csv << call_attributes
-        all.each do |task|
-          csv << call_attributes.map{|attr| task.send(attr)}
-        end
-      end
-    respond_to do |format_to|
-     format_to.html
-     format_to.csv{ send_data @calls.generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-    end
   end
+
 
   def show
     @customer = Customer.find(params[:id])
@@ -90,54 +80,67 @@ class CustomersController < ApplicationController
  def analytics
    @calls = Call.all
    #today
-   @call_count_today  = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
-   @protect_count_today = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @call_count_today  = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @protect_count_today = @calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
    @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
-   @app_count_today = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @app_count_today = @calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
    @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
    #week
-   @call_count_week  = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
-   @protect_count_week = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @call_count_week  = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @protect_count_week = @calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
    @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
-   @app_count_week = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @app_count_week = @calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
    @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
    #month
-   @call_count_month = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day).count
-   @protect_count_month = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+   @call_count_month = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day).count
+   @protect_count_month = @calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
    @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
-   @app_count_month = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+   @app_count_month = @calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
    @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
    @admins = Admin.all
    #statu内容簡素化
-   @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
+   @call_count = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
 
 
    today = Time.zone.today
    all_monday = today.all_month.select(&:monday?)
    all_monday_all_day = all_monday.map(&:all_day)
-   @call_count_month_monday = @calls.where(created_at: all_monday_all_day)
+   @call_count_month_monday = @calls.where.not(admin_id: 1).where(created_at: all_monday_all_day)
    all_tuesday = today.all_month.select(&:tuesday?)
    all_tuesday_all_day = all_monday.map(&:all_day)
-   @call_count_month_tuesday = @calls.where(created_at: all_tuesday_all_day).count
+   @call_count_month_tuesday = @calls.where.not(admin_id: 1).where(created_at: all_tuesday_all_day).count
    all_wednesday = today.all_month.select(&:wednesday?)
    all_wednesday_all_day = all_monday.map(&:all_day)
-   @call_count_month_wednesday = @calls.where(created_at: all_wednesday_all_day).count
+   @call_count_month_wednesday = @calls.where.not(admin_id: 1).where(created_at: all_wednesday_all_day).count
    all_thursday = today.all_month.select(&:thursday?)
    all_thursday_all_day = all_thursday.map(&:all_day)
-   @call_count_month_thursday = @calls.where(created_at: all_thursday_all_day).count
+   @call_count_month_thursday = @calls.where.not(admin_id: 1).where(created_at: all_thursday_all_day).count
    all_friday = today.all_month.select(&:friday?)
    all_friday_all_day = all_friday.map(&:all_day)
-   @call_count_month_friday = @calls.where(created_at: all_friday_all_day).count
+   @call_count_month_friday = @calls.where.not(admin_id: 1).where(created_at: all_friday_all_day).count
+
+   call_attributes = ["admin_id", "customer_id", "customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
+   generate_call =
+     CSV.generate(headers:true) do |csv|
+       csv << call_attributes
+       Call.all.each do |task|
+         csv << call_attributes.map{|attr| task.send(attr)}
+       end
+     end
+   respond_to do |format|
+    format.html
+    format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+   end
  end
 
  def import
    Customer.import(params[:file])
-   redirect_to customers_url, notice:"リストを追加しました"
+   redirect_to customers_url, notice:"件登録されました。"
  end
 
  def call_import
    Call.call_import(params[:call_file])
-   redirect_to customers_url, notice:"リストを追加しました"
+   redirect_to customers_url, notice:"件登録されました。"
  end
 
   private

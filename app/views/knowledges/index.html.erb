@@ -1,0 +1,29 @@
+<div  class="heading"><h2>顧客一覧</h2>(<%= link_to "新規登録", new_knowledge_path %>)</div>
+<table width="90%">
+  <col width="20%">
+  <col width="10%">
+  <col width="10%">
+  <col width="50%">
+  <col width="10%">
+  <tr>
+    <th>タイトル</th>
+    <th>セレクト</th>
+    <th>担当者</th>
+    <th>本文</th>
+    <th>編集 | 削除</th>
+  </tr>
+  <% @knowledges.each do |knowledge| %>
+  <tr>
+    <td><%= link_to knowledge.title, knowledge_path(knowledge) %></td>
+    <td><%= knowledge.select %></td>
+    <td><%= knowledge.name %></td>
+    <td><%= knowledge.answer %></td>
+    <td><%= link_to '編集', edit_knowledge_path(knowledge), class: 'command'%>
+    <%= link_to '削除',
+      knowledge_path(knowledge),
+      method: :delete,
+      class: 'command',
+      data: { confirm: '本当に削除しますか？'} %></td>
+  </tr>
+  <% end %>
+</table>

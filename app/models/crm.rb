@@ -2,9 +2,6 @@ class Crm < ApplicationRecord
   has_many :acquisitions
   has_many :comments
   has_many :images
-  has_many :faqs
-  has_many :images
-  has_many :invoices
 
   def self.import(file)
       CSV.foreach(file.path, headers:true) do |row|

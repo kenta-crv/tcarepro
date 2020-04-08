@@ -1,5 +1,6 @@
 class CrmsController < ApplicationController
   before_action :authenticate_admin!
+  
   def index
     @q = Crm.ransack(params[:q])
     @crms = @q.result

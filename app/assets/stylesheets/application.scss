@@ -16,8 +16,6 @@
 /*ベース情報*/
 @import "bootstrap";
 
-@import "contact.scss";
-
 $main_color:#821927;
 $sub_color:#8D3C4C;
 $gray_color:#e6ecf0;
@@ -220,87 +218,6 @@ li.progress-list-item {
 }
 
 
-.main-wrapper {
-  padding: 30px 50px 100px 0;
-  background-image: url(main-top.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  width:100%;
-  color: white;
-    h1 {
-        opacity: 0.9;
-        font-size: 50px;
-        letter-spacing: 5px;
-        padding-left:30px;
-        line-height:100px;
-        font-weight:bold;
-        text-shadow: 3px 2px 3px #000;
-        }
-    p {
-        opacity: 0.9;
-        font-size: 18px;
-        margin-bottom: 40px;
-        padding-left:30px;
-        font-weight:bold;
-        line-height:50px;
-        text-shadow: 1px 2px 3px #000;
-    }
-}
-
-
-                                            /*背景色を記述しています。*/
-
-.base-wrapper {
-  background-color: rgba(0, 180, 255, 0.6);  /*ブルー*/
-  padding-bottom: 70px;
-  text-align: center;
-}
-.sub-wrapper {
-  background-color: rgba(241, 244, 248, 1.0);  /*グレー*/
-  padding-bottom: 70px;
-  text-align: center;
-}
-.company-wrapper{
-  padding-bottom: 70px;
-  background-image: url(company-img.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  color:white;
-      h1 {
-        opacity: 0.9;
-        font-size: 40px;
-        letter-spacing: 5px;
-        padding:50px 0 0 30px;
-        line-height:100px;
-        font-weight:bold;
-        text-shadow: 3px 2px 3px #000;
-        }
-}
-.inquiry-wrapper{
-  padding-bottom: 70px;
-  background-image: url(inquiry-img.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  color:white;
-      h1 {
-        opacity: 0.9;
-        font-size: 40px;
-        letter-spacing: 5px;
-        padding:50px 0 0 30px;
-        line-height:100px;
-        font-weight:bold;
-        text-shadow: 3px 2px 3px #000;
-        }
-}
-.middle-heading {
-       font-size:15px;
-       margin:0px 50px 30px;
-       line-height:30px;
-}
-
-
-                                            /*商品内容２カラム*/
-
 
 .two_column {
   float: left;
@@ -344,89 +261,9 @@ li.progress-list-item {
   clear: left;
 }
 
-footer {
-  padding-top: 30px;
-  padding-bottom: 20px;
-    p {
-        color: #b3aeb5;
-        font-size: 12px;
-    }
-}
-
-.ques {
-    width:65%;
-    margin-top:45px;
-}
-
 span {
     color:red;
 }
-
-
-                                                     /*配置図*/
-
-.list-right {
-  text-align: left;
-  font-size: 18px;
-  line-height: 40px;
-  font-weight: bold;
-  opacity: 0.8;
-  padding:0 100px 0 550px;
-}
-.image-left {
-  width: 400px;
-  margin-left:70px;
-  float: left;
-  }
-.list-left {
-  width:500px;
-  font-size: 18px;
-  line-height: 40px;
-  font-weight: bold;
-  opacity: 0.8;
-  float: left;
-  padding:0 0 0 100px;
-}
- .image-right {
-  width: 400px;
-  margin-right:70px;
-}
-.list-name {
-    text-align:left;
-}
-
-                                                        /*配置図*/
-.lp-table{
-    line-height:35px;
-    .big-face{
-        font-size:24px;
-        color:white;
-        background-color:red;
-
-        }
-    .sub-face{
-        font-size:21px;
-        font-weight:bold;
-        color:white;
-        background-color:#EF8CA7;
-        }
-    th {
-        font-size:18px;
-        background-color:#327BEE;
-        color:white;
-    }
-    .big-td{
-        color:black;
-        font-weight:bold;
-        font-size:24px;
-    }
-}
-
-.next {
-  float:right;
-  margin-right:10px;
-}
-
 .header-table {
   margin-top:-55px;
   a:visited { color:white;}

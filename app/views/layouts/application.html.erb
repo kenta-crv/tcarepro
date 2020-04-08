@@ -9,7 +9,6 @@
    <meta name="viewport" content="width=device-width, initial-scale=1,0, initial-scale=1, shrink-to-fit=no">
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all'%>
-    <%= stylesheet_link_tag rel="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" %>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <%= javascript_include_tag 'application' %>
 
@@ -23,11 +22,14 @@
           <%= image_tag "rogo.png", width:"200px" %>
         <% end %>
            <%= link_to  'CTI', customers_path %>
-           <%= link_to  'CRM', crms_path %>
+           <%= link_to  'SFA/CRM', crms_path %>
+           <%= link_to  'ナレッジ', knowledges_path %>
            <%= link_to  'ファイル', '/uploader/index' %>
            <% if user_signed_in? %>
       　　　  <strong><% current_user.email  %></strong>
-           <%= link_to "マイページ", user_path(@user) %>
+           <%= link_to "マイページ", user_path(current_user) %>
+           <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
+
 　　　　　　　　<% else %>
       　　　<%= link_to "ログイン", new_user_session_path%>
  　　　　　　　 <% end %>
@@ -36,9 +38,9 @@
 </header>
 
 <body>
-  <p class="notice"><%= notice %></p>
-  <p class="alert"><%= alert %></p>
     <main>
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
     　<%= yield %>
   　</main>
 </body>

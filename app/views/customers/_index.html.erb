@@ -17,7 +17,7 @@
                   <th>電話番号</th>
                   <th>住所</th>
                   <th>ステータス</th>
-                  <th>ステータス更新日</th>
+                  <th><%= sort_link(@q, :created_at) %></th>
                   <th>アップデート日</th>
                   <th>編集/削除</th>
                 </tr>
@@ -30,7 +30,7 @@
                   <td><%= customer.address %></td>
                   <td><%= customer.last_call.try(:statu) %></td>
                   <td><%= customer.last_call.try(:created_at) %></td>
-                  <td><%= customer.updated_at %></td>
+                  <td><%= customer.updated_at.strftime("%Y年%m月%d日 %H時%M分") %></td>
                   <td><%= link_to '編集', edit_customer_path(customer), class: 'command'%>
                       <%= link_to '削除',
                        customer_path(customer),
@@ -40,7 +40,7 @@
                 </tr>
           <% end %>
                 <tr>
-                  <th colspan="7"><%= paginate @customers %></th>
+                  <th colspan="8"><%= paginate @customers %></th>
                 </tr>
             </table>
 <% end %>

@@ -1,7 +1,8 @@
 class CallsController < ApplicationController
   before_action :load_customer
   before_action :load_call, only: [:edit,:update,:show,:destroy]
-  before_action :authenticate_admin!
+  #before_action :authenticate_admin!
+
   def load_customer
     @customer = Customer.find(params[:customer_id])
     @q = Customer.ransack(params[:q]).result
@@ -18,10 +19,9 @@ class CallsController < ApplicationController
   end
 
   def create
-  	#if @customer.calls.create(call_params)
     if @call = @customer.calls.create(call_params)
     @call.update_attribute(:customer_tel, @customer.tel)
-	    redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!)
+      redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!)
     end
   end
 
@@ -37,7 +37,6 @@ class CallsController < ApplicationController
     @customer = Customer.find(params[:customer_id])
     @call = @customer.calls.find(params[:id])
     @call.destroy
-    binding.pry
     redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!)
   end
 
@@ -48,7 +47,6 @@ class CallsController < ApplicationController
  		:time, #再コール
  		:comment, #コメント
     :item_select => []
-  ).merge(admin: current_admin)
+    )&.merge(admin: current_admin)&.merge(user: current_user)
  	end
-
- end
+end

@@ -2,8 +2,8 @@ Rails.application.routes.draw do
 
   root to: 'customers#index'
   get 'customers/analytics' => 'customers#analytics'
-
   delete :customers, to: 'customers#destroy_all'
+
   #ログイン切り替え
   devise_for :admins, controllers: {
     registrations: 'admins/registrations'
@@ -38,11 +38,10 @@ Rails.application.routes.draw do
   end
   get 'customers/:id/:is_auto_call' => 'customers#show'
 
-
-                                                #アップロード
+  resources :knowledges
   resources :uploader, only: [:edit, :update, :destroy]
   get 'uploader/index'
-  get 'uploader/form'
+  #get 'uploader/form'
   post 'uploader/upload'
   get 'uploader/view'
   get 'uploader/download/:id' => 'uploader#download' ,as: :donwload_pdf

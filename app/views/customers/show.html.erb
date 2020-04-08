@@ -1,20 +1,35 @@
 <table class="header-table">
   <tr>
-    <th>
+    <th rowspan="2">
       <% if @prev_customer&.id %>
         <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!), class:"prev btn btn-danger" %>
       <% end %>
     </th>
-    <th>本日：<%= @call.call_count_today %>Call</th>
-    <th>見込獲得数：<%= @call.protect_count_today %>件</th>
-    <th>アポ数：<%= @call.app_count_today %>件</th>
-    <th>見込獲得率：<%= @call.protect_convertion.ceil(2) %>%</th>
-    <th>アポ獲得率：<%= @call.app_convertion.ceil(2) %>%</th>
-    <th>
+      <th>総コール：<%= @call.call_count_today %>Call</th>
+      <th>見込数：<%= @call.protect_count_today %>件</th>
+      <th>アポ数：<%= @call.app_count_today %>件</th>
+      <th>見込率：<%= @call.protect_convertion.ceil(2) %>%</th>
+      <th>アポ率：<%= @call.app_convertion.ceil(2) %>%</th>
+    <th rowspan="2">
       <% if @next_customer&.id %>
         <%= link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!), class:"prev btn btn-danger" %>
       <% end %>
     </th>
+  </tr>
+  <tr>
+    <%- if admin_signed_in? %>
+      <th>自己コール：<%= current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
+      <th>不足コール：<%= -25 - current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
+      <th>総コール：<%= current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count %>Call</th>
+      <th>アポ数：<%= current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count %>Call</th>
+      <th>アポ率：<%= number_to_percentage(current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count / current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count.to_f * 100 ,precision: 1 ) %>Call</th>
+    <%- elsif user_signed_in? %>
+      <th>自己コール：<%= current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
+      <th>不足コール：<%= -25 - current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
+      <th>総コール：<%= current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count %>Call</th>
+      <th>アポ数：<%= current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count %>Call</th>
+      <th>アポ率：<%= number_to_percentage(current_user.calls.where(created_at: Time.current.day).count / current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count.to_f * 100 ,precision: 1 ) %>Call</th>
+    <%- end %>
   </tr>
 </table>
 
@@ -50,6 +65,7 @@
 			<td><%= mail_to @customer.mail, "Mail", class:"btn btn-danger" %></td>
 			<td><%= link_to "URL", @customer.url, target:"_blank", class:"btn btn-danger" %></td>
 			<td><%= link_to "URL2", @customer.url_2, target:"_blank", class:"btn btn-danger" %></td>
+      <td><%= link_to "Calendar", "https://calendar.google.com/", target:"_blank", class:"btn btn-danger" %></td>
 		</tr>
 		<tr>
       <th>タイトル</th>
@@ -103,16 +119,15 @@
 		<col width="30%">
 	<tbody>
 		<tr>
-			<th colspan="4">コール</th>
+			<th colspan="4">コール<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
+        <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %>, checked />チェックボタンを外さないで下さい
+      </label></th>
 		</tr>
 		<tr>
 			<td class="call-font"><%= @customer.tel%></td>
 			<th>
 				<%= select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect{ |o| [ o.device_name, o.token ] }), :include_blank => '（選択してください）') %>
 				<button id="button-call" data-number="<%= @customer.tel %>">発信</button>
-				<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
-					<input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %> />&nbsp;「次へ」「前へ」ボタン押下時に自動発信する
-				</label>
 			</th>
 		</tr>
 	</tbody>
@@ -162,7 +177,10 @@
 		<tr>
 		<% @customer.calls.each do |call| %>
 			<td><%= call.created_at %></td>
-			<td><%= call.admin&.user_name %></td>
+			<td>
+          <%= call.admin&.user_name %>
+          <%= call.user&.user_name %>
+      </td>
 			<td><%= call.statu %></td>
 			<td><%= call.time %></td>
 			<td><%= call.comment %></td>

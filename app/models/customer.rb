@@ -1,9 +1,11 @@
 class Customer < ApplicationRecord
   #belongs_to :admin
+  #belongs_to :user
   has_many :calls#, foreign_key: 'tel', class_name: 'Call'
   has_one :last_call, ->{
     order("created_at desc")
   }, class_name: :Call
+
 
 #customer_import
   def self.import(file)

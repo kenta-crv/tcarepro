@@ -1,6 +1,8 @@
 class Call < ApplicationRecord
   belongs_to :customer#, foreign_key: 'tel', class_name: 'Customer'
   belongs_to :admin
+  belongs_to :user
+
   scope :times_last_call, -> {
     last_time = "SELECT sub_call.customer_id, MAX(sub_call.time) as last_time FROM calls as sub_call GROUP BY sub_call.customer_id";
     joins(
@@ -21,6 +23,8 @@ class Call < ApplicationRecord
       CSV.foreach(call_file.path, headers: true) do |row|
         call = Call.find_by(id: row["id"]) || new
         call.attributes = row.to_hash.slice(*call_attributes)
+        next if Call.where('created_at > ?', "1.month.ago.all_day")
+        next if Customer.where(tel: customer.tel).count > 0
         call.save!
       end
     end
@@ -32,10 +36,10 @@ class Call < ApplicationRecord
   @@StatuItems = [
     "着信留守",
     "担当者不在",
+    "フロントNG",
     "見込",
     "APP",
     "キャンセル",
-    "フロントNG",
     "クロージングNG",
     "根本的NG",
     "永久NG"
@@ -45,14 +49,15 @@ class Call < ApplicationRecord
   end
 
   def call_count_today
-    #Call.count(:id)
     Call
+      .where.not(admin_id: 1)
       .where('created_at > ?', Time.current.beginning_of_day)
       .where('created_at < ?', Time.current.end_of_day).count
   end
 
   def protect_count_today #本日獲得見込数
     Call
+      .where.not(admin_id: 1)
       .where(statu: "見込")
       .where('created_at > ?', Time.current.beginning_of_day)
       .where('created_at < ?', Time.current.end_of_day)
@@ -65,6 +70,7 @@ class Call < ApplicationRecord
 
   def app_count_today
     Call
+      .where.not(admin_id: 1)
       .where(statu: "APP")
       .where('created_at > ?', Time.current.beginning_of_day)
       .where('created_at < ?', Time.current.end_of_day)
@@ -76,16 +82,24 @@ class Call < ApplicationRecord
   end
 
   def date_count
-    Call.group("DATE_FORMAT(created_at, '%Y-%m-%d')").count
+    Call.where.not(admin_id: 1).group("DATE_FORMAT(created_at, '%Y-%m-%d')").count
   end
 
   def week_count
-    Call.group("WEEK(created_at)").count
+    Call.where.not(admin_id: 1).group("WEEK(created_at)").count
   end
 
   def month_count
-    Call.group("MONTH(created_at)").count
+    Call.where.not(admin_id: 1).group("MONTH(created_at)").count
   end
+
+  def user_time_count #時間単位のカウント
+    Call.where.not(admin_id: 1).where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
+  end
+
+  #def user_app
+  #  U
+  #end
 
 
 end

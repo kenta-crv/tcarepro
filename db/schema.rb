@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200323153831) do
+ActiveRecord::Schema.define(version: 20200331121451) do
 
   create_table "acquisitions", force: :cascade do |t|
     t.integer "crm_id"
@@ -47,9 +47,11 @@ ActiveRecord::Schema.define(version: 20200323153831) do
     t.integer "admin_id"
     t.integer "crm_id"
     t.string "customer_tel"
+    t.integer "user_id"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
+    t.index ["user_id"], name: "index_calls_on_user_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -80,6 +82,7 @@ ActiveRecord::Schema.define(version: 20200323153831) do
     t.string "city"
     t.string "town"
     t.string "building"
+    t.string "url"
     t.string "item"
     t.string "statu"
     t.string "price"
@@ -138,6 +141,15 @@ ActiveRecord::Schema.define(version: 20200323153831) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["crm_id"], name: "index_images_on_crm_id"
+  end
+
+  create_table "knowledges", force: :cascade do |t|
+    t.string "title"
+    t.string "select"
+    t.string "name"
+    t.string "answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "progresses", force: :cascade do |t|

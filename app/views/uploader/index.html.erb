@@ -1,6 +1,27 @@
-    <div class="heading"><h2>ドキュメントダウンロード</h2>
-      <%= link_to '（アップロードはこちら）', action: "form" %>
+ <div class="beige-wrapper">
+
+            <div class="heading"><h2>ドキュメント</h2>
             </div>
+       <% @upload = UploadFile.new %>
+    <%= form_for @upload, :url => {:action => :upload} do |f| %>
+    <table width="90%">
+        <tbody>
+            <tr>
+                <th>ファイル名</th>
+                <th>ファイル添付</th>
+　       </tr>
+           <tr>
+                <td><%= f.text_field :name %></td>
+                <td><%= f.file_field :file %></td>
+           </tr>
+           <tr>
+                <td colspan = "2"><%= f.submit "アップロード" %></td>
+           </tr>
+        </tbody>
+    </table>
+    <% end %>
+<br>
+<br>
 
     <table width="90%" data-turbolinks="false">
      <tbody>
