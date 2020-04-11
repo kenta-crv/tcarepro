@@ -17,6 +17,7 @@ class CustomersController < ApplicationController
       last_call_customer_ids = last_call.pluck(:customer_id)
     end
     @q = Customer.ransack(params[:q])
+    @q = Customer.ransack(params[:last_call])
     @customers = @q.result
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(30)
@@ -30,6 +31,7 @@ class CustomersController < ApplicationController
   def show
     @customer = Customer.find(params[:id])
     @q = Customer.ransack(params[:q]).result
+    @q = Customer.ransack(params[:last_call]).result
     @call = Call.new
     @prev_customer = @q.where("customers.id < ?", @customer.id).last
     @next_customer = @q.where("customers.id > ?", @customer.id).first
@@ -135,12 +137,12 @@ class CustomersController < ApplicationController
 
  def import
    Customer.import(params[:file])
-   redirect_to customers_url, notice:"件登録されました。"
+   redirect_to customers_url, notice:"登録されました。"
  end
 
  def call_import
    Call.call_import(params[:call_file])
-   redirect_to customers_url, notice:"件登録されました。"
+   redirect_to customers_url, notice:"登録されました。"
  end
 
   private

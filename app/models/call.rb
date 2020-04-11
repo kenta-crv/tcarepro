@@ -1,7 +1,7 @@
 class Call < ApplicationRecord
   belongs_to :customer#, foreign_key: 'tel', class_name: 'Customer'
-  belongs_to :admin
-  belongs_to :user
+  belongs_to :admin, optional: true
+  belongs_to :user, optional: true
 
   scope :times_last_call, -> {
     last_time = "SELECT sub_call.customer_id, MAX(sub_call.time) as last_time FROM calls as sub_call GROUP BY sub_call.customer_id";
@@ -22,9 +22,11 @@ class Call < ApplicationRecord
     def  self.call_import(call_file)
       CSV.foreach(call_file.path, headers: true) do |row|
         call = Call.find_by(id: row["id"]) || new
+        customer = Customer.find_by(tel: row["tel"])
         call.attributes = row.to_hash.slice(*call_attributes)
+        call.customer_id = customer&.id
         next if Call.where('created_at > ?', "1.month.ago.all_day")
-        next if Customer.where(tel: customer.tel).count > 0
+        next if Call.where(statu: "APP")
         call.save!
       end
     end
@@ -39,6 +41,7 @@ class Call < ApplicationRecord
     "フロントNG",
     "見込",
     "APP",
+    "コロナ見込",
     "キャンセル",
     "クロージングNG",
     "根本的NG",

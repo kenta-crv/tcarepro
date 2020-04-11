@@ -13,6 +13,7 @@ class Customer < ApplicationRecord
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
        next if self.where(tel: customer.tel).count > 0
+       next if self.where.not(industry: nil)
        customer.save!
       end
   end

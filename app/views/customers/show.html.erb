@@ -2,7 +2,7 @@
   <tr>
     <th rowspan="2">
       <% if @prev_customer&.id %>
-        <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!), class:"prev btn btn-danger" %>
+        <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-danger" %>
       <% end %>
     </th>
       <th>総コール：<%= @call.call_count_today %>Call</th>
@@ -12,7 +12,7 @@
       <th>アポ率：<%= @call.app_convertion.ceil(2) %>%</th>
     <th rowspan="2">
       <% if @next_customer&.id %>
-        <%= link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!), class:"prev btn btn-danger" %>
+        <%= link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-danger" %>
       <% end %>
     </th>
   </tr>
