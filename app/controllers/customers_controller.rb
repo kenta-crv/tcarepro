@@ -16,9 +16,12 @@ class CustomersController < ApplicationController
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
       last_call_customer_ids = last_call.pluck(:customer_id)
     end
+    #@last_call_params = params(:last_call)
     @q = Customer.ransack(params[:q])
-    @q = Customer.ransack(params[:last_call])
+    #@q = Call.ransack(params[:last_call])
     @customers = @q.result
+    #@customers = @q.result.includes(:last_call)
+    #binding.pry
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(30)
     respond_to do |format|

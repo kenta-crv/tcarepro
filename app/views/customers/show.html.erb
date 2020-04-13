@@ -79,38 +79,6 @@
 </table>
 </div>
 
-
-
- <!--
-<div id="controls">
-  <div id="info">
-    <p class="instructions">Twilio Client</p>
-    <div id="client-name"></div>
-    <div id="output-selection">
-      <label>Ringtone Devices</label>
-      <select id="ringtone-devices" multiple></select>
-      <label>Speaker Devices</label>
-      <select id="speaker-devices" multiple></select><br/>
-      <a id="get-devices">Seeing unknown devices?</a>
-    </div>
-    <div id="log"></div>
-  </div>
-  <div id="call-controls">
-    <!-- <p class="instructions">Make a Call:</p>
-    <input id="phone-number" type="text" placeholder="Enter a phone # or client name" /> -->
-    <!-- <button id="button-call">Call</button>
-    <button id="button-hangup">Hangup</button>
-    <button id="button-onhold">OnHold</button>
-    <div id="volume-indicators">
-      <label>Mic Volume</label>
-      <div id="input-volume"></div><br/><br/>
-      <label>Speaker Volume</label>
-      <div id="output-volume"></div>
-    </div>
-  </div>
-</div>-->
-
-
 <div class="two_column">
 <table width="100%">
 		<col width="20%">
@@ -120,7 +88,7 @@
 	<tbody>
 		<tr>
 			<th colspan="4">コール<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
-        <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %>, checked />チェックボタンを外さないで下さい
+        <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %> />自動発信の場合、必ずチェックして下さい。//, checked
       </label></th>
 		</tr>
 		<tr>
