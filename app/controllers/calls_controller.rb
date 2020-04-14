@@ -20,7 +20,7 @@ class CallsController < ApplicationController
 
   def create
     if @call = @customer.calls.create(call_params)
-    @call.update_attribute(:customer_tel, @customer.tel)
+    #@call.update_attribute(:customer_tel, @customer.tel)
       redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!)
     end
   end
@@ -47,6 +47,7 @@ class CallsController < ApplicationController
  		:time, #再コール
  		:comment, #コメント
     :item_select => []
-    )&.merge(admin: current_admin)&.merge(user: current_user)
+    )&.merge(admin: current_admin)
+     &.merge(user: current_user)
  	end
 end

@@ -32,7 +32,7 @@ class Call < ApplicationRecord
     end
 
     def self.call_attributes
-      ["admin_id", "customer_id", "customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
+      ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
     end
 
   @@StatuItems = [

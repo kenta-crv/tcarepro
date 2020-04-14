@@ -19,13 +19,13 @@
   <tr>
     <%- if admin_signed_in? %>
       <th>自己コール：<%= current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>不足コール：<%= -25 - current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
+      <th>不足コール：<%= -25 + current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
       <th>総コール：<%= current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count %>Call</th>
       <th>アポ数：<%= current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count %>Call</th>
       <th>アポ率：<%= number_to_percentage(current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count / current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count.to_f * 100 ,precision: 1 ) %>Call</th>
     <%- elsif user_signed_in? %>
       <th>自己コール：<%= current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>不足コール：<%= -25 - current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
+      <th>不足コール：<%= -25 + current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
       <th>総コール：<%= current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count %>Call</th>
       <th>アポ数：<%= current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count %>Call</th>
       <th>アポ率：<%= number_to_percentage(current_user.calls.where(created_at: Time.current.day).count / current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count.to_f * 100 ,precision: 1 ) %>Call</th>

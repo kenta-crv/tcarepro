@@ -1,7 +1,6 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  before_action :authenticate_admin!
-  before_action :authenticate_user!
+  before_action :authenticate_admin! or :authenticate_user!
 
   def index
     last_call_customer_ids = nil
@@ -16,11 +15,11 @@ class CustomersController < ApplicationController
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
       last_call_customer_ids = last_call.pluck(:customer_id)
     end
-    #@last_call_params = params(:last_call)
+    @last_call_params = params[:last_call]
     @q = Customer.ransack(params[:q])
-    #@q = Call.ransack(params[:last_call])
+    @q = Customer.ransack(params[:last_call])
     @customers = @q.result
-    #@customers = @q.result.includes(:last_call)
+    @customers = @q.result.includes(:last_call)
     #binding.pry
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(30)
@@ -124,7 +123,8 @@ class CustomersController < ApplicationController
    all_friday_all_day = all_friday.map(&:all_day)
    @call_count_month_friday = @calls.where.not(admin_id: 1).where(created_at: all_friday_all_day).count
 
-   call_attributes = ["admin_id", "customer_id", "customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
+
+   call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
    generate_call =
      CSV.generate(headers:true) do |csv|
        csv << call_attributes

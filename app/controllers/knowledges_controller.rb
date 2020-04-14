@@ -1,6 +1,5 @@
 class KnowledgesController < ApplicationController
-    before_action :authenticate_admin!
-    before_action :authenticate_user!
+    before_action :authenticate_admin! or :authenticate_user!
     def index
       @q = Knowledge.ransack(params[:q])
       @knowledges = @q.result
