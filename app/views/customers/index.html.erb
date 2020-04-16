@@ -47,7 +47,7 @@
             <th>未コール</th>
             <td><%= f.search_field :calls_id_null, type: 'checkbox', value: 'true' %></td>
             <th>最終コール状態</th>
-            <td><%= select_tag "q[calls_statu_cont]",options_for_select( [""] + Call.StatuItems, @last_call_params[:statu]), multiple: true %></td>
+            <td><%= select_tag "last_call[statu]",options_for_select( [""] + Call.StatuItems, @last_call_params[:statu]), multiple: true %></td>
           </tr>
           <tr>
             <th>見込コール日時（最初）</th>
@@ -79,7 +79,7 @@
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
-               </div>
+              </div>
              </td>
             <th>最終コール日時（最後）</th>
             <td>

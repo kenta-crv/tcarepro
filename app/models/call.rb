@@ -25,14 +25,14 @@ class Call < ApplicationRecord
         customer = Customer.find_by(tel: row["tel"])
         call.attributes = row.to_hash.slice(*call_attributes)
         call.customer_id = customer&.id
-        next if Call.where('created_at > ?', "1.month.ago.all_day")
-        next if Call.where(statu: "APP")
+        #next if Call.where('created_at > ?', "1.month.ago.all_day")
+        #next if Call.where(statu: "APP")
         call.save!
       end
     end
 
     def self.call_attributes
-      ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
+      ["customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
     end
 
   @@StatuItems = [
