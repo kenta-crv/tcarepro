@@ -1,21 +1,19 @@
-
-<div class="heading"><h2>新規登録</h2></div>
-
-<%= render 'form', customer: @customer %>
-<br>
-<br>
-
-<%= form_tag import_customers_path, multipart: true do %>
-   <table width="90%">
-     <tbody>
-        <tr>
-           <th colspan="3">CSVファイルインポート</th>
-        </tr>
-        <tr>
-           <td><%= file_field_tag :file %></td>
-           <th><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
-           <th><%= link_to 'エクスポート', customers_path(format: :csv), class: 'btn btn-danger' %></th>
-        </tr>
-    </tbody>
-   </table>
-<% end %>
+.heading
+  h2
+    | 新規登録
+= render 'form', customer: @customer
+br
+br
+= form_tag import_customers_path, multipart: true do
+  table[width="90%"]
+    tbody
+      tr
+        th[colspan="3"]
+          | CSVファイルインポート
+      tr
+        td
+          = file_field_tag :file
+        th
+          = submit_tag "インポート",  class: 'btn btn-danger'
+        th
+          = link_to 'エクスポート', customers_path(format: :csv), class: 'btn btn-danger'

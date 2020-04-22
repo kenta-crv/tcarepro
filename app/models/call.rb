@@ -20,6 +20,7 @@ class Call < ApplicationRecord
 
   #call_import
     def  self.call_import(call_file)
+      save_cnt = 0
       CSV.foreach(call_file.path, headers: true) do |row|
         call = Call.find_by(id: row["id"]) || new
         customer = Customer.find_by(tel: row["tel"])
@@ -28,7 +29,9 @@ class Call < ApplicationRecord
         #next if Call.where('created_at > ?', "1.month.ago.all_day")
         #next if Call.where(statu: "APP")
         call.save!
+        save_cnt += 1
       end
+      save_cnt
     end
 
     def self.call_attributes

@@ -18,21 +18,23 @@
 <header>
  <div class="container">
       <div class="header-left">
-        <%= link_to "/" do %>
+         <%= link_to "/" do %>
           <%= image_tag "rogo.png", width:"200px" %>
-        <% end %>
+         <% end %>
            <%= link_to  'CTI', customers_path %>
+          <% if admin_signed_in? %>
            <%= link_to  'SFA/CRM', crms_path %>
            <%= link_to  'ナレッジ', knowledges_path %>
            <%= link_to  'ファイル', '/uploader/index' %>
-           <% if user_signed_in? %>
+          <% end %>
+          <% if user_signed_in? %>
       　　　  <strong><% current_user.email  %></strong>
            <%= link_to "マイページ", user_path(current_user) %>
            <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
 
-　　　　　　　　<% else %>
+　　　　　　<% else %>
       　　　<%= link_to "ログイン", new_user_session_path%>
- 　　　　　　　 <% end %>
+ 　　　　　 <% end %>
       </div>
     </div>
 </header>

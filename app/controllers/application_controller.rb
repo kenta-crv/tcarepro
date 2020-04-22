@@ -28,7 +28,6 @@ class ApplicationController < ActionController::Base
   end
 
 
-  private
     # set for devise login redirector
     def after_sign_in_path_for(resource)
       case resource
@@ -56,6 +55,8 @@ class ApplicationController < ActionController::Base
   def layout_by_resource
     if devise_controller? && resource_name == :admin
         "admins"
+    elsif devise_controller? && resource_name == :user
+        "users"
     else
       "application"
     end
@@ -67,6 +68,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  before_action :authenticate_user_or_admin
 
+  private
+    def authenticate_user_or_admin
+      unless user_signed_in? || admin_signed_in?
+         redirect_to root_path, alert: 'error'
+      end
+    end
 
 end

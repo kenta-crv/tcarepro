@@ -86,5 +86,5 @@ gem 'dotenv-rails'
 gem 'faker'
 gem 'roo'
 
-gem "select2-rails"
-#gem 'bootstrap-sass',       '3.2.0.0'
+# JS / Select2を使えるようにする
+gem 'select2-rails'

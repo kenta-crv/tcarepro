@@ -9,13 +9,16 @@ class Customer < ApplicationRecord
 
 #customer_import
   def self.import(file)
+      save_cont
       CSV.foreach(file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
        next if self.where(tel: customer.tel).count > 0
        next if self.where.not(industry: nil)
        customer.save!
+       save_cnt += 1
       end
+      save_cont
   end
   def self.updatable_attributes
     ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "memo_1", "memo_2", "memo_3", "memo_4", "choice", "old_date", "title", "old_statu", "other", "url_2", "extraction_date"]

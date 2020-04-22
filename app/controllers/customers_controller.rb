@@ -1,6 +1,6 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  before_action :authenticate_admin! or :authenticate_user!
+  #before_action :authenticate_admin! || :authenticate_user!
 
   def index
     last_call_customer_ids = nil
@@ -15,10 +15,11 @@ class CustomersController < ApplicationController
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
       last_call_customer_ids = last_call.pluck(:customer_id)
     end
-    #@last_call_params = params[:last_call]
+    #@q = Customer.ransack(params[:q]) or @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
-    #@q = Customer.ransack(params[:last_call])
     @customers = @q.result || @q.result.includes(:last_call)
+    #@q = Customer.ransack(params[:last_call])
+    #@customers = @q.result  @q.result.includes(:last_call)
     #@customers = @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @customers = @customers.page(params[:page]).per(30)
@@ -32,9 +33,10 @@ class CustomersController < ApplicationController
   def show
     @customer = Customer.find(params[:id])
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
+    @customers = @q.result || @q.result.includes(:last_call)
     @call = Call.new
-    @prev_customer = @q.where("customers.id < ?", @customer.id).last
-    @next_customer = @q.where("customers.id > ?", @customer.id).first
+    @prev_customer = @customers.where("customers.id < ?", @customer.id).last
+    @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
 
@@ -137,13 +139,13 @@ class CustomersController < ApplicationController
  end
 
  def import
-   Customer.import(params[:file])
-   redirect_to customers_url, notice:"登録されました。"
+   cnt = Customer.import(params[:file])
+   redirect_to customers_url, notice:"#{cnt}件登録されました。"
  end
 
  def call_import
-   Call.call_import(params[:call_file])
-   redirect_to customers_url, notice:"登録されました。"
+   cnt = Call.call_import(params[:call_file])
+   redirect_to customers_url, notice:"#{cnt}件登録されました。"
  end
 
   private
