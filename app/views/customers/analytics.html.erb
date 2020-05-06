@@ -38,6 +38,7 @@
   </tr>
 </table>
 
+
 <br>
 <br>
 <br>
@@ -46,14 +47,16 @@
 
 <table class="header-table" width="90%">
   <tr>
-    <th colspan="8">ステータス別結果</th>
+    <th colspan="10">ステータス別結果</th>
   </tr>
   <tr>
     <th>不在</th>
     <th>担当者不在</th>
     <th>見込</th>
+    <th>コロナ見込</th>
     <th>折返待</th>
     <th>APP</th>
+    <th>キャンセル</th>
     <th>今は結構</th>
     <th>外国人NG</th>
     <th>フロントNG</th>
@@ -62,8 +65,10 @@
     <td><%= @call_count.where.not(admin_id: 1).where(statu: "着信留守").count %></td>
     <td><%= @call_count.where.not(admin_id: 1).where(statu: "担当者不在").count %></td>
     <td><%= @call_count.where.not(admin_id: 1).where(statu: "見込").count %></td>
+    <td><%= @call_count.where.not(admin_id: 1).where(statu: "コロナ見込").count %></td>
     <td><%= @call_count.where.not(admin_id: 1).where(statu: "折返待").count %></td>
     <td><%= @call_count.where.not(admin_id: 1).where(statu: "APP").count %></td>
+    <td><%= @call_count.where.not(admin_id: 1).where(statu: "キャンセル").count %></td>
     <td><%= @call_count.where.not(admin_id: 1).where(statu: "今は結構").count %></td>
     <td><%= @call_count.where.not(admin_id: 1).where(statu: "外国人NG").count %></td>
     <td><%= @call_count.where.not(admin_id: 1).where(statu: "フロントNG").count %></td>
@@ -72,8 +77,10 @@
     <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "着信留守").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
     <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "担当者不在").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
     <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "見込").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "コロナ見込").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
     <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "折返待").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
     <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "APP").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "キャンセル").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
     <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "今は結構").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
     <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "外国人NG").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
     <td><%= number_to_percentage(@call_count.where.not(admin_id: 1).where(statu: "フロントNG").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
@@ -87,22 +94,93 @@
 
 <table class="header-table" width="90%">
   <tr>
-    <th colspan="5">スタッフ別コール</th>
+    <th colspan="6">企業別アポ状況</th>
+  </tr>
+  <tr>
+    <th>企業名</th>
+    <th>コール数</th>
+    <th>コロナ見込</th>
+    <th>アポ数</th>
+    <th>アポ率</th>
+    <th>残アポ数</th>
+  </tr>
+  <tr>
+    <th>SORAIRO</th>
+    <td><%= @customers.where(industry:"SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
+    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) and @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
+    <td><%= @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
+    <td><%= @customers_app %></td>
+    <td>20</td>
+  </tr>
+  <tr>
+    <th>アセアンプラス</th>
+    <td><%= @customers.where(industry:"アセアン").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
+    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
+    <td></td>
+    <td></td>
+    <td>15</td>
+  </tr>
+  <tr>
+    <th>キャリアネクスト</th>
+    <td><%= @customers.where(industry:"キャリアネクスト").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
+    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
+    <td></td>
+    <td></td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <th>JAIC</th>
+    <td><%= @customers.where(industry:"JAIC").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
+    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
+    <td></td>
+    <td></td>
+    <td>20</td>
+  </tr>
+  <tr>
+    <th>琉球カンパニー</th>
+    <td><%= @customers.where(industry:"琉球").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
+    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
+    <td></td>
+    <td></td>
+    <td>50</td>
+  </tr>
+  <tr>
+    <th>アポ匠</th>
+    <td><%= @customers.where(industry:"アポ匠").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
+    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
+    <td></td>
+    <td></td>
+    <td>30</td>
+  </tr>
+  <tr>
+  </tr>
+</table>
+
+<br>
+<br>
+<br>
+<br>
+
+<table class="header-table" width="90%">
+  <tr>
+    <th colspan="6">スタッフ別コール</th>
   </tr>
   <tr>
     <th>スタッフ名</th>
     <th>コール数</th>
+    <th>月間コール数</th>
     <th>見込数</th>
-    <th>見込率</th>
     <th>APP数</th>
+    <th>APP率</th>
   </tr>
   <% @admins.each do |admin| %>
   <tr>
     <td><%= admin.user_name %></td>
     <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count  %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
+    <td><%= number_to_percentage(admin.calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f / admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1) %></td>
   </tr>
   <%end%>
 </table>
@@ -225,15 +303,15 @@
   <% @admins.each do |admin| %>
   <tr>
     <th><%= admin.user_name %></th>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 0.hour - 1.second).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 1.hour - 1.second).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 2.hour - 1.second).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 3.hour - 1.second).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 4.hour - 1.second).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 5.hour - 1.second).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 6.hour - 1.second).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 7.hour - 1.second).count %></td>
-    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month + 8.hour - 1.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 0.hour - 0.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 2.hour - 1.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 3.hour - 2.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 4.hour - 3.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 5.hour - 4.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 6.hour - 5.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 7.hour - 6.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 8.hour - 7.second).count %></td>
+    <td><%= admin.calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour + 9.hour - 8.second).count %></td>
   <% end %>
 </table>
 

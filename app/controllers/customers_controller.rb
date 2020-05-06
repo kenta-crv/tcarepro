@@ -96,6 +96,8 @@ class CustomersController < ApplicationController
 
  def analytics
    @calls = Call.all
+   @customers =  Customer.all
+   @customers_app = @customers.where(call_id: 1)
    #today
    @call_count_today  = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
    @protect_count_today = @calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
@@ -119,25 +121,12 @@ class CustomersController < ApplicationController
    @call_count = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
 
 
-   today = Time.zone.today
-   all_monday = today.all_month.select(&:monday?)
-   all_monday_all_day = all_monday.map(&:all_day)
-   @call_count_month_monday = @calls.where.not(admin_id: 1).where(created_at: all_monday_all_day)
-   all_tuesday = today.all_month.select(&:tuesday?)
-   all_tuesday_all_day = all_monday.map(&:all_day)
-   @call_count_month_tuesday = @calls.where.not(admin_id: 1).where(created_at: all_tuesday_all_day).count
-   all_wednesday = today.all_month.select(&:wednesday?)
-   all_wednesday_all_day = all_monday.map(&:all_day)
-   @call_count_month_wednesday = @calls.where.not(admin_id: 1).where(created_at: all_wednesday_all_day).count
-   all_thursday = today.all_month.select(&:thursday?)
-   all_thursday_all_day = all_thursday.map(&:all_day)
-   @call_count_month_thursday = @calls.where.not(admin_id: 1).where(created_at: all_thursday_all_day).count
-   all_friday = today.all_month.select(&:friday?)
-   all_friday_all_day = all_friday.map(&:all_day)
-   @call_count_month_friday = @calls.where.not(admin_id: 1).where(created_at: all_friday_all_day).count
+   #today = Time.zone.today
+   #all_monday = today.all_month.select(&:monday?)
+   #all_monday_all_day = all_monday.map(&:all_day)
+   #@call_count_month_monday = @calls.where.not(admin_id: 1).where(created_at: all_monday_all_day)
 
-
-   call_attributes = ["customer_tel" ,"statu", "time", "comment", "created_at","updated_at"]
+   call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
    generate_call =
      CSV.generate(headers:true) do |csv|
        csv << call_attributes

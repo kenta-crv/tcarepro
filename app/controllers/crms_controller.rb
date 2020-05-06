@@ -5,6 +5,10 @@ class CrmsController < ApplicationController
     @q = Crm.ransack(params[:q])
     @crms = @q.result
 		@crms = @crms.all.order(created_at: 'desc')
+    respond_to do |format|
+     format.html
+     format.csv{ send_data @crms.generate_csv, filename: "crms-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+    end
 	end
 
 	def show

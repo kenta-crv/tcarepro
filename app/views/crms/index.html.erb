@@ -42,6 +42,7 @@
      <tr>
         <td><%= file_field_tag :file %></td>
         <th><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
+        <th><%= link_to 'エクスポート', crms_path(format: :csv), class: 'btn btn-danger' %></th>
      </tr>
  </tbody>
 </table>
