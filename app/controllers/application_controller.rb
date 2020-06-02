@@ -32,9 +32,9 @@ class ApplicationController < ActionController::Base
     def after_sign_in_path_for(resource)
       case resource
       when Admin
-         admin_path(@admin.id)
+         customers_path
       when User
-         user_path(@user.id)
+         customers_path
       else
          super
       end
@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  #before_action :authenticate_user_or_admin
+  #before_action :authenticate_user_or_admin"
 
   #private
   #  def authenticate_user_or_admin

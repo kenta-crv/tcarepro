@@ -1,5 +1,5 @@
 class Call < ApplicationRecord
-  belongs_to :customer#, foreign_key: 'tel', class_name: 'Customer'
+  belongs_to :customer#, foreign_key: :tel, primary_key: :tel
   belongs_to :admin, optional: true
   belongs_to :user, optional: true
 
@@ -37,7 +37,7 @@ class Call < ApplicationRecord
     def self.call_attributes
       ["tel" ,"statu", "time", "comment", "created_at","updated_at"]
     end
-
+    
   @@StatuItems = [
     "着信留守",
     "担当者不在",

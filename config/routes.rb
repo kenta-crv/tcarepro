@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root to: 'customers#index'
+  root to: 'top#index'
   get 'customers/analytics' => 'customers#analytics'
   delete :customers, to: 'customers#destroy_all'
 
@@ -36,7 +36,6 @@ Rails.application.routes.draw do
       get :bulk_destroy
     end
   end
-  get 'customers/:id/:is_auto_call' => 'customers#show'
 
   resources :knowledges
   resources :uploader, only: [:edit, :update, :destroy]

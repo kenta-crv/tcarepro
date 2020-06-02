@@ -46,11 +46,12 @@ ActiveRecord::Schema.define(version: 20200331121451) do
     t.datetime "updated_at", null: false
     t.integer "admin_id"
     t.integer "crm_id"
-    t.string "customer_tel"
+    t.integer "customer_tel_id"
     t.integer "user_id"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
+    t.index ["customer_tel_id"], name: "index_calls_on_customer_tel_id"
     t.index ["user_id"], name: "index_calls_on_user_id"
   end
 
@@ -82,7 +83,6 @@ ActiveRecord::Schema.define(version: 20200331121451) do
     t.string "city"
     t.string "town"
     t.string "building"
-    t.string "url"
     t.string "item"
     t.string "statu"
     t.string "price"
@@ -131,6 +131,15 @@ ActiveRecord::Schema.define(version: 20200331121451) do
     t.string "other"
     t.string "url_2"
     t.string "extraction_date"
+  end
+
+  create_table "customers_search_orders", force: :cascade do |t|
+    t.integer "admin_id"
+    t.integer "customer_id"
+    t.integer "prev_customer_id"
+    t.integer "next_customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "images", force: :cascade do |t|

@@ -60,6 +60,7 @@ class CallsController < ApplicationController
  		:statu, #ステータス
  		:time, #再コール
  		:comment, #コメント
+    :tel,
     :item_select => []
     )&.merge(admin: current_admin)
      &.merge(user: current_user)

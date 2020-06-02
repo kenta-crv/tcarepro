@@ -1,7 +1,7 @@
 class Customer < ApplicationRecord
   #belongs_to :admin
   #belongs_to :user
-  has_many :calls#, foreign_key: 'tel', class_name: 'Call'
+  has_many :calls#, foreign_key: :tel, primary_key: :tel
   has_one :last_call, ->{
     order("created_at desc")
   }, class_name: :Call
@@ -9,7 +9,7 @@ class Customer < ApplicationRecord
 
 #customer_import
   def self.import(file)
-      save_cont
+      save_cont = 0
       CSV.foreach(file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)

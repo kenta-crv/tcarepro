@@ -1,6 +1,6 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  #before_action :authenticate_admin! || :authenticate_user!
+  before_action :authenticate_user_or_admin
 
   def index
     last_call_customer_ids = nil
@@ -137,7 +137,7 @@ class CustomersController < ApplicationController
    respond_to do |format|
     format.html
     format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-   end
+  end
  end
 
  def import
@@ -185,6 +185,12 @@ class CustomersController < ApplicationController
         :extraction_date, #抽出日
         :customer_tel
        )
+    end
+
+    def authenticate_user_or_admin
+      unless user_signed_in? || admin_signed_in?
+         redirect_to root_path, alert: 'error'
+      end
     end
 
 end
