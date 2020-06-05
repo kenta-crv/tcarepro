@@ -117,6 +117,7 @@ class CustomersController < ApplicationController
    @app_count_month = @calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
    @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
    @admins = Admin.all
+   @users = User.all
    #statu内容簡素化
    @call_count = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
 

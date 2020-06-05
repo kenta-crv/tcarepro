@@ -310,6 +310,21 @@
     <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count %></td>
     <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count %></td>
     <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count %></td>
+  </tr>
+  <% end %>
+  <% @users.each do |user| %>
+  <tr>
+    <th><%= user.user_name %></th>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '03:00:00','03:59:59').count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count %></td>
+  </tr>
   <% end %>
 </table>
 
