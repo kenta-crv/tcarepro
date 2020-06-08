@@ -99,33 +99,31 @@ class CustomersController < ApplicationController
    @customers =  Customer.all
    @customers_app = @customers.where(call_id: 1)
    #today
-   @call_count_today  = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
-   @protect_count_today = @calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @call_count_today  = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @protect_count_today = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
    @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
-   @app_count_today = @calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+   @app_count_today = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
    @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
    #week
-   @call_count_week  = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
-   @protect_count_week = @calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @call_count_week  = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @protect_count_week = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
    @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
-   @app_count_week = @calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
+   @app_count_week = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
    @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
    #month
-   @call_count_month = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day).count
-   @protect_count_month = @calls.where.not(admin_id: 1).where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+   @call_count_month = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day).count
+   @protect_count_month = @calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
    @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
-   @app_count_month = @calls.where.not(admin_id: 1).where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+   @app_count_month = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
    @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
    @admins = Admin.all
    @users = User.all
    #statu内容簡素化
-   @call_count = @calls.where.not(admin_id: 1).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_day)
-
-
+   @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
    #today = Time.zone.today
    #all_monday = today.all_month.select(&:monday?)
    #all_monday_all_day = all_monday.map(&:all_day)
-   #@call_count_month_monday = @calls.where.not(admin_id: 1).where(created_at: all_monday_all_day)
+   #@call_count_month_monday = @calls.where(created_at: all_monday_all_day)
 
    call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
    generate_call =
