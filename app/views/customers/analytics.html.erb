@@ -1,6 +1,15 @@
 <br>
 <br>
 
+<%= @customers.each do |customer| %>
+  <% counter = {SORAIRO: 0, JAIC: 0} %>
+  <% if customer.industry == "SORAIRO" %>
+    <%= counter[:SORAIRO].count += 1 %>
+  <% elsif customer.industry == "JAIC"%>
+  <% end %>
+<% end %>
+
+
 
 <table class="header-table" width="90%">
   <tr>
@@ -108,8 +117,8 @@
   <tr>
     <th>SORAIRO</th>
     <td><%= @customers.where(industry:"SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td><%= @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td><%= @customers_app %></td>
+    <td><%= @customers.where(industry:"SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
+    <td></td>
     <td>20</td>
   </tr>
   <tr>
@@ -286,7 +295,7 @@
 
 <table class="header-table" width="90%">
   <tr>
-    <th colspan="10">スタッフ&シェアフル時間別コール</th>
+    <th colspan="11">スタッフ&シェアフル時間別コール</th>
   </tr>
   <tr>
     <th></th>
@@ -299,6 +308,7 @@
     <th>16:00~</th>
     <th>17:00~</th>
     <th>18:00~</th>
+    <th></th>
   </tr>
   <% @admins.each do |admin| %>
   <tr>
@@ -312,6 +322,13 @@
     <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td>
+        <%- if admin.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count > 20 %>
+          <%= 500 %>
+        <%- else %>
+          <%= 0 %>
+        <%- end -%>
+    </td>
   </tr>
   <% end %>
 </table>
@@ -348,8 +365,8 @@
     <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','17:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','18:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><% if user.calls.where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour).count > 20 %>
-          <%= user.calls.where('created_at > ?', Time.current.beginning_of_hour).where('created_at < ?', Time.current.end_of_hour).count %>
+    <td><% if user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count > 20 %>
+          <%= print(1.to_s) %>
         <% end %>
     </td>
   </tr>

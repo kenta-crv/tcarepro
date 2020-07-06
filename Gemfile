@@ -88,3 +88,6 @@ gem 'roo'
 
 # JS / Select2を使えるようにする
 gem 'select2-rails'
+
+# cron
+gem 'whenever', require: false

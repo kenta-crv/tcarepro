@@ -26,8 +26,9 @@ class Call < ApplicationRecord
         customer = Customer.find_by(tel: row["tel"])
         call.attributes = row.to_hash.slice(*call_attributes)
         call.customer_id = customer&.id
-        #next if Call.updated_at < Time.now - 1.month
-        #next if Call.where(statu: "APP").present?
+        #next if call.updated_at < Time.now - 1.month
+        next if self.order(created_at: :desc).limit(1).where.not(statu: "APP").present?
+        #Callの最新のものでみる
         call.save!
         save_cnt += 1
       end

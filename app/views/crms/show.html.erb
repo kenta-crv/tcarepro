@@ -11,8 +11,6 @@
      <td><%= @crm.mail %></td>
    </tr>
    <tr>
-     <th>代表者</th>
-     <td><%= @crm.first_name %><%= @crm.last_name %></td>
      <th>担当者</th>
      <td><%= @crm.first_name %><%= @crm.last_name %></td>
    </tr>
@@ -66,7 +64,7 @@
    </tr>
    <tr>
      <th>次回営業日</th>
-     <td><%= @crm.next %></td>
+     <td><%= @crm.date_time %></td>
      <th></th>
      <td></td>
    <tr>

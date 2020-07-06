@@ -8,7 +8,7 @@
   <col width="10%">
   <tr>
     <th>会社名</th>
-    <th>代表者</th>
+    <th>担当者</th>
     <th>電話番号</th>
     <th><%= sort_link(@q, :statu, "ステータス") %></th>
     <th>次回営業日</th>
@@ -20,7 +20,7 @@
     <td><%= crm.first_name %><%= crm.last_name %></td>
     <td><%= crm.tel %></td>
     <td><%= crm.statu %></td>
-    <td><%= crm.next %></td>
+    <td><%= crm.date_time %></td>
     <td><%= link_to '編集', edit_crm_path(crm), class: 'command'%>
     <%= link_to '削除',
       crm_path(crm),

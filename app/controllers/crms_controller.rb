@@ -78,9 +78,11 @@ private
         :area, #ターゲットエリア
         :target, #対象者
         :next, #次回営業日
+        :date_time, #次回営業日
         :content, #サービス内容
         :comment, #コメント
-        :choice
+        :choice,
+
     )
   end
 end

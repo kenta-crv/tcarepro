@@ -120,10 +120,6 @@ class CustomersController < ApplicationController
    @users = User.all
    #statu内容簡素化
    @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
-   #today = Time.zone.today
-   #all_monday = today.all_month.select(&:monday?)
-   #all_monday_all_day = all_monday.map(&:all_day)
-   #@call_count_month_monday = @calls.where(created_at: all_monday_all_day)
 
    call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
    generate_call =

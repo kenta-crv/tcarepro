@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200331121451) do
+ActiveRecord::Schema.define(version: 20200610173451) do
 
   create_table "acquisitions", force: :cascade do |t|
     t.integer "crm_id"
@@ -46,12 +46,10 @@ ActiveRecord::Schema.define(version: 20200331121451) do
     t.datetime "updated_at", null: false
     t.integer "admin_id"
     t.integer "crm_id"
-    t.integer "customer_tel_id"
     t.integer "user_id"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
-    t.index ["customer_tel_id"], name: "index_calls_on_customer_tel_id"
     t.index ["user_id"], name: "index_calls_on_user_id"
   end
 
@@ -95,6 +93,7 @@ ActiveRecord::Schema.define(version: 20200331121451) do
     t.string "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "date_time"
   end
 
   create_table "customers", force: :cascade do |t|

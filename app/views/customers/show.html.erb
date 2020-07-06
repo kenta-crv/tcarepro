@@ -209,7 +209,7 @@ $(function() {
       url: 'https://fcm.googleapis.com/fcm/send',
       headers: { Authorization: 'key=AAAAeBZ_DsA:APA91bHFa3RIOMEUyj-lYVOjU6AF60NZRxWkJZXvOSVZw8tUTYq2Rvb7a4CvUOV3XGi_Oc0ZS7HptHhXPeozTnlt1zaunIUXgwEJ6j3bYpVsQ10tHg9SqKUYnZLhVtBkGb1X0tvyxG8S' },
       contentType: 'application/json',
-      data: JSON.stringify({ "to": token, "priority": "high", "time_to_live": 0, "data": { "telephone": telephone.replace(/-/g, ''), "date": new Date().getTime() } }),
+      data: JSON.stringify({ "to": token, "priority": "high", "time_to_live": 1, "data": { "telephone": telephone.replace(/-/g, ''), "date": new Date().getTime() } }),
     })
     .done((data, textStatus, jqXHR) => {
       if (data.failure > 0) {

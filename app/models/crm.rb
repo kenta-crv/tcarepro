@@ -7,17 +7,20 @@ class Crm < ApplicationRecord
       CSV.foreach(file.path, headers:true) do |row|
        crm = find_by(id: row["id"]) || new
        crm.attributes = row.to_hash.slice(*updatable_attributes)
-       next if self.where(tel: crm.tel).count > 0
        crm.save!
       end
   end
 
   def self.updatable_attributes
-    ["company","first_name","last_name","first_kana","last_kana","tel","mobile","fax","mail","postnumber","prefecture","city","town","building","url","item","statu","price","number","history","area","target","next", "content","comment"]
+    [ "company","name","tel","fax","postnumber","address","mail","url","url_2","title","industry","other","other2","caption","people","rogo",
+      "image","seo_rank","google_rank","foundation","contact_url","number_of_business","number_of_store","listing","settlement",
+      "published_site","published_now","recruit_now","ip_address","explanation"]
   end
 
   def self.csv_attributes
-    ["company","first_name","last_name","first_kana","last_kana","tel","mobile","fax","mail","postnumber","prefecture","city","town","building","url","item","statu","price","number","history","area","target","next", "content","comment"]
+    [ "company","name","tel","fax","postnumber","address","mail","url","url_2","title","industry","other","other2","caption","people","rogo",
+      "image","seo_rank","google_rank","foundation","contact_url","number_of_business","number_of_store","listing","settlement",
+      "published_site","published_now","recruit_now","ip_address","explanation"]
   end
 
   def self.generate_csv
@@ -36,12 +39,14 @@ class Crm < ApplicationRecord
     ["見込中","見込中"],
     ["見込低","見込低"],
     ["未提案","未提案"],
-    ["対象外","対象外"],
+    ["資料送付依頼","資料送付依頼"],
+    ["資料送付済","資料送付済"],
+    ["提案連絡中","提案連絡中"],
     ["NG","NG"],
-    ["返答待","返答待"]
+    ["契約終了","契約終了"]
   ]
+  end
 
   def self.SfaStatus
     @@sfa_status
   end
-end

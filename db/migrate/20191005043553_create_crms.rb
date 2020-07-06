@@ -24,7 +24,7 @@ class CreateCrms < ActiveRecord::Migration[5.1]
       t.string :history #過去アポ利用履歴
       t.string :area #ターゲットエリア
       t.string :target #対象者
-      t.string :next #次回営業日
+      t.datetime :next #次回営業日
       t.string :content #サービス内容
       t.string :comment #コメント
       t.timestamps

@@ -7,10 +7,10 @@
     <td><%= f.email_field :mail %></td>
   </tr>
   <tr>
-    <th>代表者</th>
-    <td><%= f.text_field :first_name %></td>
     <th>担当者</th>
     <td><%= f.text_field :first_name %></td>
+    <th>取扱商材</th>
+    <td><%= f.text_field :item %></td>
   </tr>
   <tr>
     <th>電話番号</th>
@@ -20,12 +20,8 @@
   <tr>
     <th>URL</th>
     <td><%= f.text_field :fax %></td>
-    <th>取扱商材</th>
-    <td><%= f.text_field :item %></td>
-  </tr>
-  <tr>
     <th>住所</th>
-    <td colspan="3"><%= f.text_field :prefecture, class:"long-text" %></td>
+    <td><%= f.text_field :prefecture, class:"long-text" %></td>
   </tr>
 </table>
 
@@ -54,7 +50,7 @@
    </tr>
    <tr>
      <th>次回営業日</th>
-     <td><%= f.datetime_field :next %></td>
+     <td><%= f.datetime_field :date_time %></td>
      <th></th>
      <td></td>
    <tr>
