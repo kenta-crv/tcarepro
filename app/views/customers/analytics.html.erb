@@ -48,8 +48,6 @@
 <% end %>
 </table>--!>
 
-
-
 <table class="header-table" width="90%">
   <tr>
     <th colspan="6">１日のコール状況</th>
@@ -375,6 +373,7 @@
 <br>
 <br>
 
+<% isTwenty = false %>
 <table class="header-table" width="90%">
   <tr>
     <th colspan="11">在宅ワーカー時間別コール</th>
@@ -395,18 +394,39 @@
   <% @users.each do |user| %>
   <tr>
     <th><%= user.user_name %></th>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','00:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','17:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','18:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><% if user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count > 20 %>
-          <%= print(1.to_s) %>
-        <% end %>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '17:00:00','17:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '18:00:00','18:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td>
+      <% if ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '09:00:00', '09:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '10:00:00', '10:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '11:00:00', '11:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '12:00:00', '12:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '13:00:00', '13:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '14:00:00', '14:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '15:00:00', '15:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '16:00:00', '16:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '18:00:00', '18:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '17:00:00', '17:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= 500 %>
+      <% else %>
+        <%= 0%>
+      <% end %>
     </td>
   </tr>
   <% end %>
