@@ -32,6 +32,45 @@
 </table>
 
 
+<div  class="heading"><h2>リスト検索</h2></div>
+
+<!--検索機能実装-->
+<%= search_form_for @q do |f| %>
+    <table width = "90%">
+      <col width="20%">
+      <col width="30%">
+      <col width="20%">
+      <col width="30%">
+      <tbody>
+          <tr>
+            <th colspan = "4">検索</th>
+          </tr>
+          <tr>
+            <th>会社名</th>
+            <td><%= f.search_field :company_cont, type: "text" %></td>
+            <th>電話番号</th>
+            <td><%= f.search_field :tel_cont, type: "text" %></td>
+          </tr>
+          <tr>
+            <th>携帯番号</th>
+            <td><%= f.search_field :mobile_cont, type: "text" %></td>
+            <th>Mail</th>
+            <td><%= f.search_field :mail_cont, type: "text" %></td>
+          </tr>
+          <tr>
+            <th>ステータス</th>
+            <td><%= f.search_field :statu_cont, type:"text" %></td>
+          </tr>
+          <tr>
+            <th colspan = "4" ><%= f.submit '検索' %></th>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+<br>
+
+
+
 <div  class="heading"><h2>インポート</h2></div>
 <%= form_tag import_crms_path, multipart: true do %>
 <table width="90%">

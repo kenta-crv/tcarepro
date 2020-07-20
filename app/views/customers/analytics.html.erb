@@ -1,13 +1,52 @@
 <br>
 <br>
 
-<%= @customers.each do |customer| %>
-  <% counter = {SORAIRO: 0, JAIC: 0} %>
-  <% if customer.industry == "SORAIRO" %>
-    <%= counter[:SORAIRO].count += 1 %>
-  <% elsif customer.industry == "JAIC"%>
-  <% end %>
+<!--<table class="header-table" width="90%">
+  <tr>
+    <th colspan="10">ステータス別結果</th>
+  </tr>
+  <tr>
+    <th></th>
+    <th>着信留守</th>
+    <th>担当者不在</th>
+    <th>見込</th>
+    <th>コロナ見込</th>
+    <th>折返待</th>
+    <th>APP</th>
+    <th>キャンセル</th>
+    <th>フロントNG</th>
+    <th>根本的NG</th>
+    <th>永久NG</th>
+  </tr>
+  <tr>
+    <% @users.each do |user| %>
+    <th><%= user.user_name %></th>
+    <td><%= user.calls.where(statu: "着信留守").count %></td>
+    <td><%= user.calls.where(statu: "担当者不在").count %></td>
+    <td><%= user.calls.where(statu: "見込").count %></td>
+    <td><%= user.calls.where(statu: "コロナ見込").count %></td>
+    <td><%= user.calls.where(statu: "折返待").count %></td>
+    <td><%= user.calls.where(statu: "APP").count %></td>
+    <td><%= user.calls.where(statu: "キャンセル").count %></td>
+    <td><%= user.calls.where(statu: "フロントNG").count %></td>
+    <td><%= user.calls.where(statu: "根本的NG").count %></td>
+    <td><%= user.calls.where(statu: "永久NG").count %></td>
+  </tr>
+  <tr>
+    <th></th>
+    <td><%= number_to_percentage(user.calls.where(statu: "着信留守").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "担当者不在").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "見込").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "コロナ見込").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "折返待").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "APP").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "キャンセル").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "フロントNG").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "根本的NG").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "永久NG").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
+  </tr>
 <% end %>
+</table>--!>
 
 
 
