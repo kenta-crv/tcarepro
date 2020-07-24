@@ -365,26 +365,27 @@
     <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '17:00:00','17:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td><%= user.calls.where('time(created_at) >= ? and time(created_at) <= ?', '18:00:00','18:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td>
+      <% countSum = 0 %>
       <% if ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '09:00:00', '09:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '10:00:00', '10:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '11:00:00', '11:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '12:00:00', '12:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '13:00:00', '13:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '14:00:00', '14:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '15:00:00', '15:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '16:00:00', '16:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '18:00:00', '18:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '17:00:00', '17:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
-        <%= 500 %>
+        <%= (countSum = (countSum + 500)) %>
       <% else %>
         <%= 0%>
       <% end %>
