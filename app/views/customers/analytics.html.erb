@@ -113,50 +113,74 @@
     <th>残アポ数</th>
   </tr>
   <tr>
+    <% @detailCount = @detailcalls.where(industry:"SORAIRO").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where(industry:"SORAIRO").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+
     <th>SORAIRO</th>
-    <td><%= @customers.where(industry:"SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td><%= @customers.where(industry:"SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td></td>
-    <td>20</td>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
   </tr>
   <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%アセアン%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%アセアン%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+
     <th>アセアンプラス</th>
-    <td><%= @customers.where("industry LIKE ?", "%アセアン%").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td><%= @calls.where(statu: "APP").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count%></td>
-    <td></td>
-    <td></td>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
     <td>15</td>
   </tr>
   <tr>
+    <% @detailCount = @detailcalls.where(industry:"キャリアネクスト").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where(industry:"キャリアネクスト").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+
     <th>キャリアネクスト</th>
-    <td><%= @customers.where(industry:"キャリアネクスト").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
-    <td></td>
-    <td></td>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
     <td>5</td>
   </tr>
   <tr>
+    <% @detailCount = @detailcalls.where(industry:"JAIC").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where(industry:"JAIC").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+
     <th>JAIC</th>
-    <td><%= @customers.where(industry:"JAIC").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
-    <td></td>
-    <td></td>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
     <td>20</td>
   </tr>
   <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%琉球%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%琉球%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+
     <th>琉球カンパニー</th>
-    <td><%= @customers.where("industry LIKE ?", "%琉球%").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
-    <td></td>
-    <td></td>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
     <td>50</td>
   </tr>
   <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+
     <th>アポ匠</th>
-    <td><%= @customers.where("industry LIKE ?", "%アポ匠%").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).count %></td>
-    <td><%= (@calls.where(statu: "コロナ見込").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month) || @customers.where(industry: "SORAIRO").where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month)).count %></td>
-    <td></td>
-    <td></td>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
     <td>30</td>
   </tr>
   <tr>
