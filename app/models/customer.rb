@@ -13,10 +13,11 @@ class Customer < ApplicationRecord
       CSV.foreach(file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
-       next if self.where(tel: customer.tel, industry: customer.industry)
-       next if self.where.not(industry: nil)
+       next if customer.industry == nil
+       next if self.where(tel: customer.tel).where(industry: nil).count > 0
+       next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
        customer.save!
-       save_cnt += 1
+       save_cont += 1
       end
       save_cont
   end
