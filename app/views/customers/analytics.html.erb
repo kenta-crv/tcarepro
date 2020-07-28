@@ -85,14 +85,10 @@
     <td><%= @app_convertion_month.ceil(2) %>%</td>
   </tr>
 </table>
-
-
 <br>
 <br>
 <br>
 <br>
-
-
 <table class="header-table" width="90%">
   <tr>
     <th colspan="10">ステータス別結果</th>
@@ -134,12 +130,10 @@
     <td><%= number_to_percentage(@call_count.where(statu: "永久NG").count / @call_count.count.to_f * 100, precision: 1 ) %></td>
   </tr>
 </table>
-
 <br>
 <br>
 <br>
 <br>
-
 <table class="header-table" width="90%">
   <tr>
     <th colspan="6">企業別アポ状況</th>
@@ -152,10 +146,9 @@
     <th>残アポ数</th>
   </tr>
   <tr>
-    <% @detailCount = @detailcalls.where(industry:"SORAIRO").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
-    <% @detailAppCount = @detailcalls.where(industry:"SORAIRO").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
-    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
-
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount %>
     <th>SORAIRO</th>
     <td><%= @detailCount %></td>
     <td><%= @detailAppCount %></td>
@@ -163,74 +156,122 @@
     <td><%= @detailRemainCount %></td>
   </tr>
   <tr>
-    <% @detailCount = @detailcalls.where("industry LIKE ?", "%アセアン%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
-    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%アセアン%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%JAIC宮城%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%JAIC宮城%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
     <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
-
-    <th>アセアンプラス</th>
+    <th>JAIC宮城</th>
     <td><%= @detailCount %></td>
     <td><%= @detailAppCount %></td>
     <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
     <td><%= @detailRemainCount %></td>
-    <td>15</td>
   </tr>
   <tr>
-    <% @detailCount = @detailcalls.where(industry:"キャリアネクスト").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
-    <% @detailAppCount = @detailcalls.where(industry:"キャリアネクスト").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
-    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
-
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%キャリアネクスト%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%キャリアネクスト%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 5) ? 0 : 5 - @detailAppCount %>
     <th>キャリアネクスト</th>
     <td><%= @detailCount %></td>
     <td><%= @detailAppCount %></td>
     <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
     <td><%= @detailRemainCount %></td>
-    <td>5</td>
   </tr>
   <tr>
-    <% @detailCount = @detailcalls.where(industry:"JAIC").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
-    <% @detailAppCount = @detailcalls.where(industry:"JAIC").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%JAIC30%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%JAIC30%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
     <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
-
-    <th>JAIC</th>
+    <th>JAIC30</th>
     <td><%= @detailCount %></td>
     <td><%= @detailAppCount %></td>
     <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
     <td><%= @detailRemainCount %></td>
-    <td>20</td>
   </tr>
   <tr>
-    <% @detailCount = @detailcalls.where("industry LIKE ?", "%琉球%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
-    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%琉球%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%JAIC30（千葉）%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%JAIC30（千葉）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
     <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
-
-    <th>琉球カンパニー</th>
+    <th>（千葉）</th>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%JAIC30（神奈川）%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%JAIC30（神奈川）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+    <th>（神奈川）</th>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%JAIC30（東京）%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%JAIC30（東京）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+    <th>（東京）</th>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%JAIC池袋%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%JAIC池袋%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
+    <th>JAIC池袋</th>
     <td><%= @detailCount %></td>
     <td><%= @detailAppCount %></td>
     <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
     <td><%= @detailRemainCount %></td>
-    <td>50</td>
+  </tr>
+  <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%progress%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%progress%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 50) ? 0 : 20 - @detailAppCount %>
+    <th>progress</th>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
+  </tr>
+  <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%E保険プランニング%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%E保険プランニング%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 50) ? 0 : 20 - @detailAppCount %>
+    <th>E保険プランニング</th>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
   </tr>
   <tr>
     <% @detailCount = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
     <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
-    <% @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount %>
-
+    <% @detailRemainCount = (@detailAppCount > 50) ? 0 : 20 - @detailAppCount %>
     <th>アポ匠</th>
     <td><%= @detailCount %></td>
     <td><%= @detailAppCount %></td>
     <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
     <td><%= @detailRemainCount %></td>
-    <td>30</td>
+  </tr>
+  <tr>
+    <% @detailCount = @detailcalls.where("industry LIKE ?", "%社労士%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%社労士%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count %>
+    <% @detailRemainCount = (@detailAppCount > 50) ? 0 : 20 - @detailAppCount %>
+    <th>社労士</th>
+    <td><%= @detailCount %></td>
+    <td><%= @detailAppCount %></td>
+    <td><%= number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 ) %></td>
+    <td><%= @detailRemainCount %></td>
   </tr>
   <tr>
   </tr>
 </table>
-
 <br>
 <br>
 <br>
 <br>
-
 <table class="header-table" width="90%">
   <tr>
     <th colspan="6">スタッフ別コール</th>
@@ -254,13 +295,10 @@
   </tr>
   <%end%>
 </table>
-
 <br>
 <br>
 <br>
 <br>
-
-
 <table class="header-table" width="90%">
   <tr>
     <th colspan="6">時間別コール</th>
@@ -346,14 +384,10 @@
     <td><%= number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').count.to_f * 100, precision: 1) %></td>
   </tr>
 </table>
-
-
 <br>
 <br>
 <br>
 <br>
-
-
 <table class="header-table" width="90%">
   <tr>
     <th colspan="11">スタッフ&シェアフル時間別コール</th>
@@ -374,29 +408,46 @@
   <% @admins.each do |admin| %>
   <tr>
     <th><%= admin.user_name %></th>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '08:00:00','08:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','17:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','18:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
     <td>
-        <%- if admin.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count > 20 %>
-          <%= 500 %>
-        <%- else %>
-          <%= 0 %>
-        <%- end -%>
+      <% countSum = 0 %>
+      <% if ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '09:00:00', '09:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '10:00:00', '10:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '11:00:00', '11:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '12:00:00', '12:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '13:00:00', '13:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '14:00:00', '14:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '15:00:00', '15:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '16:00:00', '16:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '18:00:00', '18:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% elsif ((admin.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '17:00:00', '17:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0) %>
+        <%= (countSum = (countSum + 500)) %>
+      <% else %>
+        <%= 0%>
+      <% end %>
     </td>
   </tr>
   <% end %>
 </table>
-
 <br>
 <br>
-
 <% isTwenty = false %>
 <table class="header-table" width="90%">
   <tr>
@@ -456,10 +507,8 @@
   </tr>
   <% end %>
 </table>
-
 <br>
 <br>
-
 <%= form_tag call_import_customers_path, multipart: true do %>
    <table width="90%">
      <tbody>
