@@ -120,6 +120,8 @@ class CustomersController < ApplicationController
    @users = User.all
    #statu内容簡素化
    @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
+   #detail calls
+   @detailcalls = Customer2.joins(:calls).select('calls.id')
 
    call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
    generate_call =
