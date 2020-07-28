@@ -12,7 +12,7 @@ gem 'rails', '~> 5.1.6'
 gem 'sqlite3'
 #gem 'pg'
 # Use Puma as the app server
-gem 'puma', '~> 3.7'
+gem 'puma', '~> 3.12'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -76,7 +76,7 @@ gem 'kaminari'
 #gem 'will_paginate'
 
 gem 'ransack'
-gem 'bootstrap', '~> 4.1.1'
+gem 'bootstrap', '~> 4.3.1'
 gem 'haml-rails'
 
 
