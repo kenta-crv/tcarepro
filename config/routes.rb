@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
 
-  root to: 'top#index'
-  get 'customers/analytics' => 'customers#analytics'
-  delete :customers, to: 'customers#destroy_all'
+  root to: 'customers#index'
 
   #ログイン切り替え
   devise_for :admins, controllers: {
@@ -26,6 +24,13 @@ Rails.application.routes.draw do
      end
   end
 
+  #resources :workers
+  get 'workers/tool' => 'workers#tool' #各種ツール紹介
+  get 'workers/first' => 'workers#first' #初回稼働
+   get 'workers/data' => 'workers#data' #書類ダウンロード
+  get 'workers/second' => 'workers#second' #二度目稼働
+  get 'workers/faq' => 'workers#faq' #よくある質問
+
   resources :customers do
         resources :calls do
         end
@@ -37,7 +42,9 @@ Rails.application.routes.draw do
     end
   end
   get 'customers/:id/:is_auto_call' => 'customers#show'
-
+  get 'customers/analytics' => 'customers#analytics'
+  get 'customers/worker' => 'customers#worker'
+  delete :customers, to: 'customers#destroy_all'
 
   resources :knowledges
   resources :uploader, only: [:edit, :update, :destroy]

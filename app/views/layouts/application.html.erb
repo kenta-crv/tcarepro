@@ -35,7 +35,9 @@
       　　　  <strong><% current_user.email  %></strong>
            <%= link_to "マイページ", user_path(current_user) %>
            <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
-
+          <% elsif admin_signed_in? %>
+           <%= link_to "マイページ", admin_path(current_admin) %>
+           <%= link_to "ログアウト", destroy_admin_session_path, method: :delete %>
 　　　　　　<% else %>
       　　　<%= link_to "ログイン", new_user_session_path%>
  　　　　　 <% end %>

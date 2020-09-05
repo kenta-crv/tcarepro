@@ -57,19 +57,12 @@ private
   params.require(:crm).permit(
         :company, #会社名
         :first_name, #代表者苗字
-        #:last_name, #代表者名前
-        #:first_kana, #代表者ミョウジ
-        #:last_kana, #代表者カナ
         :tel, #電話番号
         :mobile, #携帯番号
         :fax, #FAX番号
         :mail, #メールアドレス
-        #:postnumber, #郵便番号
         :prefecture, #都道府県
-        #:city, #市町村
-        #:town, #番地
         :url, #番地
-        #:building, #ビル名・号室
         :item, #取引商品
         :statu, #ステータス
         :price, #単価
@@ -82,7 +75,6 @@ private
         :content, #サービス内容
         :comment, #コメント
         :choice,
-
     )
   end
 end

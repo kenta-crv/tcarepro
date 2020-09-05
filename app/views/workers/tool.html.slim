@@ -1,0 +1,55 @@
+.tops-wrapper
+ h2.headline
+  | 株式会社Ri-Plus稼働に使用するツール
+
+ .cp_qa
+  .cp_actab
+    input#cp_tabfour031[type="checkbox" name="tabs"]
+    label[for="cp_tabfour031"]
+      | シフト依頼（毎月5日・毎月20日）
+    .cp_actab-content
+      p
+        | 出勤するシフトは毎月5日・毎月20日（定休日の場合その後日）にスマレジ『タイムカード』よりメールが到着します。そのメールのURLにアクセスし、希望シフトを入力します。シフトは雇用契約時より少ない勤務時間の出勤を禁止としています。万一理由がある場合、事前に申告お願いします。
+  .cp_actab
+    input#cp_tabfour032[type="checkbox" name="tabs"]
+    label[for="cp_tabfour032"]
+      | シフト決定（毎月10日・毎月25日）
+    .cp_actab-content
+      p
+        | 出勤するシフトは毎月10日・毎月25日（定休日の場合その後日）にスマレジ『タイムカード』より決定メールが到着します。そのURLにアクセスし、自身の勤務シフトを確認してください。シフト決定後の変更は原則禁止とします。
+  .cp_actab
+    input#cp_tabfour033[type="checkbox" name="tabs"]
+    label[for="cp_tabfour033"]
+      | 出退勤について
+    .cp_actab-content
+      p
+        | 毎日の出勤退勤については、スマレジで管理を行います。出勤退勤を押し忘れた場合、必ず申告してください。（PINコードを求められる場合『0000』）但し、出勤時間３分以内に架電記録がない場合、データ判断で遅刻とみなします。
+        br
+        = link_to "出退勤", "https://timecard1.smaregi.jp/shift_stamps?def=43_2b_13_8b_89_97_7_67&se=1", class:"btn btn-danger", target: :_blank
+        br
+        br
+  .cp_actab
+    input#cp_tabfour033[type="checkbox" name="tabs"]
+    label[for="cp_tabfour033"]
+      | 退勤時の日報について
+    .cp_actab-content
+      p
+        | 退勤時、必ず日報を付けて退勤を行なってください。日報には❶コールした案件❷アポ獲得件数❸リストについての感想（具体的に●●業は受電率が高い、●●業はフロントアウトが高い、不要なリストが●●のように入っていてコールしづらい等）❹次回コール時の目標や意気込みを記載して下さい。
+        br
+        = link_to "出退勤", "https://timecard1.smaregi.jp/shift_stamps?def=43_2b_13_8b_89_97_7_67&se=1", class:"btn btn-danger", target: :_blank
+        br
+        br
+  .cp_actab
+    input#cp_tabfour035[type="checkbox" name="tabs"]
+    label[for="cp_tabfour035"]
+      | 給料について
+    .cp_actab-content
+      p
+        | 給料は末締めの25日払いとなります。給料明細は手渡しでは発行しておらず、スマレジにアクセスし、Web給与明細で発行を行います。
+  .cp_actab
+    input#cp_tabfour036[type="checkbox" name="tabs"]
+    label[for="cp_tabfour036"]
+      | 在宅時の主なやりとりについては？
+    .cp_actab-content
+      p
+        | 在宅勤務時については、主にやりとりはslackにて行います。プッシュ通知をつけ、必ず即時応対出来るようにしておきましょう。

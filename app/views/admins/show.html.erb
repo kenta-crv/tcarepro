@@ -1,6 +1,6 @@
 <div class="beige-wrapper">
 
-          <div class="heading"><h2>アカウント情報</h2>
+<div class="heading"><h2>アカウント情報</h2>
 
 
   <table>
@@ -21,5 +21,46 @@
       <td><%= @admin.email %></td>
     </tr>
 </table>
+<br>
+
+<div class="heading"><h2>ツール一覧</h2>
+
+
+  <table width="80%">
+    <colgroup>
+      <col width="20%">
+      <col width="20%">
+      <col width="60%">
+ 　 </colgroup>
+    <tr>
+      <th>シフト依頼</th>
+      <td><%= link_to "スマレジ", "https://timecard1.smaregi.jp/shifts/shift_request", class:"btn btn-danger", target: :_blank %></td>
+      <td>20日シフト依頼・25日シフト受付を締め決定・翌日1日〜15日迄<br>
+          5日シフト依頼・10日シフト受付を締め決定・翌日16日〜31日迄<br></td>
+    </tr>
+    <tr>
+      <th>シフト管理</th>
+      <td><%= link_to "スマレジ", "https://timecard1.smaregi.jp/shifts/schedule", class:"btn btn-danger", target: :_blank %></td>
+      <td>毎月のシフトを確認・修正・管理。毎月5日に勤怠のズレを修正します。<br></td>
+    </tr>
+    <tr>
+      <th>給与管理</th>
+      <td><%= link_to "スマレジ", "https://timecard1.smaregi.jp/budgets/staff_month/", class:"btn btn-danger", target: :_blank %></td>
+      <td>毎月の給与を確認・修正・管理。毎月25日に支払いを行います。<br></td>
+    </tr>
+    <tr>
+      <th>日報一覧</th>
+      <td><%= link_to "スマレジ", "https://timecard1.smaregi.jp/daily_report/", class:"btn btn-danger", target: :_blank %></td>
+      <td>毎日の日報を確認できます。<br></td>
+    </tr>
+    <tr>
+      <th>領収書入力</th>
+      <td><%= link_to "MFクラウド", "https://biz.moneyforward.com/old_journals?cti=PZxAIOJ1QO9KyR8tV5-bWA", class:"btn btn-danger", target: :_blank %></td>
+      <td>毎月5日に領収書を整理し、CWに入力を委託します。<br></td>
+    </tr>
+</table>
+<br>
+
+
 <br>
 <%= link_to "アカウント情報編集", edit_admin_registration_path, class:"btn btn-danger" %>

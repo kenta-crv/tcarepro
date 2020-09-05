@@ -50,10 +50,9 @@ class Call < ApplicationRecord
     "フロントNG",
     "見込",
     "APP",
-    "コロナ見込",
-    "キャンセル",
+    "APPキャンセル",
+    "通常NG",
     "クロージングNG",
-    "根本的NG",
     "永久NG"
   ]
   def self.StatuItems

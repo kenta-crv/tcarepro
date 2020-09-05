@@ -8,19 +8,17 @@ class Crm < ApplicationRecord
        crm = find_by(id: row["id"]) || new
        crm.attributes = row.to_hash.slice(*updatable_attributes)
        crm.save!
-      end
+     end
   end
 
   def self.updatable_attributes
-    [ "company","name","tel","fax","postnumber","address","mail","url","url_2","title","industry","other","other2","caption","people","rogo",
-      "image","seo_rank","google_rank","foundation","contact_url","number_of_business","number_of_store","listing","settlement",
-      "published_site","published_now","recruit_now","ip_address","explanation"]
+    [ "company","first_name","tel","fax","prefecture","mail","url","item","statu", "price","number",
+    "history","area","target", "next","date_time", "content","comment", "choice"]
   end
 
   def self.csv_attributes
-    [ "company","name","tel","fax","postnumber","address","mail","url","url_2","title","industry","other","other2","caption","people","rogo",
-      "image","seo_rank","google_rank","foundation","contact_url","number_of_business","number_of_store","listing","settlement",
-      "published_site","published_now","recruit_now","ip_address","explanation"]
+    [ "company","first_name","tel","fax","prefecture","mail","url","item","statu", "price","number",
+    "history","area","target", "next","date_time", "content","comment", "choice"]
   end
 
   def self.generate_csv
@@ -32,6 +30,9 @@ class Crm < ApplicationRecord
     end
   end
 
+  def self.SfaStatus
+    @@sfa_status
+  end
 
   @@sfa_status = [
     ["契約","契約"],
@@ -45,8 +46,4 @@ class Crm < ApplicationRecord
     ["NG","NG"],
     ["契約終了","契約終了"]
   ]
-  end
-
-  def self.SfaStatus
-    @@sfa_status
-  end
+end

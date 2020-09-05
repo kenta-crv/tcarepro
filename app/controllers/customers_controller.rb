@@ -147,6 +147,9 @@ class CustomersController < ApplicationController
    redirect_to customers_url, notice:"#{cnt}件登録されました。"
  end
 
+ def worker
+ end
+
   private
     def customer_params
       params.require(:customer).permit(
@@ -180,6 +183,7 @@ class CustomersController < ApplicationController
         :other, #その他
         :url_2, #url2
         :extraction_date, #抽出日
+        :occupation,
         :customer_tel
        )
     end

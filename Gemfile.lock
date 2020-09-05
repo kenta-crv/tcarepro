@@ -322,7 +322,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate
-  bootstrap (~> 4.3.1)
+  bootstrap
   byebug
   capybara (~> 2.13)
   carrierwave
