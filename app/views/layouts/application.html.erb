@@ -19,6 +19,7 @@
          <%= link_to "/" do %>
           <%= image_tag "rogo.png", width:"200px" %>
          <% end %>
+          <%= link_to  'TOP', root_path %>
           <% if admin_signed_in? %>
            <%= link_to  'CTI', customers_path %>
           <% elsif user_signed_in? %>

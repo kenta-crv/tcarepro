@@ -26,3 +26,5 @@
 * #2018.12.14
 * bootstrap DateTImePicker 設定 #2018.12.14
 */
+
+let textarea = document.getElementById('test');

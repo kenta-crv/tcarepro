@@ -1,0 +1,44 @@
+.tops-wrapper
+ h2.headline
+  | 二度目稼働のご案内（※稼働時間外に行なって下さい）
+
+ .cp_qa
+  .cp_actab
+    input#cp_tabfour031[type="checkbox" name="tabs"]
+    label[for="cp_tabfour031"]
+      | ユーザーアカウント作成
+    .cp_actab-content
+      p
+        | マイアカウントを持つために一度画面上部よりログアウトし、以下URLよりユーザー登録を行いましょう。
+        br
+        | ユーザーネーム：苗字　ID：自分のメールアドレス　パスワード：20200402
+        br
+        = link_to "ユーザー登録画面", "https://mobile-cti.net/users/sign_up", class:"btn btn-danger"
+        = link_to "ログアウト", "#", class:"btn btn-danger"
+  .cp_actab
+    input#cp_tabfour032[type="checkbox" name="tabs"]
+    label[for="cp_tabfour032"]
+      | スマレジの登録
+    .cp_actab-content
+      p
+        | ご自身のメールアドレスにスマレジへの招待メールが到着します。そのメールよりユーザー登録を行いましょう
+        br
+        | ※上司にスマレジ登録を行う旨をお伝え下さい。
+        br
+        | 毎日出退勤をこのスマレジで行います。
+        br
+        = link_to "出退勤", "https://timecard1.smaregi.jp/shift_stamps/pin?def=43_2b_13_8b_89_97_7_67&se=1", class:"btn btn-danger"
+        br
+        |PINコード：0000
+  .cp_actab
+    input#cp_tabfour033[type="checkbox" name="tabs"]
+    label[for="cp_tabfour033"]
+      | slackへ登録
+    .cp_actab-content
+      p
+        | Slackというビジネスチャットツールを活用致します。こちらは招待メールをお送り致しますので、招待依頼の旨を上司へ依頼して下さい。
+        br
+        | 在宅勤務についてのやりとりについては全てこのslackを通じて行い、質疑応答等についてもslackで回答致します。
+        br
+        | ※当社では基本的に電話のやりとりは致しません。
+        br

@@ -49,11 +49,14 @@ class Call < ApplicationRecord
     "担当者不在",
     "フロントNG",
     "見込",
+    "資料送付APP",
     "APP",
     "APPキャンセル",
-    "通常NG",
+    "NG",
     "クロージングNG",
-    "永久NG"
+    "永久NG",
+    "契約",
+    "Comicomi獲得可能"
   ]
   def self.StatuItems
     @@StatuItems

@@ -1,6 +1,15 @@
 Rails.application.routes.draw do
 
-  root to: 'customers#index'
+  root to: 'top#index'
+
+  get '/format' => 'top#format' #アポフォーマット
+  get '/faq' => 'top#faq' #よくある質問
+
+  get '/homework' => 'top#homework' #２回目の出勤について
+  get '/second' => 'top#second' #２回目の出勤について
+  get '/first' => 'top#first' #１回目の出勤について
+  get '/script' => 'top#script' #トークスクリプト
+  get '/tool' => 'top#tool' #各種ツール紹介
 
   #ログイン切り替え
   devise_for :admins, controllers: {
@@ -15,6 +24,7 @@ Rails.application.routes.draw do
   resources :crms do
     collection do
       post :import
+      get :message
     end
     resources :comments, :acquisitions
     resources :images
@@ -23,13 +33,6 @@ Rails.application.routes.draw do
       get 'images/download/:id' => 'images#download', as: :images_pdf
      end
   end
-
-  #resources :workers
-  get 'workers/tool' => 'workers#tool' #各種ツール紹介
-  get 'workers/first' => 'workers#first' #初回稼働
-   get 'workers/data' => 'workers#data' #書類ダウンロード
-  get 'workers/second' => 'workers#second' #二度目稼働
-  get 'workers/faq' => 'workers#faq' #よくある質問
 
   resources :customers do
         resources :calls do
@@ -42,7 +45,7 @@ Rails.application.routes.draw do
     end
   end
   get 'customers/:id/:is_auto_call' => 'customers#show'
-  get 'customers/analytics' => 'customers#analytics'
+  get 'analytics' => 'customers#analytics'
   get 'customers/worker' => 'customers#worker'
   delete :customers, to: 'customers#destroy_all'
 

@@ -62,10 +62,10 @@
 			<td colspan="3"><%= @customer.address %></td>
 		</tr>
 		<tr>
-			<td><%= mail_to @customer.mail, "Mail", class:"btn btn-danger" %></td>
 			<td><%= link_to "URL", @customer.url, target:"_blank", class:"btn btn-danger" %></td>
 			<td><%= link_to "URL2", @customer.url_2, target:"_blank", class:"btn btn-danger" %></td>
-      <td><%= link_to "Calendar", "https://calendar.google.com/", target:"_blank", class:"btn btn-danger" %></td>
+      <td><%= link_to "アポフォーマット", @customer.url_2, target:"_blank", class:"btn btn-danger" %></td>
+      <td><%= link_to "gカレンダー", "https://calendar.google.com/", target:"_blank", class:"btn btn-danger" %></td>
 		</tr>
 		<tr>
       <th>タイトル</th>
