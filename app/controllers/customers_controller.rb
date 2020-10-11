@@ -73,7 +73,7 @@ class CustomersController < ApplicationController
  def update
     @customer = Customer.find(params[:id])
      if @customer.update(customer_params)
-        redirect_to customers_path
+        redirect_to customer_path
     else
         render 'edit'
     end
@@ -147,7 +147,19 @@ class CustomersController < ApplicationController
    redirect_to customers_url, notice:"#{cnt}件登録されました。"
  end
 
- def worker
+ def confirm
+   @customer = Customer.new(customer_params)
+   if @customer.valid?
+     render :action =>  'confirm', notice: 'メッセージが送信されました。'
+   else
+     render :action => 'index', notice: 'メッセージが送信出来ませんでした。'
+   end
+ end
+
+ def thanks
+   @customer = Customer.find(params[:id])
+   CustomerMailer.received_email(@customer).deliver
+   CustomerMailer.send_email(@customer).deliver
  end
 
   private

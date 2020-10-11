@@ -6,15 +6,16 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   # config.cache_classes = true
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
 
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
   address: 'smtp3.gmoserver.jp',
-  domain: 'ri-plus.jp',
+  domain: 'comicomi.cc',
   port: 587,
-  user_name: 'mail@ri-plus.jp',
-  password: 'c8UX#GH74',
+  user_name: 'info@comicomi.cc',
+  password: 'St5cQ3q#E',
   authentication: 'plain',
   enable_starttls_auto: true
   }

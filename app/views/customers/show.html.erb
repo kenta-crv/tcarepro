@@ -43,7 +43,7 @@
 		<col width="25%">
 	<tbody>
 		<tr>
-			<th colspan="4">顧客情報（<%= link_to("編集", edit_customer_path) %>）</th>
+			<th colspan="4">顧客情報（<%= link_to("編集", edit_customer_path,  target:"_blank") %>）</th>
 		</tr>
 		<tr>
 			<th>会社名</th>
@@ -64,16 +64,22 @@
 		<tr>
 			<td><%= link_to "URL", @customer.url, target:"_blank", class:"btn btn-danger" %></td>
 			<td><%= link_to "URL2", @customer.url_2, target:"_blank", class:"btn btn-danger" %></td>
-      <td><%= link_to "アポフォーマット", @customer.url_2, target:"_blank", class:"btn btn-danger" %></td>
-      <td><%= link_to "gカレンダー", "https://calendar.google.com/", target:"_blank", class:"btn btn-danger" %></td>
+      <td><%= link_to "format", "/format", target:"_blank", class:"btn btn-danger" %></td>
+      <td><%= link_to "caledar", "https://calendar.google.com/", target:"_blank", class:"btn btn-danger" %></td>
 		</tr>
 		<tr>
       <th>タイトル</th>
 			<td colspan="3"><%= @customer.title %></td>
     </tr>
     <tr>
-      <th>備考</th>
-			<td colspan="3"><%= @customer.remarks %></td>
+      <%= form_for(@customer, url: { action: :confirm }) do |f|%>
+      <th>メール</th>
+			<td colspan="2"><%= @customer.mail %></td>
+      <td>
+          <%= f.text_field :mail %>
+          <%= f.submit "確認"%>
+      <%end%>
+      </td>
     </tr>
 	</tbody>
 </table>

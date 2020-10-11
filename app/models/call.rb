@@ -56,7 +56,8 @@ class Call < ApplicationRecord
     "クロージングNG",
     "永久NG",
     "契約",
-    "Comicomi獲得可能"
+    "Comicomi獲得可能",
+    "再掲載"
   ]
   def self.StatuItems
     @@StatuItems

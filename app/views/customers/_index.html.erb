@@ -31,9 +31,9 @@
                   <td><%= customer.last_call.try(:statu) %></td>
                   <td><%= customer.last_call.try(:created_at) %></td>
                   <td><%= customer.updated_at.strftime("%Y年%m月%d日 %H時%M分") %></td>
-                  <td><%= link_to '編集', edit_customer_path(customer), class: 'command'%>
+                  <td><%= link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'%>
                       <%= link_to '削除',
-                       customer_path(customer),
+                       customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!),
                        method: :delete,
                        class: 'command',
                        data: { confirm: '本当に削除しますか？'} %></td>

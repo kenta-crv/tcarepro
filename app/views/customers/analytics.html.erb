@@ -182,14 +182,14 @@
     <th>APP数</th>
     <th>APP率</th>
   </tr>
-  <% @admins.each do |admin| %>
+  <% @users.each do |user| %>
   <tr>
-    <td><%= admin.user_name %></td>
-    <td><%= admin.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count  %></td>
-    <td><%= admin.calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
-    <td><%= admin.calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
-    <td><%= number_to_percentage(admin.calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f / admin.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1) %></td>
+    <td><%= user.user_name %></td>
+    <td><%= user.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count  %></td>
+    <td><%= user.calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
+    <td><%= user.calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
+    <td><%= number_to_percentage(user.calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f / user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1) %></td>
   </tr>
   <%end%>
 </table>
@@ -332,16 +332,16 @@
     <th>15:00~</th>
     <th>16:00~</th>
   </tr>
-  <% @admins.each do |admin| %>
+  <% @users.each do |user| %>
   <tr>
-    <th><%= admin.user_name %></th>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= admin.calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <th><%= user.user_name %></th>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= user.calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
   </tr>
   <% end %>
 </table>

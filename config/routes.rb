@@ -38,6 +38,8 @@ Rails.application.routes.draw do
         resources :calls do
         end
     collection do
+      get :confirm
+      post :thanks
       post :import
       post :call_import
       get :message
@@ -46,7 +48,6 @@ Rails.application.routes.draw do
   end
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'analytics' => 'customers#analytics'
-  get 'customers/worker' => 'customers#worker'
   delete :customers, to: 'customers#destroy_all'
 
   resources :knowledges

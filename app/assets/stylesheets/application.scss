@@ -575,7 +575,7 @@ dd {
 /* 質問を開いた時の仕様 */
 /* --答えの高さ */
 .cp_qa .cp_actab input:checked ~ .cp_actab-content {
-	max-height: 40em;
+	max-height: 70em;
 	border: 10px solid rgba(27,37,56,0.1);
 }
 /* 質問をクリックした時のアイコンの動き */
