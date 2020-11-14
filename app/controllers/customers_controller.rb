@@ -66,6 +66,16 @@ class CustomersController < ApplicationController
      end
   end
 
+  def complete
+    if @customer.valid?
+        CustomerMailer.receive_email(@customer).deliver
+        CustomerMailer.send_email(@customer).deliver
+        flash[:notice] = "資料を送付しました"
+    else
+        flash[:notice] = "資料を送付しました"
+    end
+  end
+
   def edit
     @customer = Customer.find(params[:id])
   end

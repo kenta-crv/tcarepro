@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get '/first' => 'top#first' #１回目の出勤について
   get '/script' => 'top#script' #トークスクリプト
   get '/tool' => 'top#tool' #各種ツール紹介
+  get '/document' => 'top#document' #各種ツール紹介
 
   #ログイン切り替え
   devise_for :admins, controllers: {
@@ -35,11 +36,9 @@ Rails.application.routes.draw do
   end
 
   resources :customers do
-        resources :calls do
-        end
+    resources :calls
     collection do
-      get :confirm
-      post :thanks
+      get :complete
       post :import
       post :call_import
       get :message

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200731061058) do
+ActiveRecord::Schema.define(version: 20201111023357) do
 
   create_table "acquisitions", force: :cascade do |t|
     t.integer "crm_id"
@@ -159,6 +159,16 @@ ActiveRecord::Schema.define(version: 20200731061058) do
     t.string "answer"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "mailers", force: :cascade do |t|
+    t.integer "customers_id"
+    t.string "title"
+    t.string "body"
+    t.string "select"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customers_id"], name: "index_mailers_on_customers_id"
   end
 
   create_table "progresses", force: :cascade do |t|

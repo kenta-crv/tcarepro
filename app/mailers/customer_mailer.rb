@@ -1,9 +1,9 @@
 class CustomerMailer < ActionMailer::Base
-  default from: "info@comicomi.cc"
+  default from: "mail@ri-plus.jp"
   def received_email(customer)
     @customer = customer
-    mail to: "info@comicomi.cc"
-    mail(subject: 'comicomi参画依頼メールを送信しました。') do |format|
+    mail to: "mail@ri-plus.jp"
+    mail(subject: '資料送付完了') do |format|
       format.text
     end
   end
@@ -11,7 +11,7 @@ class CustomerMailer < ActionMailer::Base
   def send_email(customer)
     @customer = customer
     mail to: customer.mail
-    mail(subject: '【人材会社専門一括見積りサイトComicomi】参画登録依頼について') do |format|
+    mail(subject: '【アポ匠】資料送付のご案内') do |format|
       format.text
     end
   end

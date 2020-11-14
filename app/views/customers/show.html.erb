@@ -72,13 +72,9 @@
 			<td colspan="3"><%= @customer.title %></td>
     </tr>
     <tr>
-      <%= form_for(@customer, url: { action: :confirm }) do |f|%>
       <th>メール</th>
-			<td colspan="2"><%= @customer.mail %></td>
+			<td colspan="2"><%= link_to "メール送信", complete_customers_path(@customer.id), class:"btn btn-danger" %></td>
       <td>
-          <%= f.text_field :mail %>
-          <%= f.submit "確認"%>
-      <%end%>
       </td>
     </tr>
 	</tbody>
