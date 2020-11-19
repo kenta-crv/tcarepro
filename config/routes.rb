@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   get '/format' => 'top#format' #アポフォーマット
   get '/faq' => 'top#faq' #よくある質問
+  get '/outsourcing' => 'top#outsourcing'
 
   get '/homework' => 'top#homework' #２回目の出勤について
   get '/second' => 'top#second' #２回目の出勤について

@@ -19,4 +19,7 @@ class TopController < ApplicationController
 
   def homework
   end
+
+  def outsourcing
+  end
 end

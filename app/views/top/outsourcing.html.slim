@@ -1,0 +1,45 @@
+.tops-wrapper
+
+ h1.headline 業務委託開始のご案内
+ br
+ .cp_qa
+  .cp_actab
+    input#cp_tabfour028[type="checkbox" name="tabs"]
+    label[for="cp_tabfour028"]
+      | 【STEP①】slackへログイン
+    .cp_actab-content
+     p
+      | メールにてslackの招待URLが届いています。slackに登録頂き、登録完了後、チャンネルの#general迄メッセージをお願いします。
+ .cp_qa
+  .cp_actab
+    input#cp_tabfour027[type="checkbox" name="tabs"]
+    label[for="cp_tabfour027"]
+      | 【STEP②】スマレジへログイン
+    .cp_actab-content
+     p
+      | スマレジは出退勤の管理とシフト申請に使用します。メール招待が届いておりますので、ご登録をよろしくお願い致します。
+  .cp_actab
+    input#cp_tabfour032[type="checkbox" name="tabs"]
+    label[for="cp_tabfour032"]
+      | 【STEP③】CTIに登録
+    .cp_actab-content
+      p
+        | ❶下記URLより業務に活用するCTIシステムにログインを行なって下さい。
+        br
+        = link_to "ユーザー登録", "https://mobile-cti.net/users/sign_up", target:"_blank", class:"btn btn-danger"
+  .cp_actab
+    input#cp_tabfour033[type="checkbox" name="tabs"]
+    label[for="cp_tabfour033"]
+      | 【STEP④】トップページを事前にチェック
+    .cp_actab-content
+      p
+        | トップページの稼働内容について、通常社内の稼働者と重複する部分もございますが、業務に必要な箇所となりますので、必ず事前に目を通して下さい。
+  .cp_actab
+    input#cp_tabfour034[type="checkbox" name="tabs"]
+    label[for="cp_tabfour034"]
+      | 【STEP⑤】業務委託約款を締結
+    .cp_actab-content
+      p
+        | 下記リンクより約款締結ページでアクセスします。当社との業務委託契約を締結いただきます。
+        br
+        = link_to "業務委託契約締結", "https://ri-plus.jp/", target:"_blank", class:"btn btn-danger"
