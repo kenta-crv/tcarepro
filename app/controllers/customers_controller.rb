@@ -67,6 +67,7 @@ class CustomersController < ApplicationController
   end
 
   def complete
+    @customer = Customer.find_by(params[:id])
     if @customer.valid?
         CustomerMailer.receive_email(@customer).deliver
         CustomerMailer.send_email(@customer).deliver

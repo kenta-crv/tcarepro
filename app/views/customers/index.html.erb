@@ -22,8 +22,8 @@
           <tr>
             <th>会社名</th>
             <td><%= f.search_field :company_cont, type: "text" %></td>
-            <th>架電担当者</th>
-            <td><%= f.search_field :first_kana_cont, type: "text" %></td>
+            <th></th>
+            <td></td>
           </tr>
           <tr>
             <th>電話番号</th>
@@ -32,14 +32,8 @@
             <td><%= f.search_field :industry_cont, type: "text" %></td>
           </tr>
           <tr>
-            <th>メール</th>
-            <td><%= f.search_field :mail_cont, type: "text" %></td>
-            <th>URL</th>
-            <td><%= f.search_field :url_cont, type: "text" %></td>
-          </tr>
-          <tr>
-            <th>人数</th>
-            <td><%= f.search_field :people_cont, type: "text" %></td>
+            <th>架電回数</th>
+            <td><%= f.search_field :calls_created_at_lt, type: "text" %></td>
             <th>住所</th>
             <td><%= f.search_field :address_cont, type: "text" %></td>
           </tr>

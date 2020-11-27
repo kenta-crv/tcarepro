@@ -28,7 +28,7 @@ Rails.application.routes.draw do
       post :import
       get :message
     end
-    resources :comments, :acquisitions
+    resources :comments
     resources :images
      member do
       get 'images/view'
@@ -50,7 +50,6 @@ Rails.application.routes.draw do
   get 'analytics' => 'customers#analytics'
   delete :customers, to: 'customers#destroy_all'
 
-  resources :knowledges
   resources :uploader, only: [:edit, :update, :destroy]
   get 'uploader/index'
   #get 'uploader/form'

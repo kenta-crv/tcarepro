@@ -1,2 +1,0 @@
-class Knowledge < ApplicationRecord
-end
