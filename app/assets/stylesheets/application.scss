@@ -10,6 +10,7 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+ *= require dropzone/dropzone
  */
 
 
@@ -24,44 +25,74 @@ $gray_color:#e6ecf0;
 a {text-decoration: none;}
 .none {display: none;}
 
-
 body {
   margin: 0;
-  font-family: 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', 'MS PGothic', 'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif;  /*書体はヒラギノフォントを利用します。*/
+  font-family: 'ヒラギノ角ゴ ProN W3';  /*書体はヒラギノフォントを利用します。*/
   width: 100%;
 }
+
+main{
+  margin-top:-70px;
+  margin-bottom:30px;
+}
+
 /*ヘッダーのベース設定*/
 header {
-  width: 100%;
-  background-color: $main_color;   /*【バックカラー】ブルー*/
-  position: fixed;
-  top: 0;
-  z-index: 10;
+width:100%;
+background-color:white;
+position: sticky;
+top: 0;
+z-index:150;
+.header-image {
+max-width:250px;
+height: 100%;
+margin-left:30px;
+}
+.navi {
+background-color:$main_color;
+line-height:middle;
+height:40px;
+a {
+text-decoration: none;
+color:white;
+text-shadow: 1px 1px 1px #000;
+margin-top:auto;
+margin-top:8px;
+a:hover {
+background-color: rgba(255,255,255,0.1);
+}
+}
 
-  .header-left {
-    font-size: 15px;
-    text-shadow: 2px 3px 1px #000;
-
-    a {
-      line-height: 65px;
-      padding: 0 13px;
-      color: white;
-      display: block;
-      float: left;
-      position: relative;
-      transition: all 0.5s;
-      }
-
-      a:hover {
-       background-color: $sub_color;   /*【マウスオーバーカラー】ブルー*/
-     }
-    }
-
-    .header-right {
-      float: right;
-      font-size: 15px;
-      text-shadow: 2px 3px 1px #000;
-      }
+}
+.white {
+color: white;
+font-size:15px;
+font-weight:bold;
+}
+#dropmenu{
+list-style-type: none;
+width: 100%;
+height: 40px;
+margin: 0 100px;
+background: $main_color;
+}
+#dropmenu li{
+position: relative;
+width: 14.0%;
+font-size:14px;
+float: left;
+text-align: center;
+}
+#dropmenu li a{
+display: block;
+margin: 0;
+padding: 10px 0px 15px;
+color: #fff;
+font-size: 100%;
+text-shadow: 1px 1px 1px #000;
+line-height: 1;
+text-decoration: none;
+}
 }
 
 /*エラー・編集コマンド共通*/
@@ -73,12 +104,6 @@ header {
 
 .command {font-size: 10px;}
 
-
-/*メインのサイズ*/
-main {
-  margin-top: 65px;
-  margin-bottom: 100px;
-}
 
 
 /*テーブル共通*/
@@ -595,4 +620,119 @@ dd {
 .app-format {
   padding:0 70px;
   text-align:left;
+}
+
+
+
+.top-space {margin-top:13px;}
+
+
+
+nav.globalMenuSp {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    background: $main_color;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    text-align: center;
+    transform: translateY(-100%);
+    transition: all 0.6s;
+    width: 100%;
+}
+
+nav.globalMenuSp ul {
+    background: $main_color;
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+}
+
+nav.globalMenuSp ul li {
+    font-size: 1.0em;
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    border-bottom: 1px dotted #fff;
+}
+
+/* 最後はラインを描かない */
+nav.globalMenuSp ul li:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+nav.globalMenuSp ul li a {
+    display: block;
+    color: #fff;
+    line-height:3em;
+}
+
+/* このクラスを、jQueryで付与・削除する */
+nav.globalMenuSp.active {
+    transform: translateY(0%);
+}
+
+
+.navToggle {
+    display: block;
+    position: fixed;    /* bodyに対しての絶対位置指定 */
+    right: 13px;
+    top: 12px;
+    width: 42px;
+    height: 51px;
+    cursor: pointer;
+    z-index: 3;
+    background: $sub_color;
+    text-align: center;
+}
+
+.navToggle span {
+    display: block;
+    position: absolute;    /* .navToggleに対して */
+    width: 30px;
+    border-bottom: solid 3px #eee;
+    -webkit-transition: .35s ease-in-out;
+    -moz-transition: .35s ease-in-out;
+    transition: .35s ease-in-out;
+    left: 6px;
+}
+
+.navToggle span:nth-child(1) {
+    top: 9px;
+}
+
+.navToggle span:nth-child(2) {
+    top: 18px;
+}
+
+.navToggle span:nth-child(3) {
+    top: 27px;
+}
+
+.navToggle span:nth-child(4) {
+    border: none;
+    color: #eee;
+    font-size: 9px;
+    font-weight: bold;
+    top: 34px;
+}
+
+/* 最初のspanをマイナス45度に */
+.navToggle.active span:nth-child(1) {
+    top: 18px;
+    left: 6px;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+/* 2番目と3番目のspanを45度に */
+.navToggle.active span:nth-child(2),
+.navToggle.active span:nth-child(3) {
+    top: 18px;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    transform: rotate(45deg);
 }

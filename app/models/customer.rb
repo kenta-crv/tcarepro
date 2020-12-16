@@ -62,4 +62,7 @@ class Customer < ApplicationRecord
   def self.Old_status
     @@old_status
   end
+
+
+
 end

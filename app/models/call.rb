@@ -56,12 +56,31 @@ class Call < ApplicationRecord
     "クロージングNG",
     "永久NG",
     "契約",
-    "Comicomi獲得可能",
-    "再掲載"
+    "再掲載",
+    "RiPlusAPP"
   ]
   def self.StatuItems
     @@StatuItems
   end
+
+  @@sfa_status = [
+    ["未提案","未提案"],
+    ["見積中","見積中"],
+    ["見込高","見込高"],
+    ["見込中","見込中"],
+    ["見込低","見込低"],
+    ["契約","契約"],
+    ["予算感NG","予算感NG"],
+    ["時期NG","時期NG"],
+    ["NG","NG"],
+    ["永久NG","永久NG"],
+    ["契約終了","契約終了"],
+    ["Comicomi案件","Comicomi案件"]
+  ]
+  def self.SfaStatus
+    @@sfa_status
+  end
+
 
   def call_count_today
     Call.where('created_at > ?', Time.current.beginning_of_day)

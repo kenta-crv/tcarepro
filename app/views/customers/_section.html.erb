@@ -1,134 +1,127 @@
-<% if @customer.choice = "SFA" %>
- <%= render "section" %>
-<% else %>
+<br>
+<br>
+<br>
 <table class="header-table">
   <tr>
-    <th rowspan="2">
+    <th>
       <% if @prev_customer&.id %>
         <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-danger" %>
       <% end %>
     </th>
-      <th>総コール：<%= @call.call_count_today %>Call</th>
-      <th>見込数：<%= @call.protect_count_today %>件</th>
-      <th>アポ数：<%= @call.app_count_today %>件</th>
-      <th>見込率：<%= @call.protect_convertion.ceil(2) %>%</th>
-      <th>アポ率：<%= @call.app_convertion.ceil(2) %>%</th>
-    <th rowspan="2">
+    <th>コール<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
+          <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %>
+        </label>
+    </th>
+  	<th>
+  				<%= select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect{ |o| [ o.device_name, o.token ] }), :include_blank => '（選択してください）') %>
+  				<button id="button-call" data-number="<%= @customer.tel %>">発信</button>
+  	</th>
+    <th>
+
       <% if @next_customer&.id %>
         <%= link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-danger" %>
       <% end %>
     </th>
   </tr>
-  <tr>
-    <%- if admin_signed_in? %>
-      <th>自己コール：<%= current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>不足コール：<%= -25 + current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>総コール：<%= current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count %>Call</th>
-      <th>アポ数：<%= current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count %>Call</th>
-      <th>アポ率：<%= number_to_percentage(current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count / current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count.to_f * 100 ,precision: 1 ) %>Call</th>
-    <%- elsif user_signed_in? %>
-      <th>自己コール：<%= current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>不足コール：<%= -25 + current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>総コール：<%= current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count %>Call</th>
-      <th>アポ数：<%= current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count %>Call</th>
-      <th>アポ率：<%= number_to_percentage(current_user.calls.where(created_at: Time.current.day).count / current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count.to_f * 100 ,precision: 1 ) %>Call</th>
-    <%- end %>
-  </tr>
 </table>
 
-
-<div class="show-top">
-<div class="two_column">
 <table width="100%">
-		<col width="25%">
-		<col width="25%">
-		<col width="25%">
-		<col width="25%">
+		<col width="10%">
+    <col width="15%">
+    <col width="10%">
+    <col width="15%">
+    <col width="10%">
+    <col width="15%">
+    <col width="10%">
+    <col width="15%">
 	<tbody>
 		<tr>
-			<th colspan="4">顧客情報（<%= link_to("編集", edit_customer_path,  target:"_blank") %>）</th>
+			<th colspan="8">顧客情報（<%= link_to("編集", edit_customer_path,  target:"_blank") %>）</th>
 		</tr>
 		<tr>
 			<th>会社名</th>
 			<td><%= @customer.company %></td>
-			<th>代表者</th>
-			<td><%= @customer.first_name %>(<%= @customer.first_kana %>)</td>
-		</tr>
-		<tr>
-			<th>業種</th>
-			<td><%= @customer.industry %></td>
-      <th>人数</th>
-  		<td><%= @customer.people %></td>
-		</tr>
-    <tr>
-			<th>住所</th>
-			<td colspan="3"><%= @customer.address %></td>
-		</tr>
-		<tr>
-			<td><%= link_to "URL", @customer.url, target:"_blank", class:"btn btn-danger" %></td>
-			<td><%= link_to "URL2", @customer.url_2, target:"_blank", class:"btn btn-danger" %></td>
-      <td><%= link_to "format", "/format", target:"_blank", class:"btn btn-danger" %></td>
-      <td><%= link_to "caledar", "https://calendar.google.com/", target:"_blank", class:"btn btn-danger" %></td>
-		</tr>
-		<tr>
-      <th>タイトル</th>
-			<td colspan="3"><%= @customer.title %></td>
+      <th>担当者</th>
+		  <td><%=@customer.first_name%><%=@customer.last_name %></td>
+      <th>電話番号</th>
+      <td><%=@customer.tel %></td>
+       <th>携帯番号</th>
+      <td><%=@customer.mobile %></td>
     </tr>
     <tr>
-      <th>メール</th>
-			<td colspan="2"><%= link_to "メール送信", complete_customers_path(@customer.id), class:"btn btn-danger" %></td>
-      <td>
-      </td>
-    </tr>
+     <th>住所</th>
+     <td colspan = "3">〒<%=@customer.postnumber %><%=@customer.address %></td>
+     <th>Mail</th>
+     <td><%= mail_to @customer.mail, @customer.mail %></td>
+     <th>URL</th>
+     <td><%= link_to @customer.url, @customer.url %></td>
+   </tr>
+   <tr>
+     <th>業種</th>
+     <td><%=@customer.industry %></td>
+     <th>事業内容</th>
+     <td><%=@customer.business %></td>
+     <th>流入元</th>
+     <td><%=@customer.inflow %> </td>
+     <th>代行履歴</th>
+     <td><%=@customer.history %></td>
+   </tr>
+   <tr>
+     <th>エリア</th>
+     <td><%=@customer.area %> </td>
+     <th>業種</th>
+     <td><%=@customer.number %> </td>
+     <th>商談方法</th>
+     <td><%=@customer.meeting %> </td>
+     <th>経験則</th>
+     <td><%=@customer.experience %> </td>
+   </tr>
+   <tr>
+     <th>料金</th>
+     <td><%=@customer.price %> </td>
+     <th>件数</th>
+     <td><%=@customer.number %> </td>
+     <th>開始時期</th>
+     <td><%=@customer.start %></td>
+   </tr>
 	</tbody>
 </table>
-</div>
 
-<div class="two_column">
 <table width="100%">
-		<col width="20%">
-		<col width="30%">
-		<col width="20%">
-		<col width="30%">
+  <col width="10%">
+  <col width="90%">
 	<tbody>
-		<tr>
-			<th colspan="4">コール<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
-        <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %> />自動発信の場合、必ずチェックして下さい。//, checked
-      </label></th>
-		</tr>
-		<tr>
-			<td class="call-font"><%= @customer.tel%></td>
-			<th>
-				<%= select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect{ |o| [ o.device_name, o.token ] }), :include_blank => '（選択してください）') %>
-				<button id="button-call" data-number="<%= @customer.tel %>">発信</button>
-			</th>
-		</tr>
-	</tbody>
+   <tr>
+    <th>備考</th>
+    <td><%= @customer.remarks %></td>
+   </tr>
+  </tbody>
 </table>
+
 <%= form_for([@customer, @call], url: customer_calls_path(customer_id: @customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)) do |f| %>
 <table>
+  <col width="10%">
+  <col width="10%">
+  <col width="15%">
+  <col width="10%">
+  <col width="10%">
+  <col width="45%">
 	<tbody>
 		<tr>
-			<th colspan="4">情報入力</th>
-		</tr>
-		<tr>
 			<th>ステータス</th>
-			<td><%= f.select(:statu, Call.StatuItems) %></td>
+			<td><%= f.select(:statu, Call.SfaStatus) %></td>
 			<th>再コール日時</th>
 			<td><%= f.datetime_field :time %></td>
-		</tr>
-		<tr>
 			<th>コメント</th>
-			<td colspan ="4" class="comment"><%= f.text_area :comment %></td>
+			<td><%= f.text_area :comment %></td>
 		</tr>
 		<tr>
-			<th colspan ="4"><%= f.submit %></th>
+			<th colspan ="6"><%= f.submit %></th>
 		</tr>
 	</tbody>
 </table>
 <%end%>
-</div>
-<%end%>
+
 
 <table width="100%">
 		<col width="15%">

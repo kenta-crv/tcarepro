@@ -6,104 +6,115 @@
 <% end %>
 
 
-<div  class="heading"><h2>リスト検索</h2></div>
+<div class="modal fade" id="createTicket" tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content"  style="width:900px; margin-left: -200px;">
+      <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <div class="modal-body">
 
-<!--検索機能実装-->
-<%= search_form_for @q do |f| %>
-    <table width = "90%">
-      <col width="20%">
-      <col width="30%">
-      <col width="20%">
-      <col width="30%">
-      <tbody>
-          <tr>
-            <th colspan = "4">検索</th>
-          </tr>
-          <tr>
-            <th>会社名</th>
-            <td><%= f.search_field :company_cont, type: "text" %></td>
-            <th></th>
-            <td></td>
-          </tr>
-          <tr>
-            <th>電話番号</th>
-            <td><%= f.search_field :tel_cont, type: "text" %></td>
-            <th>業種</th>
-            <td><%= f.search_field :industry_cont, type: "text" %></td>
-          </tr>
-          <tr>
-            <th>架電回数</th>
-            <td><%= f.search_field :calls_created_at_lt, type: "text" %></td>
-            <th>住所</th>
-            <td><%= f.search_field :address_cont, type: "text" %></td>
-          </tr>
-          <tr>
-            <th>未コール</th>
-            <td><%= f.search_field :calls_id_null, type: 'checkbox', value: 'true' %></td>
-            <th>最終コール状態</th>
-            <td><%= select_tag "last_call[statu]",options_for_select( [""] + Call.StatuItems, @last_call_params[:statu]), multiple: true %></td>
-          </tr>
-          <tr>
-            <th>見込コール日時（最初）</th>
-            <td>
-              <div class='input-group date' id='time_from_datetimepicker'>
-                    <%= date_field_tag "last_call[time_from]", @last_call_params[:time_from], class: "from-control" %>
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-               </div>
-             </td>
-             <th>見込コール日時（最後）</th>
-            <td>
-              <div class='input-group date' id='time_to_datetimepicker'>
-                    <%= date_field_tag "last_call[time_to]", @last_call_params[:time_to], class: "form-control" %>
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-               </div>
-                <%# text_field_tag "last_detail[created_at_from]", @last_detail_params[:created_at_from], class: "datetimepicker" %>
-                <%# text_field_tag "last_detail[created_at_to]", @last_detail_params[:created_at_to], class: "datetimepicker" %>
-            </td>
-          </tr>
-          <tr>
-            <th>最終コール日時（最初）</th>
-            <td>
-              <div class='input-group date' id='created_at_from_datetimepicker'>
-                    <%= date_field_tag "last_call[created_at_from]", @last_call_params[:created_at_from], class: "from-control" %>
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-              </div>
-             </td>
-            <th>最終コール日時（最後）</th>
-            <td>
-              <div class='input-group date' id='created_at_to_datetimepicker'>
-                    <%= date_field_tag "last_call[created_at_to]", @last_call_params[:created_at_to], class: "form-control" %>
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th>最終インポート日時（最初）</th>
-             <td><%= f.date_field :created_at_gteq, class: 'date-picker' %></td>
-             <th>最終インポート日時（最後）</th>
-             <td><%= f.date_field :created_at_lteq, class: 'date-picker' %></td>
-          </tr>
-          <tr>
-            <th>最終アップデート日時（最初）</th>
-             <td><%= f.date_field :updated_at_gteq, class: 'date-picker' %></td>
-             <th>最終アップデート日時（最後）</th>
-             <td><%= f.date_field :updated_at_lteq, class: 'date-picker' %></td>
-          </tr>
-          <tr>
-            <th colspan = "4" ><%= f.submit '検索' %></th>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-<br>
+        <!--検索機能実装-->
+        <%= search_form_for @q do |f| %>
+            <table width = "90%">
+              <col width="20%">
+              <col width="30%">
+              <col width="20%">
+              <col width="30%">
+              <tbody>
+                  <tr>
+                    <th colspan = "4">検索</th>
+                  </tr>
+                  <tr>
+                    <th>会社名</th>
+                    <td><%= f.search_field :company_cont, type: "text" %></td>
+                    <th>担当者名</th>
+                    <td><-- f.search_field :user_user_name_cont, type: "text" --></td>
+                  </tr>
+                  <tr>
+                    <th>電話番号</th>
+                    <td><%= f.search_field :tel_cont, type: "text" %></td>
+                    <th>業種</th>
+                    <td><%= f.search_field :industry_cont, type: "text" %></td>
+                  </tr>
+                  <tr>
+                    <th>架電回数</th>
+                    <td><%= f.search_field :calls_created_at_lt, type: "number" %></td>
+                    <th>住所</th>
+                    <td><%= f.search_field :address_cont, type: "text" %></td>
+                  </tr>
+                  <tr>
+                    <th>未コール</th>
+                    <td><%= f.search_field :calls_id_null, type: 'checkbox', value: 'true' %></td>
+                    <th>最終コール状態</th>
+                    <td><%= select_tag "last_call[statu]",options_for_select( [""] + Call.StatuItems, @last_call_params[:statu]), multiple: true %></td>
+                  </tr>
+                  <tr>
+                    <th>見込コール日時（最初）</th>
+                    <td>
+                      <div class='input-group date' id='time_from_datetimepicker'>
+                            <%= date_field_tag "last_call[time_from]", @last_call_params[:time_from], class: "from-control" %>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                       </div>
+                     </td>
+                     <th>見込コール日時（最後）</th>
+                    <td>
+                      <div class='input-group date' id='time_to_datetimepicker'>
+                            <%= date_field_tag "last_call[time_to]", @last_call_params[:time_to], class: "form-control" %>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                       </div>
+                        <%# text_field_tag "last_detail[created_at_from]", @last_detail_params[:created_at_from], class: "datetimepicker" %>
+                        <%# text_field_tag "last_detail[created_at_to]", @last_detail_params[:created_at_to], class: "datetimepicker" %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>最終コール日時（最初）</th>
+                    <td>
+                      <div class='input-group date' id='created_at_from_datetimepicker'>
+                            <%= date_field_tag "last_call[created_at_from]", @last_call_params[:created_at_from], class: "from-control" %>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                      </div>
+                     </td>
+                    <th>最終コール日時（最後）</th>
+                    <td>
+                      <div class='input-group date' id='created_at_to_datetimepicker'>
+                            <%= date_field_tag "last_call[created_at_to]", @last_call_params[:created_at_to], class: "form-control" %>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>最終インポート日時（最初）</th>
+                     <td><%= f.date_field :created_at_gteq, class: 'date-picker' %></td>
+                     <th>最終インポート日時（最後）</th>
+                     <td><%= f.date_field :created_at_lteq, class: 'date-picker' %></td>
+                  </tr>
+                  <tr>
+                    <th>最終アップデート日時（最初）</th>
+                     <td><%= f.date_field :updated_at_gteq, class: 'date-picker' %></td>
+                     <th>最終アップデート日時（最後）</th>
+                     <td><%= f.date_field :updated_at_lteq, class: 'date-picker' %></td>
+                  </tr>
+                  <tr>
+                    <th colspan = "4" ><%= f.submit '検索' %></th>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div  class="heading"><h2>インポート</h2></div>
 
@@ -121,6 +132,3 @@
     </tbody>
    </table>
 <% end %>
-
-<br>
-<br>

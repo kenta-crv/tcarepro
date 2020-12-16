@@ -3,6 +3,8 @@
             <div class="heading"><h2>ドキュメント</h2>
             </div>
        <% @upload = UploadFile.new %>
+
+
     <%= form_for @upload, :url => {:action => :upload} do |f| %>
     <table width="90%">
         <tbody>
@@ -40,6 +42,8 @@
 			            	method: :delete,
 			            	class: 'command',
 			            	data: { confirm: '本当に削除しますか？'} %></td>
+
+
         </tr>
       　<% end %>
       </tbody>

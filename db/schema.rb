@@ -10,18 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201111023357) do
-
-  create_table "acquisitions", force: :cascade do |t|
-    t.integer "crm_id"
-    t.string "company"
-    t.string "day"
-    t.string "name"
-    t.string "statu"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["crm_id"], name: "index_acquisitions_on_crm_id"
-  end
+ActiveRecord::Schema.define(version: 20201213132405) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -118,19 +107,22 @@ ActiveRecord::Schema.define(version: 20201111023357) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "memo_1"
-    t.string "memo_2"
-    t.string "memo_3"
-    t.string "memo_4"
     t.string "memo_5"
-    t.string "choice"
-    t.string "old_date"
     t.string "title"
-    t.string "old_statu"
     t.string "other"
     t.string "url_2"
-    t.string "extraction_date"
-    t.string "occupation"
+    t.string "inflow"
+    t.string "business"
+    t.string "price"
+    t.string "number"
+    t.string "history"
+    t.string "area"
+    t.string "target"
+    t.date "start"
+    t.string "choice"
+    t.string "sfa_statu"
+    t.string "meeting"
+    t.string "experience"
   end
 
   create_table "customers_search_orders", force: :cascade do |t|
@@ -142,6 +134,33 @@ ActiveRecord::Schema.define(version: 20201111023357) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "estimates", force: :cascade do |t|
+    t.integer "customer_id"
+    t.string "title"
+    t.string "status"
+    t.string "deadline"
+    t.string "payment"
+    t.string "subject"
+    t.string "item1"
+    t.string "item2"
+    t.string "item3"
+    t.string "item4"
+    t.string "item5"
+    t.string "price1"
+    t.string "price2"
+    t.string "price3"
+    t.string "price4"
+    t.string "price5"
+    t.string "quantity1"
+    t.string "quantity2"
+    t.string "quantity3"
+    t.string "quantity4"
+    t.string "quantity5"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_estimates_on_customer_id"
+  end
+
   create_table "images", force: :cascade do |t|
     t.integer "crm_id"
     t.string "name"
@@ -150,41 +169,6 @@ ActiveRecord::Schema.define(version: 20201111023357) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["crm_id"], name: "index_images_on_crm_id"
-  end
-
-  create_table "knowledges", force: :cascade do |t|
-    t.string "title"
-    t.string "select"
-    t.string "name"
-    t.string "answer"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "mailers", force: :cascade do |t|
-    t.integer "customers_id"
-    t.string "title"
-    t.string "body"
-    t.string "select"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["customers_id"], name: "index_mailers_on_customers_id"
-  end
-
-  create_table "progresses", force: :cascade do |t|
-    t.integer "crm_id"
-    t.string "statu"
-    t.string "price"
-    t.string "number"
-    t.string "history"
-    t.string "area"
-    t.string "target"
-    t.string "next"
-    t.string "content"
-    t.string "comment"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["crm_id"], name: "index_progresses_on_crm_id"
   end
 
   create_table "smartphone_logs", force: :cascade do |t|

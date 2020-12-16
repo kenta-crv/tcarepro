@@ -58,6 +58,7 @@ class CallsController < ApplicationController
  	def call_params
  		params.require(:call).permit(
  		:statu, #ステータス
+    :sfa_statu,
  		:time, #再コール
  		:comment, #コメント
     :tel,

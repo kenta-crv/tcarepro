@@ -1,0 +1,92 @@
+doctype html
+html
+  head
+      = render template: 'layouts/_header.html.slim'
+
+  header
+      .row
+        .col-xs-3
+           = link_to "/"
+            =image_tag "rogo.png", width: "100%", class:"header-image"
+        h1.col-xs-8.center
+          .white
+            br
+            | リストマーケティングで成果を出すなら
+                .navToggle
+                  span
+                  span
+                  span
+                  span menu
+      .row.navi
+        ul#dropmenu
+          - if admin_signed_in?
+           li
+             = link_to  'トップページ', '/' , class: "col-md"
+           li
+             = link_to  'CTI', customers_path
+           li
+             = link_to  'SFA', crms_path
+           li
+             = link_to  'ファイル', '/uploader/index'
+           li
+             = link_to "マイページ", admin_path(current_admin)
+           li
+             = link_to "ログアウト", destroy_admin_session_path, method: :delete
+           li
+             button.btn.btn-danger.btn-md[data-toggle="modal" data-target="#createTicket"]
+               |  検索する
+          - elsif user_signed_in?
+            li
+              = link_to  'トップページ', '/' , class: "col-md"
+            li
+             = link_to  'CTI', customers_path
+             |  　　　
+             strong
+               - current_user.email
+            li
+              = link_to "マイページ", user_path(current_user)
+            li
+              = link_to "ログアウト", destroy_user_session_path, method: :delete　
+            li
+              button.btn.btn-danger.btn-md.top-space[data-toggle="modal" data-target="#createTicket"]
+                |  検索する　
+          - else
+             = link_to "ログイン", new_user_session_path
+
+        nav.globalMenuSp
+          ul
+           - if admin_signed_in?
+            li
+              = link_to  'トップページ', '/' , class: "col-md"
+            li
+              = link_to  'CTI', customers_path
+            li
+              = link_to  'SFA', crms_path
+            li
+              = link_to  'ファイル', '/uploader/index'
+            li
+              = link_to "マイページ", admin_path(current_admin)
+            li
+              = link_to "ログアウト", destroy_admin_session_path, method: :delete
+           - elsif user_signed_in?
+             li
+               = link_to  'トップページ', '/' , class: "col-md"
+             li
+              = link_to  'CTI', customers_path
+              |  　　　
+              strong
+                - current_user.email
+             li
+               = link_to "マイページ", user_path(current_user)
+             li
+               = link_to "ログアウト", destroy_user_session_path, method: :delete　　
+           - else
+              = link_to "ログイン", new_user_session_path
+
+  body
+    p.notice
+      = notice
+    p.alert
+      = alert
+    main
+      = yield

@@ -27,6 +27,7 @@ class CustomersController < ApplicationController
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
     end
+    @all = @customers.all
   end
 
 
@@ -173,12 +174,18 @@ class CustomersController < ApplicationController
    CustomerMailer.send_email(@customer).deliver
  end
 
+ def sfa
+   @q = Customer.ransack(params[:q])
+   @customers = @q.result
+   @customers = Customer.where(choice: "SFA").page(params[:page]).per(20)
+ end
+
   private
     def customer_params
       params.require(:customer).permit(
         :company, #会社名
         :store, #店舗名  #
-        :first_name, #代表者
+        :first_name, #担当者
         :last_name, #名前
         :first_kana, #ミョウジ
         :last_kana, #ナマエ
@@ -193,21 +200,24 @@ class CustomersController < ApplicationController
         :postnumber, #郵便番号
         :address, #住所
         :caption, #資本金
-        :remarks, #備考
         :status, #ステータス
-        :memo_1, #ステータス
-        :memo_2, #ステータス
-        :memo_3, #ステータス
-        :memo_4, #ステータス
-        :choice, #会社分類
-        :old_date, #インポート前コール日
         :title, #取得タイトル
-        :old_statu, #古いステータス
         :other, #その他
         :url_2, #url2
-        :extraction_date, #抽出日
-        :occupation,
-        :customer_tel
+        :customer_tel,
+        :choice,
+
+        :inflow, #流入元
+        :business, #事業内容
+        :history, #過去アポ利用履歴
+        :area, #ターゲットエリア
+        :target, #対象者
+        :meeting, #商談方法
+        :experience, #経験則
+        :price, #単価
+        :number, #件数
+        :start, #開始時期
+        :remarks #備考
        )
     end
 

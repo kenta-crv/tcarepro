@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   end
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'analytics' => 'customers#analytics'
+  get 'sfa' => 'customers#sfa'
   delete :customers, to: 'customers#destroy_all'
 
   resources :uploader, only: [:edit, :update, :destroy]

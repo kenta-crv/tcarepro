@@ -54,6 +54,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
+gem 'bootstrap', '~> 4.1.1'
 gem 'jquery-rails'
 
 gem 'devise'
@@ -66,6 +67,8 @@ gem 'redis'
 gem 'redis-rails'
 gem 'pry-rails'
 
+gem 'bootstrap-sass'
+
 gem 'carrierwave'
 
 #add by takigawa
@@ -76,7 +79,6 @@ gem 'kaminari'
 #gem 'will_paginate'
 
 gem 'ransack'
-gem 'bootstrap'
 gem 'haml-rails'
 
 
@@ -91,3 +93,7 @@ gem 'select2-rails'
 
 # cron
 gem 'whenever', require: false
+
+gem 'mini_racer'
+
+gem 'dropzonejs-rails', '~> 0.7.3'

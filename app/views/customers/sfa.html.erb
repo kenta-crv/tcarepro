@@ -1,36 +1,36 @@
-<div  class="heading"><h2>コールリスト</h2></div>
+<div  class="heading"><h2>SFA List</h2></div>
 <%= form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do %>
 
           <table width ="90%">
+                   <col width="8%">
                    <col width="10%">
+                   <col width="5%">
+                   <col width="7%">
                    <col width="15%">
                    <col width="10%">
                    <col width="15%">
-                   <col width="10%">
-                   <col width="15%">
-                   <col width="15%">
-                   <col width="10%">
+                   <col width="8%">
               <thead>
                 <tr>
                   <th><%= submit_tag '一括削除' %></th>
                   <th>会社名</th>
+                  <th>担当者</th>
                   <th>電話番号</th>
-                  <th>住所</th>
+                  <th>メールアドレス</th>
                   <th>ステータス</th>
                   <th><%= sort_link(@q, :created_at) %></th>
-                  <th>アップデート日</th>
                   <th>編集/削除</th>
                 </tr>
               </thead>
-    <% @customers.each_with_index do |customer, index| %>
+    <% @customers.each do |customer| %>
                 <tr>
                   <td><%= check_box_tag "deletes[#{customer.id}]", customer.id %></td>
                   <td><%= link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!) %></td>
+                  <td><%= customer.first_name %></td>
                   <td><%= customer.tel %></td>
-                  <td><%= customer.address %></td>
+                  <td><%= customer.mail %></td>
                   <td><%= customer.last_call.try(:statu) %></td>
                   <td><%= customer.last_call.try(:created_at) %></td>
-                  <td><%= customer.updated_at.strftime("%Y年%m月%d日 %H時%M分") %></td>
                   <td><%= link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'%>
                       <%= link_to '削除',
                        customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!),
