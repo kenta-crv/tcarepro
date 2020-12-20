@@ -45,7 +45,11 @@ Rails.application.routes.draw do
       get :message
       get :bulk_destroy
     end
+    resources :estimates, except: [:index]
   end
+
+  resources :estimates, only: [:index]
+
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'analytics' => 'customers#analytics'
   get 'sfa' => 'customers#sfa'

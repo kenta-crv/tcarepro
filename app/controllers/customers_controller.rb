@@ -17,6 +17,7 @@ class CustomersController < ApplicationController
     end
     #@q = Customer.ransack(params[:q]) or @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
+    #@q = User.ransack(params[:q])
     @customers = @q.result || @q.result.includes(:last_call)
     #@q = Customer.ransack(params[:last_call])
     #@customers = @q.result  @q.result.includes(:last_call)

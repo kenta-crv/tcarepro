@@ -1,0 +1,153 @@
+.beige-wrapper
+  .heading
+    h2
+      | 請求書詳細
+    p
+      | estimate Detail
+  table
+    tbody
+      tr
+        th
+          | 会社名
+        td
+          =@estimate.company.company
+        th
+          | 代表者名
+        td
+          =@estimate.company.first_name
+      tr
+        th
+          | 郵便番号
+        td
+          =@estimate.company.postnumber
+        th
+          | 住所
+        td
+          =@estimate.company.address
+      tr
+        th
+          | 市町村移行
+        td
+          =@estimate.company.town
+        th
+          | 電話番号
+        td
+          =@estimate.company.tel
+  table
+    tbody
+      tr
+        th
+          | ステータス
+        td
+          =@estimate.status
+        th
+          | 期限
+        td
+          = @estimate.deadline
+      tr
+        th
+          | 入金日
+        td
+          = @estimate.payment
+        th
+          | 件名
+        td
+          = @estimate.subject
+  table
+    tbody
+      tr
+        th
+          | 商品名
+        th
+          | 販売価格
+        th
+          | 数量
+        th
+          | 合計
+      tr
+        td
+          = @estimate.item1
+        td
+          = @estimate.price1
+        |  　
+        td
+          = @estimate.quantity1
+        td
+          =@estimate.calc1
+        |  　
+      tr
+        td
+          = @estimate.item2
+        td
+          = @estimate.price2
+        |  　
+        td
+          = @estimate.quantity2
+        td
+          =@estimate.calc2
+        |  　
+      tr
+        td
+          = @estimate.item3
+        td
+          = @estimate.price3
+        |  　
+        td
+          = @estimate.quantity3
+        td
+          =@estimate.calc3
+        |  　
+      tr
+        td
+          = @estimate.item4
+        td
+          = @estimate.price4
+        |  　
+        td
+          = @estimate.quantity4
+        td
+          =@estimate.calc4
+        |  　
+      tr
+        td
+          = @estimate.item5
+        td
+          = @estimate.price5
+        |  　
+        td
+          = @estimate.quantity5
+        td
+          =@estimate.calc5
+        |  　
+      tr
+        td
+          = @estimate.item5
+        td
+          = @estimate.price5
+        |  　
+        td
+          = @estimate.quantity5
+        td
+          =@estimate.calc5
+        |  　
+      tr
+        td[colspan="2"]
+        th
+          | 小計
+        td
+          =@estimate.summary
+        |  　
+      tr
+        td[colspan="2"]
+        th
+          | 消費税
+        td
+          =@estimate.tax
+        |  　
+      tr
+        td[colspan="2"]
+        th
+          | 合計
+        td
+          =@estimate.total
+        |  　

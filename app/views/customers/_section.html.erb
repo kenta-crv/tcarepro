@@ -83,6 +83,8 @@
      <td><%=@customer.number %> </td>
      <th>開始時期</th>
      <td><%=@customer.start %></td>
+     <th>見積書/請求書</th>
+     <td><%= link_to "新規見積書発行", new_customer_estimate_path(@customer, @estimate)  %></td>
    </tr>
 	</tbody>
 </table>

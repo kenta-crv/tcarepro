@@ -1,0 +1,44 @@
+.beige-wrapper
+  .heading
+    h2
+      | 請求書一覧
+    p
+      | estimate List
+      = link_to '(New regstration)', '/estimates/new'
+  table[width="90%"]
+    tbody
+      tr
+        th
+          | 会社名
+        th
+          | 代表者
+        th
+          | ステータス
+        th
+          | 発行日
+        th
+          | 入金日
+        th
+          | 請求額
+        th
+          | 編集/削除
+        |  　
+      tr
+        - @estimates.each do |estimate|
+          td
+            = link_to estimate.company.company, estimate_path(estimate)
+          td
+            = link_to estimate.company.first_name, estimate_path(estimate)
+          td
+            = estimate.status
+          td
+            = estimate.created_at
+          td
+            = estimate.payment
+          td
+          td
+            = link_to '編集', edit_estimate_path(estimate), class: 'command'
+            |  ｜
+            = link_to '削除',estimate_path(estimate),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}\
+            |  ｜
+            = link_to 'pdf', report_estimate_path(estimate, format: 'pdf')

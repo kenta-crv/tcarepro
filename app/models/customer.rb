@@ -1,6 +1,7 @@
 class Customer < ApplicationRecord
   #belongs_to :admin
   belongs_to :user, optional: true
+  has_many :estimates
   has_many :calls#, foreign_key: :tel, primary_key: :tel
   #has_many :mailers
   has_one :last_call, ->{
