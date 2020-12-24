@@ -1,38 +1,11 @@
-= form_for :estimate, url: 'estimates/create' do |f|
+= form_for [@customer, @estimate] do |f|
   table[width="90%"]
 	 tbody
 	  col[width="20%"]
 	  col[width="30%"]
 	  col[width="20%"]
 	  col[width="30%"]
-      tr
-        th
-          | 会社名
-        td
-          =@estimate.customer.company
-        th
-          | 代表者名
-        td
-          =@estimate.customer.first_name
-					=@estimate.customer.last_name
-      tr
-        th
-          | 郵便番号
-        td
-          =@estimate.customer.postnumber
-        th
-          | 住所
-        td
-          =@estimate.customer.address
-      tr
-        th
-          | 電話番号
-        td
-          =@estimate.customer.tel
-        th
-          | メールアドレス
-        td
-          =@estimate.customer.mail
+
       tr
         th
           | ステータス

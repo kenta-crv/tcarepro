@@ -3,6 +3,7 @@ class EstimatesController < ApplicationController
 
   def index
 		@estimates = Estimate.all
+    @customers = Customer.all
 	end
 
 	def show
@@ -15,8 +16,8 @@ class EstimatesController < ApplicationController
   end
 
 	def create
-    #@customer = Customer.find_by(customer_id: params[:customer_id])
-    @estimate = @customer.estimates.find(params[:id])
+    @customer = Customer.find_by(customer_id: params[:customer_id])
+    @estimate = Estimate.new
     if  @estimate.save
         redirect_to estimates_path
     else

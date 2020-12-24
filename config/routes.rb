@@ -13,15 +13,24 @@ Rails.application.routes.draw do
   get '/tool' => 'top#tool' #各種ツール紹介
   get '/document' => 'top#document' #各種ツール紹介
 
-  #ログイン切り替え
+  #管理者アカウント
   devise_for :admins, controllers: {
     registrations: 'admins/registrations'
   }
   resources :admins, only: [:show]
+  #ユーザーアカウント
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
   resources :users, only: [:show]
+  #ワーカーアカウント
+  devise_for :workers, controllers: {
+    registrations: 'workers/registrations',
+    sessions: 'workers/sessions',
+    confirmations: 'workers/confirmations',
+    passwords: 'workers/passwords',
+  }
+  resources :workers, only: [:show]
 
   resources :crms do
     collection do

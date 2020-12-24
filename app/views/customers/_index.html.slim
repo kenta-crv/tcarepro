@@ -1,28 +1,23 @@
 .tops-wrapper
  h2.headline
     | コールリスト
- .center.btn.btn-danger
-  = @customers.current_page * 30 - 29
-  | ~
-  = @customers.current_page * 30
-  | 件/
-  = @customers.page(1).per(30).total_pages * 30
-  | 件中
+    | (
+    = @customers.current_page * 30 - 29
+    | ~
+    = @customers.current_page * 30
+    | 件/
+    = @customers.page(1).per(30).total_pages * 30
+    | 件中
+    | )
 
 = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
-  table[width="90%"]
-    col[width="10%"]
-    col[width="15%"]
-    col[width="10%"]
-    col[width="15%"]
-    col[width="10%"]
-    col[width="15%"]
-    col[width="15%"]
-    col[width="10%"]
+ .scroll
+  table[width="90%" cellpadding="0" cellspacing="0"]
+
     thead
       tr
         th
-          = submit_tag '削除', class:"btn btn-danger"
+          = submit_tag '削除'
         th
           | 会社名
         th

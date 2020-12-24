@@ -29,3 +29,9 @@
 */
 
 let textarea = document.getElementById('test');
+
+
+
+$(document).ready(function() {
+  $('.drawer').drawer();
+});

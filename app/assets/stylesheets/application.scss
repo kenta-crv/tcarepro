@@ -17,8 +17,8 @@
 /*ベース情報*/
 @import "bootstrap";
 
-$main_color:#821927;
-$sub_color:#8D3C4C;
+$main_color:#1D9186;
+$sub_color:#3B7972;
 $gray_color:#e6ecf0;
 
 * {box-sizing: border-box;}
@@ -33,6 +33,7 @@ body {
 
 main{
   margin-top:-70px;
+  padding-left:50px;
   margin-bottom:30px;
 }
 
@@ -78,7 +79,7 @@ background: $main_color;
 }
 #dropmenu li{
 position: relative;
-width: 14.0%;
+width: 16%;
 font-size:14px;
 float: left;
 text-align: center;
@@ -105,17 +106,27 @@ text-decoration: none;
 .command {font-size: 10px;}
 
 
+.space {
+  border: 8px white solid;
+  /*ベージュ*/
+  border-collapse: collapse;
+  border-collapse: separate;
+  tr:nth-child(odd) td {
+    background: #fff;
+  }
+}
 
 /*テーブル共通*/
 
 table, td, th {
-  border: 8px white solid;
-  /*ベージュ*/
-  border-collapse: collapse;
   text-align: center;
   font-weight: normal;
   margin-left: auto;
   margin-right: auto;
+
+  tr:nth-child(odd) td {
+  	background: #fff;
+  }
 
   caption {
     font-weight: bold;
@@ -125,7 +136,8 @@ table, td, th {
   td, th {
     padding: 10px;
     height: 15px;
-    font-size: 12px;
+    font-size: 11px;
+
     }
 
   th {
@@ -735,4 +747,51 @@ nav.globalMenuSp.active {
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+
+
+
+#sidebar {
+    font-size: 15px;
+    padding: 15px 0;
+    margin-top:-60px;
+    width: 50px;
+    height: 100%;
+    position: fixed;
+    color: #fff;
+    background: black;
+    text-align: center;
+}
+
+#global-nav .sub-menu-nav {
+
+    position: fixed;
+    background: $sub_color;
+    text-shadow: 1px 1px 1px #fff;
+    font-weight:bold;
+    top: 0;
+    padding-top: 130px;
+    left: 50px;
+    width: 0;
+    height: 100%;
+    overflow: hidden;
+    transition: width .2s ease-out;
+}
+#global-nav .sub-menu:hover .sub-menu-nav {
+    width: 150px;
+}
+.sub-menu{
+  padding-bottom:17px;
+  padding-left:5px;
+}
+
+
+.scroll {
+  overflow: scroll;
+}
+
+
+.right{
+  margin-top:20px;
 }

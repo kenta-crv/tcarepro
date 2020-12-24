@@ -1,0 +1,72 @@
+= form_for(@contact, url: { action: :confirm }) do |f|
+  - if @contact.errors.any?
+    strong 入力内容にエラーがあります
+    ul
+      - @contact.errors.each do |attr, msg|
+        li= msg
+
+  =image_tag 'contact.gif', width: '100%'
+
+  .tops-wrapper
+    h1.headline-first
+      span> お問い合わせ
+      | フォーム
+    br
+    table.company
+      colgroup
+        col width="10%"
+        col width="20%"
+        col width="70%"
+        tr
+          td
+            strong.label 必須
+          td.arrow_box
+            | 会社名
+          td = f.text_field :company
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 担当者名
+        td = f.text_field :name
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 電話番号
+        td = f.text_field :tel
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | メールアドレス
+        td = f.email_field :email
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 住所
+        td = f.text_field :address
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 件名
+        td = f.select(:subject, [ \
+            ["選択する","選択する"],      \
+            ["テレマーケティング代行のご依頼","テレマーケティング代行のご依頼"],      \
+            ["テストマーケティングのご依頼","テストマーケティングのご依頼"],      \
+            ["HP制作・LPページ制作のご依頼","HP制作・LPページ制作のご依頼"],      \
+            ["Webアプリケーション開発のご依頼","Webアプリケーション開発のご依頼"],      \
+            ["その他","その他"]      \
+            ])
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 件名
+        td
+          = f.text_area :message
+      tr
+        td colspan="3"
+          = f.submit "確認"

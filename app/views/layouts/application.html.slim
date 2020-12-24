@@ -7,86 +7,59 @@ html
       .row
         .col-xs-3
            = link_to "/"
-            =image_tag "rogo.png", width: "100%", class:"header-image"
-        h1.col-xs-8.center
-          .white
-            br
-            | リストマーケティングで成果を出すなら
-                .navToggle
+            =image_tag "rogo2.png", width: "70%", class:"header-image"
+        h1.col-xs-6
+         .white
+           br
+           | リストマーケティングで成果を出すなら
+        .col-xs-2.right
+          -if @customers
+              li
+                button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createTicket"]
+                 |  検索する
+        .col-xs-1
+            .navToggle
                   span
                   span
                   span
                   span menu
+
+
       .row.navi
         ul#dropmenu
-          - if admin_signed_in?
-           li
-             = link_to  'トップページ', '/' , class: "col-md"
-           li
-             = link_to  'CTI', customers_path
-           li
-             = link_to  'SFA', sfa_path
-           li
-             = link_to  'ファイル', '/uploader/index'
-           li
-             = link_to "マイページ", admin_path(current_admin)
-           li
-             = link_to "ログアウト", destroy_admin_session_path, method: :delete
-           li
-             button.btn.btn-danger.btn-md[data-toggle="modal" data-target="#createTicket"]
-               |  検索する
-          - elsif user_signed_in?
-            li
-              = link_to  'トップページ', '/' , class: "col-md"
-            li
-             = link_to  'CTI', customers_path
-             |  　　　
-             strong
-               - current_user.email
-            li
-              = link_to "マイページ", user_path(current_user)
-            li
-              = link_to "ログアウト", destroy_user_session_path, method: :delete　
-            li
-              button.btn.btn-danger.btn-md.top-space[data-toggle="modal" data-target="#createTicket"]
-                |  検索する　
-          - else
-             = link_to "ログイン", new_user_session_path
+          li
+            = link_to  'トップページ', '/' , class: "col-md"
+          li
+            = link_to  '企業情報', "#"
+          li
+            = link_to  '記事一覧', "#"
+          li
+            = link_to  'TCAREの魅力', "#"
+          li
+            = link_to  '会社概要', "#"
+          li
+            = link_to  '問い合わせ', "#"
 
-        nav.globalMenuSp
+      nav.globalMenuSp
           ul
-           - if admin_signed_in?
             li
               = link_to  'トップページ', '/' , class: "col-md"
             li
-              = link_to  'CTI', customers_path
+              = link_to  '事業内容', "#"
             li
-              = link_to  'SFA', crms_path
+              = link_to  '記事一覧', "#"
             li
-              = link_to  'ファイル', '/uploader/index'
+              = link_to  'TCAREの魅力', "#"
             li
-              = link_to "マイページ", admin_path(current_admin)
+              = link_to  '会社概要', "#"
             li
-              = link_to "ログアウト", destroy_admin_session_path, method: :delete
-           - elsif user_signed_in?
-             li
-               = link_to  'トップページ', '/' , class: "col-md"
-             li
-              = link_to  'CTI', customers_path
-              |  　　　
-              strong
-                - current_user.email
-             li
-               = link_to "マイページ", user_path(current_user)
-             li
-               = link_to "ログアウト", destroy_user_session_path, method: :delete　　
-           - else
-              = link_to "ログイン", new_user_session_path
+              = link_to  '問い合わせ', "#"
 
   body
     p.notice
       = notice
     p.alert
       = alert
+    = render template: 'layouts/_sidenavi.html.slim'
     main
       = yield

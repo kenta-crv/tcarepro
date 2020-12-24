@@ -1,7 +1,10 @@
+<br>
+<br>
+<br>
 <% if @customer.choice == "SFA" %>
  <%= render "section" %>
 <% else %>
-<table class="header-table">
+<table class="header-table space">
   <tr>
     <th rowspan="2">
       <% if @prev_customer&.id %>
@@ -39,7 +42,7 @@
 
 <div class="show-top">
 <div class="two_column">
-<table width="100%">
+<table width="100%" class="space">
 		<col width="25%">
 		<col width="25%">
 		<col width="25%">
@@ -85,7 +88,7 @@
 </div>
 
 <div class="two_column">
-<table width="100%">
+<table width="100%" class="space">
 		<col width="20%">
 		<col width="30%">
 		<col width="20%">
@@ -130,7 +133,7 @@
 </div>
 <%end%>
 
-<table width="100%">
+<table width="100%" class="space">
 		<col width="15%">
 		<col width="10%">
 		<col width="15%">
