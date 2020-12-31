@@ -1,13 +1,11 @@
 br
-  =image_tag 'contact.gif', width: '100%'
 
 
 = form_for(@contact, url: { action: :thanks }) do |f|
   .tops-wrapper
-    h2.heading
-      span> お問い合わせ内容確認
-      | フォーム
-    table.company
+    h2.headline
+      | お問い合わせ内容確認
+    table[width="90%"]
       colgroup
         col width="10%" /
         col width="20%" /
@@ -70,4 +68,4 @@ br
           = @contact.message
       tr
         td colspan="3"
-          = f.submit "送信"
+          = f.submit "確認"

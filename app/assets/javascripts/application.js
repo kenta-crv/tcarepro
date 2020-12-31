@@ -31,7 +31,24 @@
 let textarea = document.getElementById('test');
 
 
-
 $(document).ready(function() {
   $('.drawer').drawer();
 });
+
+
+Dropzone.autoDiscover = false
+
+new Dropzone '#upload-dropzone',
+  uploadMultiple: false
+  paramName: 'uploader[file]'
+  params:
+    'uploader[document_id]': 123
+  init: ->
+    @on 'success', (file, json) ->
+      # アップロード成功時の処理をここに実装します。
+  dictDefaultMessage: '''
+    <i class="fa fa-file-o fa-2x"></i><br>
+    <br>
+    ファイルをここにドロップするか<br>
+    ここをクリックして下さい
+  '''

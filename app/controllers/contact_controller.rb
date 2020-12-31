@@ -1,5 +1,4 @@
 class ContactController < ApplicationController
-  layout 'riplus'
   def index
     @contact = Contact.new
     render :action => 'index'
@@ -8,7 +7,7 @@ class ContactController < ApplicationController
   def confirm
     @contact = Contact.new(contact_params)
     if @contact.valid?
-      render :action => 'confirm'
+      render :action =>  'confirm'
     else
       render :action => 'index'
     end
@@ -16,13 +15,21 @@ class ContactController < ApplicationController
 
   def thanks
     @contact = Contact.new(contact_params)
+    @contact.save
     ContactMailer.received_email(@contact).deliver
-
-    render :action => 'thanks'
+    ContactMailer.send_email(@contact).deliver
   end
 
-    private
-   def contact_params
-    params.require(:contact).permit(:name, :email, :message)
+  private
+  def contact_params
+    params.require(:contact).permit(
+    :company,
+    :name,
+    :tel,
+    :address,
+    :email,
+    :subject,
+    :message
+    )
   end
 end

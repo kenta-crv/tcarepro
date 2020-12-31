@@ -1,7 +1,9 @@
 <br>
 <br>
+<br>
+<br>
 
-<!--<table class="header-table" width="90%">
+<!--<table class="header-table space" width="90%">
   <tr>
     <th colspan="10">ステータス別結果</th>
   </tr>
@@ -48,7 +50,7 @@
 <% end %>
 </table>--!>
 
-<table class="header-table" width="90%">
+<table class="header-table space" width="90%">
   <tr>
     <th colspan="6">１日のコール状況</th>
   </tr>
@@ -89,7 +91,7 @@
 <br>
 <br>
 <br>
-<table class="header-table" width="90%">
+<table class="header-table space" width="90%">
   <tr>
     <th colspan="10">ステータス別結果</th>
   </tr>
@@ -122,7 +124,7 @@
 <br>
 <br>
 <br>
-<table class="header-table" width="90%">
+<table class="header-table space" width="90%">
   <tr>
     <th colspan="6">企業別アポ状況</th>
   </tr>
@@ -170,9 +172,9 @@
 <br>
 <br>
 <br>
-<table class="header-table" width="90%">
+<table class="header-table space" width="90%">
   <tr>
-    <th colspan="6">スタッフ別コール</th>
+    <th colspan="7">スタッフ別コール</th>
   </tr>
   <tr>
     <th>スタッフ名</th>
@@ -180,6 +182,7 @@
     <th>月間コール数</th>
     <th>見込数</th>
     <th>APP数</th>
+    <th>キャンセル数</th>
     <th>APP率</th>
   </tr>
   <% @users.each do |user| %>
@@ -189,6 +192,7 @@
     <td><%= user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count  %></td>
     <td><%= user.calls.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
     <td><%= user.calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
+    <td><%= user.calls.where(statu: "キャンセル").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
     <td><%= number_to_percentage(user.calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f / user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1) %></td>
   </tr>
   <%end%>
@@ -197,7 +201,7 @@
 <br>
 <br>
 <br>
-<table class="header-table" width="90%">
+<table class="header-table space" width="90%">
   <tr>
     <th colspan="6">時間別コール</th>
   </tr>
@@ -318,7 +322,7 @@
 <br>
 <br>
 <br>
-<table class="header-table" width="90%">
+<table class="header-table space" width="90%">
   <tr>
     <th colspan="11">スタッフ&シェアフル時間別コール</th>
   </tr>
@@ -347,15 +351,15 @@
 </table>
 
 <%= form_tag call_import_customers_path, multipart: true do %>
-   <table width="90%">
+   <table width="90%" class="space">
      <tbody>
         <tr>
            <th colspan="3">CALL_CSVファイルインポート</th>
         </tr>
         <tr>
            <td><%= file_field_tag :call_file %></td>
-           <th><%= submit_tag "インポート",  class: 'btn btn-danger' %></th>
-           <th><%= link_to 'エクスポート', analytics_path(format: :csv), class: 'btn btn-danger' %></th>
+           <th><%= submit_tag "インポート",  class: 'btn btn-success' %></th>
+           <th><%= link_to 'エクスポート', analytics_path(format: :csv), class: 'btn btn-success' %></th>
         </tr>
     </tbody>
    </table>

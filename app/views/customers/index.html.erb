@@ -29,7 +29,7 @@
                     <th>会社名</th>
                     <td><%= f.search_field :company_cont, type: "text" %></td>
                     <th>担当者名</th>
-                    <td><%= f.search_field :user_user_name_cont, type: "text" %></td>
+                    <td><%= f.search_field :calls_user_user_name_cont, type: "text" %></td>
                   </tr>
                   <tr>
                     <th>電話番号</th>
@@ -39,7 +39,7 @@
                   </tr>
                   <tr>
                     <th>架電回数</th>
-                    <td><%= f.search_field :calls_created_at_lt, type: "number" %></td>
+                    <td><%= f.search_field :calls_count_lt, type: "number" %></td>
                     <th>住所</th>
                     <td><%= f.search_field :address_cont, type: "text" %></td>
                   </tr>
@@ -119,7 +119,7 @@
 <div  class="heading"><h2>インポート</h2></div>
 
 <%= form_tag import_customers_path, multipart: true do %>
-   <table width="90%">
+   <table width="90%" class="space">
      <tbody>
         <tr>
            <th colspan="3">CUSTOMER_CSVファイルインポート</th>

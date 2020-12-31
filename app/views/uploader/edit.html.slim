@@ -1,0 +1,27 @@
+.tops-wrapper
+  .headline
+      | ファイル編集
+
+  =form_tag(@upload, :url => {:action => :upload}, class: 'dropzone', id: 'upload-dropzone') do
+   .fallback
+     = file_field_tag('uploader[file]')
+  - @upload = UploadFile.new
+  /= form_for @upload, :url => {:action => :upload} do |f|
+  = form_tag(uploader_upload_path, class: 'dropzone', id: 'upload-dropzone') do
+    table[width="90%"]
+      tbody
+        tr
+          th
+            | ファイル名
+          th
+            | ファイル添付
+          |  　
+        tr
+          td
+            #= file_field_tag('uploader[name]')
+          #td.fideback
+          #  = file_field_tag('uploader[file]')
+
+        tr
+          td[colspan="2"]
+            = submit_tag "アップロード"

@@ -5,14 +5,12 @@
       - @contact.errors.each do |attr, msg|
         li= msg
 
-  =image_tag 'contact.gif', width: '100%'
 
   .tops-wrapper
-    h1.headline-first
-      span> お問い合わせ
-      | フォーム
+    h2.headline
+      | お問い合わせフォーム
     br
-    table.company
+    table[width="90%"]
       colgroup
         col width="10%"
         col width="20%"
@@ -54,10 +52,9 @@
           | 件名
         td = f.select(:subject, [ \
             ["選択する","選択する"],      \
-            ["テレマーケティング代行のご依頼","テレマーケティング代行のご依頼"],      \
-            ["テストマーケティングのご依頼","テストマーケティングのご依頼"],      \
-            ["HP制作・LPページ制作のご依頼","HP制作・LPページ制作のご依頼"],      \
-            ["Webアプリケーション開発のご依頼","Webアプリケーション開発のご依頼"],      \
+            ["弁護士参画のお問い合わせ","弁護士参画のお問い合わせ"],      \
+            ["メディアのご連絡","メディアのご連絡"],      \
+            ["サイトに関して","サイトに関して"],      \
             ["その他","その他"]      \
             ])
       tr

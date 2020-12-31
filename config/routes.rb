@@ -1,17 +1,21 @@
 Rails.application.routes.draw do
 
   root to: 'top#index'
+  get 'usp' => 'top#usp'
+  get 'question' => 'top#question'
+  get 'company' => 'top#company'
 
-  get '/format' => 'top#format' #アポフォーマット
-  get '/faq' => 'top#faq' #よくある質問
-  get '/outsourcing' => 'top#outsourcing'
+  get 'manuals' => 'manuals#index'
+  get 'manuals/format' => 'manuals#format' #アポフォーマット
+  get 'manuals/faq' => 'manuals#faq' #よくある質問
+  get 'manuals/outsourcing' => 'manuals#outsourcing'
 
-  get '/homework' => 'top#homework' #２回目の出勤について
-  get '/second' => 'top#second' #２回目の出勤について
-  get '/first' => 'top#first' #１回目の出勤について
-  get '/script' => 'top#script' #トークスクリプト
-  get '/tool' => 'top#tool' #各種ツール紹介
-  get '/document' => 'top#document' #各種ツール紹介
+  get 'manuals/homework' => 'manuals#homework' #２回目の出勤について
+  get 'manuals/second' => 'manuals#second' #２回目の出勤について
+  get 'manuals/first' => 'manuals#first' #１回目の出勤について
+  get 'manuals/script' => 'manuals#script' #トークスクリプト
+  get 'manuals/tool' => 'manuals#tool' #各種ツール紹介
+  get 'manuals/document' => 'manuals#document' #各種ツール紹介
 
   #管理者アカウント
   devise_for :admins, controllers: {
@@ -32,18 +36,10 @@ Rails.application.routes.draw do
   }
   resources :workers, only: [:show]
 
-  resources :crms do
-    collection do
-      post :import
-      get :message
-    end
-    resources :comments
-    resources :images
-     member do
-      get 'images/view'
-      get 'images/download/:id' => 'images#download', as: :images_pdf
-     end
-  end
+  resources :matters
+  resources :posts
+  resources :estimates, only: [:index]
+
 
   resources :customers do
     resources :calls
@@ -57,20 +53,24 @@ Rails.application.routes.draw do
     resources :estimates, except: [:index]
   end
 
-  resources :estimates, only: [:index]
 
   get 'customers/:id/:is_auto_call' => 'customers#show'
-  get 'analytics' => 'customers#analytics'
-  get 'sfa' => 'customers#sfa'
+  get 'analytics' => 'customers#analytics' #分析
+  get 'sfa' => 'customers#sfa' #SFA
+  #TCARE
+  get 'list' => 'customers#list'
+  #Mailer
+  get 'mail' => 'customers#mail'
   delete :customers, to: 'customers#destroy_all'
 
+  #ファイルアップロード
   resources :uploader, only: [:edit, :update, :destroy]
   get 'uploader/index'
-  #get 'uploader/form'
   post 'uploader/upload'
   get 'uploader/view'
   get 'uploader/download/:id' => 'uploader#download' ,as: :donwload_pdf
 
+  #お問い合わせフォーム
   get 'contact' => 'contact#index'
   post 'contact/confirm' => 'contact#confirm'
   post 'contact/thanks' => 'contact#thanks'
@@ -83,6 +83,20 @@ Rails.application.routes.draw do
         post '/' , :action => 'create'
       end
     end
+  end
+
+  #削除予定
+  resources :crms do
+    collection do
+      post :import
+      get :message
+    end
+    resources :comments
+    resources :images
+     member do
+      get 'images/view'
+      get 'images/download/:id' => 'images#download', as: :images_pdf
+     end
   end
 
   get '*path', controller: 'application', action: 'render_404'

@@ -2,19 +2,22 @@ aside#sidebar
  nav#global-nav
   ul
     li.sub-menu
-      = link_to "#"
+      = link_to "/list"
        = image_tag "list.png", width:"40px"
         | Home
        ul.sub-menu-nav
          li
-          = link_to "TCARE","#"
+          = link_to "TCARE","/list"
+         br
+         li
+          = link_to "Matter","/matters"
     li.sub-menu
-      = link_to "#"
+      = link_to "/mail"
        = image_tag "mail.png", width:"40px"
         | Home
        ul.sub-menu-nav
          li
-          = link_to "Task Mailer","#"
+          = link_to "Task Mailer","/mail"
     li.sub-menu
       = link_to "/customers"
        = image_tag "cti.png", width:"40px"
@@ -22,6 +25,9 @@ aside#sidebar
        ul.sub-menu-nav
          li
           = link_to "Mobile CTI","/customers"
+         br
+         li
+          = link_to "マニュアル",manuals_path
     li.sub-menu
       = link_to "#"
        = image_tag "ma.png", width:"40px"
@@ -35,7 +41,7 @@ aside#sidebar
         | Home
        ul.sub-menu-nav
          li
-          = link_to "SFAシステム","/sfa"
+          = link_to "SFA","/sfa"
     li.sub-menu
       = link_to "/estimates"
        = image_tag "estimate.png", width:"40px"

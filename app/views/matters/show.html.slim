@@ -1,0 +1,33 @@
+- noindex
+
+.tops-wrapper
+  .headline
+    | 案件一覧
+  = form_for @matter do |f|
+
+   table[width="90%"]
+     tbody
+      tr
+        th.arrow_box タイトル
+      tr
+        td.center = @matter.title
+      tr
+        th.arrow_box 抽出対象
+      tr
+        td.center  = @matter.possible
+      tr
+        th.arrow_box 抽出不可
+      tr
+        td.center  = @matter.impossible
+      tr
+        th.arrow_box 詳細
+      tr
+        td.center = @matter.description
+      tr
+        th.arrow_box 送信情報
+      tr
+        td.center = @matter.information
+      tr
+        th.arrow_box 注意
+      tr
+        td.center = @matter.attention

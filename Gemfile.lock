@@ -152,6 +152,8 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
+    meta-tags (2.13.0)
+      actionpack (>= 3.2.0, < 6.1)
     method_source (0.9.2)
     mimemagic (0.3.3)
     mini_magick (4.9.5)
@@ -339,6 +341,7 @@ DEPENDENCIES
   jquery-rails
   kaminari
   listen (>= 3.0.5, < 3.2)
+  meta-tags
   mini_racer
   pry-rails
   puma (~> 3.12)

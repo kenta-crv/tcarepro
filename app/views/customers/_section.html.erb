@@ -3,7 +3,7 @@
   <tr>
     <th>
       <% if @prev_customer&.id %>
-        <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-danger" %>
+        <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-success" %>
       <% end %>
     </th>
     <th>コール<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
@@ -17,7 +17,7 @@
     <th>
 
       <% if @next_customer&.id %>
-        <%= link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-danger" %>
+        <%= link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-success" %>
       <% end %>
     </th>
   </tr>
@@ -81,19 +81,22 @@
      <td><%=@customer.number %> </td>
      <th>開始時期</th>
      <td><%=@customer.start %></td>
+     <th>メール送信</th>
+     <td><%= link_to "メール画面", "#"  %></td>
+   </tr>
+   <tr>
      <th>見積書/請求書</th>
      <td><%= link_to "新規見積書発行", new_customer_estimate_path(@customer, @estimate)  %></td>
+     <th>オンライン契約</th>
+     <td><%=link_to "契約締結", "https://contract.infomart.co.jp/contract/edit/input.page?66" %></td>
+     <th>Paid</th>
+     <td><%=link_to "審査", "https://paid.jp/v/do/login" %></td>
+     <th>slack</th>
+     <td><%=link_to "招待", "https://slack.com/ssb/get-started?ssb_vid=.2ubu5jegnwo1yv1vjetixdbzh#/create" %></td>
    </tr>
-	</tbody>
-</table>
-
-<table width="100%" class="space">
-  <col width="10%">
-  <col width="90%">
-	<tbody>
    <tr>
     <th>備考</th>
-    <td><%= @customer.remarks %></td>
+    <td colspan ="7"><%= @customer.remarks %></td>
    </tr>
   </tbody>
 </table>

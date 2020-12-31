@@ -1,7 +1,12 @@
-Webサイトからお問い合わせがありました。
+TCAREのお問い合わせがありました。
 
 --------------------------
-名前: <%= @contact.name %>
+会社名: <%= @contact.company %>
+お名前: <%= @contact.name %>
+電話番号: <%= @contact.tel %>
 メールアドレス: <%= @contact.email %>
-お問い合わせ内容:<%= @contact.message %>
+住所: <%= @contact.address %>
+件名: <%= @contact.subject %>
+本文:
+	<%= @contact.message %>
 --------------------------

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201223051334) do
+ActiveRecord::Schema.define(version: 20201224133220) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -51,6 +51,13 @@ ActiveRecord::Schema.define(version: 20201223051334) do
   end
 
   create_table "contacts", force: :cascade do |t|
+    t.string "company"
+    t.string "name"
+    t.string "tel"
+    t.string "address"
+    t.string "email"
+    t.string "subject"
+    t.string "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -171,6 +178,37 @@ ActiveRecord::Schema.define(version: 20201223051334) do
     t.index ["crm_id"], name: "index_images_on_crm_id"
   end
 
+  create_table "imformations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "matters", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.string "possible"
+    t.string "impossible"
+    t.string "information"
+    t.string "attention"
+    t.integer "admin_id"
+    t.integer "member_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_id"], name: "index_matters_on_admin_id"
+    t.index ["member_id"], name: "index_matters_on_member_id"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.string "title"
+    t.string "file"
+    t.string "choice"
+    t.string "keyword"
+    t.string "description"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "smartphone_logs", force: :cascade do |t|
     t.string "token", null: false
     t.string "log_data", null: false
@@ -217,6 +255,7 @@ ActiveRecord::Schema.define(version: 20201223051334) do
 
   create_table "workers", force: :cascade do |t|
     t.string "user_name", default: "", null: false
+    t.string "select", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"

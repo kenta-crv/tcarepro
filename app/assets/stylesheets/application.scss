@@ -10,6 +10,7 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+ *= require dropzone/basic
  *= require dropzone/dropzone
  */
 
@@ -79,7 +80,7 @@ background: $main_color;
 }
 #dropmenu li{
 position: relative;
-width: 16%;
+width: 14%;
 font-size:14px;
 float: left;
 text-align: center;
@@ -794,4 +795,49 @@ nav.globalMenuSp.active {
 
 .right{
   margin-top:20px;
+}
+
+
+/*ファイルアップロード*/
+.dropzone {
+  border: 2px dashed #b4bcc2;
+  @include border-radius(4px);
+
+  .dz-message {
+    font-size: 10px;
+    text-align: center;
+    margin: 0
+  }
+}
+.fallback {
+  padding-left:30px;
+}
+
+
+input {
+    width:90%;
+    border-radius:3px;
+    box-shadow: none;
+    padding: 2px 8px;
+}
+textarea {
+    width:90%;
+    line-height: 1.5em;
+    border-radius:3px;
+    box-shadow: none;
+    padding: 2px 8px;
+}
+
+.label {
+  background: red;
+  color: white;
+  border-radius: 5px;
+  padding:5px;
+}
+
+.label-blue {
+  background: blue;
+  color: white;
+  border-radius: 5px;
+  padding:5px;
 }

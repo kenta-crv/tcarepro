@@ -1,0 +1,20 @@
+- noindex
+.tops-wrapper
+  .row
+    .col-sm-12
+      headline
+        | 案件一覧
+      - @matters.each do |matter|
+        .rows
+          .col-sm-7.lists_index
+            .matter-title
+              = link_to matter.title, matter_path(matter)
+              - if admin_signed_in?
+                = link_to '編集  ', edit_matter_path(matter), class: 'command'
+                = link_to '  削除',
+                 			            	matter_path(matter),
+                 			            	method: :delete,
+                 			            	class: 'command',
+                 			            	data: { confirm: '本当に削除しますか？'}
+        br
+        hr

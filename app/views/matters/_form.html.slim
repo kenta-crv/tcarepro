@@ -1,0 +1,30 @@
+= form_for @matter do |f|
+
+   table[width="90%"]
+     tbody
+      tr
+        th.arrow_box タイトル
+      tr
+        td.center = text_field :matter, :title
+      tr
+        th.arrow_box 抽出対象
+      tr
+        td.center  = f.text_area :possible
+      tr
+        th.arrow_box 抽出不可
+      tr
+        td.center  = f.text_area :impossible
+      tr
+        th.arrow_box 詳細
+      tr
+        td.center = text_area :matter, :description
+      tr
+        th.arrow_box 送信情報
+      tr
+        td.center = text_area :matter, :information
+      tr
+        th.arrow_box 注意
+      tr
+        td.center = text_area :matter, :attention
+      tr
+        td.center = f.submit '投稿する'

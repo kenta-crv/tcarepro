@@ -1,6 +1,6 @@
 class UploaderController < ApplicationController
   before_action :authenticate_admin!
-  
+
 
   def index
   end
@@ -18,7 +18,7 @@ class UploaderController < ApplicationController
     redirect_to action: 'index'
   end
 
-   def destroy
+  def destroy
     @upload = Upload.find(params[:id])
     @upload.destroy
     redirect_to uploads_path

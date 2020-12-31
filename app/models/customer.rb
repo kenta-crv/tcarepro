@@ -40,6 +40,17 @@ class Customer < ApplicationRecord
     ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry","occupation", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "memo_1", "memo_2", "memo_3", "memo_4","choice", "old_date", "title", "old_statu", "other", "url_2","extraction_date"]
   end
 
+  def self.ransackable_scopes(_auth_object = nil)
+    [:calls_count_lt]
+  end
+
+  def self.calls_count_lt(count)
+    select('*, COUNT(calls.id) AS calls_count')
+    .joins(:calls)
+    .group('customers.id')
+    .where('calls_count <= ?', count)
+  end
+
   @@ChoiceItems = [
     [1,"SORAIRO関東"],
     [2,"SORAIRO九州"],

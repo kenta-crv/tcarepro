@@ -59,6 +59,8 @@ gem 'jquery-rails'
 
 gem 'devise'
 
+gem 'meta-tags'
+
 # Thinreports
 gem 'thinreports'
 
@@ -95,5 +97,5 @@ gem 'select2-rails'
 gem 'whenever', require: false
 
 gem 'mini_racer'
-
+#ファイルドロップ＆ドロップ
 gem 'dropzonejs-rails', '~> 0.7.3'

@@ -181,6 +181,18 @@ class CustomersController < ApplicationController
    @customers = Customer.where(choice: "SFA").page(params[:page]).per(20)
  end
 
+ def list
+   @q = Customer.ransack(params[:q])
+   @customers = @q.result
+   @customers = Customer.where(tel: nil).page(params[:page]).per(20)
+ end
+
+ def mail
+   @q = Customer.ransack(params[:q])
+   @customers = @q.result
+   @customers = Customer.where.not(mail: nil).page(params[:page]).per(20)
+ end
+
   private
     def customer_params
       params.require(:customer).permit(
@@ -218,13 +230,14 @@ class CustomersController < ApplicationController
         :price, #単価
         :number, #件数
         :start, #開始時期
-        :remarks #備考
+        :remarks, #備考
+        :occupation #職種
        )
     end
 
     def authenticate_user_or_admin
       unless user_signed_in? || admin_signed_in?
-         redirect_to root_path, alert: 'error'
+         redirect_to new_user_session_path, alert: 'error'
       end
     end
 

@@ -1,6 +1,6 @@
 .tops-wrapper
  .headline
-    | SFA一覧
+    | 作業リスト一覧
  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
   table[width="90%"]
     col[width="8%"]
@@ -24,10 +24,6 @@
         th
           | メールアドレス
         th
-          | ステータス
-        th
-          = sort_link(@q, :created_at)
-        th
           | 編集/削除
     - @customers.each do |customer|
       tr
@@ -41,10 +37,6 @@
           = customer.tel
         td
           = customer.mail
-        td
-          = customer.last_call.try(:statu)
-        td
-          = customer.last_call.try(:created_at)
         td
           = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'
           = link_to '削除',customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}
