@@ -12,7 +12,7 @@ module ApplicationHelper
       icon: [
         { href: image_url('favicon.ico') },
         { href: image_url('favicon.ico'),  rel: 'apple-touch-icon' },
-      ],
+      ]
     }
   end
 end

@@ -1,9 +1,6 @@
 Rails.application.routes.draw do
 
-  root to: 'top#index'
-  get 'usp' => 'top#usp'
-  get 'question' => 'top#question'
-  get 'company' => 'top#company'
+  root to: 'customers#index'
 
   get 'manuals' => 'manuals#index'
   get 'manuals/format' => 'manuals#format' #アポフォーマット
