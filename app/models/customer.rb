@@ -75,6 +75,21 @@ class Customer < ApplicationRecord
     @@old_status
   end
 
-
-
+  @@business_status = [
+    ["人材紹介業","人材紹介業"],
+    ["人材派遣業","人材派遣業"],
+    ["求人会社","求人会社"],
+    ["広告業","広告業"],
+    ["マーケティング業","マーケティング業"],
+    ["飲食店","飲食店"],
+    ["美容院","美容院"],
+    ["製造業","製造業"],
+    ["Web制作","Web制作"],
+    ["IT・エンジニア","IT・エンジニア"],
+    ["建設土木業","建設土木業"],
+    ["農林水産業","農林水産業"],
+  ]
+  def self.BusinessStatus
+    @@business_status
+  end
 end

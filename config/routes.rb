@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
 
-  root to: 'customers#index'
+  root to: 'top#index'
+  get 'usp' => 'top#usp'
+  get 'question' => 'top#question'
+  get 'co' => 'top#co'
 
   get 'manuals' => 'manuals#index'
   get 'manuals/format' => 'manuals#format' #アポフォーマット
@@ -35,7 +38,11 @@ Rails.application.routes.draw do
 
   resources :matters
   resources :posts
-  resources :estimates, only: [:index]
+  resources :estimates, only: [:index, :show] do
+    member do
+      get :report
+    end
+  end
 
 
   resources :customers do
@@ -47,15 +54,15 @@ Rails.application.routes.draw do
       get :message
       get :bulk_destroy
     end
-    resources :estimates, except: [:index]
+    resources :estimates, except: [:index, :show]
   end
 
-
+  get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'analytics' => 'customers#analytics' #分析
   get 'sfa' => 'customers#sfa' #SFA
   #TCARE
-  get 'list' => 'customers#list'
+  get 'extraction' => 'customers#extraction'
   #Mailer
   get 'mail' => 'customers#mail'
   delete :customers, to: 'customers#destroy_all'

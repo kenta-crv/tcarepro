@@ -1,19 +1,19 @@
 class Estimate < ApplicationRecord
   belongs_to :customer
 	def calc1
-		price1 * quantity1
+		price1.to_i * quantity1.to_i
 	end
 	def calc2
-		price2 * quantity2
+		price2.to_i * quantity2.to_i
 	end
 	def calc3
-		price3 * quantity3
+		price3.to_i * quantity3.to_i
 	end
 	def calc4
-		price4 * quantity4
+		price4.to_i * quantity4.to_i
 	end
 	def calc5
-		price5 * quantity5
+		price5.to_i * quantity5.to_i
 	end
 
 	def summary
@@ -21,10 +21,14 @@ class Estimate < ApplicationRecord
 	end
 
 	def tax
-		(self.calc1 + self.calc2 + self.calc3 + self.calc4 + self.calc5) * 1.00
+		(self.calc1 + self.calc2 + self.calc3 + self.calc4 + self.calc5) * 0.1
 	end
 
 	def total
-		(self.calc1 + self.calc2 + self.calc3 + self.calc4 + self.calc5) * 1.00
+		summary + tax
 	end
+
+  def company
+    customer.company
+  end
 end

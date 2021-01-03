@@ -119,7 +119,6 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.string "other"
     t.string "url_2"
     t.string "inflow"
-    t.string "business"
     t.string "price"
     t.string "number"
     t.string "history"
@@ -130,6 +129,7 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.string "sfa_statu"
     t.string "meeting"
     t.string "experience"
+    t.string "business"
   end
 
   create_table "customers_search_orders", force: :cascade do |t|

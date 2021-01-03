@@ -45,7 +45,7 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2"><%= f.submit "更新する", class:"btn btn-danger" %></td>
+      <td colspan="2"><%= f.submit "更新する", class:"btn btn-success" %></td>
     </tr>
 </table>
 <% end %>
@@ -59,10 +59,10 @@
 　 </colgroup>
   <tr>
     <th>アカウント削除</th>
-    <td> <%= button_to "アカウントを削除する", registration_path(resource_name), data: { confirm: "本当に削除しますか？" }, method: :delete, class:"btn btn-danger"%></td>
+    <td> <%= button_to "アカウントを削除する", registration_path(resource_name), data: { confirm: "本当に削除しますか？" }, method: :delete, class:"btn btn-success"%></td>
   </tr>
   <tr>
     <th>戻る</th>
-    <td> <%= link_to "戻る", :back, class:"btn btn-danger" %></td>
+    <td> <%= link_to "戻る", :back, class:"btn btn-success" %></td>
   </tr>
 </table>

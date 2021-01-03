@@ -1,0 +1,135 @@
+= form_for @customer do |f|
+  table.space[width="90%"]
+    col[width="20%"]
+    col[width="30%"]
+    col[width="20%"]
+    col[width="30%"]
+    tbody
+      tr
+        th
+          | 会社名
+        td
+          =text_field :customer, :company
+        th
+          | メールアドレス
+        td
+          =text_field :customer, :mail
+      tr
+        th
+          | 担当者姓
+        td
+          =text_field :customer, :first_name
+        th
+          | 担当者名
+        td
+          =text_field :customer, :last_name
+      tr
+        th
+          | 電話番号
+        td
+          =telephone_field :customer, :tel
+        th
+          | 携帯番号
+        td
+          =telephone_field :customer, :mobile
+      tr
+        th
+          | 郵便番号
+        td
+          | 〒
+          =telephone_field :customer, :postnumber
+        th
+          | 住所
+        td
+          =telephone_field :customer, :address
+      tr
+        th
+          | 業種
+        td
+          = f.select(:business, Customer.BusinessStatus)
+        th
+          | URL
+        td
+          =text_field :customer, :url
+  br
+  - if admin_signed_in?
+   table.space[width="90%"]
+    col[width="20%"]
+    col[width="30%"]
+    col[width="20%"]
+    col[width="30%"]
+    tbody
+      tr
+        th
+          | 事業内容
+        td
+          =text_field :customer, :business
+        th
+        td
+      tr
+        th
+          | 流入元
+        td
+          = f.select(:inflow, [\
+                      ["選択する","選択する"],\
+                      ["テレマーケティング","テレマーケティング"],\
+                      ["メールマーケティング","メールマーケティング"],\
+                      ["問い合わせフォーム","問い合わせフォーム"],\
+                      ["紹介","紹介"],\
+                      ["その他","その他"],])
+        th
+          | 過去アポ利用履歴
+        td
+          = f.radio_button :history, "Yes"
+          | ある
+          = f.radio_button :history, "No"
+          | ない
+          = f.radio_button :history, "what"
+          | 不明
+      tr
+        th
+          | ターゲットエリア
+        td
+          =text_field :customer, :area
+        th
+          | ターゲット業種
+        td
+          =text_field :customer, :number
+      tr
+        th
+          | 商談方法
+        td
+          =text_field :customer, :meeting
+        th
+          | 経験則
+        td
+          =text_field :customer, :experience
+      tr
+        th
+          | 料金
+        td
+          =text_field :customer, :price
+          | 円
+        th
+          | 件数
+        td
+          =text_field :customer, :number
+          | 件
+      tr
+        th
+          | 開始時期
+        td
+          =text_field :customer, :start
+        th
+          | セレクト
+        td
+          = f.select(:choice, [["",""],["SFA","SFA"]])
+      tr
+        th
+          | 備考
+        td[colspan="3"]
+          = text_area :customer, :remarks
+  table.space[width="90%"]
+      tr
+        th[colspan="4"]
+          =f.submit

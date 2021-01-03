@@ -1,16 +1,11 @@
-.beige-wrapper
-  .heading
-    h2
+.tops-wrapper
+  h2.headline
       | 請求書一覧
-    p
-      | estimate List
   table[width="90%"]
     tbody
       tr
         th
           | 会社名
-        th
-          | 代表者
         th
           | ステータス
         th
@@ -21,23 +16,20 @@
           | 請求額
         th
           | 編集/削除
-        |  　
+    - @estimates.each do |estimate|
       tr
-        - @estimates.each do |estimate|
           td
-            = link_to estimate.company.company, estimate_path(estimate)
-          td
-            = link_to estimate.company.first_name, estimate_path(estimate)
+            = link_to estimate.customer.company, estimate_path(estimate)
           td
             = estimate.status
           td
-            = estimate.created_at
+            = estimate.created_at.strftime("%Y年%m月%d日 %H時%M分")
           td
             = estimate.payment
           td
           td
-            = link_to '編集', edit_estimate_path(estimate), class: 'command'
+            = link_to '編集', edit_customer_estimate_path(@customers, estimate), class: 'command'
             |  ｜
-            = link_to '削除',estimate_path(estimate),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}\
+            = link_to '削除', customer_estimate_path(@customers, estimate),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}
             |  ｜
             = link_to 'pdf', report_estimate_path(estimate, format: 'pdf')

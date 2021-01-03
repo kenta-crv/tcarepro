@@ -7,7 +7,7 @@ class Workers::RegistrationsController < Devise::RegistrationsController
 
 
   def after_sign_up_path_for(resource)
-    "/worker/#{current_admin.id}"
+    "/worker/#{current_worker.id}"
   end
 
   private

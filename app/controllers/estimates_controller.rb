@@ -2,8 +2,8 @@ class EstimatesController < ApplicationController
   before_action :authenticate_admin!
 
   def index
-		@estimates = Estimate.all
     @customers = Customer.all
+    @estimates = Estimate.all
 	end
 
 	def show
@@ -11,13 +11,14 @@ class EstimatesController < ApplicationController
   end
 
   def new
-    @customer = Customer.find(params[:customer_id])
+    @customer = Customer.find_by(id: params[:customer_id])
   	@estimate = Estimate.new(customer: @customer)
   end
 
 	def create
-    @customer = Customer.find_by(customer_id: params[:customer_id])
-    @estimate = Estimate.new
+    @customer = Customer.find_by(id: params[:customer_id]) #(customer_id: params[:customer_id])としない
+    @estimate = Estimate.new(estimate_params) #paramsを忘れない
+    @estimate.customer = @customer #
     if  @estimate.save
         redirect_to estimates_path
     else
@@ -44,6 +45,56 @@ class EstimatesController < ApplicationController
     @estimate.destroy
     redirect_to estimates_path
  end
+
+   # 帳票出力処理
+  def report
+    @estimate = Estimate.find(params[:id])
+    report = Thinreports::Report.new layout: "app/reports/layouts/invoices.tlf"
+    report.start_new_page
+    report.page.values(
+    created_at: @estimate.try(:created_at),
+    company: @estimate.customer.try(:company),
+    first_name: @estimate.customer.try(:first_name),
+    postnumber: @estimate.customer.try(:postnumber),
+    address: @estimate.customer.try(:address),
+
+    item1: @estimate.try(:item1),
+    price1: @estimate.try(:price1),
+    quantity1: @estimate.try(:quantity1),
+    total1: @estimate.try(:calc1),
+
+    item2: @estimate.try(:item2),
+    price2: @estimate.try(:price2),
+    quantity2: @estimate.try(:quantity2),
+    total2: @estimate.try(:calc2),
+
+    item2: @estimate.try(:item2),
+    price2: @estimate.try(:price2),
+    quantity2: @estimate.try(:quantity2),
+    total2: @estimate.try(:calc2),
+
+    item3: @estimate.try(:item3),
+    price3: @estimate.try(:price3),
+    quantity3: @estimate.try(:quantity3),
+    total3: @estimate.try(:calc3),
+
+    item4: @estimate.try(:item4),
+    price4: @estimate.try(:price4),
+    quantity4: @estimate.try(:quantity4),
+    total4: @estimate.try(:calc4),
+
+    item5: @estimate.try(:item5),
+    price5: @estimate.try(:price5),
+    quantity5: @estimate.try(:quantity5),
+    total5: @estimate.try(:calc5),
+
+    subtotal: @estimate.try(:summary),
+    tax: @estimate.try(:tax),
+    all: @estimate.try(:total),
+    all2: @estimate.try(:total),
+    )
+    send_data(report.generate, filename: "#{@estimate}.pdf", type: "application/pdf")
+  end
 
 private
  def estimate_params

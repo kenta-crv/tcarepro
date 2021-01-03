@@ -1,6 +1,7 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  before_action :authenticate_user_or_admin
+  before_action :authenticate_user_or_admin, except: [:list, :extraction, :edit, :show]
+  before_action :authenticate_worker_or_admin_or_user, only: [:extraction, :edit]
 
   def index
     last_call_customer_ids = nil
@@ -184,6 +185,12 @@ class CustomersController < ApplicationController
  def list
    @q = Customer.ransack(params[:q])
    @customers = @q.result
+   @customers = Customer.page(params[:page]).per(20)
+ end
+
+ def extraction
+   @q = Customer.ransack(params[:q])
+   @customers = @q.result
    @customers = Customer.where(tel: nil).page(params[:page]).per(20)
  end
 
@@ -231,12 +238,18 @@ class CustomersController < ApplicationController
         :number, #件数
         :start, #開始時期
         :remarks, #備考
-        :occupation #職種
+        :business #業種
        )
     end
 
     def authenticate_user_or_admin
       unless user_signed_in? || admin_signed_in?
+         redirect_to new_user_session_path, alert: 'error'
+      end
+    end
+
+    def authenticate_worker_or_admin_or_user
+      unless user_signed_in? || admin_signed_in? || worker_signed_in?
          redirect_to new_user_session_path, alert: 'error'
       end
     end

@@ -1,39 +1,33 @@
-.beige-wrapper
-  .heading
-    h2
-      | 請求書詳細
-    p
-      | estimate Detail
-  table
+.tops-wrapper
+  h2.headline
+    | 請求書詳細
+  table.space[width="90%"]
     tbody
       tr
         th
           | 会社名
         td
-          =@estimate.company.company
+          =@estimate.customer.company
         th
           | 代表者名
         td
-          =@estimate.company.first_name
+          =@estimate.customer.first_name
       tr
         th
           | 郵便番号
         td
-          =@estimate.company.postnumber
-        th
-          | 住所
-        td
-          =@estimate.company.address
-      tr
-        th
-          | 市町村移行
-        td
-          =@estimate.company.town
+          =@estimate.customer.postnumber
         th
           | 電話番号
         td
-          =@estimate.company.tel
-  table
+          =@estimate.customer.tel
+      tr
+        th
+          | 住所
+        td[colspan="3"]
+          =@estimate.customer.address
+  br
+  table.space[width="90%"]
     tbody
       tr
         th
@@ -53,7 +47,7 @@
           | 件名
         td
           = @estimate.subject
-  table
+  table.space[width="90%"]
     tbody
       tr
         th
@@ -65,7 +59,7 @@
         th
           | 合計
       tr
-        td
+        th
           = @estimate.item1
         td
           = @estimate.price1
@@ -76,7 +70,7 @@
           =@estimate.calc1
         |  　
       tr
-        td
+        th
           = @estimate.item2
         td
           = @estimate.price2
@@ -87,7 +81,7 @@
           =@estimate.calc2
         |  　
       tr
-        td
+        th
           = @estimate.item3
         td
           = @estimate.price3
@@ -98,7 +92,7 @@
           =@estimate.calc3
         |  　
       tr
-        td
+        th
           = @estimate.item4
         td
           = @estimate.price4
@@ -109,18 +103,7 @@
           =@estimate.calc4
         |  　
       tr
-        td
-          = @estimate.item5
-        td
-          = @estimate.price5
-        |  　
-        td
-          = @estimate.quantity5
-        td
-          =@estimate.calc5
-        |  　
-      tr
-        td
+        th
           = @estimate.item5
         td
           = @estimate.price5
@@ -150,4 +133,3 @@
           | 合計
         td
           =@estimate.total
-        |  　

@@ -1,0 +1,284 @@
+- set_meta_tags  title: "#{@customer.company}｜#{@customer.industry}｜業界No1精度の企業リストなら｜TCARE｜#{@customer.address}"
+- set_meta_tags  keyword:  "#{@customer.company} #{@customer.tel}"
+- set_meta_tags  description: ''
+
+.green-wrapper
+  br
+  h2.headline
+   | 会社概要
+  br
+  .row.list-detail
+   .col-xs-8
+     table.company.copy-control[width="100%"]
+      colgroup
+        col width="30%"
+        col width="70%"
+        tbody
+          tr
+            td.arrow_box
+              | 会社名
+            td = @customer.company
+          tr
+            td.arrow_box
+              | 郵便番号
+            td = @customer.postnumber
+          tr
+            td.arrow_box
+              | 住所
+            td
+              = @customer.address
+          tr
+            td.arrow_box
+              | 資本金
+            td = @customer.caption
+          tr
+            td.arrow_box
+              | 従業員数
+            td = @customer.people
+   .col-xs-4.center
+     = image_tag "sample2.jpg"
+
+  br
+
+.tops-wrapper
+  h2.headline
+   | 有料情報
+  p TCAREは企業の営業活動に必要となる情報を有料にて公開しております。電話番号・代表者名等の有料情報は下記が該当します。
+  table.company[width="90%"]
+       colgroup
+         col width="20%"
+         col width="30%"
+         col width="20%"
+         col width="30%"
+         tbody
+           tr
+             td.arrow_box
+               | 代表者名
+             td
+               - if worker_signed_in?
+                -if @customer.first_name.present?
+                 = @customer.first_name
+                 = @customer.last_name
+                -else
+                 = @customer.name
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+           tr
+             td.arrow_box
+               | 電話番号
+             td
+               - if worker_signed_in?
+                 -if @customer.tel_front.present?
+                  = @customer.tel_front
+                  = @customer.tel_middle
+                  = @customer.tel_back
+                 -else
+                  = @customer.tel
+                   label[for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;"]
+                     |  <input type="checkbox" id="check-auto-call"
+                     = @is_auto_call ? ' checked' : ''
+                     |  />自動発信の場合、必ずチェックして下さい。//, checked
+                     .call-font
+                     = @customer.tel
+                     = select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect{ |o| [ o.device_name, o.token ] }), :include_blank => '（選択してください）')
+                     |  <button id="button-call" data-number="
+                     = @customer.tel
+                     | ">発信
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+           tr
+             td.arrow_box
+               | FAX番号
+             td
+               - if worker_signed_in?
+                 -if @customer.tel_front.present?
+                  = @customer.fax_front
+                  = @customer.fax_middle
+                  = @customer.fax_back
+                 -else
+                   = @customer.fax
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+           tr
+             td.arrow_box
+               | メールアドレス
+             td
+               - if worker_signed_in?
+                 = @customer.mail
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+           tr
+             td.arrow_box
+               | URL
+             td
+               - if worker_signed_in?
+                 = @customer.url
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+
+.green-wrapper
+  br
+  h2.headline
+   | オーダーメイドプラン
+  p TCAREでは独自のITプログラミング技術により非常に精度の高い情報を取得出来るプランを用意しております。
+  table.company.copy-control[width="100%"]
+       colgroup
+         col width="15%"
+         col width="25%"
+         col width="60%"
+         tbody
+           tr
+             td.arrow_box
+               | SEOランク
+             td
+               - if worker_signed_in?
+                 = @customer.seo_rank
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+             td
+               | SEO対策やWebコンサルタント様のアプローチ等の参考情報としてご利用頂けます。
+           tr
+             td.arrow_box
+               | 問い合わせURL
+             td
+               - if worker_signed_in?
+                 = @customer.contact_url
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+             td
+              | メルマガと比較し問い合わせフォームは非常に反応率が高いことで知られています。全てのアプローチをしたい企業様におすすめです。
+           tr
+             td.arrow_box
+               | IPアドレス
+             td
+               - if worker_signed_in?
+                 = @customer.ip_address
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+             td
+              | 企業のIPアドレスを取得することで、どの会社が御社のサイトにアクセスを行なったのかを見える化出来、その後の営業アプローチで高い成約率を望めます。
+           tr
+             td.arrow_box
+               | 求人掲載サイト
+             td
+               - if worker_signed_in?
+                 = @customer.published_site
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+             td
+              | 求人をどこの会社で掲載しているかの履歴を見える化します。求人会社や人材紹介・派遣様におすすめです。
+           tr
+             td.arrow_box
+               | 求人掲載中
+             td
+               - if worker_signed_in?
+                 = @customer.published_now
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+             td
+              | 『今』求人に掲載されているかどうかを一眼で確認することが出来ます。どのような人材を募集しているか見える化出来るため、非常に高精度なアプローチが出来ます。
+           tr
+             td.arrow_box
+               | 広告出稿
+             td
+               - if worker_signed_in?
+                 = @customer.published_now
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+             td
+              | 広告出稿履歴を確認することが出来ます。集客サービスを提供したい企業や、おおよその企業が出せる予算感を把握することが出来ます。
+           tr
+             td.arrow_box
+               | 広告現在掲載中
+             td
+               - if worker_signed_in?
+                 = @customer.published_now
+               - else
+                 =link_to "#" do
+                  =image_tag "lock.png", height:"24px"
+                  | 会員登録へ
+             td
+              | 現在企業や店舗が広告に掲載しているかどうかを知ることが出来ます。現在の状況や投資予算が把握出来るため、非常に高精度なアプローチが出来ます。
+  br
+  br
+
+.tops-wrapper
+  h2.headline
+    | オンリーワンのセールスサポート
+  p
+   | TCAREではこの超高精度なリストを活用し、様々なマーケティング代行を繰り広げております。売上アップに向けて御社のリソースが不足しているなら、是非お試し下さい。
+  table.company.copy-control
+   colgroup
+     col width="20%"
+     col width="30%"
+     col width="20%"
+     col width="30%"
+     tbody
+       tr
+         td.arrow_box
+           | テレマーケティング代行
+         td.arrow_box
+           | TCAREリストを活用し、弊社グループ会社のテレアポ代行会社にてコール課金制のアポ代行を行います。
+       tr
+         td.arrow_box
+           | メールマーケティング代行
+         td.arrow_box
+           | メールツールと異なり、問い合わせフォームより送信の代行を行います。問い合わせフォームの送信代行はメールマーケティングの中でも最も効果的と言われています。
+       tr
+         td.arrow_box
+           | Webコンサルティング
+         td.arrow_box
+           | Webサイトを様々な角度から分析し、集客を達成するためのWebサイトへと変貌させます。
+       tr
+         td.arrow_box
+           | コンテンツマーケティング代行
+         td.arrow_box
+           | 会社の将来を見据え、サイトのインデックス数の底上げを行います。即効性は出ませんが、ホームページを会社の資産とすることが出来、未来的に広告をかけずとも問い合わせを集まるようになります。
+       tr
+         td.arrow_box
+           | SNSマーケティング
+         td.arrow_box
+           | Twitter, Facebook, Instagramとニーズに合う媒体におけるSNSの開設・運用代行を行います。
+
+.green-wrapper
+  br
+  h2.headline
+   =@customer.company
+   |の所在地をマップで確認
+  p TCAREでは独自のITプログラミング技術により非常に精度の高い情報を取得出来るプランを用意しております。
+  .row
+    .col-xs-12
+      = image_tag "googlemap.jpg", width:"70%"
+      br
+      .small.center
+       | 住所：
+       = @customer.address
+       /= @customer.prefecture
+       /= @customer.city
+       /= @customer.town
+       /= @customer.town_number
+       /= @customer.building
+  br
+  br
