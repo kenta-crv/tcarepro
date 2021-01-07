@@ -17,6 +17,11 @@ html
               li
                 button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createTicket"]
                  |  検索する
+          -slif list_path
+              li
+                button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createList"]
+                 |  検索する
+
         .col-xs-1
             .navToggle
                   span
@@ -34,8 +39,6 @@ html
           li
             = link_to  '記事一覧', "/posts"
           li
-            = link_to  'TCAREの魅力', "/usp"
-          li
             = link_to  'よくある質問', "/question"
           li
             = link_to  '会社概要', "/co"
@@ -51,8 +54,6 @@ html
             li
               = link_to  '記事一覧', "/posts"
             li
-              = link_to  'TCAREの魅力', "/usp"
-            li
               = link_to  'よくある質問', "/question"
             li
               = link_to  '会社概要', "/co"
@@ -62,9 +63,10 @@ html
 
   body
     p.notice
-      = notice
+       = notice
     p.alert
-      = alert
-    = render template: 'layouts/_sidenavi.html.slim'
+       = alert
+    -if admin_signed_in? || user_signed_in? || worker_signed_in?
+     = render template: 'layouts/_sidenavi.html.slim'
     main
       = yield

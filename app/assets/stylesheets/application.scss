@@ -10,8 +10,6 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require dropzone/basic
- *= require dropzone/dropzone
  */
 
 
@@ -21,6 +19,7 @@
 $main_color:#1D9186;
 $sub_color:#3B7972;
 $gray_color:#e6ecf0;
+$asort_color: #2CE4D3;
 
 * {box-sizing: border-box;}
 a {text-decoration: none;}
@@ -80,7 +79,7 @@ background: $main_color;
 }
 #dropmenu li{
 position: relative;
-width: 14%;
+width: 16.5%;
 font-size:14px;
 float: left;
 text-align: center;
@@ -299,9 +298,6 @@ li.progress-list-item {
   clear: left;
 }
 
-span {
-    color:red;
-}
 .header-table {
   margin-top:-55px;
   a:visited { color:white;}
@@ -813,17 +809,17 @@ nav.globalMenuSp.active {
     width: 50px;
     height: 100%;
     position: fixed;
-    color: #fff;
     background: black;
     text-align: center;
+    z-index:100;
 }
 
 #global-nav .sub-menu-nav {
-
     position: fixed;
     background: $sub_color;
-    text-shadow: 1px 1px 1px #fff;
+    text-shadow: 1px 1px 1px #000;
     font-weight:bold;
+    z-index:100;
     top: 0;
     padding-top: 130px;
     left: 50px;
@@ -940,4 +936,131 @@ table.company {
       .lp-small {
         font-size:12px;
       }
+}
+
+
+
+/*TopLP*/
+/*  メイン画像  */
+
+
+.back-image-app {
+background-image: url('subbase.png');
+background-size: 100%;
+background-repeat: no-repeat;
+vertical-align: middle;
+padding-bottom:50px;
+margin-top:-22px;
+}
+.back-image {
+text-align:center;
+.box2 {
+padding: 1vw 4.5vw 0.3vw;
+display:inline-block;
+background:red;
+p {
+color: #FFF;/*文字色*/
+font-weight: bold;
+font-size:2.0vw;
+}
+}
+.face-1 {
+font-size:4.0vw;
+font-weight:bold;
+margin-top:30px;
+color:black;
+text-shadow: 2px 2px 2px #fff, -2px 2px 2px #fff, 2px -2px 2px #fff, -2px -2px 2px #fff, 2px 2px 2px #fff, -2px 2px 2px #fff, 2px -2px 2px #fff, -2px -2px 2px #fff;
+}
+.face-2 {
+font-size:3.6vw;
+font-weight:bold;
+}
+.face-3 {
+font-size:7.0vw;
+font-weight:bold;
+color:$asort_color;
+text-shadow: 2px 2px 2px #fff, -2px 2px 2px #fff, 2px -2px 2px #fff, -2px -2px 2px #fff, 2px 2px 2px #fff, -2px 2px 2px #fff, 2px -2px 2px #fff, -2px -2px 2px #fff;
+}
+.face-4 {
+font-size:2.0vw;
+font-weight:bold;
+text-shadow: 1px 1px 1px #fff, -1px 1px 1px #fff, 1px -1px 1px #fff, -1px -1px 1px #fff, 1px 1px 1px #fff, -1px 1px 1px #fff, 1px -1px 1px #fff, -1px -1px 1px #fff;
+line-height:4.0vw;
+}
+.face-price {
+font-size:6.0vw;
+font-weight:bold;
+color:$sub_color;
+margin:-10px 0 -25px;
+margin-top:20px;
+margin-bottom:0px;
+}
+.face-conversion {
+font-size:3.0vw;
+font-weight:bold;
+color:red;
+}
+}
+
+
+
+.information {
+  margin-top:45px;
+}
+
+    .box1 {
+     padding: 1rem 4.5rem 0.3rem;
+     display:inline-block;
+     text-align:center;
+     background: red;
+           p {
+           color: #FFF;/*文字色*/
+           font-weight: bold;
+           font-size:1.7vw;
+             }
+      }
+
+/*中央寄せ*/
+.center {
+  text-align:center;
+  margin:0 auto;
+}
+
+/*イエローライン*/
+.push {
+    text-align:center;
+    font-size:4.0vw;
+    color:orange;
+    line-height:6.5vw;
+    font-weight:bold;
+    width:100%;
+    text-shadow: 2px 2px 2px #000;
+}
+.under {
+     background: linear-gradient(transparent 60%, #FFFF66 60%);
+}
+.price {
+    color:red;
+    font-size:2.5vw;
+    font-weight:bold;
+ }
+
+.top-wrapper {
+  margin:0 40px;
+  text-align:left;
+   .float-image{
+     float:left;
+     margin:0 20px 20px 0px;
+   }
+   p{
+     font-size:16px;
+     line-height:2.0;
+   }
+   strong{
+     font-size: 3rem;
+     color: $main_color;
+     font-weight: bold;
+     line-height: 5.5rem;
+   }
+
 }

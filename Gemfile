@@ -97,6 +97,7 @@ gem 'select2-rails'
 gem 'whenever', require: false
 
 gem 'mini_racer'
-#ファイルドロップ＆ドロップ
-gem 'dropzonejs-rails', '~> 0.7.3'
+
 gem 'jp_prefecture'
+
+gem 'kaminari-bootstrap', '~> 3.0.1'

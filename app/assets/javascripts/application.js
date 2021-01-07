@@ -12,21 +12,27 @@
 //
 //= require rails-ujs
 //
-//= require jquery_ujs
 //= require jquery3
 //= require popper
 //= require bootstrap-sprockets
-//= require dropzone
 //
 //= require turbolinks
 //= require_tree .
 //
 
-/*
-* #TPD
-* #2018.12.14
-* bootstrap DateTImePicker 設定 #2018.12.14
-*/
+
+$(function() {
+    $('.navToggle').click(function() {
+        $(this).toggleClass('active');
+
+        if ($(this).hasClass('active')) {
+            $('.globalMenuSp').addClass('active');
+        } else {
+            $('.globalMenuSp').removeClass('active');
+        }
+    });
+});
+
 
 let textarea = document.getElementById('test');
 
@@ -36,25 +42,10 @@ $(document).ready(function() {
 });
 
 
-Dropzone.autoDiscover = false
-
-new Dropzone '#upload-dropzone',
-  uploadMultiple: false
-  paramName: 'uploader[file]'
-  params:
-    'uploader[document_id]': 123
-  init: ->
-    @on 'success', (file, json) ->
-      # アップロード成功時の処理をここに実装します。
-  dictDefaultMessage: '''
-    <i class="fa fa-file-o fa-2x"></i><br>
-    <br>
-    ファイルをここにドロップするか<br>
-    ここをクリックして下さい
-  '''
 
 
-  $(function() {
+
+$(function() {
     // ロード時に県が選ばれているとき
     $('#search_prefecture').each(function() {
       pr_name = $(this).val();

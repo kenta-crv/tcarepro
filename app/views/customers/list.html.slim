@@ -30,3 +30,63 @@
     tr
       th[colspan="8"]
         = paginate @customers
+
+
+
+
+
+#createList.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = search_form_for @q do |f|
+          table.space[width="90%"]
+            col[width="20%"]
+            col[width="30%"]
+            col[width="20%"]
+            col[width="30%"]
+            tbody
+              tr
+                th[colspan="4"]
+                  | 検索
+              tr
+                th
+                  | 会社名
+                td
+                  = f.search_field :company_cont, type: "text"
+                th
+                  | 担当者名
+                td
+                  = f.search_field :calls_user_user_name_cont, type: "text"
+              tr
+                th
+                  | 電話番号
+                td
+                  = f.search_field :tel_cont, type: "text"
+                th
+                  | 検索条件
+                td
+                  = f.search_field :industry_cont, type: "text"
+              tr
+                th
+                  | 架電回数
+                td
+                  = f.search_field :calls_count_lt, type: "number"
+                th
+                  | 住所
+                td
+                  =  f.collection_select :address_cont, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'}, {class: 'form-control', id: 'search_prefecture'}
+              tr
+                th
+                  | 電話番号有りのみ表示
+                td
+                  = f.search_field :tel, {type: 'checkbox', checked: true }
+                th
+                td
+              tr
+                th[colspan="4"]
+                  = f.submit '検索'
+        br

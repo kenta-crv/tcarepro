@@ -28,8 +28,8 @@
    <tr>
      <th>住所</th>
      <td colspan="2"><%= @crm.prefecture %><%= @crm.city %><%= @crm.town %><%= @crm.building %></td>
-     <td><%= link_to "編集", edit_crm_path(@crm), class:"btn btn-danger" %>
-        　<%= link_to "削除", crm_path(@crm), method: :delete, data: {confirm: "本当に削除しますか？"}, class:"btn btn-danger" %>
+     <td><%= link_to "編集", edit_crm_path(@crm), class:"btn btn-success" %>
+        　<%= link_to "削除", crm_path(@crm), method: :delete, data: {confirm: "本当に削除しますか？"}, class:"btn btn-success" %>
      </td>
    </tr>
   </table>

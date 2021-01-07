@@ -2,81 +2,83 @@ aside#sidebar
  nav#global-nav
   ul
     li.sub-menu
-      = link_to "/list"
+      = link_to "#"
        = image_tag "list.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in? || worker_signed_in?
+        ul.sub-menu-nav
          li
-          = link_to "TCARE","/extraction"
+          = link_to "TCARE","/extraction",class:"white"
          br
          li
-          = link_to "Matter","/matters"
+          = link_to "業務案内","/matters"
     li.sub-menu
-      = link_to "/mail"
+      = link_to "#"
        = image_tag "mail.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in?
+        ul.sub-menu-nav
          li
-          = link_to "Task Mailer","/mail"
+          = link_to "Okurite","/mail"
     li.sub-menu
-      = link_to "/customers"
+      = link_to "/#"
        = image_tag "cti.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in? || user_signed_in?
+        ul.sub-menu-nav
          li
           = link_to "Mobile CTI","/customers"
          br
          li
-          = link_to "マニュアル",manuals_path
+          = link_to "テレアポマニュアル",manuals_path
+         br
+         li
+           = link_to "事務マニュアル", manuals_officework_path
     li.sub-menu
       = link_to "#"
        = image_tag "ma.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in?
+        ul.sub-menu-nav
          li
           = link_to "Marketing Automation","#"
     li.sub-menu
-      = link_to "/sfa"
+      = link_to "#"
        = image_tag "sfa.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in?
+        ul.sub-menu-nav
          li
           = link_to "SFA","/sfa"
     li.sub-menu
-      = link_to "/estimates"
+      = link_to "#"
        = image_tag "estimate.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in?
+        ul.sub-menu-nav
          li
           = link_to "見積書","/estimates"
          br
          li
           = link_to "請求書","/estimates"
     li.sub-menu
-      = link_to "/uploader/index"
+      = link_to "#"
        = image_tag "file.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in?
+        ul.sub-menu-nav
          li
           = link_to "ファイル",'/uploader/index'
     li.sub-menu
       = link_to "#"
        = image_tag "import.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in?
+        ul.sub-menu-nav
          li
           = link_to "データインポート","#"
     li.sub-menu
-      = link_to "/analytics"
+      = link_to "#"
        = image_tag "analytics.png", width:"40px"
-        | Home
-       ul.sub-menu-nav
+       -if admin_signed_in?
+        ul.sub-menu-nav
          li
           = link_to "アナリティクス","/analytics"
     li.sub-menu
       = link_to "#"
        = image_tag "mypage.png", width:"40px"
-        | Home
        ul.sub-menu-nav
          li
           - if user_signed_in?

@@ -2,12 +2,8 @@
   .headline
       | ドキュメント
 
-  =form_tag(@upload, :url => {:action => :upload}, class: 'dropzone', id: 'upload-dropzone') do
-   .fallback
-     = file_field_tag('uploader[file]')
   - @upload = UploadFile.new
-  /= form_for @upload, :url => {:action => :upload} do |f|
-  = form_tag(uploader_upload_path, class: 'dropzone', id: 'upload-dropzone') do
+  = form_for @upload, :url => {:action => :upload} do |f|
     table[width="90%"]
       tbody
         tr
@@ -18,13 +14,12 @@
           |  　
         tr
           td
-            #= file_field_tag('uploader[name]')
-          #td.fideback
-          #  = file_field_tag('uploader[file]')
-
+            = f.text_field :name
+          td
+            = f.file_field :file
         tr
           td[colspan="2"]
-            = submit_tag "アップロード"
+            = f.submit "アップロード", class:"btn btn-success"
   br
   br
   table[width="90%" data-turbolinks="false"]

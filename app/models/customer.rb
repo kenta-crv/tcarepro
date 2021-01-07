@@ -8,6 +8,11 @@ class Customer < ApplicationRecord
     order("created_at desc")
   }, class_name: :Call
 
+  validates :company, {presence: true}
+  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"], with: /^[0-9\-]+$/
+  validates :address, {presence: true}
+
+
 
 #customer_import
   def self.import(file)
@@ -15,9 +20,10 @@ class Customer < ApplicationRecord
       CSV.foreach(file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
-       next if customer.industry == nil
-       next if self.where(tel: customer.tel).where(industry: nil).count > 0
-       next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
+       next if self.where(tel: customer.company).where(industry: nil).count > 0
+       #next if customer.industry == nil
+       #next if self.where(tel: customer.tel).where(industry: nil).count > 0
+       #next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
        customer.save!
        save_cont += 1
       end

@@ -22,4 +22,7 @@ class ManualsController < ApplicationController
 
   def outsourcing
   end
+
+  def officework
+  end
 end
