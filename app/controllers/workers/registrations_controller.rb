@@ -12,8 +12,8 @@ class Workers::RegistrationsController < Devise::RegistrationsController
 
   private
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, :select])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:user_name, :select])#追記
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, :first_name, :last_name, :tel, :address])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:user_name, :first_name, :last_name, :tel, :address])#追記
   end
   # GET /resource/sign_up
   # def new

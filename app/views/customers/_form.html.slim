@@ -52,8 +52,7 @@
         td
           =text_field :customer, :url
   br
-  - if admin_signed_in?
-   table.space[width="90%"]
+  table.space[width="90%"]
     col[width="20%"]
     col[width="30%"]
     col[width="20%"]
@@ -94,7 +93,7 @@
         th
           | ターゲット業種
         td
-          =text_field :customer, :number
+          =text_field :customer, :target
       tr
         th
           | 商談方法
@@ -129,7 +128,16 @@
           | 備考
         td[colspan="3"]
           = text_area :customer, :remarks
-  table.space[width="90%"]
+
       tr
-        th[colspan="4"]
-          =f.submit
+        th
+          | リスト製作者向けカウント
+          strong.label ※
+        td
+          = f.select(:extraction_count, Customer.ExtractionStatus,include_blank: true)
+        th
+          | メール送信者向けカウント
+          strong.label ※
+        td
+          = f.select(:send_count, Customer.SendStatus,include_blank:true)
+        td = f.submit '登録する',class:"btn btn-success"

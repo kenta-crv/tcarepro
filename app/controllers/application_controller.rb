@@ -35,6 +35,8 @@ class ApplicationController < ActionController::Base
          customers_path
       when User
          customers_path
+      when Worker
+         worker_path(worker.id)
       else
          super
       end
@@ -46,6 +48,8 @@ class ApplicationController < ActionController::Base
         new_admin_session_path
       when User, :user, :users
         new_user_session_path
+      when Worker, :worker, :workers
+        new_worker_session_path
       else
         super
       end

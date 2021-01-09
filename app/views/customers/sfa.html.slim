@@ -3,18 +3,15 @@
     | 作業リスト一覧
  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
   table[width="90%"]
-    col[width="8%"]
+    col[width="15%"]
     col[width="10%"]
+    col[width="10%"]
+    col[width="15%"]
+    col[width="8%"]
+    col[width="8%"]
     col[width="5%"]
-    col[width="7%"]
-    col[width="15%"]
-    col[width="10%"]
-    col[width="15%"]
-    col[width="8%"]
     thead
       tr
-        th
-          = submit_tag '一括削除'
         th
           | 会社名
         th
@@ -24,11 +21,13 @@
         th
           | メールアドレス
         th
+          | ステータス
+        th
+          | 最終更新日
+        th
           | 編集/削除
     - @customers.each do |customer|
       tr
-        td
-          = check_box_tag "deletes[#{customer.id}]", customer.id
         td
           = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
         td
@@ -37,6 +36,10 @@
           = customer.tel
         td
           = customer.mail
+        td
+          = customer.last_call.try(:statu)
+        td
+          = customer.last_call.try(:created_at)
         td
           = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'
           = link_to '削除',customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}

@@ -177,6 +177,7 @@ table, td, th {
 /*必須項目*/
 .label {margin-left: 5px;}
 
+
 /*幅・位置の指定*/
 .container {
   max-width: 1170px;
@@ -949,8 +950,9 @@ background-image: url('subbase.png');
 background-size: 100%;
 background-repeat: no-repeat;
 vertical-align: middle;
+padding-top:30px;
 padding-bottom:50px;
-margin-top:-22px;
+text-align:center;
 }
 .back-image {
 text-align:center;
@@ -968,8 +970,9 @@ font-size:2.0vw;
 font-size:4.0vw;
 font-weight:bold;
 margin-top:30px;
-color:black;
-text-shadow: 2px 2px 2px #fff, -2px 2px 2px #fff, 2px -2px 2px #fff, -2px -2px 2px #fff, 2px 2px 2px #fff, -2px 2px 2px #fff, 2px -2px 2px #fff, -2px -2px 2px #fff;
+line-height:7vw;
+color:orange;
+text-shadow: 1px 1px 1px #fff, -1px 1px 1px #fff, 1px -1px 1px #fff, -1px -1px 1px #fff, 1px 1px 1px #fff, -1px 1px 1px #fff, 1px -1px 1px #fff, -1px -1px 1px #fff;
 }
 .face-2 {
 font-size:3.6vw;
@@ -991,9 +994,9 @@ line-height:4.0vw;
 font-size:6.0vw;
 font-weight:bold;
 color:$sub_color;
-margin:-10px 0 -25px;
-margin-top:20px;
-margin-bottom:0px;
+margin-bottom:10px;
+margin-top:10px;
+text-shadow: 2px 2px 2px #fff, -2px 2px 2px #fff, 2px -2px 2px #fff, -2px -2px 2px #fff, 2px 2px 2px #fff, -2px 2px 2px #fff, 2px -2px 2px #fff, -2px -2px 2px #fff;
 }
 .face-conversion {
 font-size:3.0vw;
@@ -1001,7 +1004,6 @@ font-weight:bold;
 color:red;
 }
 }
-
 
 
 .information {
@@ -1057,10 +1059,28 @@ color:red;
      line-height:2.0;
    }
    strong{
-     font-size: 3rem;
      color: $main_color;
-     font-weight: bold;
-     line-height: 5.5rem;
+     font-size:2.8rem;
+     text-decoration: underline;
+     font-weight:bold;
+   }
+   .heading {
+     text-align:center;
+     color: #666;
+     font-weight:bold;
+   }
+   h6 {
+     margin-top:-40px;
+     margin-bottom:20px;
    }
 
 }
+
+
+.attend {
+  color:red;
+  font-weight:bold;
+  text-align:left;
+  padding-left:70px;
+}
+.harf {width:42%;}

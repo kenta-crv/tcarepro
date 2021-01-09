@@ -1,6 +1,35 @@
 .tops-wrapper
   h2.headline
+      | 今週の不足件数
+  br
+  table[width="90%"  class="header-table space"]
+      colgroup
+        col[width="25%"]
+        |  　
+      tr
+        th
+          | 最低目標件数
+        th
+          | 今日の実施件数
+        th
+          | 今週の実施件数
+        th
+          | 今週最低不足件数
+      tr
+        td
+          | 210
+        td
+          = @count_day
+        td
+          = @count_week
+        td
+          = 210 - @count_week
+
+
+
+  h2.headline
     | アカウント情報
+  br
   table[width="90%"  class="header-table space"]
       colgroup
         col[width="40%"]
@@ -19,48 +48,3 @@
   br
   br
   = link_to "アカウント情報編集", edit_worker_registration_path, class:"btn btn-success"
-
-  h2.headline
-      | 共有内容
-  table
-      colgroup
-        col[width="40%"]
-        col[width="60%"]
-        |  　
-      tr
-        th
-          | ツールの紹介
-        td
-          = link_to "内容を確認する", "/workers/tool", class:"btn btn-success"
-      tr
-        th
-          | 案件情報
-        td
-          = link_to "内容を確認する", "/workers/data", class:"btn btn-success"
-      tr
-        th
-          | 初回稼働
-        td
-          = link_to "内容を確認する", "/workers/first", class:"btn btn-success"
-      tr
-        th
-          | 二回目稼働
-        td
-          = link_to "内容を確認する", "/workers/second", class:"btn btn-success"
-      tr
-        th
-          | アポ入力フォーマット
-        td
-          = link_to "内容を確認する", "#", class:"btn btn-success"
-      tr
-        th
-          | スマホ借用書
-        td
-          = link_to "締結する", "#", class:"btn btn-success"
-      tr
-        th
-          | よくあるFAQ
-        td
-          = link_to "締結する", "#", class:"btn btn-success"
-  br
-  br

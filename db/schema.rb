@@ -118,18 +118,22 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.string "title"
     t.string "other"
     t.string "url_2"
+    t.string "choice"
+    t.string "sfa_statu"
     t.string "inflow"
+    t.string "business"
     t.string "price"
     t.string "number"
     t.string "history"
     t.string "area"
     t.string "target"
     t.date "start"
-    t.string "choice"
-    t.string "sfa_statu"
     t.string "meeting"
     t.string "experience"
-    t.string "business"
+    t.string "extraction_count"
+    t.string "send_count"
+    t.integer "worker_id"
+    t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
 
   create_table "customers_search_orders", force: :cascade do |t|
@@ -255,7 +259,9 @@ ActiveRecord::Schema.define(version: 20201224133220) do
 
   create_table "workers", force: :cascade do |t|
     t.string "user_name", default: "", null: false
-    t.string "select", default: "", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "tel"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"

@@ -17,10 +17,15 @@ html
               li
                 button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createTicket"]
                  |  検索する
-          -slif list_path
+          -elsif list_path
               li
                 button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createList"]
                  |  検索する
+          -elsif extraction_path
+              li
+                button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createExtraction"]
+                 |  検索する
+          -else
 
         .col-xs-1
             .navToggle
@@ -66,7 +71,7 @@ html
        = notice
     p.alert
        = alert
-    -if admin_signed_in? || user_signed_in? || worker_signed_in?
-     = render template: 'layouts/_sidenavi.html.slim'
+
+    = render template: 'layouts/_sidenavi.html.slim'
     main
       = yield

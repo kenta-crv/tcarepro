@@ -12,12 +12,11 @@
  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
   table[width="90%"]
     col[width="8%"]
-    col[width="10%"]
-    col[width="5%"]
-    col[width="7%"]
     col[width="15%"]
     col[width="10%"]
-    col[width="15%"]
+    col[width="10%"]
+    col[width="20%"]
+    col[width="20%"]
     col[width="8%"]
     thead
       tr
@@ -31,8 +30,6 @@
           | 電話番号
         th
           | メールアドレス
-        th
-          | ステータス
         th
           = sort_link(@q, :created_at)
         th
@@ -48,14 +45,41 @@
         td
           = customer.tel
         td
-          = customer.mail
+          = customer.address
         td
-          = customer.last_call.try(:statu)
-        td
-          = customer.last_call.try(:created_at)
+          = customer.created_at.strftime("%Y年%m月%d日 %H時%M分")
         td
           = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'
           = link_to '削除',customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}
     tr
       th[colspan="8"]
         = paginate @customers
+
+
+
+#createExtraction.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = search_form_for @q do |f|
+          table.space[width="90%"]
+            col[width="20%"]
+            col[width="30%"]
+            col[width="20%"]
+            col[width="30%"]
+            tbody
+              tr
+                th[colspan="4"]
+                  | 検索
+              tr
+                th
+                  | 住所
+                td
+                  = f.search_field :address_cont, type: "text"
+              tr
+                th[colspan="2"]
+                  = f.submit '検索'
+        br

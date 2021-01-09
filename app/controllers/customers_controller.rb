@@ -1,7 +1,7 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  before_action :authenticate_user_or_admin, except: [:list, :extraction, :edit, :show]
-  before_action :authenticate_worker_or_admin_or_user, only: [:extraction, :edit]
+  #before_action :authenticate_user_or_admin, except: [:list, :extraction, :edit, :show]
+  #before_action :authenticate_worker_or_admin_or_user, only: [:extraction, :edit]
 
   def index
     last_call_customer_ids = nil
@@ -85,12 +85,15 @@ class CustomersController < ApplicationController
   end
 
  def update
+    @customers = Customer&.where(worker_id: current_worker.id)
+    @count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
     @customer = Customer.find(params[:id])
      if @customer.update(customer_params)
-        redirect_to customer_path
-    else
-        render 'edit'
-    end
+       flash[:notice] = "登録が完了しました。1日あたりの残り作業実施件数は#{30 - @count_day}件です。"
+       redirect_to customer_path
+     else
+       render 'edit'
+     end
  end
 
  def destroy
@@ -185,7 +188,7 @@ class CustomersController < ApplicationController
  def list
    @q = Customer.ransack(params[:q])
    @customers = @q.result
-   @customers = Customer.page(params[:page]).per(20)
+   @customers = Customer.order(created_at: 'desc').page(params[:page]).per(20)
  end
 
  def extraction
@@ -238,7 +241,9 @@ class CustomersController < ApplicationController
         :number, #件数
         :start, #開始時期
         :remarks, #備考
-        :business #業種
+        :business, #業種
+        :extraction_count,
+        :send_count
        )
     end
 

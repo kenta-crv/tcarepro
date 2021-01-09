@@ -1,6 +1,7 @@
 class Customer < ApplicationRecord
   #belongs_to :admin
   belongs_to :user, optional: true
+  belongs_to :worker, optional: true
   has_many :estimates
   has_many :calls#, foreign_key: :tel, primary_key: :tel
   #has_many :mailers
@@ -8,9 +9,8 @@ class Customer < ApplicationRecord
     order("created_at desc")
   }, class_name: :Call
 
-  validates :company, {presence: true}
-  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"], with: /^[0-9\-]+$/
-  validates :address, {presence: true}
+  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"], with: /^[0-9\-]+$/, on: :update
+  validates :address, presence: true, on: :update
 
 
 
@@ -20,17 +20,20 @@ class Customer < ApplicationRecord
       CSV.foreach(file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
+       next if customer.industry == nil
+       next if self.where(tel: customer.tel).where(industry: nil).count > 0
+       next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
        next if self.where(tel: customer.company).where(industry: nil).count > 0
-       #next if customer.industry == nil
-       #next if self.where(tel: customer.tel).where(industry: nil).count > 0
-       #next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
+       next if self.where(tel: customer.company).where(industry: customer.industry).count > 0
        customer.save!
        save_cont += 1
       end
       save_cont
   end
   def self.updatable_attributes
-    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry","occupation", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "memo_1", "memo_2", "memo_3", "memo_4", "choice", "old_date", "title", "old_statu", "other", "url_2", "extraction_date"]
+    ["company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
+     "caption","status","title","other","url_2","customer_tel","choice","inflow","business","history","area","target","meeting","experience","price",
+     "number","start","remarks","business","extraction_count","send_count"]
   end
 
 #customer_export
@@ -43,7 +46,9 @@ class Customer < ApplicationRecord
     end
   end
   def self.csv_attributes
-    ["company", "store", "first_name", "last_name", "first_kana", "last_kana", "tel", "tel2", "fax", "mobile", "industry","occupation", "mail", "url", "people", "postnumber", "address", "caption", "remarks", "status", "memo_1", "memo_2", "memo_3", "memo_4","choice", "old_date", "title", "old_statu", "other", "url_2","extraction_date"]
+    ["company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
+     "caption","status","title","other","url_2","customer_tel","choice","inflow","business","history","area","target","meeting","experience","price",
+     "number","start","remarks","business","extraction_count","send_count"]
   end
 
   def self.ransackable_scopes(_auth_object = nil)
@@ -98,4 +103,19 @@ class Customer < ApplicationRecord
   def self.BusinessStatus
     @@business_status
   end
+
+  @@extraction_status = [
+    ["電話番号抽出済","電話番号抽出済"]
+  ]
+  def self.ExtractionStatus
+    @@extraction_status
+  end
+
+  @@send_status = [
+    ["メール送信済","メール送信済"]
+  ]
+  def self.SendStatus
+    @@send_status
+  end
+
 end

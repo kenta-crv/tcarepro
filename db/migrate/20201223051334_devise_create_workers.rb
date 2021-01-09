@@ -5,7 +5,9 @@ class DeviseCreateWorkers < ActiveRecord::Migration[5.1]
     create_table :workers do |t|
       ## Database authenticatable
       t.string :user_name,          null: false, default: ""
-      t.string :select,          null: false, default: ""
+      t.string :first_name
+      t.string :last_name
+      t.string :tel
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""
 

@@ -1,4 +1,5 @@
 aside#sidebar
+ -if admin_signed_in? || user_signed_in? || worker_signed_in?
  nav#global-nav
   ul
     li.sub-menu
