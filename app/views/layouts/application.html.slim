@@ -13,19 +13,20 @@ html
            br
            | リストマーケティングで成果を出すなら
         .col-xs-2.right
-          -if @customers
-              li
-                button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createTicket"]
-                 |  検索する
-          -elsif list_path
-              li
-                button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createList"]
-                 |  検索する
-          -elsif extraction_path
-              li
-                button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createExtraction"]
-                 |  検索する
-          -else
+           - if @customers && (controller.action_name != 'list')  && (controller.action_name != 'extraction')
+            li
+              button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createTicket"]
+               |  検索する
+           - elsif list_path && (controller.action_name != 'extraction')
+            li
+              button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createList"]
+               |  検索する
+           - elsif extraction_path
+            li
+              button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createExtraction"]
+               |  検索する
+           -else
+
 
         .col-xs-1
             .navToggle

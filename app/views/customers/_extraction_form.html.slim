@@ -63,8 +63,15 @@
         th
           | URL
           strong.label.label-blue ※あれば必須
+          strong.label.label-blue ※URLは空いている方に入力
         td
           =text_field :customer, :url
+      tr
+        th
+          | URL2
+          strong.label.label-blue ※あれば必須
+        td
+          =text_field :customer, :url_2
       tr
         th
           | 従業員数
@@ -79,15 +86,15 @@
           strong.label.label-blue ※あれば必須
           strong.label.label-blue ※案件によって条件が異なります。
         td
-          =number_field :customer, :industry
+          =number_field :customer, :caption
           |円
       tr
         th
-          | 資本金
+          | 問い合わせフォームURL
           strong.label.label-blue ※あれば必須
           strong.label.label-blue ※案件によって条件が異なります。
         td
-          =number_field :customer, :industry
+          =text_field :customer, :contact_url
           |円
       tr
         th

@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.string "area"
     t.string "target"
     t.date "start"
+    t.string "contact_url"
     t.string "meeting"
     t.string "experience"
     t.string "extraction_count"

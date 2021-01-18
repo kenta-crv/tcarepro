@@ -25,7 +25,7 @@
         th
           | 会社名
         th
-          | 担当者
+          | 実施済
         th
           | 電話番号
         th
@@ -41,7 +41,7 @@
         td
           = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
         td
-          = customer.first_name
+          = customer.extraction_count
         td
           = customer.tel
         td
@@ -64,22 +64,57 @@
         button.close[type="button" data-dismiss="modal" aria-hidden="true"]
           | ×
       .modal-body
-        = search_form_for @q do |f|
+        = search_form_for(@q, url: extraction_path) do |f|
           table.space[width="90%"]
-            col[width="20%"]
-            col[width="30%"]
-            col[width="20%"]
-            col[width="30%"]
-            tbody
-              tr
-                th[colspan="4"]
-                  | 検索
-              tr
-                th
-                  | 住所
-                td
-                  = f.search_field :address_cont, type: "text"
-              tr
-                th[colspan="2"]
-                  = f.submit '検索'
-        br
+           col[width="20%"]
+           col[width="30%"]
+           col[width="20%"]
+           col[width="30%"]
+           tbody
+            tr
+             th[colspan="4"]
+              | 検索
+            tr
+             th
+              | 分類ワード
+             td
+              = f.search_field :industry_cont, type: "text"
+            tr
+             th
+              | リスト製作者
+             td
+                = f.search_field :worker_user_name_cont, type: "text"
+             th
+              | メール送信者
+             td
+              = f.search_field :send_count_cont, type: "text"
+            tr
+             th
+              | 抽出未実施
+             td
+               = f.search_field :extraction_count_null, type: 'checkbox', value: 'true'
+             th
+               | メール未実施
+             td
+               = f.search_field :send_count_null, type: 'checkbox', value: 'true'
+            tr
+             th
+               | 最終インポート日時（最初）
+             td
+               = f.date_field :created_at_gteq, class: 'date-picker'
+             th
+               | 最終インポート日時（最後）
+             td
+               = f.date_field :created_at_lteq, class: 'date-picker'
+            tr
+             th
+               | 最終アップデート日時（最初）
+             td
+               = f.date_field :updated_at_gteq, class: 'date-picker'
+             th
+               | 最終アップデート日時（最後）
+             td
+               = f.date_field :updated_at_lteq, class: 'date-picker'
+            tr
+             th.center[colspan="4"]
+               = f.submit '検索',  class: 'btn btn-success'

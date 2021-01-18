@@ -1,0 +1,29 @@
+<table class="header-table space" width="90%">
+  <tr>
+    <th colspan="7">スタッフ別コール</th>
+  </tr>
+  <tr>
+    <th>スタッフ名</th>
+    <th>コール数</th>
+    <th>月間コール数</th>
+    <th>見込数</th>
+    <th>APP数</th>
+    <th>キャンセル数</th>
+    <th>APP率</th>
+  </tr>
+  <% @workers.each do |worker| %>
+  <tr>
+    <td><%= worker.user_name %></td>
+    <td><%= worker.customers.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
+    <td><%= worker.customers.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count  %></td>
+    <td><%= worker.customers.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
+    <td><%= worker.customers.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
+    <td><%= worker.customers.where(statu: "キャンセル").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
+    <td><%= number_to_percentage(worker.customers.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f / worker.customers.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1) %></td>
+  </tr>
+  <%end%>
+</table>
+<br>
+<br>
+<br>
+<br>

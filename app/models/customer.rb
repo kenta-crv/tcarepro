@@ -9,7 +9,7 @@ class Customer < ApplicationRecord
     order("created_at desc")
   }, class_name: :Call
 
-  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"], with: /^[0-9\-]+$/, on: :update
+  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
   validates :address, presence: true, on: :update
 
 

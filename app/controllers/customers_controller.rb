@@ -1,7 +1,9 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  #before_action :authenticate_user_or_admin, except: [:list, :extraction, :edit, :show]
-  #before_action :authenticate_worker_or_admin_or_user, only: [:extraction, :edit]
+  before_action :authenticate_admin!, only: [:destroy, :destroy_all, :anayltics, :import, :call_import, :sfa]
+  before_action :authenticate_worker_or_admin_or_user, only: [:new, :edit]
+  before_action :authenticate_user_or_admin, only: [:index, :show]
+  before_action :authenticate_worker_or_admin, only: [:extraction]
 
   def index
     last_call_customer_ids = nil
@@ -151,7 +153,12 @@ class CustomersController < ApplicationController
    respond_to do |format|
     format.html
     format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-  end
+   end
+ end
+
+ def management
+   @customers =  Customer.all
+   @workers = Worker.all
  end
 
  def import
@@ -182,19 +189,19 @@ class CustomersController < ApplicationController
  def sfa
    @q = Customer.ransack(params[:q])
    @customers = @q.result
-   @customers = Customer.where(choice: "SFA").page(params[:page]).per(20)
+   @customers = @customers.where(choice: "SFA").page(params[:page]).per(20)
  end
 
  def list
    @q = Customer.ransack(params[:q])
    @customers = @q.result
-   @customers = Customer.order(created_at: 'desc').page(params[:page]).per(20)
+   @customers = @customers.order(created_at: 'desc').page(params[:page]).per(20)
  end
 
  def extraction
    @q = Customer.ransack(params[:q])
    @customers = @q.result
-   @customers = Customer.where(tel: nil).page(params[:page]).per(20)
+   @customers = @customers.where(tel: nil).page(params[:page]).per(20)
  end
 
  def mail
@@ -229,6 +236,7 @@ class CustomersController < ApplicationController
         :url_2, #url2
         :customer_tel,
         :choice,
+        :contact_url, #問い合わせフォーム
 
         :inflow, #流入元
         :business, #事業内容
@@ -253,9 +261,15 @@ class CustomersController < ApplicationController
       end
     end
 
+    def authenticate_worker_or_admin
+      unless worker_signed_in? || admin_signed_in?
+         redirect_to new_worker_session_path, alert: 'error'
+      end
+    end
+
     def authenticate_worker_or_admin_or_user
       unless user_signed_in? || admin_signed_in? || worker_signed_in?
-         redirect_to new_user_session_path, alert: 'error'
+         redirect_to new_worker_session_path, alert: 'error'
       end
     end
 
