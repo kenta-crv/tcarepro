@@ -45,7 +45,11 @@ class CallsController < ApplicationController
       end
       @call.save
       #@call.update_attribute(:customer_tel, @customer.tel)
-      redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      if @next_customer.present?
+        redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      else
+        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      end
   end
 
   def update
