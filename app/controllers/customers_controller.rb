@@ -121,12 +121,12 @@ class CustomersController < ApplicationController
   #  @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
   #  @app_count_today = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
   #  @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
-
+  # today改善後
    @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
    @call_count_today = @call_today_basic.count
-   @protect_count_today = @call_today_basic.select { |statu| statu == "見込" }.count
+   @protect_count_today = @call_today_basic.select { |call| call.statu == "見込" }.count
    @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
-   @app_count_today = @call_today_basic.select { |statu| statu == "APP" }.count
+   @app_count_today = @call_today_basic.select { |call| call.statu == "APP" }.count
    @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
 
   #  binding.pry
@@ -136,12 +136,12 @@ class CustomersController < ApplicationController
   #  @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
   #  @app_count_week = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).count
   #  @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
-
+  # week改善後
    @call_week_basic = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).to_a
    @call_count_week = @call_week_basic.count
-   @protect_count_week = @call_week_basic.select { |statu| statu == "見込" }.count
+   @protect_count_week = @call_week_basic.select { |call| call.statu == "見込" }.count
    @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
-   @app_count_week = @call_week_basic.select { |statu| statu == "APP" }.count
+   @app_count_week = @call_week_basic.select { |call| call.statu == "APP" }.count
    @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
 
    #month
@@ -150,14 +150,21 @@ class CustomersController < ApplicationController
   #  @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
   #  @app_count_month = @calls.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
   #  @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
-
+  # month改善後
    @call_month_basic = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
    @call_count_month = @call_month_basic.count
-   @protect_count_month = @call_month_basic.select { |statu| statu == "見込" }.count
+   @protect_count_month = @call_month_basic.select { |call| call.statu == "見込" }.count
    @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
-   @app_count_month = @call_month_basic.select { |statu| statu == "APP" }.count
+   @app_count_month = @call_month_basic.select { |call| call.statu == "APP" }.count
    @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
 
+  #  ステータス別結果
+   @call_count_called = @call_month_basic.select { |call| call.statu == "着信留守" }.count
+   @call_count_absence = @call_month_basic.select { |call| call.statu == "担当者不在" }.count
+   @call_count_prospect = @call_month_basic.select { |call| call.statu == "見込" }.count
+   @call_count_app = @call_month_basic.select { |call| call.statu == "APP" }.count
+   @call_count_cancel = @call_month_basic.select { |call| call.statu == "キャンセル" }.count
+   @call_count_ng = @call_month_basic.select { |call| call.statu == "NG" }.count
    @admins = Admin.all
    @users = User.all
    #statu内容簡素化
