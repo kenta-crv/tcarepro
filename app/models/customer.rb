@@ -12,8 +12,6 @@ class Customer < ApplicationRecord
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"], with: /^[0-9\-]+$/, on: :update
   validates :address, presence: true, on: :update
 
-
-
 #customer_import
   def self.import(file)
       save_cont = 0
