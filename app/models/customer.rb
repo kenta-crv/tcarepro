@@ -10,6 +10,7 @@ class Customer < ApplicationRecord
   }, class_name: :Call
 
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
+  validates :tel, uniqueness: true, if: self.where(industry: nil).count > 0, on: :update
   validates :address, presence: true, on: :update
 
 
@@ -21,9 +22,9 @@ class Customer < ApplicationRecord
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
        next if customer.industry == nil
-       next if self.where(tel: customer.tel).where(industry: nil).count > 0
-       next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-       next if self.where(tel: customer.company).where(industry: nil).count > 0
+       #next if self.where(tel: customer.tel).where(industry: nil).count > 0
+       #next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
+       #next if self.where(tel: customer.company).where(industry: nil).count > 0
        next if self.where(tel: customer.company).where(industry: customer.industry).count > 0
        customer.save!
        save_cont += 1

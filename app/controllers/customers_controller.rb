@@ -34,7 +34,6 @@ class CustomersController < ApplicationController
     @all = @customers.all
   end
 
-
   def show
     last_call_customer_ids = nil
     @last_call_params = {}
@@ -201,7 +200,7 @@ class CustomersController < ApplicationController
  def extraction
    @q = Customer.ransack(params[:q])
    @customers = @q.result
-   @customers = @customers.where(tel: nil).page(params[:page]).per(20)
+   @customers = @customers.page(params[:page]).per(20)
  end
 
  def mail
@@ -252,7 +251,7 @@ class CustomersController < ApplicationController
         :business, #業種
         :extraction_count,
         :send_count
-       )
+       )&.merge(worker: current_worker)
     end
 
     def authenticate_user_or_admin

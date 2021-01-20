@@ -1,25 +1,27 @@
+<br>
+<br>
+<br>
+<br>
 <table class="header-table space" width="90%">
   <tr>
     <th colspan="7">スタッフ別コール</th>
   </tr>
   <tr>
-    <th>スタッフ名</th>
-    <th>コール数</th>
-    <th>月間コール数</th>
-    <th>見込数</th>
-    <th>APP数</th>
-    <th>キャンセル数</th>
-    <th>APP率</th>
+    <th>CW名</th>
+    <th>本日の実施件数</th>
+    <th>昨日の実施件数</th>
+    <th>今週の実施件数</th>
+    <th>今週の残件数</th>
+    <th>今月の実施件数</th>
   </tr>
   <% @workers.each do |worker| %>
   <tr>
     <td><%= worker.user_name %></td>
-    <td><%= worker.customers.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count %></td>
-    <td><%= worker.customers.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count  %></td>
-    <td><%= worker.customers.where(statu: "見込").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
-    <td><%= worker.customers.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
-    <td><%= worker.customers.where(statu: "キャンセル").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count %></td>
-    <td><%= number_to_percentage(worker.customers.where(statu: "APP").where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f / worker.customers.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1) %></td>
+    <td class="red"><%= worker.customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?', Time.current.end_of_day).where.not(tel: nil).count %></td>
+    <td><%= worker.customers.where('updated_at > ?', Time.current.prev_day).where.not(tel: nil).count %></td>
+    <td><%= worker.customers.where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?', Time.current.end_of_week).where.not(tel: nil).count %></td>
+    <td class="red"><%= 210 -  worker.customers.where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?', Time.current.end_of_week).where.not(tel: nil).count %></td>
+    <td><%= worker.customers.where('updated_at > ?', Time.current.beginning_of_month).where('updated_at < ?', Time.current.end_of_week).where.not(tel: nil).count %></td>
   </tr>
   <%end%>
 </table>

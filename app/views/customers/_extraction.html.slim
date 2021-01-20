@@ -20,10 +20,10 @@ table.company.center[width="90%"]
   tr
     td
      | 電話番号更新者：
-     /= @customer.worker.user_name
+     = @customer.worker.user_name
     td
      | メール実施者：
-     /= @customer.worker.send_count
+     = @customer.send_count
   tr
     td
      = link_to "#{@customer.company}をgoogle検索", "http://www.google.de/search?q=#{@customer.company}+#{@customer.address}", :target => "_blank", class:"genre btn btn-success"
@@ -163,7 +163,7 @@ table.company.center[width="90%"]
        td.arrow_box
          | 問い合わせURL
        td
-        = url_field :customer, :contact_url
+        = @customer.contact_url
      tr
        td
          strong.label.label-blue 任意
