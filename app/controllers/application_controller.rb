@@ -2,10 +2,24 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   layout :layout_by_resource
   #before_action :set_user
+  before_action :current_user_to_js
+  before_action :all_call
 
   #def set_user
   #  @user = User.find(params[:id])
   #end
+
+  def current_user_to_js
+    if current_user.present?
+      gon.current_user = current_user.calls
+    end
+  end
+
+  def all_call
+    if current_user.present?
+      @calls = current_user.calls
+    end
+  end
 
 # 例外処理
   rescue_from ActiveRecord::RecordNotFound, with: :render_404
