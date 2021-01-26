@@ -18,37 +18,6 @@
       margin-top: 80px;
     }
   </style>
-  <!--<script>
-    // 時刻を取得
-    var date = new Date();
-    format_str = 'YYYY-MM-DD hh:mm:ss';
-    format_str = format_str.replace(/YYYY/g, date.getFullYear());
-    format_str = format_str.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-    format_str = format_str.replace(/DD/g, ('0' + date.getDate()).slice(-2));
-    format_str = format_str.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-    format_str = format_str.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
-    format_str = format_str.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
-    // current_userの情報をjsに渡してcallテーブルの情報を取得
-    var user = gon.current_user;
-    $(document).ready(function(){
-      var id = setInterval(function(){
-        user.forEach(function( c ){
-          var called = new Date(c.time);
-          format_str1 = 'YYYY-MM-DD hh:mm:ss';
-          format_str1 = format_str1.replace(/YYYY/g, called.getFullYear());
-          format_str1 = format_str1.replace(/MM/g, ('0' + (called.getMonth() + 1)).slice(-2));
-          format_str1 = format_str1.replace(/DD/g, ('0' + called.getDate()).slice(-2));
-          format_str1 = format_str1.replace(/hh/g, ('0' + called.getHours()).slice(-2));
-          format_str1 = format_str1.replace(/mm/g, ('0' + called.getMinutes()).slice(-2));
-          format_str1 = format_str1.replace(/ss/g, ('0' + called.getSeconds()).slice(-2));
-          if(format_str1 === format_str){
-            $("#myToast").toast('show');
-          }
-        });
-          clearInterval(id);　//idをclearIntervalで指定している
-      }, 10000);
-      });
-  </script>-->
 
   <script>
     var currenttime = function(){
