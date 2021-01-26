@@ -108,19 +108,32 @@
           strong.label ※
         td
           = f.select(:send_count, Customer.SendStatus,include_blank:true)
+      tr
+        td.attend[colspan="2"]
+          |※支店の抽出は不可な案件があります。
+          br
+          |※重複は類似案件を抽出していませんか？
+          br
+          |※抽出担当者にチェックは付けましたか？チェックがない場合、支払対象外となります。
+          br
+          |※抽出外リストは絶対に作業自体行わないで下さい。
+          br
+          |※電話番号が抽出不可の場合は抽出対象外となります。
+      tr
+      tr
+        th
+          | 公開設定
+        td
+          -if admin_signed_in?
+           = f.select(:status, [ \
+              ["publish","1"],
+              ["draft","0"],
+              ])
+          -elsif worker_signed_in?
+           = f.select(:status, [ \
+              ["draft","0"],
+              ])
 
-  table.space[width="90%"]
-   tr
-    td.attend[colspan="2"]
-      |※支店の抽出は不可な案件があります。
-      br
-      |※重複は類似案件を抽出していませんか？
-      br
-      |※抽出担当者にチェックは付けましたか？チェックがない場合、支払対象外となります。
-      br
-      |※抽出外リストは絶対に作業自体行わないで下さい。
-      br
-      |※電話番号が抽出不可の場合は抽出対象外となります。
-   tr
-    td = f.submit '登録する',class:"btn btn-success", data: { confirm: '抽出条件を理解せずに登録する方が非常に増えております。抽出エリア・抽出業種一致していますか？また、NG条件を登録しようとしていませんか？ミスして作業を進めると修正に多大な時間を要するため必ず確認して下さい。'}
-    td = link_to '登録せずに戻る', @customer,class:"btn btn-success"
+      tr
+        td = f.submit '登録する',class:"btn btn-success", data: { confirm: '抽出条件を理解せずに登録する方が非常に増えております。抽出エリア・抽出業種一致していますか？また、NG条件を登録しようとしていませんか？ミスして作業を進めると修正に多大な時間を要するため必ず確認して下さい。'}
+        td = link_to '登録せずに戻る', @customer,class:"btn btn-success"

@@ -1,5 +1,11 @@
 # README
 
+・TCAREは2週間経過するとworkersからは見られなくなる
+
+・NGリストは電話番号項目にNGと入力しておく。NGだけは重複を通るようにしておく
+
+・ドラフト：既に入っているデータは全て公開にしてから次回作業インポートは全てドラフト必須へ
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 

@@ -11,46 +11,63 @@
     | )
  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
   table[width="90%"]
-    col[width="8%"]
+    col[width="5%"]
+    col[width="10%"]
+    col[width="5%"]
+    col[width="10%"]
     col[width="15%"]
-    col[width="10%"]
-    col[width="10%"]
     col[width="20%"]
-    col[width="20%"]
+    col[width="10%"]
+    col[width="15%"]
     col[width="8%"]
     thead
       tr
-        th
-          = submit_tag '一括削除'
+        - if admin_signed_in?
+         th
+           = submit_tag '削除', class: 'command'
+           .all-btn
+             = link_to '一括更新', customers_bulk_edit_path, remote: true,id: "comment-uploads-link", class: 'command'
+             = fb.submit "更新"
+
         th
           | 会社名
         th
-          | 実施済
+          | 履歴
+        th
+          | 実施者
         th
           | 電話番号
         th
-          | メールアドレス
+          | 住所
+        th
+          | 職種
         th
           = sort_link(@q, :created_at)
         th
           | 編集/削除
     - @customers.each do |customer|
       tr
-        td
+        - if admin_signed_in?
+         td
           = check_box_tag "deletes[#{customer.id}]", customer.id
         td
           = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
         td
           = customer.extraction_count
         td
+          = customer&.worker&.user_name
+        td
           = customer.tel
         td
           = customer.address
         td
+          = customer.business
+        td
           = customer.created_at.strftime("%Y年%m月%d日 %H時%M分")
         td
           = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'
-          = link_to '削除',customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}
+          - if admin_signed_in?
+           = link_to '削除',customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}
     tr
       th[colspan="8"]
         = paginate @customers
@@ -82,7 +99,7 @@
              th
               | 電話番号チェック
              td
-
+              = f.search_field :tel_null, {type: 'checkbox', checked: true }
             tr
              th
               | リスト製作者

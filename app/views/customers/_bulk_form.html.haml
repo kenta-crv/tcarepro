@@ -1,0 +1,12 @@
+.container
+  .customer-modal-content
+    ="一括更新"
+    =form_tag customers_bulk_update_path, method: :put do
+      =hidden_field_tag :ids, @ids
+      .row
+        .col-5
+          =select_tag :status, options_for_select([["選択する",""],
+              ["draft","1"],
+              ["publish","2"]]),{class: "form-control selectpicker form-bulk-edit-input", id: "form-status_progress"}
+          .col-2
+            =submit_tag "更新",  {class: "btn btn-primary"}

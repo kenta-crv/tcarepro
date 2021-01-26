@@ -33,10 +33,23 @@ class CallsController < ApplicationController
   end
 
   def create
-    if @call = @customer.calls.create(call_params)
-    #@call.update_attribute(:customer_tel, @customer.tel)
-      redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
-    end
+    @call = @customer.calls.new(call_params)
+      if @customer.calls.count >= 4
+        # 最新のステータスが着信留守4回連続の場合、5回目はNGとする
+        if @customer.calls.order(created_at: :desc).limit(4).pluck(:statu).all? { |w| w == "着信留守"  }
+          if @call.statu == "着信留守"
+            @call.statu = "NG"
+            @call.save
+          end
+        end
+      end
+      @call.save
+      #@call.update_attribute(:customer_tel, @customer.tel)
+      if @next_customer.present?
+        redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      else
+        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      end
   end
 
   def update

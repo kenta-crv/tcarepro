@@ -111,7 +111,6 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.string "address"
     t.string "caption"
     t.string "remarks"
-    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "memo_5"
@@ -133,6 +132,7 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.string "experience"
     t.string "extraction_count"
     t.string "send_count"
+    t.integer "status"
     t.integer "worker_id"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end

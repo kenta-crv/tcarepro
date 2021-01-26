@@ -68,6 +68,8 @@ Rails.application.routes.draw do
   #Mailer
   get 'mail' => 'customers#mail'
   delete :customers, to: 'customers#destroy_all'
+  get 'customers/bulk_edit'
+  put 'customers/bulk_update'
 
   #ファイルアップロード
   resources :uploader, only: [:edit, :update, :destroy]

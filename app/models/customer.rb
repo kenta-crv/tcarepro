@@ -13,8 +13,6 @@ class Customer < ApplicationRecord
   validates :tel, uniqueness: true, if: self.where(industry: nil).count > 0, on: :update
   validates :address, presence: true, on: :update
 
-
-
 #customer_import
   def self.import(file)
       save_cont = 0
@@ -118,5 +116,7 @@ class Customer < ApplicationRecord
   def self.SendStatus
     @@send_status
   end
+
+  enum status: {draft: 0, published: 1}
 
 end

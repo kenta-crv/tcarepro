@@ -128,16 +128,15 @@
           | 備考
         td[colspan="3"]
           = text_area :customer, :remarks
-
       tr
         th
-          | リスト製作者向けカウント
+          | 公開設定
           strong.label ※
         td
-          = f.select(:extraction_count, Customer.ExtractionStatus,include_blank: true)
-        th
-          | メール送信者向けカウント
-          strong.label ※
+          = f.select(:subject, [ \
+              ["publish","1"],
+              ])
+
         td
           = f.select(:send_count, Customer.SendStatus,include_blank:true)
         td = f.submit '登録する',class:"btn btn-success"
