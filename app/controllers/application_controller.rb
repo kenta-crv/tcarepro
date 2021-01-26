@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
   #before_action :set_user
   before_action :current_user_to_js
-  before_action :all_call
 
   #def set_user
   #  @user = User.find(params[:id])
@@ -12,12 +11,6 @@ class ApplicationController < ActionController::Base
   def current_user_to_js
     if current_user.present?
       gon.current_user = current_user.calls
-    end
-  end
-
-  def all_call
-    if current_user.present?
-      @calls = current_user.calls
     end
   end
 
