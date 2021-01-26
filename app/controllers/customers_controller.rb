@@ -165,6 +165,18 @@ class CustomersController < ApplicationController
     @call_count_cancel = @call_month_basic.select { |call| call.statu == "キャンセル" }
     @call_count_ng = @call_month_basic.select { |call| call.statu == "NG" }
 
+    # 企業別アポ状況
+    # @detailcalls = Customer2.joins(:calls).select('calls.id')
+    @customer2_sorairo = Customer2.where("industry LIKE ?", "%SORAIRO%")
+    @customer2_ikebukuro = Customer2.where("industry LIKE ?", "%JAIC池袋%")
+    @customer2_apotaku = Customer2.where("industry LIKE ?", "%アポ匠%")
+    @detail_sorairo = @customer2_sorairo.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_sorairo.present?
+    @detail_ikebukuro = @customer2_ikebukuro.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_ikebukuro.present?
+    @detail_apotaku = @customer2_apotaku.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_apotaku.present?
+    # @detail_sorairo = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
+    # @detail_ikebukuro = @detailcalls.where("industry LIKE ?", "%JAIC池袋%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
+    # @detail_apotaku = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
+
     #時間別コール
     @call_ng = @calls.where("statu LIKE ?","%NG%")
     #9時台
@@ -284,7 +296,6 @@ class CustomersController < ApplicationController
     @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
     #detail calls
 
-    @detailcalls = Customer2.joins(:calls).select('calls.id')
 
     call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
     generate_call =

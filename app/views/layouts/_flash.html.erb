@@ -1,0 +1,75 @@
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+  <%# <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> %>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+  <style type="text/css">
+    #myToast {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      z-index: 1040;
+    }
+    button#burn {
+      margin-left: 100px;
+      margin-top: 80px;
+    }
+  </style>
+
+  <script>
+    var currenttime = function(){
+      var date = new Date();
+      format_str = 'YYYY-MM-DD hh:mm';
+      format_str = format_str.replace(/YYYY/g, date.getFullYear());
+      format_str = format_str.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+      format_str = format_str.replace(/DD/g, ('0' + date.getDate()).slice(-2));
+      format_str = format_str.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+      format_str = format_str.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+      var user = gon.current_user;
+      $(document).ready(function(){
+        user.forEach(function( c ){
+          var called = new Date(c.time);
+          format_str1 = 'YYYY-MM-DD hh:mm';
+          format_str1 = format_str1.replace(/YYYY/g, called.getFullYear());
+          format_str1 = format_str1.replace(/MM/g, ('0' + (called.getMonth() + 1)).slice(-2));
+          format_str1 = format_str1.replace(/DD/g, ('0' + called.getDate()).slice(-2));
+          format_str1 = format_str1.replace(/hh/g, ('0' + called.getHours()).slice(-2));
+          format_str1 = format_str1.replace(/mm/g, ('0' + called.getMinutes()).slice(-2));
+          if(format_str1 === format_str){
+              // $("#myToast").toast({ delay: 120000 }).toast('show');
+              // var str = c.time;
+              // var str = Customer.find_by(c.customer_id);
+              // var str1 = str.company;
+              $("#myToast").css( 'display', 'block' );
+              // sleep(60000);
+              // document.getElementById('edit_area').textContent = format_str1;
+              // document.getElementById('edit_area').textContent = str1 ;
+          } else {
+            $('#myToast').css( 'display', 'none' );
+          }
+        });
+      });
+    };
+    setInterval(currenttime, 10000);
+  </script>
+</head>
+<body>
+  <!-- Alert -->
+  <% if @calls.present? %>
+    <!% @calls.each do |call| %>
+    <!% if call = @calls.where("time LIKE ?", "%#{DateTime.now}%") %>
+      <!% call.each do |ca| %>
+      <!% @customer_flash = Customer.find_by(id: ca.customer_id) %>
+        <div class="alert alert-primary alert-dismissable" id="myToast" style="display:none;position:fixed;">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden"true">&times;</button>
+          まもなく予約されたお電話の時間です。<br>
+          <!--お客様名:--><!%= @customer_flash.company %><%= link_to "顧客一覧ページへ遷移", customers_path, target: :_blank %>
+          <!--予約時間:--><!%= l(ca.time, format: :short) %><!--<div id="edit_area"></div>-->
+        </div>
+      <!% end %>
+    <!% end %>
+  <% end %>
+</body>
