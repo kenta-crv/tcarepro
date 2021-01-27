@@ -39,14 +39,10 @@
           format_str1 = format_str1.replace(/hh/g, ('0' + called.getHours()).slice(-2));
           format_str1 = format_str1.replace(/mm/g, ('0' + called.getMinutes()).slice(-2));
           if(format_str1 === format_str){
-              // $("#myToast").toast({ delay: 120000 }).toast('show');
-              // var str = c.time;
-              // var str = Customer.find_by(c.customer_id);
-              // var str1 = str.company;
               $("#myToast").css( 'display', 'block' );
-              // sleep(60000);
-              // document.getElementById('edit_area').textContent = format_str1;
-              // document.getElementById('edit_area').textContent = str1 ;
+              document.getElementById("edit_area").onclick = function(){
+                window.open('/customers/' + c.customer_id, "お客様情報ページへ", '_blank');
+              };
           } else {
             $('#myToast').css( 'display', 'none' );
           }
@@ -58,18 +54,9 @@
 </head>
 <body>
   <!-- Alert -->
-  <% if @calls.present? %>
-    <!% @calls.each do |call| %>
-    <!% if call = @calls.where("time LIKE ?", "%#{DateTime.now}%") %>
-      <!% call.each do |ca| %>
-      <!% @customer_flash = Customer.find_by(id: ca.customer_id) %>
-        <div class="alert alert-primary alert-dismissable" id="myToast" style="display:none;position:fixed;">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden"true">&times;</button>
-          まもなく予約されたお電話の時間です。<br>
-          <!--お客様名:--><!%= @customer_flash.company %><%= link_to "顧客一覧ページへ遷移", customers_path, target: :_blank %>
-          <!--予約時間:--><!%= l(ca.time, format: :short) %><!--<div id="edit_area"></div>-->
-        </div>
-      <!% end %>
-    <!% end %>
-  <% end %>
+  <div class="alert alert-primary alert-dismissable" id="myToast" style="display:none;position:fixed;">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden"true">&times;</button>
+    　まもなく予約されたお電話の時間です。<br>
+    <input type="button" style="width:20%;background-color: #248;color: #fff;border-style: none;" id="edit_area" value="お客様ページへ" />
+  </div>
 </body>
