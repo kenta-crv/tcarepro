@@ -27,7 +27,6 @@
            = submit_tag '削除', class: 'command'
            .all-btn
              = link_to '一括更新', customers_bulk_edit_path, remote: true,id: "comment-uploads-link", class: 'command'
-             = fb.submit "更新"
 
         th
           | 会社名
@@ -72,7 +71,7 @@
       th[colspan="8"]
         = paginate @customers
 
-
+#company-modal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"]
 
 #createExtraction.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
   .modal-dialog
