@@ -147,20 +147,6 @@ table.company.center[width="90%"]
        td
          strong.label.label-blue 任意
        td.arrow_box
-         | SEOランク
-       td
-        /= @customer.seo_rank
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 設立日
-       td
-        /= date_field :customer, :foundation
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
          | 問い合わせURL
        td
         = @customer.contact_url
@@ -168,86 +154,6 @@ table.company.center[width="90%"]
        td
          strong.label.label-blue 任意
        td.arrow_box
-         | 事業所数
+         | 分類ワード
        td
-        /= @customer.number_of_business
-          | 拠点
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 店舗数
-       td
-        /= @customer.number_of_business
-          | 店舗
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 上場日
-       td
-        /= date_field :customer, :customering
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 決算月
-       td
-        /= @customer.settlement
-          | 月
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 掲載サイト
-       td
-        /= @customer.published_site
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 現在の掲載サイト
-       td
-        /= @customer.published_now
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 求人の状況
-       td
-        /= @customer.recruit_now
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | IPアドレス
-       td
-        /= @customer.ip_address
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 解説
-       td
-        /= @customer.recruit_now
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | タイトル
-       td
-        /= @customer.headline
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 説明
-       td
-        /= @customer.description
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | worker検索
-       td
-        /= @customer.worker_search
+        = @customer.industry

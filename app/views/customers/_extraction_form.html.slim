@@ -74,20 +74,20 @@
           =text_field :customer, :url_2
       tr
         th
-          | 従業員数
-          strong.label.label-blue ※あれば必須
-          strong.label.label-blue ※案件によって条件が異なります。
-        td
-          =number_field :customer, :people
-          |人
-      tr
-        th
           | 資本金
           strong.label.label-blue ※あれば必須
           strong.label.label-blue ※案件によって条件が異なります。
         td
           =number_field :customer, :caption
           |円
+      tr
+        th
+          | 従業員数
+          strong.label.label-blue ※あれば必須
+          strong.label.label-blue ※案件によって条件が異なります。
+        td
+          =number_field :customer, :people
+          |人
       tr
         th
           | 問い合わせフォームURL
@@ -124,15 +124,7 @@
         th
           | 公開設定
         td
-          -if admin_signed_in?
-           = f.select(:status, [ \
-              ["publish","1"],
-              ["draft","0"],
-              ])
-          -elsif worker_signed_in?
-           = f.select(:status, [ \
-              ["draft","0"],
-              ])
+          = f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
 
       tr
         td = f.submit '登録する',class:"btn btn-success", data: { confirm: '抽出条件を理解せずに登録する方が非常に増えております。抽出エリア・抽出業種一致していますか？また、NG条件を登録しようとしていませんか？ミスして作業を進めると修正に多大な時間を要するため必ず確認して下さい。'}

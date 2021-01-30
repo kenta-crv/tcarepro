@@ -133,9 +133,8 @@
           | 公開設定
           strong.label ※
         td
-          = f.select(:subject, [ \
-              ["publish","1"],
-              ])
+          = f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
+
 
         td
           = f.select(:send_count, Customer.SendStatus,include_blank:true)

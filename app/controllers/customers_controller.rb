@@ -2,7 +2,7 @@ require 'rubygems'
 class CustomersController < ApplicationController
   before_action :authenticate_admin!, only: [:destroy, :destroy_all, :anayltics, :import, :call_import, :sfa, :mail]
   before_action :authenticate_worker!, only: [:extraction]
-  before_action :authenticate_user!, only: [:index, :show]
+  before_action :authenticate_user!, only: [:index]
   before_action :authenticate_worker_or_user, only: [:new, :edit]
   #before_action :authenticate_user_or_admin, only: [:index, :show]
   #before_action :authenticate_worker_or_admin, only: [:extraction]
@@ -66,7 +66,11 @@ class CustomersController < ApplicationController
   def create
     @customer = Customer.new(customer_params)
      if @customer.save
-       redirect_to customers_path
+       if worker_signed_in?
+         redirect_to extraction_path
+       else 
+         redirect_to customers_path
+       end
      else
        render 'new'
      end

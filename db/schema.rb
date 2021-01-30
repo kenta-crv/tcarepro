@@ -12,6 +12,17 @@
 
 ActiveRecord::Schema.define(version: 20201224133220) do
 
+  create_table "acquisitions", force: :cascade do |t|
+    t.integer "crm_id"
+    t.string "company"
+    t.string "day"
+    t.string "name"
+    t.string "statu"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_acquisitions_on_crm_id"
+  end
+
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
     t.string "email", default: "", null: false
@@ -114,11 +125,10 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "memo_5"
+    t.string "choice"
     t.string "title"
     t.string "other"
     t.string "url_2"
-    t.string "choice"
-    t.string "sfa_statu"
     t.string "inflow"
     t.string "business"
     t.string "price"
@@ -183,7 +193,11 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.index ["crm_id"], name: "index_images_on_crm_id"
   end
 
-  create_table "imformations", force: :cascade do |t|
+  create_table "knowledges", force: :cascade do |t|
+    t.string "title"
+    t.string "select"
+    t.string "name"
+    t.string "answer"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -212,6 +226,22 @@ ActiveRecord::Schema.define(version: 20201224133220) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "progresses", force: :cascade do |t|
+    t.integer "crm_id"
+    t.string "statu"
+    t.string "price"
+    t.string "number"
+    t.string "history"
+    t.string "area"
+    t.string "target"
+    t.string "next"
+    t.string "content"
+    t.string "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_progresses_on_crm_id"
   end
 
   create_table "smartphone_logs", force: :cascade do |t|

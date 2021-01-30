@@ -103,17 +103,17 @@ $(function() {
   });
 
   id_checkes = function(ele){
-    ids = $("input[type='checkbox'].company-checkbox").filter(":checked").map(function(){
+    ids = $("input[type='checkbox'].customer-checkbox").filter(":checked").map(function(){
       return $(this).attr("id");
     }).get();
-    $("#company-destroy-link").attr("href", "/companies/bulk_destroy?" + $.param({"ids":ids}));
-    mails = $("input[type='checkbox'].company-checkbox").filter(":checked").map(function(){
+    $("#customer-destroy-link").attr("href", "/companies/bulk_destroy?" + $.param({"ids":ids}));
+    mails = $("input[type='checkbox'].customer-checkbox").filter(":checked").map(function(){
       return $(this).data()["email"];
     }).get();
-    var params = $("#company-mail-link").attr("href").split("?")[1]
-    $("#company-mail-link").attr("href", "mailto:" + mails.join(",") + "?" + params);
-    // $("#company-mail-link").attr("href", "/companies/mail?" + $.param({"mails":mails}));
-    comment_ids = $("input[type='checkbox'].company-checkbox").filter(":checked").map(function(){
+    var params = $("#customer-mail-link").attr("href").split("?")[1]
+    $("#customer-mail-link").attr("href", "mailto:" + mails.join(",") + "?" + params);
+    // $("#customer-mail-link").attr("href", "/companies/mail?" + $.param({"mails":mails}));
+    comment_ids = $("input[type='checkbox'].customer-checkbox").filter(":checked").map(function(){
       return $(this).data()["commentId"];
     }).get();
     $("#comment-destroy-link").attr("href", "/comments/bulk_destroy?" + $.param({"ids":comment_ids}));
@@ -123,10 +123,9 @@ $(function() {
   }
 
 
-  //takigawa
   $(document).on('turbolinks:load', function(event) {
   //$(document).on('ready', function(event) {
-          //company/:id
+          //customer/:id
       $(document).on("click", ".edit-link-show", function () {
         data = $(this).data()
         $("#" + data.v + "-show").addClass("none")
@@ -134,12 +133,12 @@ $(function() {
       });
       $(".c-input-field").keypress( function ( e ) {
       	if ( e.which == 13 ) {
-          x = $('#company-show-update').submit();
+          x = $('#customer-show-update').submit();
       	}
       } );
       $(".c-input-field2").keypress( function ( e ) {
       	if ( e.which == 13 ) {
-          x = $('#company-show-update2').submit();
+          x = $('#customer-show-update2').submit();
       	}
       } );
       $(document).on("keypress", ".t-input-field", function (e) {
@@ -166,11 +165,11 @@ $(function() {
 
 
 
-      $("#company-index-table").tablesorter();
-      $(".company-checkbox").change(function(){
+      $("#customer-index-table").tablesorter();
+      $(".customer-checkbox").change(function(){
         id_checkes()
       });
-      $(".all-company-checkbox").click(function(){
+      $(".all-customer-checkbox").click(function(){
         $('.admin-checkbox').prop('checked', this.checked);
         id_checkes()
       });

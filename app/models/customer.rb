@@ -10,8 +10,10 @@ class Customer < ApplicationRecord
   }, class_name: :Call
 
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
-  validates :tel, uniqueness: true, if: self.where(industry: nil).count > 0, on: :update
-  validates :address, presence: true, on: :update
+  validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
+  validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
+  validates :business, presence: true, if: -> { extraction_count.blank?}, on: :update
+  validates :extraction_count, presence: true, if: -> { tel.blank?}
 
 #customer_import
   def self.import(file)
@@ -104,7 +106,7 @@ class Customer < ApplicationRecord
   end
 
   @@extraction_status = [
-    ["電話番号抽出済","電話番号抽出済"]
+    ["リスト抽出不可","リスト抽出不可"]
   ]
   def self.ExtractionStatus
     @@extraction_status
