@@ -12,14 +12,23 @@
       | クラウドワーカーの募集
     .cp_actab-content
       p
-        |
+      .center
+       = video_tag("/videos/発注作業.mov", :controls => true,  :width=> "70%")
   .cp_actab
     input#cp_tabfour002[type="checkbox" name="tabs"]
     label[for="cp_tabfour002"]
-      | 採用の見極め・契約・仮払い・Slack誘導
+      | 採用作業
     .cp_actab-content
       p
-        |
+      .center
+       = video_tag("/videos/採択作業.mov", :controls => true,  :width=> "70%")
+  .cp_actab
+    input#cp_tabfour002[type="checkbox" name="tabs"]
+    label[for="cp_tabfour002"]
+      | 契約・仮払い・Slack誘導
+    .cp_actab-content
+      p
+      .center
   .cp_actab
     input#cp_tabfour003[type="checkbox" name="tabs"]
     label[for="cp_tabfour003"]
@@ -30,24 +39,21 @@
   .cp_actab
     input#cp_tabfour004[type="checkbox" name="tabs"]
     label[for="cp_tabfour004"]
-      | 業務チェック・管理（リスト）
+      | 業務チェック・管理
     .cp_actab-content
       p
-        |
+      .center
+        = video_tag("/videos/内容チェック.mov", :controls => true,  :width=> "70%")
+        br
+        = video_tag("/videos/CW対応.mov", :controls => true,  :width=> "70%")
   .cp_actab
-    input#cp_tabfour005[type="checkbox" name="tabs"]
-    label[for="cp_tabfour005"]
-      | 業務チェック・管理（メール）
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour006[type="checkbox" name="tabs"]
-    label[for="cp_tabfour006"]
+    input#cp_tabfour106[type="checkbox" name="tabs"]
+    label[for="cp_tabfour106"]
       | 支払処理
     .cp_actab-content
       p
-        |
+      .center
+        = video_tag("/videos/検収.mov", :controls => true,  :width=> "70%")
   .cp_actab
     input#cp_tabfour006[type="checkbox" name="tabs"]
     label[for="cp_tabfour006"]
@@ -65,7 +71,8 @@
       | リストインポート（※午前9時迄に完了）
     .cp_actab-content
       p
-        |
+      .center
+        = video_tag("/videos/インポート.mov", :controls => true,  :width=> "70%")
   .cp_actab
     input#cp_tabfour008[type="checkbox" name="tabs"]
     label[for="cp_tabfour008"]
@@ -79,7 +86,8 @@
       | メールチェック（メールマーケティング）
     .cp_actab-content
       p
-        |
+      .center
+        = video_tag("/videos/メールチェック.mov", :controls => true,  :width=> "70%")
   .cp_actab
     input#cp_tabfour010[type="checkbox" name="tabs"]
     label[for="cp_tabfour010"]
@@ -101,6 +109,22 @@
     .cp_actab-content
       p
         |
+  .cp_actab
+    input#cp_tabfour111[type="checkbox" name="tabs"]
+    label[for="cp_tabfour111"]
+      | アポ報告（slack）
+    .cp_actab-content
+      p
+      .center
+        = video_tag("/videos/アポ報告（slack）mov", :controls => true,  :width=> "70%")
+  .cp_actab
+    input#cp_tabfour112[type="checkbox" name="tabs"]
+    label[for="cp_tabfour112"]
+      | アポ報告（カレンダー）
+    .cp_actab-content
+      p
+      .center
+        = video_tag("/videos/アポ報告（カレンダー）.mov", :controls => true,  :width=> "70%")
 
  h1.headline 定期業務
  br
@@ -112,6 +136,14 @@
     .cp_actab-content
       p
         |
+  .cp_actab
+    input#cp_tabfour113[type="checkbox" name="tabs"]
+    label[for="cp_tabfour113"]
+      | シフト修正
+    .cp_actab-content
+      p
+      .center
+        = video_tag("/videos/出勤簿修正・シフト管理.mov", :controls => true,  :width=> "70%")
   .cp_actab
     input#cp_tabfour014[type="checkbox" name="tabs"]
     label[for="cp_tabfour014"]
@@ -211,7 +243,8 @@
       | 面接日程調整
     .cp_actab-content
       p
-        |
+      .center
+        = video_tag("/videos/面接日程調整.mov", :controls => true,  :width=> "70%")
   .cp_actab
     input#cp_tabfour027[type="checkbox" name="tabs"]
     label[for="cp_tabfour027"]
