@@ -23,19 +23,42 @@
       .center
        = video_tag("/videos/採択作業.mov", :controls => true,  :width=> "70%")
   .cp_actab
-    input#cp_tabfour002[type="checkbox" name="tabs"]
-    label[for="cp_tabfour002"]
+    input#cp_tabfour202[type="checkbox" name="tabs"]
+    label[for="cp_tabfour202"]
       | 契約・仮払い・Slack誘導
     .cp_actab-content
       p
       .center
+       = video_tag("/videos/契約仮払い.mov", :controls => true,  :width=> "70%")
   .cp_actab
     input#cp_tabfour003[type="checkbox" name="tabs"]
     label[for="cp_tabfour003"]
       | 業務案内開始
     .cp_actab-content
       p
-        |
+        |お世話になっております。ご連絡遅くなり失礼しました。
+        br
+        |先ほどスプレッドシートへのご招待が完了しました。
+        br
+        |#【チャンネル名】 の中の　
+        br
+        |業務名：【案件名】
+        br
+        |の作業をお願い出来ますでしょうか？
+        br
+        |ご不明点があればお問い合わせ下さいませ。
+        br
+        |行数：【行目】から作業お願いします。
+        br
+        |また件数において把握の目的より作業終了後に都度、以下内容を送信頂ければと存じます。
+        br
+        |●/● 実施●件
+        br
+        |また最初は確認のために20件抽出後にご連絡頂けますでしょうか？
+        br
+        |スタート時、抽出条件を読まずにミスをされる方が非常に多いので、必ず抽出条件を確認の上で最初は1件1件丁寧に進めてください。
+        br
+        |よろしくお願い致します。
   .cp_actab
     input#cp_tabfour004[type="checkbox" name="tabs"]
     label[for="cp_tabfour004"]
@@ -53,14 +76,23 @@
     .cp_actab-content
       p
       .center
-        = video_tag("/videos/検収.mov", :controls => true,  :width=> "70%")
+        = video_tag("/videos/検収.mp4", :controls => true,  :width=> "70%")
   .cp_actab
-    input#cp_tabfour006[type="checkbox" name="tabs"]
-    label[for="cp_tabfour006"]
+    input#cp_tabfour116[type="checkbox" name="tabs"]
+    label[for="cp_tabfour116"]
       | 継続フロー
     .cp_actab-content
       p
-        |
+      .center
+        = video_tag("/videos/継続発注.mov", :controls => true,  :width=> "70%")
+  .cp_actab
+    input#cp_tabfour006[type="checkbox" name="tabs"]
+    label[for="cp_tabfour006"]
+      | スプレッドシート重複チェック
+    .cp_actab-content
+      p
+      .center
+        = video_tag("/videos/スプレッドシート重複チェック.mov", :controls => true,  :width=> "70%")
 
  h1.headline 日々業務
  br
@@ -79,7 +111,15 @@
       | 電話受付対応
     .cp_actab-content
       p
-        |
+        |【振り分け】
+        br
+        | 面接に関する問い合わせ：弊社は現在在宅勤務をそれぞれ行なっている関係もあり、お問い合わせはメールのみとさせて頂いております。
+        br
+        | 取引に関する問い合わせ：現在担当者が外出しており、戻り次第ご連絡致しますので、会社名様・お名前・電話番号をお伺いできますでしょうか？
+        br
+        | 営業に関する問い合わせ：確認無く全て断って結構です。
+        br
+        | 役所からの連絡等：080-4815-2906（担当：奥山）へのご連絡をお願い致します。
   .cp_actab
     input#cp_tabfour009[type="checkbox" name="tabs"]
     label[for="cp_tabfour009"]

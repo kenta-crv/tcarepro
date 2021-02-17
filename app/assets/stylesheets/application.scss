@@ -24,6 +24,9 @@ $asort_color: #2CE4D3;
 * {box-sizing: border-box;}
 a {text-decoration: none;}
 .none {display: none;}
+a:link, a:visited, a:hover, a:active {
+  color: #4B4A4B;
+}
 
 body {
   margin: 0;

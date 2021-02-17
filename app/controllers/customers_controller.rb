@@ -54,8 +54,8 @@ class CustomersController < ApplicationController
     @customers = @q.result || @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @call = Call.new
-    @prev_customer = @customers.where("customers.id < ?", @customer.id).last
-    @next_customer = @customers.where("customers.id > ?", @customer.id).first
+    @prev_customer = @customers.where("customers.id > ?", @customer.id).last
+    @next_customer = @customers.where("customers.id < ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
 
@@ -68,7 +68,7 @@ class CustomersController < ApplicationController
      if @customer.save
        if worker_signed_in?
          redirect_to extraction_path
-       else 
+       else
          redirect_to customers_path
        end
      else

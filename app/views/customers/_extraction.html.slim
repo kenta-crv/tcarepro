@@ -46,7 +46,7 @@ table.company.center[width="90%"]
        td = @customer.title&.truncate(70)
        th.arrow_box
          | 参考サイト
-       td = link_to @customer.url&.truncate(50)
+       td = link_to @customer.url&.truncate(50), @customer.url, target: "_blank"
 
 .tops-wrapper
  h2.headline
@@ -116,13 +116,13 @@ table.company.center[width="90%"]
          strong.label 必須
        td.arrow_box
          | URL
-       td = @customer.url&.truncate(50)
+       td = link_to @customer.url&.truncate(50), @customer.url, target: "_blank"
      tr
        td
          strong.label.label-blue 任意
        td.arrow_box
          | URL2
-       td = @customer.url_2&.truncate(50)
+       td = link_to @customer.url_2&.truncate(50), @customer.url_2, target: "_blank"
      tr
        td
          strong.label.label-blue 任意
