@@ -159,8 +159,33 @@ class CustomersController < ApplicationController
     # @detail_ikebukuro = @detailcalls.where("industry LIKE ?", "%JAIC池袋%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
     # @detail_apotaku = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
 
-    #時間別コール
+    @admins = Admin.all
+    @users = User.all
+
+    call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
+    generate_call =
+      CSV.generate(headers:true) do |csv|
+        csv << call_attributes
+        Call.all.each do |task|
+          csv << call_attributes.map{|attr| task.send(attr)}
+        end
+      end
+    respond_to do |format|
+      format.html
+      format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+    end
+  end
+
+  def analytics2
+    @calls = Call.all
     @call_ng = @calls.where("statu LIKE ?","%NG%")
+    @call_month_basic = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+    @call_count_called = @call_month_basic.select { |call| call.statu == "着信留守" }
+    @call_count_absence = @call_month_basic.select { |call| call.statu == "担当者不在" }
+    @call_count_prospect = @call_month_basic.select { |call| call.statu == "見込" }
+    @call_count_app = @call_month_basic.select { |call| call.statu == "APP" }
+    @call_count_cancel = @call_month_basic.select { |call| call.statu == "キャンセル" }
+    @call_count_ng = @call_month_basic.select { |call| call.statu == "NG" }
     #9時台
     @call_total_9 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "09:00:00" }.select { |call| l(call.created_at, format: :prepare) < "09:59:59" }.count
     @call_total_b9 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "00:00:00" }.select { |call| l(call.created_at, format: :prepare) < '00:59:59' }.count
@@ -277,20 +302,6 @@ class CustomersController < ApplicationController
     #statu内容簡素化
     @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
     #detail calls
-
-
-    call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
-    generate_call =
-      CSV.generate(headers:true) do |csv|
-        csv << call_attributes
-        Call.all.each do |task|
-          csv << call_attributes.map{|attr| task.send(attr)}
-        end
-      end
-    respond_to do |format|
-      format.html
-      format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-    end
   end
 
   def import
