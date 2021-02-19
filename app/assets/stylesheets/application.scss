@@ -38,6 +38,7 @@ main{
   margin-top:-70px;
   padding-left:50px;
   margin-bottom:30px;
+  @media screen and (max-width: 486px){padding-left:0px}
 }
 
 /*ヘッダーのベース設定*/
@@ -51,6 +52,7 @@ z-index:150;
 max-width:250px;
 height: 100%;
 margin-left:30px;
+@media screen and (max-width: 486px){max-width:210px;}
 }
 .navi {
 background-color:$main_color;
@@ -86,6 +88,7 @@ width: 16.5%;
 font-size:14px;
 float: left;
 text-align: center;
+@media screen and (max-width: 486px){display:none;}
 }
 #dropmenu li a{
 display: block;
@@ -816,6 +819,7 @@ nav.globalMenuSp.active {
     background: black;
     text-align: center;
     z-index:100;
+    @media screen and (max-width: 486px){display:none;}
 }
 
 #global-nav .sub-menu-nav {
@@ -847,7 +851,9 @@ nav.globalMenuSp.active {
 
 
 .right{
-  margin-top:20px;
+  margin:20px 0px 0 0;
+  padding-left:200px;
+  @media screen and (max-width: 486px){padding-left:0px;}
 }
 
 
@@ -1018,6 +1024,7 @@ color:red;
      display:inline-block;
      text-align:center;
      background: red;
+     @media screen and (max-width: 486px){display:none}
            p {
            color: #FFF;/*文字色*/
            font-weight: bold;
@@ -1051,7 +1058,7 @@ color:red;
  }
 
 .top-wrapper {
-  margin:0 40px;
+  margin:0 40px 0;
   text-align:left;
    .float-image{
      float:left;
@@ -1063,17 +1070,19 @@ color:red;
    }
    strong{
      color: $main_color;
-     font-size:2.8rem;
+     font-size:2.4rem;
      text-decoration: underline;
      font-weight:bold;
    }
    .heading {
+     margin-top:-40px;
      text-align:center;
      color: #666;
      font-weight:bold;
    }
    h6 {
      margin-top:-40px;
+     line-height:2rem;
      margin-bottom:20px;
    }
 

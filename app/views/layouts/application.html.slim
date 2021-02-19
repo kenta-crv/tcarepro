@@ -9,11 +9,8 @@ html
         .col-xs-3
            = link_to "/"
             =image_tag "rogo2.png", width: "70%", class:"header-image"
-        h1.col-xs-6
-         .white
-           br
-           | リストマーケティングで成果を出すなら
-        .col-xs-2.right
+        .col-xs-4
+        .col-xs-4.right
            - if @customers && (controller.action_name != 'list')  && (controller.action_name != 'extraction')
             li
               button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createTicket"]
@@ -29,7 +26,7 @@ html
            -else
 
 
-        .col-xs-1
+        .col-xs-1.hidden-xs
             .navToggle
                   span
                   span
@@ -78,4 +75,3 @@ html
     main
       = yield
       / = debug(params) if Rails.env.development?
-

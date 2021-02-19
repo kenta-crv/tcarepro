@@ -113,11 +113,11 @@ $(function() {
     var params = $("#customer-mail-link").attr("href").split("?")[1]
     $("#customer-mail-link").attr("href", "mailto:" + mails.join(",") + "?" + params);
     // $("#customer-mail-link").attr("href", "/companies/mail?" + $.param({"mails":mails}));
-    comment_ids = $("input[type='checkbox'].customer-checkbox").filter(":checked").map(function(){
-      return $(this).data()["commentId"];
+    customer_ids = $("input[type='checkbox'].customer-checkbox").filter(":checked").map(function(){
+      return $(this).data()["customerId"];
     }).get();
-    $("#comment-destroy-link").attr("href", "/comments/bulk_destroy?" + $.param({"ids":comment_ids}));
-    $("#comment-uploads-link").attr("href", "/comments/bulk_edit?" + $.param({"ids":comment_ids}));
+    $("#customer-destroy-link").attr("href", "/customers/bulk_destroy?" + $.param({"ids":customer_ids}));
+    $("#customer-uploads-link").attr("href", "/customers/bulk_edit?" + $.param({"ids":customer_ids}));
 
 
   }
@@ -146,15 +146,15 @@ $(function() {
           x = $('#todo-show-update').submit();
       	}
       });
-      $(document).on("click", ".comment-edit", function () {
+      $(document).on("click", ".customer-edit", function () {
         data = $(this).data()
-        $("#" + data.id + "-comment-body").toggle();
-        $("#" + data.id + "-comment-edit-field").toggle();
+        $("#" + data.id + "-customer-body").toggle();
+        $("#" + data.id + "-customer-edit-field").toggle();
       })
 
-      $(document).on("click", ".comment-edit-detail", function () {
+      $(document).on("click", ".customer-edit-detail", function () {
         data = $(this).data()
-        $("#" + data.id + "-comment-edit-detail-field").toggle();
+        $("#" + data.id + "-customer-edit-detail-field").toggle();
       })
 
       $(document).on("change", "#form-bulk-edit", function () {
@@ -173,3 +173,4 @@ $(function() {
         $('.admin-checkbox').prop('checked', this.checked);
         id_checkes()
       });
+    })

@@ -28,7 +28,7 @@ class CustomersController < ApplicationController
     #@customers = @q.result  @q.result.includes(:last_call)
     #@customers = @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
-    @customers = @customers.published.page(params[:page]).per(30)
+    @customers = @customers.page(params[:page]).per(30)
     respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
