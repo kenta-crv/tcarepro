@@ -12,7 +12,6 @@
 //
 //= require rails-ujs
 //
-//= require jquery3
 //= require popper
 //= require bootstrap-sprockets
 //
@@ -101,76 +100,3 @@ $(function() {
       return pr_code
     }
   });
-
-  id_checkes = function(ele){
-    ids = $("input[type='checkbox'].customer-checkbox").filter(":checked").map(function(){
-      return $(this).attr("id");
-    }).get();
-    $("#customer-destroy-link").attr("href", "/companies/bulk_destroy?" + $.param({"ids":ids}));
-    mails = $("input[type='checkbox'].customer-checkbox").filter(":checked").map(function(){
-      return $(this).data()["email"];
-    }).get();
-    var params = $("#customer-mail-link").attr("href").split("?")[1]
-    $("#customer-mail-link").attr("href", "mailto:" + mails.join(",") + "?" + params);
-    // $("#customer-mail-link").attr("href", "/companies/mail?" + $.param({"mails":mails}));
-    customer_ids = $("input[type='checkbox'].customer-checkbox").filter(":checked").map(function(){
-      return $(this).data()["customerId"];
-    }).get();
-    $("#customer-destroy-link").attr("href", "/customers/bulk_destroy?" + $.param({"ids":customer_ids}));
-    $("#customer-uploads-link").attr("href", "/customers/bulk_edit?" + $.param({"ids":customer_ids}));
-
-
-  }
-
-
-  $(document).on('turbolinks:load', function(event) {
-  //$(document).on('ready', function(event) {
-          //customer/:id
-      $(document).on("click", ".edit-link-show", function () {
-        data = $(this).data()
-        $("#" + data.v + "-show").addClass("none")
-        $("#" + data.v + "-c-input-field").removeClass("none")
-      });
-      $(".c-input-field").keypress( function ( e ) {
-      	if ( e.which == 13 ) {
-          x = $('#customer-show-update').submit();
-      	}
-      } );
-      $(".c-input-field2").keypress( function ( e ) {
-      	if ( e.which == 13 ) {
-          x = $('#customer-show-update2').submit();
-      	}
-      } );
-      $(document).on("keypress", ".t-input-field", function (e) {
-        if ( e.which == 13 ) {
-          x = $('#todo-show-update').submit();
-      	}
-      });
-      $(document).on("click", ".customer-edit", function () {
-        data = $(this).data()
-        $("#" + data.id + "-customer-body").toggle();
-        $("#" + data.id + "-customer-edit-field").toggle();
-      })
-
-      $(document).on("click", ".customer-edit-detail", function () {
-        data = $(this).data()
-        $("#" + data.id + "-customer-edit-detail-field").toggle();
-      })
-
-      $(document).on("change", "#form-bulk-edit", function () {
-        $(".form-bulk-edit-input").addClass("none")
-        v = $(this).val()
-        $("#form-" + v).removeClass("none")
-      })
-
-
-
-      $("#customer-index-table").tablesorter();
-      $(".customer-checkbox").change(function(){
-        id_checkes()
-      });
-      $(".all-customer-checkbox").click(function(){
-        $('.admin-checkbox').prop('checked', this.checked);
-        id_checkes()
-      });
-    })
