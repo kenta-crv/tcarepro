@@ -1,7 +1,11 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  #before_action :authenticate_user_or_admin, except: [:list, :extraction, :edit, :show]
-  #before_action :authenticate_worker_or_admin_or_user, only: [:extraction, :edit]
+  before_action :authenticate_admin!, only: [:destroy, :destroy_all, :anayltics, :import, :call_import, :sfa, :mail]
+  before_action :authenticate_worker!, only: [:extraction]
+  before_action :authenticate_user!, only: [:index]
+  before_action :authenticate_worker_or_user, only: [:new, :edit]
+  #before_action :authenticate_user_or_admin, only: [:index, :show]
+  #before_action :authenticate_worker_or_admin, only: [:extraction]
 
   def index
     last_call_customer_ids = nil
@@ -32,7 +36,6 @@ class CustomersController < ApplicationController
     @all = @customers.all
   end
 
-
   def show
     last_call_customer_ids = nil
     @last_call_params = {}
@@ -51,8 +54,8 @@ class CustomersController < ApplicationController
     @customers = @q.result || @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @call = Call.new
-    @prev_customer = @customers.where("customers.id < ?", @customer.id).last
-    @next_customer = @customers.where("customers.id > ?", @customer.id).first
+    @prev_customer = @customers.where("customers.id > ?", @customer.id).last
+    @next_customer = @customers.where("customers.id < ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
 
@@ -63,7 +66,11 @@ class CustomersController < ApplicationController
   def create
     @customer = Customer.new(customer_params)
      if @customer.save
-       redirect_to customers_path
+       if worker_signed_in?
+         redirect_to extraction_path
+       else
+         redirect_to customers_path
+       end
      else
        render 'new'
      end
@@ -109,6 +116,21 @@ class CustomersController < ApplicationController
     else
       render action: 'index'
     end
+  end
+
+  def bulk_edit
+    @ids = params[:ids]
+  end
+
+  def bulk_update
+    @ids = params[:ids].split(" ")
+    @ids.each do |id|
+      c = Customer.find(id.to_i)
+      c.update_attributes(
+        status: params[:status]
+      )
+    end
+    redirect_to request.referer
   end
 
   def analytics
@@ -332,25 +354,25 @@ class CustomersController < ApplicationController
   def sfa
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = Customer.where(choice: "SFA").page(params[:page]).per(20)
+    @customers = @customers.where(choice: "SFA").page(params[:page]).per(20)
   end
 
   def list
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = Customer.order(created_at: 'desc').page(params[:page]).per(20)
+    @customers = @customers.order(created_at: 'desc').page(params[:page]).per(20)
   end
 
   def extraction
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = Customer.where(tel: nil).page(params[:page]).per(20)
+    @customers = @customers.draft.order("created_at DESC").page(params[:page]).per(20)
   end
 
   def mail
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = Customer.where.not(mail: nil).page(params[:page]).per(20)
+    @customers = @customers.where.not(mail: nil).page(params[:page]).per(20)
   end
 
   private
@@ -379,6 +401,7 @@ class CustomersController < ApplicationController
         :url_2, #url2
         :customer_tel,
         :choice,
+        :contact_url, #問い合わせフォーム
 
         :inflow, #流入元
         :business, #事業内容
@@ -393,8 +416,9 @@ class CustomersController < ApplicationController
         :remarks, #備考
         :business, #業種
         :extraction_count,
-        :send_count
-       )
+        :send_count,
+        :status
+       )&.merge(worker: current_worker)
     end
 
     def authenticate_user_or_admin
@@ -403,9 +427,15 @@ class CustomersController < ApplicationController
       end
     end
 
-    def authenticate_worker_or_admin_or_user
-      unless user_signed_in? || admin_signed_in? || worker_signed_in?
-         redirect_to new_user_session_path, alert: 'error'
+    def authenticate_worker_or_admin
+      unless worker_signed_in? || admin_signed_in?
+         redirect_to new_worker_session_path, alert: 'error'
+      end
+    end
+
+    def authenticate_worker_or_user
+      unless user_signed_in? ||  worker_signed_in?
+         redirect_to new_worker_session_path, alert: 'error'
       end
     end
 

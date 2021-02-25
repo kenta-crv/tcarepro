@@ -1,5 +1,5 @@
 class MattersController < ApplicationController
-  #before_action :authenticate_worker!, except: [:edit, :new]
+  before_action :authenticate_worker!, except: [:edit, :new]
   before_action :authenticate_admin!, only: [:edit, :new]
     def index
       @matters = Matter.all

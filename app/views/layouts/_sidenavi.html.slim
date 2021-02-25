@@ -4,7 +4,7 @@ aside#sidebar
   ul
     li.sub-menu
       = link_to "#"
-       = image_tag "list.png", width:"40px"
+       = image_tag "list.gif", width:"40px"
        -if admin_signed_in? || worker_signed_in?
         ul.sub-menu-nav
          li
@@ -14,14 +14,14 @@ aside#sidebar
           = link_to "業務案内","/matters"
     li.sub-menu
       = link_to "#"
-       = image_tag "mail.png", width:"40px"
+       = image_tag "mail.gif", width:"40px"
        -if admin_signed_in?
         ul.sub-menu-nav
          li
           = link_to "Okurite","/mail"
     li.sub-menu
       = link_to "/#"
-       = image_tag "cti.png", width:"40px"
+       = image_tag "cti.gif", width:"40px"
        -if admin_signed_in? || user_signed_in?
         ul.sub-menu-nav
          li
@@ -34,21 +34,21 @@ aside#sidebar
            = link_to "事務マニュアル", manuals_officework_path
     li.sub-menu
       = link_to "#"
-       = image_tag "ma.png", width:"40px"
+       = image_tag "ma.gif", width:"40px"
        -if admin_signed_in?
         ul.sub-menu-nav
          li
           = link_to "Marketing Automation","#"
     li.sub-menu
       = link_to "#"
-       = image_tag "sfa.png", width:"40px"
+       = image_tag "sfa.gif", width:"40px"
        -if admin_signed_in?
         ul.sub-menu-nav
          li
           = link_to "SFA","/sfa"
     li.sub-menu
       = link_to "#"
-       = image_tag "estimate.png", width:"40px"
+       = image_tag "estimate.gif", width:"40px"
        -if admin_signed_in?
         ul.sub-menu-nav
          li
@@ -58,28 +58,28 @@ aside#sidebar
           = link_to "請求書","/estimates"
     li.sub-menu
       = link_to "#"
-       = image_tag "file.png", width:"40px"
+       = image_tag "file.gif", width:"40px"
        -if admin_signed_in?
         ul.sub-menu-nav
          li
           = link_to "ファイル",'/uploader/index'
     li.sub-menu
       = link_to "#"
-       = image_tag "import.png", width:"40px"
+       = image_tag "import.gif", width:"40px"
        -if admin_signed_in?
         ul.sub-menu-nav
          li
           = link_to "データインポート","#"
     li.sub-menu
       = link_to "#"
-       = image_tag "analytics.png", width:"40px"
+       = image_tag "analytics.gif", width:"40px"
        -if admin_signed_in?
         ul.sub-menu-nav
          li
           = link_to "アナリティクス","/analytics"
     li.sub-menu
       = link_to "#"
-       = image_tag "mypage.png", width:"40px"
+       = image_tag "mypage.gif", width:"40px"
        ul.sub-menu-nav
          li
           - if user_signed_in?

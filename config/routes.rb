@@ -61,13 +61,17 @@ Rails.application.routes.draw do
   get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'analytics' => 'customers#analytics' #分析
+
   get 'analytics2' => 'customers#analytics2' #分析
+  get 'management' => 'customers#management' #分析
   get 'sfa' => 'customers#sfa' #SFA
   #TCARE
   get 'extraction' => 'customers#extraction'
   #Mailer
   get 'mail' => 'customers#mail'
   delete :customers, to: 'customers#destroy_all'
+  get 'customers/bulk_edit'
+  put 'customers/bulk_update'
 
   #ファイルアップロード
   resources :uploader, only: [:edit, :update, :destroy]

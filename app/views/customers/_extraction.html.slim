@@ -4,7 +4,7 @@ table.company.center[width="90%"]
   col width="40%"
   col width="10%"
   tr
-    th[rowspan="3"]
+    th[rowspan="4"]
       - if @prev_customer&.id
        = link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"btn btn-success"
     td
@@ -20,16 +20,33 @@ table.company.center[width="90%"]
   tr
     td
      | 電話番号更新者：
-     /= @customer.user_name
+     = @customer.worker&.user_name
     td
      | メール実施者：
-     /= @customer.send_count
+     = @customer.send_count
   tr
     td
      = link_to "#{@customer.company}をgoogle検索", "http://www.google.de/search?q=#{@customer.company}+#{@customer.address}", :target => "_blank", class:"genre btn btn-success"
     td
      = link_to "編集", edit_customer_path(@customer), class:"genre btn btn-success"
 
+.tops-wrapper
+ h2.headline
+  | 求人情報（※抽出前に必ず確認）
+ table.company
+  colgroup
+    col width="15%"
+    col width="35%"
+    col width="15%"
+    col width="35%"
+    tbody
+     tr
+       th.arrow_box
+         | 求人タイトル
+       td = @customer.title&.truncate(70)
+       th.arrow_box
+         | 参考サイト
+       td = link_to @customer.url&.truncate(50), @customer.url, target: "_blank"
 
 .tops-wrapper
  h2.headline
@@ -48,49 +65,32 @@ table.company.center[width="90%"]
        td = @customer.company
      tr
        td
-         strong.label.label-blue 任意
+         strong.label 必須
        td.arrow_box
-         | カイシャメイ
-       td
-         /= @customer.company_kana
+         | メールアドレス
+       td = @customer.mail
      tr
        td
          strong.label.label-blue 任意
        td.arrow_box
-         | 代表者名
+         | 代表者姓名
        td
          = @customer.first_name
          = @customer.last_name
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | ダイヒョウシャ
-       td
-         = @customer.first_kana
-         = @customer.last_kana
      tr
        td
          strong.label 必須
        td.arrow_box
          | 電話番号
        td
-         /= @customer.tel_front
-         |-
-         /= @customer.tel_middle
-         |-
-         /= @customer.tel_back
+         = @customer.tel
      tr
        td
          strong.label.label-blue 任意
        td.arrow_box
          | FAX番号
        td
-         /= @customer.fax_front
-         |-
-         /= @customer.fax_middle
-         |-
-         /= @customer.fax_back
+         = @customer.fax
      tr
        td
          strong.label 必須
@@ -105,35 +105,6 @@ table.company.center[width="90%"]
          | 住所
        td
          = @customer.address
-         /= @customer.prefecture
-         /= @customer.city
-         /= @customer.town
-         /= @customer.town_number
-         /= @customer.building
-     tr
-       td
-         strong.label 必須
-       td.arrow_box
-         | メールアドレス
-       td = @customer.mail
-     tr
-       td
-         strong.label 必須
-       td.arrow_box
-         | URL
-       td = @customer.url
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | URL2
-       td = @customer.url_2
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | タイトル
-       td = @customer.title
      tr
        td
          strong.label 必須
@@ -142,10 +113,16 @@ table.company.center[width="90%"]
        td = @customer.business
      tr
        td
+         strong.label 必須
+       td.arrow_box
+         | URL
+       td = link_to @customer.url&.truncate(50), @customer.url, target: "_blank"
+     tr
+       td
          strong.label.label-blue 任意
        td.arrow_box
-         | other
-       td = @customer.other
+         | URL2
+       td = link_to @customer.url_2&.truncate(50), @customer.url_2, target: "_blank"
      tr
        td
          strong.label.label-blue 任意
@@ -161,159 +138,22 @@ table.company.center[width="90%"]
        td = @customer.people
           | 人
      tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 営業時間
-       td
-        /= @customer.business_hour
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 休日
-       td
-        /= @customer.holiday
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 支払方法
-       td
-        /= @customer.payment
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 料金
-       td
-        /= @customer.price
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | アクセス
-       td
-        /= @customer.access
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | ロゴ画像
-       td
-        /= @customer.rogo
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | メイン画像
-       td
-        /= @customer.image
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | SEOランク
-       td
-        /= @customer.seo_rank
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 設立日
-       td
-        /= date_field :customer, :foundation
+            td
+              strong.label.label-blue 任意
+            td.arrow_box
+              | other
+            td = @customer.other
      tr
        td
          strong.label.label-blue 任意
        td.arrow_box
          | 問い合わせURL
        td
-        /= url_field :customer, :contact_url
+        = @customer.contact_url
      tr
        td
          strong.label.label-blue 任意
        td.arrow_box
-         | 事業所数
+         | 分類ワード
        td
-        /= @customer.number_of_business
-          | 拠点
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 店舗数
-       td
-        /= @customer.number_of_business
-          | 店舗
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 上場日
-       td
-        /= date_field :customer, :customering
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 決算月
-       td
-        /= @customer.settlement
-          | 月
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 掲載サイト
-       td
-        /= @customer.published_site
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 現在の掲載サイト
-       td
-        /= @customer.published_now
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 求人の状況
-       td
-        /= @customer.recruit_now
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | IPアドレス
-       td
-        /= @customer.ip_address
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 解説
-       td
-        /= @customer.recruit_now
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | タイトル
-       td
-        /= @customer.headline
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | 説明
-       td
-        /= @customer.description
-     tr
-       td
-         strong.label.label-blue 任意
-       td.arrow_box
-         | worker検索
-       td
-        /= @customer.worker_search
+        = @customer.industry

@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
       when User
          customers_path
       when Worker
-         worker_path(worker.id)
+         worker_path(current_worker)
       else
          super
       end

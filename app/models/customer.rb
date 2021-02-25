@@ -9,8 +9,11 @@ class Customer < ApplicationRecord
     order("created_at desc")
   }, class_name: :Call
 
-  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"], with: /^[0-9\-]+$/, on: :update
-  validates :address, presence: true, on: :update
+  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
+  validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
+  validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
+  validates :business, presence: true, if: -> { extraction_count.blank?}, on: :update
+  validates :extraction_count, presence: true, if: -> { tel.blank?}
 
 #customer_import
   def self.import(file)
@@ -19,9 +22,9 @@ class Customer < ApplicationRecord
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
        next if customer.industry == nil
-       next if self.where(tel: customer.tel).where(industry: nil).count > 0
-       next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-       next if self.where(tel: customer.company).where(industry: nil).count > 0
+       #next if self.where(tel: customer.tel).where(industry: nil).count > 0
+       #next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
+       #next if self.where(tel: customer.company).where(industry: nil).count > 0
        next if self.where(tel: customer.company).where(industry: customer.industry).count > 0
        customer.save!
        save_cont += 1
@@ -103,7 +106,7 @@ class Customer < ApplicationRecord
   end
 
   @@extraction_status = [
-    ["電話番号抽出済","電話番号抽出済"]
+    ["リスト抽出不可","リスト抽出不可"]
   ]
   def self.ExtractionStatus
     @@extraction_status
@@ -115,5 +118,7 @@ class Customer < ApplicationRecord
   def self.SendStatus
     @@send_status
   end
+
+  enum status: {draft: 0, published: 1}
 
 end
