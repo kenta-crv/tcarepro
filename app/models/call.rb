@@ -17,7 +17,6 @@ class Call < ApplicationRecord
     ).group(:customer_id)
   }
 
-
   #call_import
     def  self.call_import(call_file)
       save_cnt = 0

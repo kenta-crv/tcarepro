@@ -13,7 +13,8 @@ class Customer < ApplicationRecord
   validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
   validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
   validates :business, presence: true, if: -> { extraction_count.blank?}, on: :update
-  validates :extraction_count, presence: true, if: -> { tel.blank?}
+  validates :extraction_count, presence: true, if: -> { tel.blank?}, on: :update
+  validates :status, presence: true
 
 #customer_import
   def self.import(file)
@@ -22,10 +23,8 @@ class Customer < ApplicationRecord
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
        next if customer.industry == nil
-       #next if self.where(tel: customer.tel).where(industry: nil).count > 0
-       #next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-       #next if self.where(tel: customer.company).where(industry: nil).count > 0
-       next if self.where(tel: customer.company).where(industry: customer.industry).count > 0
+       next if self.where(tel: customer.tel).where(industry: nil).count > 0
+       next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
        customer.save!
        save_cont += 1
       end
@@ -36,6 +35,24 @@ class Customer < ApplicationRecord
      "caption","status","title","other","url_2","customer_tel","choice","inflow","business","history","area","target","meeting","experience","price",
      "number","start","remarks","business","extraction_count","send_count"]
   end
+
+
+#tcare_import
+  def self.tcare_import(tcare_file)
+      save_cont = 0
+      CSV.foreach(tcare_file.path, headers:true) do |row|
+       customer = find_by(id: row["id"]) || new
+       customer.attributes = row.to_hash.slice(*updatable_attributes)
+       #next if customer.industry == nil
+       #next if self.where(company: customer.company).where(industry: nil).count > 0
+       #next if self.where(company: customer.company).where(industry: customer.industry).count > 0
+       customer.save!
+       save_cont += 1
+      end
+      save_cont
+  end
+
+
 
 #customer_export
   def self.generate_csv

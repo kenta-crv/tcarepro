@@ -26,10 +26,8 @@
         - if admin_signed_in?
          th
            = submit_tag '削除', class: 'command'
-           .all-btn
-             button.btn.btn-success.btn-md[data-toggle="modal" data-target="#company-modal"]
-              |  検索する
-             = link_to '一括更新', customers_bulk_edit_path, remote: true,id: "customer-uploads-link", class: 'command'
+           .all-btn[data-toggle="modal" data-target="#edit-modal"]
+              | 公開設定
         th
           | 会社名
         th
@@ -73,8 +71,27 @@
       th[colspan="9"]
         = paginate @customers
 
-#company-modal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"]
-
+#edit-modal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+         /= form_for @customer do |f|
+          table.space[width="90%"]
+           col[width="20%"]
+           col[width="30%"]
+           col[width="20%"]
+           col[width="30%"]
+           tbody
+            tr
+             th[colspan="4"]
+              | 公開一括編集
+             td
+              /= f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
+             td
+              /= f.submit
 
 #createExtraction.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
   .modal-dialog
@@ -141,3 +158,21 @@
             tr
              th.center[colspan="4"]
                = f.submit '検索',  class: 'btn btn-success'
+
+
+- if admin_signed_in?
+ .heading
+   h2
+    | TCAREインポート
+ = form_tag tcare_import_customers_path, multipart: true do
+  table.space[width="90%"]
+    tbody
+      tr
+        th[colspan="3"]
+          | CUSTOMER_CSVファイルインポート
+      tr
+        td
+          bindign.pry
+          = file_field_tag :tcare_file
+        th
+          = submit_tag "インポート",  class: 'btn btn-success'

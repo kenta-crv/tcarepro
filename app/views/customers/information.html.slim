@@ -1,0 +1,24 @@
+br
+br
+.row
+ .col-1
+ .col-10.center
+  = link_to "インポート情報", information_path(type: "import"),class:"btn btn-success both"
+  = link_to "Callインポート", information_path(type: "call_import"), class:"btn btn-success both"
+  = link_to "取引先更新情報", "#", class:"btn btn-success both"
+   /sfa情報を開示
+  = link_to "analytics1", information_path(type: "analy1"), class:"btn btn-success both"
+  = link_to "analytics2", information_path(type: "analy2"), class:"btn btn-success both"
+ .col-1
+
+- case @type
+
+- when "import"
+   = render partial: 'customers/analytics/import'
+- when "call_import"
+   = render partial: 'customers/analytics/call_import'
+- when "analy1"
+   = render partial: 'customers/analytics/analy1'
+- when "analy2"
+   = render partial: 'customers/analytics/analy2'
+- else

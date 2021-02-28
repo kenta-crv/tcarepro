@@ -1,0 +1,17 @@
+.tops-wrapper
+ h1.headline
+  | callインポート
+
+= form_tag call_import_customers_path, multipart: true do
+  table.space[width="90%"]
+    tbody
+      tr
+        th[colspan="3"]
+          | CALL_CSVファイルインポート
+      tr
+        td
+          = file_field_tag :call_file
+        th
+          = submit_tag "インポート",  class: 'btn btn-success'
+        th
+          = link_to 'エクスポート', analytics_path(format: :csv), class: 'btn btn-success'

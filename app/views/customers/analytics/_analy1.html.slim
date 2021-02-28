@@ -1,0 +1,341 @@
+br
+br
+br
+br
+table.header-table.space[width="90%"]
+  tr
+    th[colspan="6"]
+      | １日のコール状況
+  tr
+    th
+    th
+      | コール数
+    th
+      | 見込獲得数
+    th
+      | アポ数
+    th
+      | 見込獲得数
+    th
+      | アポ獲得率
+  tr
+    th
+      | 1日のコール状況
+    td
+      = @call_count_today
+      | Call
+    td
+      = @protect_count_today
+      | 件
+    td
+      = @app_count_today
+      | 件
+    td
+      = @protect_convertion_today.ceil(2)
+      | %
+    td
+      = @app_convertion_today.ceil(2)
+      | %
+  tr
+    th
+      | 1週間のコール状況
+    td
+      = @call_count_week
+      | Call
+    td
+      = @protect_count_week
+      | 件
+    td
+      = @app_count_week
+      | 件
+    td
+      = @protect_convertion_week.ceil(2)
+      | %
+    td
+      = @app_convertion_week.ceil(2)
+      | %
+  tr
+    th
+      | 1ヶ月のコール状況
+    td
+      = @call_count_month
+      | Call
+    td
+      = @protect_count_month
+      | 件
+    td
+      = @app_count_month
+      | 件
+    td
+      = @protect_convertion_month.ceil(2)
+      | %
+    td
+      = @app_convertion_month.ceil(2)
+      | %
+br
+br
+br
+br
+table.header-table.space[width="90%"]
+  tr
+    th[colspan="10"]
+      | ステータス別結果
+  tr
+    th
+      | 着信留守
+    th
+      | 担当者不在
+    th
+      | 見込
+    th
+      | APP
+    th
+      | キャンセル
+    th
+      | NG
+  tr
+    td
+      = @call_count_called.count
+    td
+      = @call_count_absence.count
+    td
+      = @call_count_prospect.count
+    td
+      = @call_count_app.count
+    td
+      = @call_count_cancel.count
+    td
+      = @call_count_ng.count
+  tr
+    td
+      = number_to_percentage(@call_count_called.count / @call_count_month.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count_absence.count / @call_count_month.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count_prospect.count / @call_count_month.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count_app.count / @call_count_month.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count_cancel.count / @call_count_month.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count_ng.count / @call_count_month.to_f * 100, precision: 1 )
+br
+br
+br
+br
+table.header-table.space[width="90%"]
+  tr
+    th[colspan="6"]
+      | 企業別アポ状況
+  tr
+    th
+      | 企業名
+    th
+      | コール数
+    th
+      | アポ数
+    th
+      | アポ率
+    th
+      | 残アポ数
+  tr
+    - sorairo = (@detail_sorairo.present? ? @detail_sorairo.to_a : 0 )
+    - @detailAppCount = (sorairo == 0 ? 0 : sorairo.select { |call| call.statu == "APP" }.count)
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    th
+      | SORAIRO
+    td
+      = sorairo == 0 ? sorairo : sorairo.count
+    td
+      = @detailAppCount
+    td
+      = number_to_percentage(sorairo == 0 ? 0 : @detailAppCount * 100.0 / sorairo == 0 ? 0 : sorairo.count, precision: 1 )
+    td
+      = @detailRemainCount
+    - # <% @detailCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+  tr
+    - hokkaido = (@detail_hokkaido.present? ? @detail_hokkaido.to_a : 0)
+    - @detailAppCount = (hokkaido == 0 ? 0 : hokkaido.select { |call| call.statu == "APP" }.count)
+    - @detailRemainCount = (@detailAppCount > 7) ? 0 : 7 - @detailAppCount
+    th
+      | JAIC北海道
+    td
+      = hokkaido == 0 ? 0 : @detail_hokkaido.count
+    td
+      = @detailAppCount
+    td
+      = number_to_percentage(hokkaido == 0 ? 0 : @detailAppCount * 100.0 / hokkaido == 0 ? 0 : hokkaido.count, precision: 1 )
+    td
+      = @detailRemainCount
+    - # <% @detailCount = @detailcalls.where("industry LIKE ?", "%JAIC北海道%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%JAIC北海道%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailRemainCount = (@detailAppCount > 7) ? 0 : 7 - @detailAppCount
+  tr
+    - apotaku = (@detail_apotaku.present? ? @detail_apotaku.to_a : 0)
+    - @detailAppCount = (apotaku == 0 ? 0 : apotaku.select { |call| call.statu == "APP" }.count)
+    - @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount
+    th
+      | アポ匠（人材）
+    td
+      = apotaku == 0 ? 0 : apotaku.count
+    td
+      = @detailAppCount
+    td
+      = number_to_percentage(apotaku == 0 ? 0 : @detailAppCount * 100.0 / apotaku == 0 ? 0 : apotaku.count, precision: 1 )
+    td
+      = @detailRemainCount
+    - # <% @detailCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount
+  tr
+    - grow = (@detail_grow.present? ? @detail_grow.to_a : 0)
+    - @detailAppCount = (grow == 0 ? 0 : grow.select { |call| call.statu == "APP" }.count)
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    th
+      | グロースタッフ
+    td
+      = grow == 0 ? 0 : grow.count
+    td
+      = @detailAppCount
+    td
+      = number_to_percentage(grow == 0 ? 0 : @detailAppCount * 100.0 / grow == 0 ? 0 : grow.count, precision: 1 )
+    td
+      = @detailRemainCount
+    - # <% @detailCount = @detailcalls.where("industry LIKE ?", "%グロー%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%グロー%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+  tr
+    - kuropasu = (@detail_kuropasu.present? ? @detail_kuropasu.to_a : 0)
+    - @detailAppCount = (kuropasu == 0 ? 0 : kuropasu.select { |call| call.statu == "APP" }.count)
+    - @detailRemainCount = (@detailAppCount > 4) ? 0 : 4 - @detailAppCount
+    th
+      | クロパス
+    td
+      = kuropasu == 0 ? 0 : kuropasu.count
+    td
+      = @detailAppCount
+    td
+      = number_to_percentage(kuropasu == 0 ? 0 : @detailAppCount * 100.0 / kuropasu == 0 ? 0 : kuropasu.count, precision: 1 )
+    td
+      = @detailRemainCount
+    - # <% @detailCount = @detailcalls.where("industry LIKE ?", "%クロパス %").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%クロパス%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailRemainCount = (@detailAppCount > 4) ? 0 : 4 - @detailAppCount
+  tr
+    - peoples = (@detail_peoples.present? ? @detail_peoples.to_a : 0)
+    - @detailAppCount = (peoples == 0 ? 0 : peoples.select { |call| call.statu == "APP" }.count)
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    th
+      | ピープルズコネクト
+    td
+      = peoples == 0 ? 0 : peoples.count
+    td
+      = @detailAppCount
+    td
+      = number_to_percentage(peoples == 0 ? 0 : @detailAppCount * 100.0 / peoples == 0 ? 0 : peoples.count, precision: 1 )
+    td
+      = @detailRemainCount
+    - # <% @detailCount = @detailcalls.where("industry LIKE ?", "%ピープルズ%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailAppCount = @detailcalls.where("industry LIKE ?", "%ピープルズ%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+  tr
+    - billside = (@detail_billside.present? ? @detail_billside.to_a : 0)
+    - @detailAppCount = (billside == 0 ? 0 : billside.select { |call| call.statu == "APP" }.count)
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    th
+      | ビイサイドプランニング（工場）
+    td
+      = billside == 0 ? 0 : billside.count
+    td
+      = @detailAppCount
+    td
+      = number_to_percentage(billside == 0 ? 0 : @detailAppCount * 100.0 / billside == 0 ? 0 : billside.count, precision: 1 )
+    td
+      = @detailRemainCount
+    - # <% @detailCount = @detailcalls.where("industry LIKE ?", "ビイサイドプランニング").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailAppCount = @detailcalls.where("industry LIKE ?", "ビイサイドプランニング").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+  tr
+    - billside2 = (@detail_billside2.present? ? @detail_billside2.to_a : 0)
+    - @detailAppCount = (billside2 == 0 ? 0 : billside2.select { |call| call.statu == "APP" }.count)
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    th
+      | ビイサイドプランニング（介護）
+    td
+      = billside2 == 0 ? 0 : billside2.count
+    td
+      = @detailAppCount
+    td
+      = number_to_percentage(billside2 == 0 ? 0 : @detailAppCount * 100.0 / billside2 == 0 ? 0 : billside2.count, precision: 1 )
+    td
+      = @detailRemainCount
+    - # <% @detailCount = @detailcalls.where("industry LIKE ?", "ビイサイド（介護）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailAppCount = @detailcalls.where("industry LIKE ?", "ビイサイド（介護）").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - # <% @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+
+
+br
+br
+br
+br
+table.header-table.space[width="90%"]
+  tr
+    th[colspan="7"]
+      | スタッフ別コール
+  tr
+    th
+      | スタッフ名
+    th
+      | コール数
+    th
+      | 月間コール数
+    th
+      | 見込数
+    th
+      | APP数
+    th
+      | キャンセル数
+    th
+      | APP率
+  - @users.each do |user|
+    - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+    tr
+      td
+        = user.user_name
+      td
+        = user.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+      td
+        = user_calls_month.count
+      td
+        = user_calls_month.select { |call| call.statu == "見込" }.count
+      td
+        = user_app = user_calls_month.select { |call| call.statu == "APP" }.count
+      td
+        = user_calls_month.select { |call| call.statu == "キャンセル" }.count
+      td
+        = number_to_percentage(user_app.to_f / user_calls_month.count.to_f * 100, precision: 1)
+br
+br
+br
+br
+.text-center
+  = link_to "時間別コール、スタッフ&シェアフル時間別コールへ", analytics2_path, class: "btn btn-success btn-lg text-white"
+br
+br
+br
+br
+= form_tag call_import_customers_path, multipart: true do
+  table.space[width="90%"]
+    tbody
+      tr
+        th[colspan="3"]
+          | CALL_CSVファイルインポート
+      tr
+        td
+          = file_field_tag :call_file
+        th
+          = submit_tag "インポート",  class: 'btn btn-success'
+        th
+          = link_to 'エクスポート', analytics_path(format: :csv), class: 'btn btn-success'
