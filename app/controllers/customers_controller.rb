@@ -354,14 +354,11 @@ class CustomersController < ApplicationController
    end
   end
 
-
   def news
     @calls = Call.all
     @customers =  Customer.all
     @admins = Admin.all
   end
-
-
 
   def import
     cnt = Customer.import(params[:file])
