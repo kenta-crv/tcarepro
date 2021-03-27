@@ -9,8 +9,101 @@
      th
        | インポート日
      th
-       | 件数
+       | SORAIRO
+     th
+       | ビイサイド（介護）
+     th
+       | ピープルズコネクト
+     th
+       | グロースタッフ
+     th
+       | JAIC北海道
+     th
+       | イーストブリッジ
+     th
+       | アポ匠
    tr
      td
+       = DateTime.now.strftime("%Y年%m月%d日")
      td
-       = @customers_createrd_at.count
+       = @customers.where("industry LIKE ?", "%SORAIRO%").where(created_at: Time.current.day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ビイサイド%").where(created_at: Time.current.day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ピープルズ%").where(created_at: Time.current.day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%グロースタッフ%").where(created_at: Time.current.day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%JAIC北海道%").where(created_at: Time.current.day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%イーストブリッジ%").where(created_at: Time.current.day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%アポ匠%").where(created_at: Time.current.day).to_a.count
+   tr
+     td
+       = (Date.today-1).strftime("%Y年%m月%d日")
+     td
+       = @customers.where("industry LIKE ?", "%SORAIRO%").where(created_at: 1.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ビイサイド%").where(created_at: 1.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ピープルズ%").where(created_at: 1.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%グロースタッフ%").where(created_at: 1.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%JAIC北海道%").where(created_at: 1.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%イーストブリッジ%").where(created_at: 1.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%アポ匠%").where(created_at: 1.day.ago.all_day).to_a.count
+   tr
+     td
+       = (Date.today-2).strftime("%Y年%m月%d日")
+     td
+       = @customers.where("industry LIKE ?", "%SORAIRO%").where(created_at: 2.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ビイサイド%").where(created_at: 2.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ピープルズ%").where(created_at: 2.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%グロースタッフ%").where(created_at: 2.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%JAIC北海道%").where(created_at: 2.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%イーストブリッジ%").where(created_at: 2.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%アポ匠%").where(created_at: 2.day.ago.all_day).to_a.count
+   tr
+     td
+       = (Date.today-3).strftime("%Y年%m月%d日")
+     td
+       = @customers.where("industry LIKE ?", "%SORAIRO%").where(created_at: 3.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ビイサイド%").where(created_at: 3.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ピープルズ%").where(created_at: 3.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%グロースタッフ%").where(created_at: 3.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%JAIC北海道%").where(created_at: 3.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%イーストブリッジ%").where(created_at: 3.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%アポ匠%").where(created_at: 3.day.ago.all_day).to_a.count
+   tr
+     td
+       = (Date.today-4).strftime("%Y年%m月%d日")
+     td
+       = @customers.where("industry LIKE ?", "%SORAIRO%").where(created_at: 4.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ビイサイド%").where(created_at: 4.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%ピープルズ%").where(created_at: 4.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%グロースタッフ%").where(created_at: 4.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%JAIC北海道%").where(created_at: 4.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%イーストブリッジ%").where(created_at: 4.day.ago.all_day).to_a.count
+     td
+       = @customers.where("industry LIKE ?", "%アポ匠%").where(created_at: 4.day.ago.all_day).to_a.count

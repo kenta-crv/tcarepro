@@ -36,14 +36,13 @@ class Customer < ApplicationRecord
      "number","start","remarks","business","extraction_count","send_count"]
   end
 
-
 #tcare_import
   def self.tcare_import(tcare_file)
       save_cont = 0
       CSV.foreach(tcare_file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
-       #next if customer.industry == nil
+       next if customer.industry == nil
        #next if self.where(company: customer.company).where(industry: nil).count > 0
        #next if self.where(company: customer.company).where(industry: customer.industry).count > 0
        customer.save!

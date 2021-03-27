@@ -28,7 +28,7 @@ class CustomersController < ApplicationController
     #@customers = @q.result  @q.result.includes(:last_call)
     #@customers = @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
-    @customers = @customers.published.page(params[:page]).per(30)
+    @customers = @customers.page(params[:page]).per(30)
     respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
@@ -161,9 +161,13 @@ class CustomersController < ApplicationController
     case @type
     when "import" then #インポート件数
       #created_atの件数
-      @customers_createrd_at = @customers.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
-    when "analytics1" #企業別情報
-
+      @customers_createrd_at_1 = @customers.where(created_at: Time.current.day).to_a
+      @customers_createrd_at_2 = @customers.where(created_at: 1.day.ago.all_day).to_a
+      @customers_createrd_at_3 = @customers.where(created_at: 2.day.ago.all_day).to_a
+      @customers_createrd_at_4 = @customers.where(created_at: 3.day.ago.all_day).to_a
+      @customers_createrd_at_5 = @customers.where(created_at: 4.day.ago.all_day).to_a
+      @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
+      @call_count_today = @call_today_basic.count
     when "analy1" then
       @customers_app = @customers.where(call_id: 1)
       #today
@@ -357,6 +361,7 @@ class CustomersController < ApplicationController
   def news
     @calls = Call.all
     @customers =  Customer.all
+    @customers_created_at = Customer.where
     @admins = Admin.all
   end
 
@@ -366,7 +371,7 @@ class CustomersController < ApplicationController
   end
 
   def tcare_import
-    cnt = Customer.import(params[:tcare_file])
+    cnt = Customer.tcare_import(params[:tcare_file])
     redirect_to extraction_url, notice:"#{cnt}件登録されました。"
   end
 
@@ -405,7 +410,7 @@ class CustomersController < ApplicationController
   def extraction
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.draft.order("created_at DESC").page(params[:page]).per(20)
+    @customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
     #@customer = Customer.find(params[:id])
   end
 
