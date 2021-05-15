@@ -14,7 +14,6 @@ class Customer < ApplicationRecord
   validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
   validates :business, presence: true, if: -> { extraction_count.blank?}, on: :update
   validates :extraction_count, presence: true, if: -> { tel.blank?}, on: :update
-  validates :status, presence: true
 
 #customer_import
   def self.import(file)

@@ -54,6 +54,11 @@
                   | 検索
               tr
                 th
+                  | 会社名
+                td
+                  = f.search_field :company_cont, type: "text"
+              tr
+                th
                   | 住所
                 td
                   = f.search_field :address_cont, type: "text"

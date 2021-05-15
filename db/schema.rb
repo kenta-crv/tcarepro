@@ -16,12 +16,12 @@ ActiveRecord::Schema.define(version: 20201224160755) do
     t.string "user_name", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.string "select"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "select"
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
@@ -34,10 +34,8 @@ ActiveRecord::Schema.define(version: 20201224160755) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "admin_id"
-    t.integer "crm_id"
     t.integer "user_id"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
-    t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
     t.index ["user_id"], name: "index_calls_on_user_id"
   end
@@ -77,6 +75,7 @@ ActiveRecord::Schema.define(version: 20201224160755) do
     t.string "city"
     t.string "town"
     t.string "building"
+    t.string "url"
     t.string "item"
     t.string "statu"
     t.string "price"
@@ -84,7 +83,7 @@ ActiveRecord::Schema.define(version: 20201224160755) do
     t.string "history"
     t.string "area"
     t.string "target"
-    t.string "next"
+    t.datetime "next"
     t.string "content"
     t.string "comment"
     t.datetime "created_at", null: false
@@ -114,7 +113,7 @@ ActiveRecord::Schema.define(version: 20201224160755) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "memo_5"
+    t.string "choice"
     t.string "title"
     t.string "other"
     t.string "url_2"
@@ -126,8 +125,6 @@ ActiveRecord::Schema.define(version: 20201224160755) do
     t.string "area"
     t.string "target"
     t.date "start"
-    t.string "choice"
-    t.string "sfa_statu"
     t.string "contact_url"
     t.string "meeting"
     t.string "experience"
@@ -135,15 +132,6 @@ ActiveRecord::Schema.define(version: 20201224160755) do
     t.string "send_count"
     t.integer "worker_id"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
-  end
-
-  create_table "customers_search_orders", force: :cascade do |t|
-    t.integer "admin_id"
-    t.integer "customer_id"
-    t.integer "prev_customer_id"
-    t.integer "next_customer_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "estimates", force: :cascade do |t|
@@ -223,13 +211,16 @@ ActiveRecord::Schema.define(version: 20201224160755) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "upload_data", force: :cascade do |t|
+  create_table "todos", force: :cascade do |t|
+    t.string "execution"
+    t.string "title"
+    t.string "select"
+    t.string "deadline"
+    t.string "state"
     t.string "name"
-    t.string "file"
-    t.integer "company_id"
+    t.string "contents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["company_id"], name: "index_upload_data_on_company_id"
   end
 
   create_table "upload_files", force: :cascade do |t|

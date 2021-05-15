@@ -261,24 +261,3 @@
            | SNSマーケティング
          td.arrow_box
            | Twitter, Facebook, Instagramとニーズに合う媒体におけるSNSの開設・運用代行を行います。
-
-.green-wrapper
-  br
-  h2.headline
-   =@customer.company
-   |の所在地をマップで確認
-  p TCAREでは独自のITプログラミング技術により非常に精度の高い情報を取得出来るプランを用意しております。
-  .row
-    .col-xs-12
-      = image_tag "googlemap.jpg", width:"70%"
-      br
-      .small.center
-       | 住所：
-       = @customer.address
-       /= @customer.prefecture
-       /= @customer.city
-       /= @customer.town
-       /= @customer.town_number
-       /= @customer.building
-  br
-  br
