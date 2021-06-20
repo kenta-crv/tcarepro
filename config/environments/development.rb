@@ -12,10 +12,10 @@ Rails.application.configure do
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
   address: 'smtp3.gmoserver.jp',
-  domain: 'ri-plus.jp',
+  domain: 'mail@tcare.pro',
   port: 587,
-  user_name: 'mail@ri-plus.jp',
-  password: 'Qu#3KD4A9',
+  user_name: 'mail@tcare.pro',
+  password: 'sq9Gde$7',
   authentication: 'plain',
   enable_starttls_auto: true
   }

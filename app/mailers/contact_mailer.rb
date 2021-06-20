@@ -1,8 +1,8 @@
 class ContactMailer < ActionMailer::Base
-  default from: "info@tcare.co.jp"
+  default from: "mail@tcare.pro"
   def received_email(contact)
     @contact = contact
-    mail to: "info@tcare.co.jp"
+    mail to: "mail@tcare.pro"
     mail(subject: 'TCAREよりお問い合わせがありました') do |format|
       format.text
     end
