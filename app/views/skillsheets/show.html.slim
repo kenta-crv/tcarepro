@@ -1,0 +1,37 @@
+br
+br
+br
+
+= form_for @skillsheet do |f|
+
+   table[width="90%"]
+     tbody
+      col[width="20%"]
+      col[width="30%"]
+      tr
+        th.arrow_box お名前
+        td.center =@skillsheet.name
+      tr
+        th.arrow_box 電話番号
+        td.center =@skillsheet.tel
+      tr
+        th.arrow_box メールアドレス
+        td.center  =@skillsheet.mail
+      tr
+        th.arrow_box 住所
+        td.center =@skillsheet.address
+      tr
+        th.arrow_box 年齢
+        td.center =@skillsheet.age
+      tr
+        th.arrow_box 開始時期
+        td.center =@skillsheet.start
+      tr
+        th.arrow_box 経験則
+        td.center =@skillsheet.experience
+      tr
+        th.arrow_box 経歴・その他
+        td.center = @skillsheet.history
+      tr
+        th.arrow_box 募集案件
+        td.center = @skillsheet.title

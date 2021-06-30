@@ -1,0 +1,35 @@
+= form_for @skillsheet do |f|
+
+   table[width="90%"]
+     tbody
+      col[width="20%"]
+      col[width="30%"]
+      tr
+        th.arrow_box お名前
+        td.center = text_field :skillsheet, :name
+      tr
+        th.arrow_box 電話番号
+        td.center = text_field :skillsheet, :tel
+      tr
+        th.arrow_box メールアドレス
+        td.center  = text_field :skillsheet, :mail
+      tr
+        th.arrow_box 住所
+        td.center = text_field :skillsheet, :address
+      tr
+        th.arrow_box 年齢
+        td.center = text_field :skillsheet, :age
+      tr
+        th.arrow_box 開始時期
+        td.center = text_field :skillsheet, :start
+      tr
+        th.arrow_box 経験則
+        td.center = text_field :skillsheet, :experience
+      tr
+        th.arrow_box 経歴・その他
+        td.center = text_area :skillsheet, :history
+      tr
+        th.arrow_box 募集案件
+        td.center = text_area :skillsheet, :title
+      tr[colspan="2"]
+        td.center[colspan="2"] = f.submit '登録する'

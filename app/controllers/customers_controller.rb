@@ -205,11 +205,13 @@ class CustomersController < ApplicationController
       # 企業別アポ状況
       # @detailcalls = Customer2.joins(:calls).select('calls.id')
       @customer2_sorairo = Customer2.where("industry LIKE ?", "%SORAIRO%")
-      @customer2_ikebukuro = Customer2.where("industry LIKE ?", "%JAIC池袋%")
-      @customer2_apotaku = Customer2.where("industry LIKE ?", "%アポ匠%")
+      @customer2_takumi = Customer2.where("industry LIKE ?", "%アポ匠%")
+      @customer2_omg = Customer2.where("industry LIKE ?", "%OMG%")
+      @customer2_kousaido = Customer2.where("industry LIKE ?", "%廣済堂%")
       @detail_sorairo = @customer2_sorairo.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_sorairo.present?
-      @detail_ikebukuro = @customer2_ikebukuro.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_ikebukuro.present?
-      @detail_apotaku = @customer2_apotaku.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_apotaku.present?
+      @detail_takumi = @customer2_takumi.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_takumi.present?
+      @detail_omg = @customer2_omg.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_omg.present?
+      @detail_kousaido = @customer2_kousaido.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_kousaido.present?
       # @detail_sorairo = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
       # @detail_ikebukuro = @detailcalls.where("industry LIKE ?", "%JAIC池袋%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
       # @detail_apotaku = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a

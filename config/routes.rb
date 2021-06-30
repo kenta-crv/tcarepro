@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   }
   resources :workers, only: [:show]
 
+  resources :skillsheets
   resources :matters
   resources :posts
   resources :estimates, only: [:index, :show] do
@@ -64,9 +65,7 @@ Rails.application.routes.draw do
 
   get 'news' => 'customers#news' #新着情報
 
-  get 'analytics' => 'customers#analytics' #分析
 
-  get 'analytics2' => 'customers#analytics2' #分析
   get 'information' => 'customers#information' #分析
   get 'management' => 'customers#management' #分析
 
