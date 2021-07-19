@@ -123,9 +123,10 @@ br
 br
 br
 br
-table.header-table.space[width="90%"]
+br
+table.header-table[width="90%"]
   tr
-    th[colspan="8"]
+    th[colspan="7"]
       | 企業別アポ状況
   tr
     th
@@ -142,96 +143,140 @@ table.header-table.space[width="90%"]
       | アポ数
     th
       | 残アポ数
-    th
-      | 売上
   tr
-    - sorairo = (@detail_sorairo.present? ? @detail_sorairo.to_a : 0 )
-    - @ListCount = (sorairo == 0 ? 0 : sorairo.select { |customer| customer.created_at}.count)
-    - @detailAppCount = (sorairo == 0 ? 0 : sorairo.select { |call| call.statu == "APP" }.count)
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount
     th
       | SORAIRO
     td
-      = sorairo == 0 ? sorairo : sorairo.count
-    td
       = @ListCount
     td
-      = number_to_percentage(sorairo == 0 ? 0 : @ListCount * 100.0 / sorairo == 0 ? 0 : sorairo.count, precision: 1 )
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
     td
       = @detailAppCount
     td
-      = number_to_percentage(sorairo == 0 ? 0 : @detailAppCount * 100.0 / sorairo == 0 ? 0 : sorairo.count, precision: 1 )
+      = @detailRemainCount
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%マネーフォワード%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcalls.where("industry LIKE ?", "%マネーフォワード%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%マネーフォワード%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount
+    th
+      | マネーフォワード
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
     td
       = @detailRemainCount
-    td
-      = @detailAppCount * 29000
-
   tr
-    - takumi = (@detail_takumi.present? ? @detail_takumi.to_a : 0 )
-    - @ListCount = (takumi == 0 ? 0 : takumi.select { |customer| customer.created_at}.count)
-    - @detailAppCount = (takumi == 0 ? 0 : takumi.select { |call| call.statu == "APP" }.count)
-    - @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%イースト%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcalls.where("industry LIKE ?", "%イースト%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%イースト%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 50) ? 0 : 20 - @detailAppCount
+    th
+      | イースト
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 50) ? 0 : 20 - @detailAppCount
     th
       | アポ匠
     td
-      = takumi == 0 ? takumi : takumi.count
-    td
       = @ListCount
     td
-      = number_to_percentage(takumi == 0 ? 0 : @ListCount * 100.0 / takumi == 0 ? 0 : takumi.count, precision: 1 )
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
     td
       = @detailAppCount
     td
-      = number_to_percentage(takumi == 0 ? 0 : @detailAppCount * 100.0 / takumi == 0 ? 0 : takumi.count, precision: 1 )
-    td
       = @detailRemainCount
-    td
-      = @detailAppCount * 0
-
   tr
-    - omg = (@detail_omg.present? ? @detail_omg.to_a : 0 )
-    - @ListCount = (omg == 0 ? 0 : omg.select { |customer| customer.created_at}.count)
-    - @detailAppCount = (omg == 0 ? 0 : omg.select { |call| call.statu == "APP" }.count)
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%グロースタッフ%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcalls.where("industry LIKE ?", "%グロースタッフ%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%グロースタッフ%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount
     th
-      | OMG
-    td
-      = omg == 0 ? omg : omg.count
+      | グロースタッフ
     td
       = @ListCount
     td
-      = number_to_percentage(omg == 0 ? 0 : @ListCount * 100.0 / omg == 0 ? 0 : omg.count, precision: 1 )
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
     td
       = @detailAppCount
     td
-      = number_to_percentage(omg == 0 ? 0 : @detailAppCount * 100.0 / omg == 0 ? 0 : omg.count, precision: 1 )
-    td
       = @detailRemainCount
-    td
-      = @detailAppCount * 21450
-
   tr
-    - kousaido = (@detail_kousaido.present? ? @detail_kousaido.to_a : 0 )
-    - @ListCount = (kousaido == 0 ? 0 : kousaido.select { |customer| customer.created_at}.count)
-    - @detailAppCount = (kousaido == 0 ? 0 : kousaido.select { |call| call.statu == "APP" }.count)
-    - @detailRemainCount = (@detailAppCount > 50) ? 0 : 50 - @detailAppCount
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%レターズ%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcalls.where("industry LIKE ?", "%レターズ%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%レターズ%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount
     th
-      | 廣済堂
-    td
-      = kousaido == 0 ? kousaido : kousaido.count
+      | レターズ
     td
       = @ListCount
     td
-      = number_to_percentage(kousaido == 0 ? 0 : @ListCount * 100.0 / kousaido == 0 ? 0 : kousaido.count, precision: 1 )
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
     td
       = @detailAppCount
     td
-      = number_to_percentage(kousaido == 0 ? 0 : @detailAppCount * 100.0 / kousaido == 0 ? 0 : kousaido.count, precision: 1 )
+      = @detailRemainCount
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%NINJA%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcalls.where("industry LIKE ?", "%NINJA%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%NINJA%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount
+    th
+      | NINJA
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
     td
       = @detailRemainCount
-    td
-      = @detailAppCount * 17600
-
+br
 br
 br
 br

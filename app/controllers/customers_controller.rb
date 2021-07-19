@@ -218,6 +218,8 @@ class CustomersController < ApplicationController
 
       @admins = Admin.all
       @users = User.all
+
+      @detailcalls = Customer2.joins(:calls).select('calls.id')
     when "analy2"
       @calls = Call.all
       @call_ng = @calls.where("statu LIKE ?","%NG%")
