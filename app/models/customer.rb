@@ -4,7 +4,7 @@ class Customer < ApplicationRecord
   belongs_to :worker, optional: true
   has_many :estimates
   has_many :calls#, foreign_key: :tel, primary_key: :tel
-  #has_many :mailers
+  has_many :counts
   has_one :last_call, ->{
     order("created_at desc")
   }, class_name: :Call

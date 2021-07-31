@@ -1,6 +1,6 @@
 .tops-wrapper
  .headline
-    | メールリスト
+    | Okuriteリスト
     | (
     = @customers.current_page * 30 - 29
     | ~
@@ -26,9 +26,9 @@
         th
           | 会社名
         th
-          | 担当者
+          | URL1
         th
-          | 電話番号
+          | URL2
         th
           | メールアドレス
         th
@@ -42,20 +42,22 @@
         td
           = check_box_tag "deletes[#{customer.id}]", customer.id
         td
-          = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+          = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_count: params[:last_count]&.permit!)
         td
-          = customer.first_name
+          -if customer.url.present?
+            = customer.url.truncate(20)
         td
-          = customer.tel
+          -if customer.url_2.present?
+            = customer.url_2.truncate(20)
         td
           = customer.mail
         td
-          = customer.last_call.try(:statu)
+          /= customer.last_count.try(:statu)
         td
-          = customer.last_call.try(:created_at)
+          /= customer.last_count.try(:created_at).strftime("%Y年%m月%d日 %H時%M分")
         td
-          = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'
-          = link_to '削除',customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}
+          = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_count: params[:last_count]&.permit!), class: 'command'
+          = link_to '削除',customer_path(customer, q: params[:q]&.permit!, last_count: params[:last_count]&.permit!), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}
     tr
       th[colspan="8"]
         = paginate @customers

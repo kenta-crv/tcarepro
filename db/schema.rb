@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210630023736) do
+ActiveRecord::Schema.define(version: 20210730051530) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -60,6 +60,20 @@ ActiveRecord::Schema.define(version: 20210630023736) do
     t.string "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "counts", force: :cascade do |t|
+    t.string "company"
+    t.string "title"
+    t.string "statu"
+    t.datetime "time"
+    t.string "comment"
+    t.integer "customer_id"
+    t.integer "sender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_counts_on_customer_id"
+    t.index ["sender_id"], name: "index_counts_on_sender_id"
   end
 
   create_table "crms", force: :cascade do |t|
@@ -207,6 +221,20 @@ ActiveRecord::Schema.define(version: 20210630023736) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "senders", force: :cascade do |t|
+    t.string "user_name", default: "", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "select"
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_senders_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_senders_on_reset_password_token", unique: true
   end
 
   create_table "skillsheets", force: :cascade do |t|

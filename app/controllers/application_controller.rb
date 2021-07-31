@@ -44,6 +44,8 @@ class ApplicationController < ActionController::Base
          customers_path
       when Worker
          worker_path(current_worker)
+      when Sender
+         sender_path(current_sender)
       else
          super
       end
@@ -57,6 +59,8 @@ class ApplicationController < ActionController::Base
         new_user_session_path
       when Worker, :worker, :workers
         new_worker_session_path
+      when Sender, :sender, :senders
+        new_sender_session_path
       else
         super
       end
@@ -68,6 +72,10 @@ class ApplicationController < ActionController::Base
         "admins"
     elsif devise_controller? && resource_name == :user
         "users"
+    elsif devise_controller? && resource_name == :worker
+        "workers"
+    elsif devise_controller? && resource_name == :sender
+        "senders"
     else
       "application"
     end

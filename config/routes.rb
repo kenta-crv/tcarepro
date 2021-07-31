@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   root to: 'top#index'
   get 'usp' => 'top#usp'
   get 'question' => 'top#question'
@@ -28,6 +27,11 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
   resources :users, only: [:show]
+  #センダーアカウント
+  devise_for :senders, controllers: {
+    registrations: 'senders/registrations'
+  }
+  resources :senders, only: [:show]
   #ワーカーアカウント
   devise_for :workers, controllers: {
     registrations: 'workers/registrations',
@@ -49,6 +53,7 @@ Rails.application.routes.draw do
 
   resources :customers do
     resources :calls
+    resources :counts
     collection do
       get :complete
       post :import
@@ -73,7 +78,7 @@ Rails.application.routes.draw do
   #TCARE
   get 'extraction' => 'customers#extraction'
   #Mailer
-  get 'mail' => 'customers#mail'
+  get 'okurite' => 'customers#okurite'
   delete :customers, to: 'customers#destroy_all'
   get 'customers/bulk_edit'
   put 'customers/bulk_update'

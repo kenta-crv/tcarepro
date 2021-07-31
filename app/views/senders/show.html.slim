@@ -1,0 +1,22 @@
+.tops-wrapper
+  h2.headline
+    | アカウント情報
+  table[width="90%"  class="header-table space"]
+      colgroup
+        col[width="40%"]
+        col[width="60%"]
+        |  　
+      tr
+        th
+          | ユーザーネーム
+        td
+          = @sender.user_name
+      tr
+        th
+          | ログインアドレス
+        td
+          = @sender.email
+  br
+  br
+  = link_to "アカウント情報編集", edit_sender_registration_path, class:"btn btn-success"
+  = link_to "ログアウト", destroy_sender_session_path, method: :delete, class:"btn btn-success"

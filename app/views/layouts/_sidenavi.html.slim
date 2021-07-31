@@ -16,10 +16,10 @@ aside#sidebar
     li.sub-menu
       = link_to "#"
        = image_tag "mail.gif", width:"40px"
-       -if admin_signed_in?
+       -if admin_signed_in? || sender_signed_in?
         ul.sub-menu-nav
          li
-          = link_to "Okurite","/mail"
+          = link_to "Okurite","/okurite"
     li.sub-menu
       = link_to "/#"
        = image_tag "cti.gif", width:"40px"
@@ -49,7 +49,7 @@ aside#sidebar
        -if admin_signed_in?
         ul.sub-menu-nav
          li
-          = link_to "SFA","/sfa"
+          = link_to "SFA","/crms"
     li.sub-menu
       = link_to "#"
        = image_tag "estimate.gif", width:"40px"
@@ -96,6 +96,12 @@ aside#sidebar
             = link_to 'マイページ', worker_path(current_worker)
           - else
             = link_to 'ワーカーログイン', new_worker_session_path , :class=>"col-md"
+         br
+         li
+          - if sender_signed_in?
+            = link_to "マイページ", sender_path(current_sender)
+          - else
+            = link_to 'センダーログイン', new_sender_session_path , :class=>"col-md"
          br
          li
           - if admin_signed_in?

@@ -2,6 +2,7 @@ require 'rubygems'
 class CustomersController < ApplicationController
   before_action :authenticate_admin!, only: [:destroy, :destroy_all, :anayltics, :import, :call_import, :sfa, :mail]
   before_action :authenticate_worker!, only: [:extraction]
+  before_action :authenticate_sender!, only: [:okurite]
   before_action :authenticate_user!, only: [:index]
   before_action :authenticate_worker_or_user, only: [:new, :edit]
   #before_action :authenticate_user_or_admin, only: [:index, :show]
@@ -37,6 +38,28 @@ class CustomersController < ApplicationController
   end
 
   def show
+   if sender_signed_in?
+     last_count_customer_ids = nil
+     @last_count_params = {}
+     if params[:last_count] && !params[:last_count].values.all?(&:blank?)
+       @last_count_params = params[:last_count]
+       last_count = count.joins_last_count
+       last_count = last_count.where(statu: @last_count_params[:statu]) if !@last_count_params[:statu].blank?
+       last_count = last_count.where("counts.time >= ?", @last_count_params[:time_from]) if !@last_count_params[:time_from].blank?
+       last_count = last_count.where("counts.time <= ?", @last_count_params[:time_to]) if !@last_count_params[:time_to].blank?
+       last_count = last_count.where("counts.created_at >= ?", @last_count_params[:created_at_from]) if !@last_count_params[:created_at_from].blank?
+       last_count = last_count.where("counts.created_at <= ?", @last_count_params[:created_at_to]) if !@last_count_params[:created_at_to].blank?
+       last_count_customer_ids = last_count.pluck(:customer_id)
+     end
+     @customer = Customer.find(params[:id])
+     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_count])
+     @customers = @q.result || @q.result.includes(:last_count)
+     @customers = @customers.where( id: last_count_customer_ids )  if !last_count_customer_ids.nil?
+     @count = Count.new
+     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
+     @next_customer = @customers.where("customers.id > ?", @customer.id).first
+     @is_auto_count = (params[:is_auto_count] == 'true')
+   else
     last_call_customer_ids = nil
     @last_call_params = {}
     if params[:last_call] && !params[:last_call].values.all?(&:blank?)
@@ -57,6 +80,7 @@ class CustomersController < ApplicationController
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
+   end
   end
 
   def new
@@ -220,6 +244,7 @@ class CustomersController < ApplicationController
       @users = User.all
 
       @detailcalls = Customer2.joins(:calls).select('calls.id')
+      @detailcustomers = Call.joins(:customer).select('customers.id')
     when "analy2"
       @calls = Call.all
       @call_ng = @calls.where("statu LIKE ?","%NG%")
@@ -418,10 +443,10 @@ class CustomersController < ApplicationController
     #@customer = Customer.find(params[:id])
   end
 
-  def mail
+  def okurite
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.where.not(mail: nil).page(params[:page]).per(20)
+    @customers = @customers.where.not(url: nil).page(params[:page]).per(20)
   end
 
   private

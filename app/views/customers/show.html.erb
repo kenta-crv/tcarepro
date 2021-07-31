@@ -7,6 +7,8 @@
  <%= render "section" %>
 <% elsif worker_signed_in? %>
  <%= render "extraction" %>
+<% elsif sender_signed_in? %>
+ <%= render "sender" %>
 <% else %>
  <%= render "list" %>
 <% end %>
