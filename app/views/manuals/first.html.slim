@@ -6,26 +6,21 @@
   .cp_actab
     input#cp_tabfour031[type="checkbox" name="tabs"]
     label[for="cp_tabfour031"]
-      | PC立ち上げ時のパスワード
+      | CTIシステムの新規登録
     .cp_actab-content
       p
-        | PCを立ち上げる際にパスワードが必要となります。パスワードは『20200402』となります。
-  .cp_actab
-    input#cp_tabfour032[type="checkbox" name="tabs"]
-    label[for="cp_tabfour032"]
-      | 再度ログインのし直し
-    .cp_actab-content
-      p
-        | 上記ログアウトよりログインのし直しをお願いします。ログインIDは『riplus1020@gmail.com』パスワードは『20200402』でログインします。
+        | 架電環境を整えるため、『https://tcare.pro/users/sign_up』より、新規登録を行って下さい。その後、『https://tcare.pro/customers』へアクセスできます。
   .cp_actab
     input#cp_tabfour033[type="checkbox" name="tabs"]
     label[for="cp_tabfour033"]
       | googleカレンダーを開く
     .cp_actab-content
       p
-        | アポイントを獲得する際に日程を確認するためgoogleカレンダーを開いておきましょう。
+        | アポイントを獲得する際に日程を確認するため、稼働の際はgoogleカレンダーを開いておきましょう。
         br
         = link_to "googleカレンダー", "https://calendar.google.com/calendar/u/0/r", target:"_blank", class:"btn btn-success"
+        br
+        | ID:riplus1020@gmail.com  PASS:riplus20200402
 
         br
         br
@@ -37,12 +32,7 @@
       p
         | 勤務時間・休憩時間は出勤時間により異なります。以下を参考に休憩を取得しましょう。
         br
-        | 【09:00~12:00】休憩なし
-        br
-        | 【13:00~16:45】12:00~13:00、10:00~10:05、14:30~14:35、16:00~16:05
-        br
-        | 【13:00~16:45】15:00~15:15
-        br
+        | 12:00~13:00、10:00~10:05、14:30~14:35、16:00~16:05
   .cp_actab
     input#cp_tabfour035[type="checkbox" name="tabs"]
     label[for="cp_tabfour035"]
@@ -51,7 +41,7 @@
       p
         | 基本的な検索を理解しましょう。（担当者よりレクチャーがあります。）
         br
-        | 【業種】コールする案件先を指定します。
+        | 【検索条件】コールする案件先を指定します。
         br
         | 【未コール】チェックすることでまだコールをしていない会社のみを抽出します。
         br
@@ -119,4 +109,17 @@
       | コール数について
     .cp_actab-content
       p
-        | コール数は１時間あたり25コールを目標としてください。
+        | コール数は１時間あたり30コールを目標としてください。
+  .cp_actab
+    input#cp_tabfour40[type="checkbox" name="tabs"]
+    label[for="cp_tabfour040"]
+      | スマレジの登録
+    .cp_actab-content
+      p
+        | ご自身のメールアドレスにスマレジへの招待メールが到着します。そのメールよりユーザー登録を行いましょう。（招待が来ていない場合、奥山までご連絡下さい。）
+        br
+        | 毎日出退勤をこのスマレジで行います。出勤時・退勤時に以下URLよりアクセスし、打刻をお願いします。
+        br
+        = link_to "出退勤", "https://timecard1.smaregi.jp/shift_stamps/pin?def=43_2b_13_8b_89_97_7_67&se=1", class:"btn btn-danger"
+        br
+        |PINコード：0000

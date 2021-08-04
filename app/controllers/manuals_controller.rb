@@ -14,9 +14,6 @@ class ManualsController < ApplicationController
   def first
   end
 
-  def second
-  end
-
   def homework
   end
 

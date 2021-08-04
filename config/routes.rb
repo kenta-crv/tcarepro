@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   get 'manuals/officework' => 'manuals#officework'
 
   get 'manuals/homework' => 'manuals#homework' #２回目の出勤について
-  get 'manuals/second' => 'manuals#second' #２回目の出勤について
   get 'manuals/first' => 'manuals#first' #１回目の出勤について
   get 'manuals/script' => 'manuals#script' #トークスクリプト
   get 'manuals/tool' => 'manuals#tool' #各種ツール紹介
