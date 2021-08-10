@@ -157,25 +157,6 @@ class CustomersController < ApplicationController
     redirect_to request.referer
   end
 
-  def analytics
-    @calls = Call.all
-    @customers =  Customer.all
-
-
-    call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
-    generate_call =
-      CSV.generate(headers:true) do |csv|
-        csv << call_attributes
-        Call.all.each do |task|
-          csv << call_attributes.map{|attr| task.send(attr)}
-        end
-      end
-    respond_to do |format|
-      format.html
-      format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-    end
-  end
-
   def information
     @type = params[:type]
     @calls = Call.all
@@ -387,13 +368,6 @@ class CustomersController < ApplicationController
    end
   end
 
-  def news
-    @calls = Call.all
-    @customers =  Customer.all
-    @customers_created_at = Customer.where
-    @admins = Admin.all
-  end
-
   def import
     cnt = Customer.import(params[:file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
@@ -407,21 +381,6 @@ class CustomersController < ApplicationController
   def call_import
     cnt = Call.call_import(params[:call_file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
-  end
-
-  def confirm
-    @customer = Customer.new(customer_params)
-    if @customer.valid?
-      render :action =>  'confirm', notice: 'メッセージが送信されました。'
-    else
-      render :action => 'index', notice: 'メッセージが送信出来ませんでした。'
-    end
-  end
-
-  def thanks
-    @customer = Customer.find(params[:id])
-    CustomerMailer.received_email(@customer).deliver
-    CustomerMailer.send_email(@customer).deliver
   end
 
   def sfa

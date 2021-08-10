@@ -12,8 +12,8 @@ class Senders::RegistrationsController < Devise::RegistrationsController
 
   private
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:sender_name, :select])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:sender_name, :select])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:user_name])
   end
   # GET /resource/sign_up
   # def new
