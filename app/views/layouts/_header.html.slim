@@ -3,6 +3,12 @@
     meta[charset="utf-8"]
     meta[http-equiv="X^UA-Compatible" content="IE=edge"]
     meta[name="viewport" content="width=device-width, initial-scale=1,0, initial-scale=1, shrink-to-fit=no"]
+    -# デスクリプションを不用意に変更されないようにする
+    meta content='NOYDIR' name='ROBOTS'
+    meta content='NOODP' name='ROBOTS'
+    -# モバイル設定
+    link media='handheld' rel='alternate'
+    meta name="viewport" content="width=device-width,initial-scale=1.0"
     = csrf_meta_tags
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
