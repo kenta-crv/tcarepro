@@ -28,6 +28,8 @@
         th
           | ステータス
         th
+          | 担当者
+        th
           = sort_link(@q, :created_at)
         th
           | アップデート日
@@ -45,6 +47,8 @@
           = customer.address
         td
           = customer.last_call.try(:statu)
+        td
+          = customer.calls.last&.user&.user_name
         td
           = customer.last_call.try(:created_at)
         td
@@ -101,7 +105,8 @@
                 th
                   | 住所
                 td
-                  =  f.collection_select :address_cont, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'}, {class: 'form-control', id: 'search_prefecture'}
+                  =  f.collection_select :address_cont_any, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'},
+                  {class: 'form-control', id: 'search_prefecture', multiple: true}
               tr
                 th
                   | 電話番号有りのみ表示

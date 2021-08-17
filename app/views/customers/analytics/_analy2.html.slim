@@ -3,7 +3,78 @@ br
 br
 br
 br
-table.header-table.space[width="90%"]
+table.header-table[width="90%"]
+  tr
+    th[colspan="10"]
+      | ステータス別結果
+  tr
+    th
+      | 着信留守
+    th
+      | 担当者不在
+    th
+      | 見込
+    th
+      | コロナ見込
+    th
+      | 折返待
+    th
+      | APP
+    th
+      | キャンセル
+    th
+      | フロントNG
+    th
+      | 根本的NG
+    th
+      | 永久NG
+  tr
+    td
+      = @call_count.where(statu: "着信留守").count
+    td
+      = @call_count.where(statu: "担当者不在").count
+    td
+      = @call_count.where(statu: "見込").count
+    td
+      = @call_count.where(statu: "コロナ見込").count
+    td
+      = @call_count.where(statu: "折返待").count
+    td
+      = @call_count.where(statu: "APP").count
+    td
+      = @call_count.where(statu: "キャンセル").count
+    td
+      = @call_count.where(statu: "フロントNG").count
+    td
+      = @call_count.where(statu: "根本的NG").count
+    td
+      = @call_count.where(statu: "永久NG").count
+  tr
+    td
+      = number_to_percentage(@call_count.where(statu: "着信留守").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "担当者不在").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "見込").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "コロナ見込").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "折返待").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "APP").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "キャンセル").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "フロントNG").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "根本的NG").count / @call_count.count.to_f * 100, precision: 1 )
+    td
+      = number_to_percentage(@call_count.where(statu: "永久NG").count / @call_count.count.to_f * 100, precision: 1 )
+br
+br
+br
+br
+table.header-table[width="90%"]
   tr
     th[colspan="6"]
       | 時間別コール
@@ -23,234 +94,206 @@ table.header-table.space[width="90%"]
     th
       | 09:00~10:00
     td
-      = number_to_percentage(@call_called_9 / @call_total_9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_called_b9 / @call_total_b9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_absence_9 / @call_total_9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_absence_b9 / @call_total_b9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_prospect_9 / @call_total_9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_prospect_b9 / @call_total_b9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_app_9 / @call_total_9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_app_b9 / @call_total_b9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_ng_9 / @call_total_9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_ng_b9 / @call_total_b9.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '00:00:00','00:59:59').count.to_f * 100, precision: 1)
       | ）
   tr
     th
       | 10:00~11:00
     td
-      = number_to_percentage(@call_called_10 / @call_total_10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_called_b10 / @call_total_b10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_absence_10 / @call_total_10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_absence_b10 / @call_total_b10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_prospect_10 / @call_total_10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_prospect_b10 / @call_total_b10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_app_10 / @call_total_10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_app_b10 / @call_total_b10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_ng_10 / @call_total_10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_ng_b10 / @call_total_b10.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '01:00:00','01:59:59').count.to_f * 100, precision: 1)
       | ）
   tr
     th
       | 11:00~12:00
     td
-      = number_to_percentage(@call_called_11 / @call_total_11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_called_b11 / @call_total_b11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_absence_11 / @call_total_11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_absence_b11 / @call_total_b11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_prospect_11 / @call_total_11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_prospect_b11 / @call_total_b11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_app_11 / @call_total_11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_app_b11 / @call_total_b11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_ng_11 / @call_total_11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_ng_b11 / @call_total_b11.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '02:00:00','02:59:59').count.to_f * 100, precision: 1)
       | ）
   tr
     th
       | 13:00~14:00
     td
-      = number_to_percentage(@call_called_13 / @call_total_13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_called_b13 / @call_total_b13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_absence_13 / @call_total_13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_absence_b13 / @call_total_b13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_prospect_13 / @call_total_13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_prospect_b13 / @call_total_b13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_app_13 / @call_total_13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_app_b13 / @call_total_b13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_ng_13 / @call_total_13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_ng_b13 / @call_total_b13.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '04:00:00','04:59:59').count.to_f * 100, precision: 1)
       | ）
   tr
     th
       | 14:00~15:00
     td
-      = number_to_percentage(@call_called_14 / @call_total_14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_called_b14 / @call_total_b14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_absence_14 / @call_total_14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_absence_b14 / @call_total_b14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_prospect_14 / @call_total_14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_prospect_b14 / @call_total_b14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_app_14 / @call_total_14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_app_b14 / @call_total_b14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_ng_14 / @call_total_14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_ng_b14 / @call_total_b14.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '05:00:00','05:59:59').count.to_f * 100, precision: 1)
       | ）
   tr
     th
       | 15:00~16:00
     td
-      = number_to_percentage(@call_called_15 / @call_total_15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_called_b15 / @call_total_b15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_absence_15 / @call_total_15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_absence_b15 / @call_total_b15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_prospect_15 / @call_total_15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_prospect_b15 / @call_total_b15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_app_15 / @call_total_15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_app_b15 / @call_total_b15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_ng_15 / @call_total_15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_ng_b15 / @call_total_b15.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '06:00:00','06:59:59').count.to_f * 100, precision: 1)
       | ）
   tr
     th
       | 16:00~17:00
     td
-      = number_to_percentage(@call_called_16 / @call_total_16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_called_b16 / @call_total_b16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "着信留守").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_absence_16 / @call_total_16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  （
-      = number_to_percentage(@call_absence_b16 / @call_total_b16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "担当者不在").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_prospect_16 / @call_total_16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_prospect_b16 / @call_total_b16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%見込%").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_app_16 / @call_total_16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_app_b16 / @call_total_b16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where(statu: "APP").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1)
       | ）
     td
-      = number_to_percentage(@call_ng_16 / @call_total_16.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count.to_f * 100, precision: 1)
       |  　（
-      = number_to_percentage(@call_ng_b16 / @call_total_b16.to_f * 100, precision: 1)
-      | ）
-  tr
-    th
-      | 17:00~18:00
-    td
-      = number_to_percentage(@call_called_17 / @call_total_17.to_f * 100, precision: 1)
-      |  （
-      = number_to_percentage(@call_called_b17 / @call_total_b17.to_f * 100, precision: 1)
-      | ）
-    td
-      = number_to_percentage(@call_absence_17 / @call_total_17.to_f * 100, precision: 1)
-      |  （
-      = number_to_percentage(@call_absence_b17 / @call_total_b17.to_f * 100, precision: 1)
-      | ）
-    td
-      = number_to_percentage(@call_prospect_17 / @call_total_17.to_f * 100, precision: 1)
-      |  　（
-      = number_to_percentage(@call_prospect_b17 / @call_total_b17.to_f * 100, precision: 1)
-      | ）
-    td
-      = number_to_percentage(@call_app_17 / @call_total_17.to_f * 100, precision: 1)
-      |  　（
-      = number_to_percentage(@call_app_b17 / @call_total_b17.to_f * 100, precision: 1)
-      | ）
-    td
-      = number_to_percentage(@call_ng_17 / @call_total_17.to_f * 100, precision: 1)
-      |  　（
-      = number_to_percentage(@call_ng_b17 / @call_total_b17.to_f * 100, precision: 1)
+      = number_to_percentage(@calls.where("statu LIKE ?","%NG%").where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count / @calls.where('time(created_at) >= ? and time(created_at) < ?', '07:00:00','07:59:59').count.to_f * 100, precision: 1)
       | ）
 br
 br
 br
 br
-table.header-table.space[width="90%"]
+table.header-table[width="90%"]
   tr
     th[colspan="11"]
-      | スタッフ時間別コール
+      | スタッフ&シェアフル時間別コール
   tr
     th
     th
@@ -267,25 +310,54 @@ table.header-table.space[width="90%"]
       | 15:00~
     th
       | 16:00~
+    th
+      | 17:00~
+    th
+      | 18:00~
+    th
   - @users.each do |user|
-    - user_total_calls = user.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
     tr
       th
         = user.user_name
       td
-        = user_total_calls.select { |call| l(call.created_at, format: :prepare) >= "09:00:00" }.select { |call| l(call.created_at, format: :prepare) < "09:59:59" }.count
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '09:00:00','09:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
       td
-        = user_total_calls.select { |call| l(call.created_at, format: :prepare) >= "10:00:00" }.select { |call| l(call.created_at, format: :prepare) < "10:59:59" }.count
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '10:00:00','10:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
       td
-        = user_total_calls.select { |call| l(call.created_at, format: :prepare) >= "11:00:00" }.select { |call| l(call.created_at, format: :prepare) < "11:59:59" }.count
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '11:00:00','11:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
       td
-        = user_total_calls.select { |call| l(call.created_at, format: :prepare) >= "13:00:00" }.select { |call| l(call.created_at, format: :prepare) < "13:59:59" }.count
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '13:00:00','13:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
       td
-        = user_total_calls.select { |call| l(call.created_at, format: :prepare) >= "14:00:00" }.select { |call| l(call.created_at, format: :prepare) < "14:59:59" }.count
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '14:00:00','14:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
       td
-        = user_total_calls.select { |call| l(call.created_at, format: :prepare) >= "15:00:00" }.select { |call| l(call.created_at, format: :prepare) < "15:59:59" }.count
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '15:00:00','15:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
       td
-        = user_total_calls.select { |call| l(call.created_at, format: :prepare) >= "16:00:00" }.select { |call| l(call.created_at, format: :prepare) < "16:59:59" }.count
-br
-br
-br
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '16:00:00','16:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+      td
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '17:00:00','17:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+      td
+        = user.calls.where('time(created_at) >= ? and time(created_at) < ?', '18:00:00','18:59:59').where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count
+      td
+        - countSum = 0
+        - if ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '09:00:00', '09:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '10:00:00', '10:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '11:00:00', '11:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '12:00:00', '12:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '13:00:00', '13:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '14:00:00', '14:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '15:00:00', '15:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '16:00:00', '16:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '18:00:00', '18:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - elsif ((user.calls.select('count(*) as calc').where('time(created_at) >= ? and time(created_at) <= ? and created_at >= ? and created_at <= ?', '17:00:00', '17:59:59', Time.current.beginning_of_month, Time.current.end_of_month).group('date(created_at)').having("count(*) > ?", 20)).all.length > 0)
+          = (countSum = (countSum + 500))
+        - else
+          = 0
