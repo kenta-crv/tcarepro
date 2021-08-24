@@ -1,4 +1,105 @@
 - set_meta_tags noindex: true
+
+.tops-wrapper
+ h1.headline 登録手順
+ br
+ .cp_qa
+  .cp_actab
+    input#cp_tabfour0001[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0001"]
+      | スマレジ登録
+    .cp_actab-content
+      p
+       | 勤怠管理システム『スマレジ』の招待をお送りします。招待メールが到着しましたら、ご登録をお願いします。（招待メールが届いていない場合はご連絡ください。）
+  .cp_actab
+    input#cp_tabfour0002[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0002"]
+      | TCAREシステムへの登録
+    .cp_actab-content
+      p
+       | CTIシステム『TCARE』は毎日のインポート処理を行うために使用します。以下URLより会員登録を行いましょう。
+       br
+       = link_to "ユーザー登録","https://tcare.pro/users/sign_up", class:"btn btn-success", target:"_brank"
+  .cp_actab
+    input#cp_tabfour0202[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0202"]
+      | 業務委託契約書の締結
+    .cp_actab-content
+      p
+       | 業務委託契約の締結を行います。弊社より業務委託契約書発送を行いますので、到着しましたら押印の上、一部は保管し、もう一部は弊社までご返送ください。
+       br
+       | 【送付先】
+       be
+       |〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7F　株式会社Ri-Plus　050-5480-1131
+  .cp_actab
+    input#cp_tabfour0003[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0003"]
+      | 本人確認書類送付
+    .cp_actab-content
+      p
+        |業務を行うにあたり、身分証明書・振り込み口座情報の分かる書類の送付をお願いします。書類はslack（担当：奥山）宛に添付データにてお送りくださいませ。
+  .cp_actab
+    input#cp_tabfour0004[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0004"]
+      | slackへの登録
+    .cp_actab-content
+      p
+       | 弊社では業務のやりとりは全てslackで行なっております。業務委託の方とのやりとりは別slackのワークスペースを設けておりますので、以下よりログインをお願いします。
+       br
+       = link_to "slackログイン", "https://app.slack.com/client/TPRF81CF7/CPE15NXNX", class: "btn btn-success", target:"_brank"
+       br
+       | ワースクスペース：app-takumi.slack.com　ID：mail@ri-plus.jp　PASS：Riplus20200402
+  .cp_actab
+    input#cp_tabfour0106[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0106"]
+      | メールアカウント登録
+    .cp_actab-content
+      p
+      | メールが来た際のチェックを行なって頂くメール設定を行なって頂きます。メール設定は使用するメーラーにより設定方法が異なりますので、インターネットサイトにて『お名前.com （メーラー名）　アカウント設定』等で検索いただければと存じます。
+      br
+      br
+      | ❶メールアドレス：mail@ri-plus.jp	アカウント名：mail@ri-plus.jp	パスワード：Gm4S#AdyQ　受信サーバー：pop3.gmoserver.jp	送信サーバー：smtp3.gmoserver.jp
+      br
+      br
+      | ❷メールアドレス：mail@okurite.jp	アカウント名：mail@okurite.jp	パスワード：CvM5kBG#v　受信サーバー：pop3.gmoserver.jp	送信サーバー：smtp3.gmoserver.jp
+  .cp_actab
+    input#cp_tabfour0116[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0116"]
+      | SMART Talkのダウンロード・ログイン
+    .cp_actab-content
+      p
+       | ご自身のスマートフォンに電話受付専用アプリのダウンロードをお願いします。会社に電話がかかってきた際に対応頂くアプリとなります。ログイン完了後、身内のダイヤル等でも構いませんので、電話接続が問題ないかのテストコールを必ず実施してください。
+       br
+       = link_to "SMART TALK","https://ip-phone-smart.jp/smart/smartalk/", target: "_blank"
+       br
+       | SIPアカウント：54801131 SIPパスワード：Rw25tyNf
+
+  .cp_actab
+    input#cp_tabfour0060[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0060"]
+      | クラウドワークスのアカウント
+    .cp_actab-content
+      p
+       | 弊社ではクラウドワークスで業務委託者と契約や業務進行をしております。以下のURLよりログインを行なっておきましょう。（2つ目は旧アカウントとなります。使用する場合が御座いますので、こちらも控えておいてください。）
+       br
+       = link_to "クラウドワークスログイン","https://crowdworks.jp/login?ref=toppage_hedder", target:"_brank"
+       br
+       | （新）ID:mail@ri-plus.jp PASS:Riplus20200402
+       br
+       | （旧）ID:other@ri-plus.jp PASS:Riplus20200402
+  .cp_actab
+    input#cp_tabfour1160[type="checkbox" name="tabs"]
+    label[for="cp_tabfour1160"]
+      | googleへの登録
+    .cp_actab-content
+      p
+       | 弊社ではgoogleスプレッドシートを活用して業務を行なっております。当シートにログインを頂くため以下のログインをお願いします。（googleのセキュリティの関係で承認が必要な場合があります。その場合は担当者までご連絡ください。）
+       br
+       = link_to "googleログイン", "https://www.google.com/intl/ja/account/about/", target:"_brank"
+       br
+       | ID:riplus1020@gmail.com PASS:Riplus20200402
+
+
 .tops-wrapper
  h1.headline クラウドワーカー対応業務
  br
@@ -163,7 +264,7 @@
       .center
         = video_tag("/videos/アポ報告（カレンダー）.mov", :controls => true,  :width=> "70%")
 
- h1.headline 定期業務
+ h1.headline 定期業務（20日/25日/30日）
  br
  .cp_qa
   .cp_actab
@@ -172,36 +273,35 @@
       | シフト依頼（毎月20日）・シフト共有（毎月25日）
     .cp_actab-content
       p
-        |
+        | 弊社では毎月20日にスタッフにシフト提出依頼を行い、毎月25日にシフト決定連絡を行います。基本的には特例がない限り、シフト希望通りにシフトを組みます。
   .cp_actab
     input#cp_tabfour113[type="checkbox" name="tabs"]
     label[for="cp_tabfour113"]
-      | シフト修正
+      | シフト修正（毎月20日）
     .cp_actab-content
       p
-      .center
-        = video_tag("/videos/出勤簿修正・シフト管理.mov", :controls => true,  :width=> "70%")
+       | スタッフは毎日出勤の度に打刻を行います。その際、分単位のずれが毎月積み重なり、このままでは適切な計算が出来ません。当社では残業自体が御座いませんので、全てシフト希望時通りのシフトに適正変更します。
   .cp_actab
     input#cp_tabfour014[type="checkbox" name="tabs"]
     label[for="cp_tabfour014"]
-      | 給与計算・インセンティブ計算（毎月15日）
+      | 給与計算・インセンティブ計算（毎月20日）
     .cp_actab-content
       p
-        |
+        | 弊社では毎月25日にお給料日となります。シフト修正を行なった後、給与計算とインセンティブの計算を行います。
   .cp_actab
     input#cp_tabfour015[type="checkbox" name="tabs"]
     label[for="cp_tabfour015"]
-      | アポイント件数集計
+      | アポイント件数集計（毎月月末）
     .cp_actab-content
       p
-        |
+        | 毎月最終勤務日の夕方頃になりましたら、締め作業として月間で獲得したアポイントの分類と、計算を行います。月末作業は非常に重要であり、かつ必ず当日中に行う必要があります。
   .cp_actab
     input#cp_tabfour016[type="checkbox" name="tabs"]
     label[for="cp_tabfour016"]
       | Paid請求（毎月月末）
     .cp_actab-content
       p
-        |
+        | 弊社では、請求を決済代行会社Paidで行なっております。上記で集計を行なった後に、弊社担当者にチェックを受け、問題がないようでしたら請求書の発行手続きをお願いします。
  h1.headline 契約業務
  br
  .cp_qa
