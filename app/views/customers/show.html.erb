@@ -1,14 +1,14 @@
 <br>
 <br>
 <br>
-<% if user_signed_in?  %>
+<% if sender_signed_in? %>
+ <%= render "sender" %>
+<% elsif user_signed_in?  %>
  <%= render "show" %>
 <% elsif admin_signed_in? && @customer.choice == "SFA" %>
  <%= render "section" %>
 <% elsif worker_signed_in? %>
  <%= render "extraction" %>
-<% elsif sender_signed_in? %>
- <%= render "sender" %>
 <% else %>
  <%= render "list" %>
 <% end %>

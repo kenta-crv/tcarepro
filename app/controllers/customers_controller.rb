@@ -405,7 +405,7 @@ class CustomersController < ApplicationController
   def okurite
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.where.not(url: nil).page(params[:page]).per(20)
+    @customers = @customers.where.not(url: nil).page(params[:page]).per(30)
   end
 
   private
