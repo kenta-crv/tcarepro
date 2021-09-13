@@ -368,6 +368,9 @@ class CustomersController < ApplicationController
    end
   end
 
+  def news
+  end
+
   def import
     cnt = Customer.import(params[:file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"

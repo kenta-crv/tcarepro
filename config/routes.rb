@@ -68,6 +68,7 @@ Rails.application.routes.draw do
   get 'customers/:id/:is_auto_call' => 'customers#show'
 
   get 'information' => 'customers#information' #分析
+  get 'news' => 'customers#news'
 
   get 'sfa' => 'customers#sfa' #SFA
   #TCARE
