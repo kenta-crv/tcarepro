@@ -50,17 +50,17 @@
 			<th>会社名</th>
 			<td><%= @customer.company %></td>
 			<th>代表者</th>
-			<td><%= @customer.first_name %>(<%= @customer.first_kana %>)</td>
+			<td><%= @customer.first_name %></td>
 		</tr>
 		<tr>
 			<th>検索対象</th>
 			<td><%= @customer.industry %></td>
-      <th>人数</th>
-  		<td><%= @customer.people %></td>
+      <th>業種</th>
+      <td><%= @customer.business %></td>
 		</tr>
     <tr>
 			<th>住所</th>
-			<td colspan="3"><%= @customer.address %></td>
+			<td colspan="3"><%= @customer.postnumber %><%= @customer.address %></td>
 		</tr>
 		<tr>
       <th>タイトル</th>
@@ -68,15 +68,21 @@
     </tr>
     <tr>
       <th>URL1</th>
-			<td><%= link_to "Webサイト", @customer.url, target:"_blank" %></td>
+			<td><%= link_to "求人サイト", @customer.url, target:"_blank" %></td>
       <th>URL2</th>
-			<td><%= link_to "求人サイト", @customer.url_2, target:"_blank" %></td>
+			<td><%= link_to "Webサイト", @customer.url_2, target:"_blank" %></td>
     </tr>
     <tr>
       <th>フォーマット</th>
       <td><%= link_to "format", "manuals/format", target:"_blank" %></td>
       <th>業種</th>
       <td><%= @customer.business %></td>
+		</tr>
+    <tr>
+      <th>資本金</th>
+      <td><%= @customer.caption %></td>
+      <th>人数</th>
+  		<td><%= @customer.people %></td>
 		</tr>
 	</tbody>
 </table>
