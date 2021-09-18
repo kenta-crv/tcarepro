@@ -13,7 +13,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
           th
             | asia（介護）
           th
-            | asia（食品）
+            | asia（食品加工）
           th
             | asia（農業）
           th
@@ -32,7 +32,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
           td.red
             = Customer.where("industry LIKE ?", "%asia（介護）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
           td.red
-            = Customer.where("industry LIKE ?", "%asia（食品）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%asia（食品加工）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
           td.red
             = Customer.where("industry LIKE ?", "%asia（農業）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
           td.red
