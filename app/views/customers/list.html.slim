@@ -3,28 +3,17 @@
     | 企業リスト
  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
   table[width="90%"]
-    col[width="8%"]
-    col[width="10%"]
-    col[width="5%"]
-    col[width="7%"]
-    col[width="15%"]
-    col[width="10%"]
-    col[width="15%"]
-    col[width="8%"]
+
     thead
       tr
         th
           | 会社名
-        th
-          | 業種
         th
           | 住所
     - @customers.each do |customer|
       tr
         td
           = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
-        td
-          = customer.business
         td
           = customer.address
     tr
