@@ -279,13 +279,13 @@ table.header-table[width="90%"]
     td
       = @asia2_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%asia（農業）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%asia（農業）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%asia（農業）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%圏友（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%圏友（介護）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%圏友（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount
-    - @asia3_sales = @detailAppCount * 33000
+    - @kenyu1_sales = @detailAppCount * 33000
     th
-      | asia（農業）
+      | 圏友（介護）
     td
       = @ListCount
     td
@@ -299,7 +299,52 @@ table.header-table[width="90%"]
     td
       = @detailRemainCount
     td
-      = @asia3_sales
+      = @kenyu1_sales
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%圏友（食品加工）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%圏友（食品加工）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%圏友（食品加工）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount
+    - @kenyu2_sales = @detailAppCount * 33000
+    th
+      | 圏友（食品加工）
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @kenyu2_sales
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%圏友（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%圏友（工場）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%圏友（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount
+    - @kenyu3_sales = @detailAppCount * 33000
+    th
+      | 圏友（工場）
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @kenyu3_sales
+
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -348,7 +393,7 @@ table.header-table[width="90%"]
     td
     td
     td
-      = @sorairo_sales + @kousaido_sales + @fact_sales + @sanz_sales + @asia1_sales + @asia2_sales + @asia3_sales
+      = @sorairo_sales + @kousaido_sales + @fact_sales + @sanz_sales + @asia1_sales + @asia2_sales + @kenyu1_sales + @kenyu2_sales + @kenyu3_sales
 br
 br
 br
