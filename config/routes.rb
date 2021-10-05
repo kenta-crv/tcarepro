@@ -7,7 +7,6 @@ Rails.application.routes.draw do
   get 'manuals' => 'manuals#index'
   get 'manuals/format' => 'manuals#format' #アポフォーマット
   get 'manuals/faq' => 'manuals#faq' #よくある質問
-  get 'manuals/outsourcing' => 'manuals#outsourcing'
   get 'manuals/officework' => 'manuals#officework'
 
   get 'manuals/homework' => 'manuals#homework' #２回目の出勤について

@@ -16,10 +16,7 @@ class ManualsController < ApplicationController
 
   def homework
   end
-
-  def outsourcing
-  end
-
+  
   def officework
   end
 end
