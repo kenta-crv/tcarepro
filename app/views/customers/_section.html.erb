@@ -125,6 +125,43 @@
 </table>
 <%end%>
 
+<table width="100%" class="space">
+		<col width="15%">
+		<col width="8%">
+		<col width="8%">
+		<col width="10%">
+		<col width="45%">
+		<col width="7%">
+<% if @customer.calls.any? %>
+		<tr>
+			<th>日時</th>
+			<th>担当者</th>
+			<th>ステータス</th>
+			<th>次回連絡日</th>
+			<th>コメント</th>
+			<th>削除</th>
+		</tr>
+		<tr>
+		<% @customer.calls.includes([:admin, :user]).each do |call| %>
+			<td><%= call.created_at %></td>
+			<td>
+          <%= call.admin&.user_name %>
+          <%= call.user&.user_name %>
+      </td>
+			<td><%= call.statu %></td>
+			<td><%= call.time %></td>
+			<td><%= call.comment %></td>
+			<td><%= link_to '編集', edit_customer_call_path(@customer, call), class: 'command'%>
+			<%= link_to '削除',
+                    customer_call_path(@customer, call) ,
+			            	method: :delete,
+			            	class: 'command',
+			            	data: { confirm: '本当に削除しますか？'} %></td>
+		</tr>
+<% end %>
+</table>
+<% end %>
+
 
 <script>
 $(function() {

@@ -58,7 +58,7 @@
           = link_to '削除',
           -                        customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}
     tr
-      th[colspan="8"]
+      th[colspan="9"]
         = paginate @customers
 
 
@@ -113,7 +113,9 @@
                 td
                   = f.search_field :tel, {type: 'checkbox', checked: true }
                 th
+                  | SFA
                 td
+                  = f.search_field :choice_cont, type: "text"
               tr
                 th
                   | 未コール

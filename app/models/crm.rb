@@ -12,13 +12,13 @@ class Crm < ApplicationRecord
   end
 
   def self.updatable_attributes
-    [ "company","first_name","tel","fax","prefecture","mail","url","item","statu", "price","number",
-    "history","area","target", "next","date_time", "content","comment", "choice"]
+    [ "company","first_name","tel","fax","prefecture","mail","item","statu", "price","number",
+    "history","area","target", "next","date_time", "content","comment"]
   end
 
   def self.csv_attributes
-    [ "company","first_name","tel","fax","prefecture","mail","url","item","statu", "price","number",
-    "history","area","target", "next","date_time", "content","comment", "choice"]
+    [ "company","first_name","tel","fax","prefecture","mail","item","statu", "price","number",
+    "history","area","target", "next","date_time", "content","comment"]
   end
 
   def self.generate_csv

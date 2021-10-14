@@ -3,10 +3,10 @@
 <br>
 <% if sender_signed_in? %>
  <%= render "sender" %>
-<% elsif user_signed_in?  %>
- <%= render "show" %>
 <% elsif admin_signed_in? && @customer.choice == "SFA" %>
  <%= render "section" %>
+<% elsif user_signed_in?  %>
+ <%= render "show" %>
 <% elsif worker_signed_in? %>
  <%= render "extraction" %>
 <% else %>
