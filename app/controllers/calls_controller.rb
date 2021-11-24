@@ -36,9 +36,17 @@ class CallsController < ApplicationController
     @call = @customer.calls.new(call_params)
       if @customer.calls.count >= 4
         # 最新のステータスが着信留守4回連続の場合、5回目はNGとする
-        if @customer.calls.order(created_at: :desc).limit(4).pluck(:statu).all? { |w| w == "着信留守"  }
+        if @customer.calls.order(created_at: :asc).limit(4).pluck(:statu).all? { |w| w == "着信留守"  }
           if @call.statu == "着信留守"
-            @call.statu = "NG"
+            @call.statu = "永久NG"
+            @call.save
+          end
+        end
+      end
+      if
+        if @customer.calls.order(created_at: :desc).limit(5).pluck(:statu).all? { |w| w == "担当者不在"  }
+          if @call.statu == "担当者不在"
+            @call.statu = "永久NG"
             @call.save
           end
         end

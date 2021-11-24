@@ -32,7 +32,7 @@
         th
           = sort_link(@q, :created_at)
         th
-          | アップデート日
+          = sort_link(@q, :updated_at)
         th
           | 編集/削除
     - @customers.includes(:last_call).each_with_index do |customer, index|
