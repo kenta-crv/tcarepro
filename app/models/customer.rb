@@ -63,7 +63,7 @@ class Customer < ApplicationRecord
   end
   def self.csv_attributes
     ["company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
-     "caption","status","title","other","url_2","customer_tel","choice","inflow","business","history","area","target","meeting","experience","price",
+     "caption","status","title","other","url_2","choice","inflow","business","history","area","target","meeting","experience","price",
      "number","start","remarks","business","extraction_count","send_count"]
   end
 

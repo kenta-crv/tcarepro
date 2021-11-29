@@ -56,7 +56,9 @@ class Call < ApplicationRecord
     "永久NG",
     "契約",
     "再掲載",
-    "RiPlusAPP"
+    "未提案",
+    "再コール",
+    "再APP",
   ]
   def self.StatuItems
     @@StatuItems
@@ -64,6 +66,8 @@ class Call < ApplicationRecord
 
   @@sfa_status = [
     ["未提案","未提案"],
+    ["再コール","再コール"],
+    ["再APP","再APP"],
     ["見積中","見積中"],
     ["見込高","見込高"],
     ["見込中","見込中"],
