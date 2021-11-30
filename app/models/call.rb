@@ -58,7 +58,11 @@ class Call < ApplicationRecord
     "再掲載",
     "未提案",
     "再コール",
-    "再APP",
+    "見積中",
+    "見込高",
+    "見込中",
+    "見込低",
+    "再APP"
   ]
   def self.StatuItems
     @@StatuItems
