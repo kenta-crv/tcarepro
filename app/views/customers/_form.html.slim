@@ -70,6 +70,13 @@
           =text_field :customer, :industry
       tr
         th
+          | SFA
+        td
+          =text_field :customer, :choice
+        th
+        td
+      tr
+        th
           | 流入元
         td
           = f.select(:inflow, [\
