@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   }
   resources :workers, only: [:show]
 
+  resources :inquiries #問い合わせいフォーム送信内容選択モデル
   resources :skillsheets
   resources :matters
   resources :posts

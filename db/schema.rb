@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210730051530) do
+ActiveRecord::Schema.define(version: 20211230080159) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -195,6 +195,48 @@ ActiveRecord::Schema.define(version: 20210730051530) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["crm_id"], name: "index_images_on_crm_id"
+  end
+
+  create_table "incentives", force: :cascade do |t|
+    t.string "month"
+    t.string "project_1"
+    t.string "number_1"
+    t.string "project_2"
+    t.string "number_2"
+    t.string "project_3"
+    t.string "number_3"
+    t.string "project_4"
+    t.string "number_4"
+    t.string "project_5"
+    t.string "number_5"
+    t.string "project_6"
+    t.string "number_6"
+    t.string "project_7"
+    t.string "number_7"
+    t.string "project_8"
+    t.string "number_8"
+    t.string "project_9"
+    t.string "number_9"
+    t.integer "customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_incentives_on_customer_id"
+  end
+
+  create_table "inquiries", force: :cascade do |t|
+    t.string "headline"
+    t.string "from_company"
+    t.string "person"
+    t.string "person_kana"
+    t.string "from_tel"
+    t.string "from_fax"
+    t.string "from_mail"
+    t.string "url"
+    t.string "address"
+    t.string "title"
+    t.string "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "matters", force: :cascade do |t|

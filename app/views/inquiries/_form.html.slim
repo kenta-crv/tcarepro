@@ -1,0 +1,42 @@
+= form_for @inquiry do |f|
+
+   table[width="90%"]
+     col[width="40%"]
+     col[width="60%"]
+     tbody
+      tr
+        th.arrow_box 案件名
+        td.center = text_field :inquiry, :headline
+      tr
+        th.arrow_box 会社名
+        td.center  = text_field :inquiry, :from_company
+      tr
+        th.arrow_box 担当者
+        td.center  = text_field :inquiry, :person
+      tr
+        th.arrow_box タントウシャ
+        td.center  =  text_field :inquiry, :person_kana
+      tr
+        th.arrow_box 電話番号
+        td.center = text_field :inquiry, :from_tel
+      tr
+        th.arrow_box FAX番号
+        td.center = text_field :inquiry, :from_fax
+      tr
+        th.arrow_box 住所
+        td.center = text_field :inquiry, :address
+      tr
+        th.arrow_box メールアドレス
+        td.center = text_field :inquiry, :from_mail
+      tr
+        th.arrow_box URL
+        td.center = text_field :inquiry, :url
+      tr
+        th.arrow_box 件名
+        td.center = text_field :inquiry, :title
+      tr
+        th.arrow_box 本文
+        td.center = text_area :inquiry, :content
+
+      tr
+        td.center[colspan="2"] = f.submit '投稿する'

@@ -1,0 +1,20 @@
+- noindex
+
+.tops-wrapper
+  h2.headline
+    | 案件一覧
+  table.company.space[width="90%"]
+      tr
+       th 案件タイトル
+       th 最終更新日
+       th
+      tr
+      - @inquiries.each do |inquiry|
+        td
+          = link_to inquiry.headline, inquiry_path(inquiry)
+        td
+          = inquiry.updated_at.strftime("%Y年%m月%d日 %H時%M分")
+        td
+          = link_to '編集', edit_inquiry_path(inquiry), class: 'command'
+          = link_to '削除',
+          -                        inquiry_path(inquiry),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}

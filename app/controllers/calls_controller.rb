@@ -41,10 +41,7 @@ class CallsController < ApplicationController
             @call.statu = "永久NG"
             @call.save
           end
-        end
-      end
-      if
-        if @customer.calls.order(created_at: :desc).limit(5).pluck(:statu).all? { |w| w == "担当者不在"  }
+        elsif @customer.calls.order(created_at: :desc).limit(4).pluck(:statu).all? { |w| w == "担当者不在"  }
           if @call.statu == "担当者不在"
             @call.statu = "永久NG"
             @call.save

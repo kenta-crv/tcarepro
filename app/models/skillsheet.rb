@@ -1,2 +1,0 @@
-class Skillsheet < ApplicationRecord
-end

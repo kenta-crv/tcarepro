@@ -423,7 +423,7 @@ br
 br
 table.header-table.space[width="90%"]
   tr
-    th[colspan="7"]
+    th[colspan="8"]
       | スタッフ別コール
   tr
     th
@@ -436,6 +436,8 @@ table.header-table.space[width="90%"]
       | 見込数
     th
       | APP数
+    th
+      | インセンティブ
     th
       | キャンセル数
     th
@@ -453,6 +455,8 @@ table.header-table.space[width="90%"]
         = user_calls_month.select { |call| call.statu == "見込" }.count
       td
         = user_app = user_calls_month.select { |call| call.statu == "APP" }.count
+      td
+        = user_app = user_calls_month.select { |call| call.statu == "APP" }.count * 750
       td
         = user_calls_month.select { |call| call.statu == "キャンセル" }.count
       td
