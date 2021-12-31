@@ -164,15 +164,6 @@ class CustomersController < ApplicationController
     @admins = Admin.all
     @users = User.all
     case @type
-    when "import" then #インポート件数
-      #created_atの件数
-      @customers_createrd_at_1 = @customers.where(created_at: Time.current.day).to_a
-      @customers_createrd_at_2 = @customers.where(created_at: 1.day.ago.all_day).to_a
-      @customers_createrd_at_3 = @customers.where(created_at: 2.day.ago.all_day).to_a
-      @customers_createrd_at_4 = @customers.where(created_at: 3.day.ago.all_day).to_a
-      @customers_createrd_at_5 = @customers.where(created_at: 4.day.ago.all_day).to_a
-      @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
-      @call_count_today = @call_today_basic.count
     when "analy1" then
       @customers_app = @customers.where(call_id: 1)
       #today
@@ -208,7 +199,6 @@ class CustomersController < ApplicationController
       @call_count_ng = @call_month_basic.select { |call| call.statu == "NG" }
 
       # 企業別アポ状況
-      # @detailcalls = Customer2.joins(:calls).select('calls.id')
       @customer2_sorairo = Customer2.where("industry LIKE ?", "%SORAIRO%")
       @customer2_takumi = Customer2.where("industry LIKE ?", "%アポ匠%")
       @customer2_omg = Customer2.where("industry LIKE ?", "%OMG%")
@@ -217,9 +207,6 @@ class CustomersController < ApplicationController
       @detail_takumi = @customer2_takumi.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_takumi.present?
       @detail_omg = @customer2_omg.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_omg.present?
       @detail_kousaido = @customer2_kousaido.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_kousaido.present?
-      # @detail_sorairo = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
-      # @detail_ikebukuro = @detailcalls.where("industry LIKE ?", "%JAIC池袋%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
-      # @detail_apotaku = @detailcalls.where("industry LIKE ?", "%アポ匠%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).to_a
 
       @admins = Admin.all
       @users = User.all
@@ -351,6 +338,10 @@ class CustomersController < ApplicationController
       @users = User.all
       #statu内容簡素化
       @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
+    when "analy3"
+      @calls = Call.all
+      @detailcustomers = Call.joins(:customer).select('customers.id')
+      @detailcalls = Customer2.joins(:calls).select('calls.id')
     when "call_import"
       call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
       generate_call =

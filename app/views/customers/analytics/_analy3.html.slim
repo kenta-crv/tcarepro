@@ -1,0 +1,208 @@
+- set_meta_tags noindex: true
+br
+.center
+ .row
+  .col-sm-3
+  .col-sm-2
+   select[name=""]
+    option[value="-"]
+     | -
+    option[value="全体"]
+     | 全体
+    option[value="担当者A"]
+     | 担当者A
+    option[value="担当者B"]
+     | 担当者B
+    option[value="担当者C"]
+     | 担当者C
+  .col-sm-2
+   select[name=""]
+    option[value=""]
+      | -
+    option[value="2020年"]
+      | 2020年
+    option[value="2021年"]
+      | 2021年
+    option[value="2022年"]
+      | 2022年
+  .col-sm-2
+   select[name=""]
+    option[value=""]
+      | -
+    option[value="1月"]
+      | 1月
+    option[value="2月"]
+      | 2月
+    option[value="3月"]
+      | 3月
+  .col-sm-3
+
+.tops-wrapper
+ .headline
+    | ●月獲得（担当者）獲得状況
+br
+br
+table.header-table[width="90%"]
+  tr
+    th[colspan="8"]
+      | 企業別アポ状況
+  tr
+    th
+      | 企業名
+    th
+      | コール数
+    th
+      | コールアポ率
+    th
+      | アポ数
+    th
+      | 売上
+    th
+      | インセンティブ合計
+  tr
+    - @detailCount = @detailcustomers.where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount
+    - @sorairo_sales = @detailAppCount * 29000
+    - @sorairo_incentives = @detailAppCount * 0
+    th
+      | SORAIRO
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @sorairo_sales
+    td
+      = @sorairo_incentives
+  tr
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%サンズ").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%サンズ%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @sanz_sales = @detailAppCount * 24750
+    - @sanz_incentives = @detailAppCount * 24750
+    th
+      | サンズ
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @sanz_sales
+    td
+      = @sanz_incentives
+  tr
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%asia（介護）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%asia（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @asia1_sales = @detailAppCount * 33000
+    - @asia1_incentives = @detailAppCount * 33000
+    th
+      | asia（介護）
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @asia1_sales
+    td
+      = @asia1_incentives
+  tr
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%asia（食品加工）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%asia（食品加工）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @asia2_sales = @detailAppCount * 33000
+    - @asia2_incentives = @detailAppCount * 33000
+    th
+      | asia（食品加工）
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @asia2_sales
+    td
+      = @asia2_incentives
+  tr
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%圏友（介護）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%圏友（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @kenyu1_sales = @detailAppCount * 33000
+    - @kenyu1_incentives = @detailAppCount * 33000
+    th
+      | 圏友（介護）
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @kenyu1_sales
+    td
+      = @kenyu1_incentives
+  tr
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%圏友（食品加工）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%圏友（食品加工）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @kenyu2_sales = @detailAppCount * 33000
+    - @kenyu2_incentives = @detailAppCount * 33000
+    th
+      | 圏友（食品加工）
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @kenyu2_sales
+    td
+      = @kenyu2_incentives
+  tr
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%さくら（介護）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%さくら（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @sakura1_sales = @detailAppCount * 33000
+    - @sakura1_incentives = @detailAppCount * 33000
+    th
+      | さくら（介護）
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @sakura1_sales
+    td
+      = @sakura1_incentives
+  tr
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%さくら（食品加工）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%さくら（食品加工）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @sakura2_sales = @detailAppCount * 33000
+    - @sakura2_incentives = @detailAppCount * 33000
+    th
+      | さくら（食品加工）
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @sakura2_sales
+    td
+      = @sakura2_incentives
+br
+br
+br

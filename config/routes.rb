@@ -79,13 +79,6 @@ Rails.application.routes.draw do
   get 'customers/bulk_edit'
   put 'customers/bulk_update'
 
-  #ファイルアップロード
-  resources :uploader, only: [:edit, :update, :destroy]
-  get 'uploader/index'
-  post 'uploader/upload'
-  get 'uploader/view'
-  get 'uploader/download/:id' => 'uploader#download' ,as: :donwload_pdf
-
   #お問い合わせフォーム
   get 'contact' => 'contact#index'
   post 'contact/confirm' => 'contact#confirm'
@@ -99,20 +92,6 @@ Rails.application.routes.draw do
         post '/' , :action => 'create'
       end
     end
-  end
-
-  #削除予定
-  resources :crms do
-    collection do
-      post :import
-      get :message
-    end
-    resources :comments
-    resources :images
-     member do
-      get 'images/view'
-      get 'images/download/:id' => 'images#download', as: :images_pdf
-     end
   end
 
   get '*path', controller: 'application', action: 'render_404'
