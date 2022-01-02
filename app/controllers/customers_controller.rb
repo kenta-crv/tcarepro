@@ -338,8 +338,48 @@ class CustomersController < ApplicationController
       @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
     when "analy3"
       @calls = Call.all
-      @detailcustomers = Call.joins(:customer).select('customers.id')
-      @detailcalls = Customer2.joins(:calls).select('calls.id')
+
+      company_attributes = [
+        {
+          name: 'SORAIRO',
+          coefficient: 29000
+        },
+        {
+          name: 'サンズ',
+          coefficient: 24750
+        },
+        {
+          name: 'asia（介護）',
+          coefficient: 33000
+        },
+        {
+          name: 'asia（食品加工）',
+          coefficient: 33000
+        },
+        {
+          name: '圏友（介護）',
+          coefficient: 33000
+        },
+        {
+          name: '圏友（食品加工）',
+          coefficient: 33000
+        },
+        {
+          name: 'さくら（介護）',
+          coefficient: 33000
+        },
+        {
+          name: 'さくら（食品加工）',
+          coefficient: 33000
+        },
+      ]
+
+      @companies = company_attributes.map do |attributes|
+        CompanyAnalytics.new(
+          attributes[:name],
+          attributes[:coefficient],
+        )
+      end
     when "call_import"
       call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
       generate_call =
