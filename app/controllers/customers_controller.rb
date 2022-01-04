@@ -41,7 +41,7 @@ class CustomersController < ApplicationController
      @last_count_params = {}
      if params[:last_count] && !params[:last_count].values.all?(&:blank?)
        @last_count_params = params[:last_count]
-       last_count = count.joins_last_count
+       last_count = count.joins_last_count # TODO: count は存在しない。未使用なら消したい
        last_count = last_count.where(statu: @last_count_params[:statu]) if !@last_count_params[:statu].blank?
        last_count = last_count.where("counts.time >= ?", @last_count_params[:time_from]) if !@last_count_params[:time_from].blank?
        last_count = last_count.where("counts.time <= ?", @last_count_params[:time_to]) if !@last_count_params[:time_to].blank?
@@ -337,49 +337,13 @@ class CustomersController < ApplicationController
       #statu内容簡素化
       @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
     when "analy3"
-      @calls = Call.all
+      attributes = params.fetch(:information_analytic_form, {}).permit(:user_id, :year, :month)
 
-      company_attributes = [
-        {
-          name: 'SORAIRO',
-          coefficient: 29000
-        },
-        {
-          name: 'サンズ',
-          coefficient: 24750
-        },
-        {
-          name: 'asia（介護）',
-          coefficient: 33000
-        },
-        {
-          name: 'asia（食品加工）',
-          coefficient: 33000
-        },
-        {
-          name: '圏友（介護）',
-          coefficient: 33000
-        },
-        {
-          name: '圏友（食品加工）',
-          coefficient: 33000
-        },
-        {
-          name: 'さくら（介護）',
-          coefficient: 33000
-        },
-        {
-          name: 'さくら（食品加工）',
-          coefficient: 33000
-        },
-      ]
-
-      @companies = company_attributes.map do |attributes|
-        CompanyAnalytics.new(
-          attributes[:name],
-          attributes[:coefficient],
-        )
-      end
+      @form = InformationAnalyticForm.new(
+        user_id: attributes[:user_id].presence,
+        year: attributes[:year].presence || Time.current.year,
+        month: attributes[:month].presence || Time.current.month,
+      )
     when "call_import"
       call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
       generate_call =
