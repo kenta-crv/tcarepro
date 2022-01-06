@@ -1,0 +1,4 @@
+conda install -c anaconda beautifulsoup4
+conda install -c anaconda flask
+conda install -c conda-forge selenium
+conda install -c bjrn webdriver_manager
