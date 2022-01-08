@@ -13,13 +13,12 @@ class CustomersController < ApplicationController
     @last_call_params = {}
     if params[:last_call] && !params[:last_call].values.all?(&:blank?)
       @last_call_params = params[:last_call]
-      last_call = Call.joins_last_call
+      last_call = Call.joins_last_call.select(:customer_id)
       last_call = last_call.where(statu: @last_call_params[:statu]) if !@last_call_params[:statu].blank?
       last_call = last_call.where("calls.time >= ?", @last_call_params[:time_from]) if !@last_call_params[:time_from].blank?
       last_call = last_call.where("calls.time <= ?", @last_call_params[:time_to]) if !@last_call_params[:time_to].blank?
       last_call = last_call.where("calls.created_at >= ?", @last_call_params[:created_at_from]) if !@last_call_params[:created_at_from].blank?
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
-      last_call_customer_ids = last_call.pluck(:customer_id)
     end
     #@q = Customer.ransack(params[:q]) or @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
@@ -28,13 +27,12 @@ class CustomersController < ApplicationController
     #@q = Customer.ransack(params[:last_call])
     #@customers = @q.result  @q.result.includes(:last_call)
     #@customers = @q.result.includes(:last_call)
-    @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
-    @customers = @customers.distinct.page(params[:page]).per(30)
+    @customers = @customers.where( id: last_call ) if last_call
+    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(30)
     respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
     end
-    @all = @customers.all
   end
 
   def show
@@ -395,7 +393,7 @@ class CustomersController < ApplicationController
   def list
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.order(created_at: 'desc').page(params[:page]).per(20)
+    @customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(20)
   end
 
   def extraction

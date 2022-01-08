@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20211230080159) do
+ActiveRecord::Schema.define(version: 20220103201223) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20211230080159) do
     t.integer "user_id"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["crm_id"], name: "index_calls_on_crm_id"
+    t.index ["customer_id", "created_at"], name: "index_calls_on_customer_id_and_created_at"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
     t.index ["user_id"], name: "index_calls_on_user_id"
   end
@@ -148,6 +149,7 @@ ActiveRecord::Schema.define(version: 20211230080159) do
     t.string "extraction_count"
     t.string "send_count"
     t.integer "worker_id"
+    t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
 
