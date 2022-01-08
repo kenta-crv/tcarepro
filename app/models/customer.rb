@@ -2,6 +2,7 @@ class Customer < ApplicationRecord
   #belongs_to :admin
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
+  belongs_to :client, optional: true
   has_many :estimates
   has_many :calls#, foreign_key: :tel, primary_key: :tel
   has_many :counts

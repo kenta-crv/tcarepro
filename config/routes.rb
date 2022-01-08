@@ -25,6 +25,11 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
   resources :users, only: [:show]
+  #クライアントアカウント
+  devise_for :clients, controllers: {
+    registrations: 'clients/registrations'
+  }
+  resources :clients, only: [:show]
   #センダーアカウント
   devise_for :senders, controllers: {
     registrations: 'senders/registrations'

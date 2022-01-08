@@ -2,7 +2,7 @@ class Call < ApplicationRecord
   belongs_to :customer#, foreign_key: :tel, primary_key: :tel
   belongs_to :admin, optional: true
   belongs_to :user, optional: true
-
+  belongs_to :client, optional: true
   scope :times_last_call, -> {
     last_time = "SELECT sub_call.customer_id, MAX(sub_call.time) as last_time FROM calls as sub_call GROUP BY sub_call.customer_id";
     joins(

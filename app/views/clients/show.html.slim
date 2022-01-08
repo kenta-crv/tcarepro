@@ -1,0 +1,110 @@
+br
+br
+br
+.center
+ .row
+  .col-sm-4
+  .col-sm-2
+   select[name=""]
+    option[value=""]
+      | -
+    option[value="2020年"]
+      | 2020年
+    option[value="2021年"]
+      | 2021年
+    option[value="2022年"]
+      | 2022年
+  .col-sm-2
+   select[name=""]
+    option[value=""]
+      | -
+    option[value="1月"]
+      | 1月
+    option[value="2月"]
+      | 2月
+    option[value="3月"]
+      | 3月
+  .col-sm-4
+.tops-wrapper
+  h2.headline
+    | ●月のコール状況
+  br
+  br
+  table.header-table.space[width="90%"]
+    tr
+      th[colspan="10"]
+        | ステータス別結果
+    tr
+      th
+        | 着信留守
+      th
+        | 担当者不在
+      th
+        | 見込
+      th
+        | APP
+      th
+        | キャンセル
+      th
+        | NG
+      th
+        | APP獲得率
+    tr
+      td
+        /= @call_count_called.count
+      td
+        /= @call_count_absence.count
+      td
+        /= @call_count_prospect.count
+      td
+        /= @call_count_app.count
+      td
+        /= @call_count_cancel.count
+      td
+        /= @call_count_ng.count
+      td
+        /= @app_convertion_month.ceil(2)
+        | %
+    tr
+      td
+        /= number_to_percentage(@call_count_called.count / @call_count_month.to_f * 100, precision: 1 )
+      td
+        /= number_to_percentage(@call_count_absence.count / @call_count_month.to_f * 100, precision: 1 )
+      td
+        /= number_to_percentage(@call_count_prospect.count / @call_count_month.to_f * 100, precision: 1 )
+      td
+        /= number_to_percentage(@call_count_app.count / @call_count_month.to_f * 100, precision: 1 )
+      td
+        /= number_to_percentage(@call_count_cancel.count / @call_count_month.to_f * 100, precision: 1 )
+      td
+        /= number_to_percentage(@call_count_ng.count / @call_count_month.to_f * 100, precision: 1 )
+      td
+
+  h2.headline
+    | ●月●日のコール状況
+  br
+  table[width="90%"  class="header-table space"]
+      colgroup
+        col[width="25%"]
+        col[width="25%"]
+        col[width="25%"]
+        col[width="25%"]
+        |  　
+      tr
+        th
+          | 会社名
+        th
+          | ステータス
+        th
+          | コメント
+        th
+          | コール日時
+      tr
+        th
+          /= @customer.company
+        td
+          /= @call.status
+        td
+          /= @call.comment
+        td
+          /= @call.created_at
