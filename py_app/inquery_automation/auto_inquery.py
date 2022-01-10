@@ -147,6 +147,12 @@ class AutoInquery(Browser):
     def get_form_elems_from_page(self) -> Tuple[Dict[str,Optional[WebElement]],bool]:
         form_elems:Dict[str,Optional[WebElement]] =  {
             'from_company': None, 
+            'kana':None,
+            'post':None,
+            'address':None,
+            'from_url':None,
+            'age':None,
+            'title':None,
             'person': None, 
             'from_tel': None, 
             'from_email': None, 
@@ -155,24 +161,48 @@ class AutoInquery(Browser):
         }
         form_attr_list:Dict[str,Dict[str,List[str]]] =  {
             'from_company': {
-                                "input_name_list":[],
-                                "table_label_list":[]
+                                "input_name_list":["company"],
+                                "table_label_list":["会社名"]
+                            }, 
+            'kana': {
+                                "input_name_list":["kana"],
+                                "table_label_list":["かな" , "カナ"]
+                            }, 
+            'post': {
+                                "input_name_list":["post"],
+                                "table_label_list":["郵便番号" , "〒"]
+                            }, 
+            'address': {
+                                "input_name_list":["address", "prefecture"],
+                                "table_label_list":["都道府県" , "住所"]
+                            }, 
+            'from_url': {
+                                "input_name_list":["url" , "hp"],
+                                "table_label_list":["ホームページURL"]
+                            }, 
+            'age': {
+                                "input_name_list":["age"],
+                                "table_label_list":["年齢"]
+                            }, 
+            'title': {
+                                "input_name_list":["title","head","headline"],
+                                "table_label_list":["件名"]
                             }, 
             'person':       {
-                                "input_name_list": [],
-                                "table_label_list":[]
+                                "input_name_list": ["name","manager","person","president"],
+                                "table_label_list":["担当者","お名前","名前"]
                             }, 
             'from_tel':     {
-                                "input_name_list": [],
-                                "table_label_list":[]
+                                "input_name_list": ["phone" , "tel" , "mobile"],
+                                "table_label_list":["電話番号" , "携帯番号"]
                             }, 
             'from_email':   {
-                                "input_name_list": [],
-                                "table_label_list":[]
+                                "input_name_list": ["email" , "mail" , "e-mail"],
+                                "table_label_list":["メール" , "メールアドレス"]
                             }, 
             'content':      {
-                                "input_name_list": [],
-                                "table_label_list":[]
+                                "input_name_list": ["body" , "inquiry" , "content" , "contents" , "text"],
+                                "table_label_list":["本文" , "その他" , "要望" , "問い合わせ"  , "内容"]
                             }, 
             'submit':       {
                                 "submit_name_list": []
