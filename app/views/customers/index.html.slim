@@ -5,9 +5,9 @@
     | (
     = @customers.current_page * 30 - 29
     | ~
-    = @customers.current_page * 30
+    = [@customers.page(1).per(30).total_count, @customers.current_page * 30].min
     | 件/
-    = @customers.page(1).per(30).total_pages * 30
+    = @customers.page(1).per(30).total_count
     | 件中
     | )
 

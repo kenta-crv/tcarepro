@@ -1121,3 +1121,21 @@ a.btn--shadow {
   -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
   box-shadow: 0 3px 5px rgba(0, 0, 0, .3);
 }
+
+// TODO: 全体的に BEM で書く
+#customers-information {
+  .total {
+    margin-bottom: 30px;
+  }
+  .edit-incentive-unit {
+    display: inline-block;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+}
+
+#editIncentiveUnit {
+  .update-button {
+    width: 100%;
+  }
+}

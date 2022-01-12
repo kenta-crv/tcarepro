@@ -9,14 +9,15 @@ br
   = link_to "analytics3", information_path(type: "analy3"), class:"btn btn-success both"
  .col-1
 
-- case @type
+#customers-information
+   - case @type
 
-- when "call_import"
-   = render partial: 'customers/analytics/call_import'
-- when "analy1"
-   = render partial: 'customers/analytics/analy1'
-- when "analy2"
-   = render partial: 'customers/analytics/analy2'
-- when "analy3"
-   = render partial: 'customers/analytics/analy3'
-- else
+   - when "call_import"
+      = render partial: 'customers/analytics/call_import'
+   - when "analy1"
+      = render partial: 'customers/analytics/analy1'
+   - when "analy2"
+      = render partial: 'customers/analytics/analy2'
+   - when "analy3"
+      = render partial: 'customers/analytics/analy3'
+   - else

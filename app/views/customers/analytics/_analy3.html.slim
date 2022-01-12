@@ -1,208 +1,103 @@
 - set_meta_tags noindex: true
-br
-.center
- .row
-  .col-sm-3
-  .col-sm-2
-   select[name=""]
-    option[value="-"]
-     | -
-    option[value="全体"]
-     | 全体
-    option[value="担当者A"]
-     | 担当者A
-    option[value="担当者B"]
-     | 担当者B
-    option[value="担当者C"]
-     | 担当者C
-  .col-sm-2
-   select[name=""]
-    option[value=""]
-      | -
-    option[value="2020年"]
-      | 2020年
-    option[value="2021年"]
-      | 2021年
-    option[value="2022年"]
-      | 2022年
-  .col-sm-2
-   select[name=""]
-    option[value=""]
-      | -
-    option[value="1月"]
-      | 1月
-    option[value="2月"]
-      | 2月
-    option[value="3月"]
-      | 3月
-  .col-sm-3
 
 .tops-wrapper
  .headline
-    | ●月獲得（担当者）獲得状況
-br
-br
-table.header-table[width="90%"]
+    | #{@form.year} 年 #{@form.month} 月#{@form.user_id && "（#{@form.selected_user.user_name}）"}獲得状況
+
+table.total[width="90%"]
   tr
-    th[colspan="8"]
-      | 企業別アポ状況
+    th[colspan="5"] アポ状況
   tr
-    th
-      | 企業名
-    th
-      | コール数
-    th
-      | コールアポ率
-    th
-      | アポ数
-    th
-      | 売上
-    th
-      | インセンティブ合計
+    th コール数
+    th コールアポ率
+    th アポ数
+    th 売上
+    th インセンティブ合計
   tr
-    - @detailCount = @detailcustomers.where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount
-    - @sorairo_sales = @detailAppCount * 29000
-    - @sorairo_incentives = @detailAppCount * 0
-    th
-      | SORAIRO
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @sorairo_sales
-    td
-      = @sorairo_incentives
+    td = link_to @form.call_count, customers_path(@form.link_to_queries)
+    td = number_to_percentage(@form.appointment_rate, precision: 1)
+    td = @form.appointment_count
+    td = @form.sales
+    td = @form.incentive_total
+
+table[width="90%"]
   tr
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%サンズ").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%サンズ%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
-    - @sanz_sales = @detailAppCount * 24750
-    - @sanz_incentives = @detailAppCount * 24750
-    th
-      | サンズ
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @sanz_sales
-    td
-      = @sanz_incentives
+    th[colspan="7"] 企業別内訳
   tr
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%asia（介護）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%asia（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
-    - @asia1_sales = @detailAppCount * 33000
-    - @asia1_incentives = @detailAppCount * 33000
-    th
-      | asia（介護）
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @asia1_sales
-    td
-      = @asia1_incentives
-  tr
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%asia（食品加工）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%asia（食品加工）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
-    - @asia2_sales = @detailAppCount * 33000
-    - @asia2_incentives = @detailAppCount * 33000
-    th
-      | asia（食品加工）
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @asia2_sales
-    td
-      = @asia2_incentives
-  tr
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%圏友（介護）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%圏友（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
-    - @kenyu1_sales = @detailAppCount * 33000
-    - @kenyu1_incentives = @detailAppCount * 33000
-    th
-      | 圏友（介護）
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @kenyu1_sales
-    td
-      = @kenyu1_incentives
-  tr
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%圏友（食品加工）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%圏友（食品加工）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
-    - @kenyu2_sales = @detailAppCount * 33000
-    - @kenyu2_incentives = @detailAppCount * 33000
-    th
-      | 圏友（食品加工）
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @kenyu2_sales
-    td
-      = @kenyu2_incentives
-  tr
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%さくら（介護）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%さくら（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
-    - @sakura1_sales = @detailAppCount * 33000
-    - @sakura1_incentives = @detailAppCount * 33000
-    th
-      | さくら（介護）
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @sakura1_sales
-    td
-      = @sakura1_incentives
-  tr
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%さくら（食品加工）").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%さくら（食品加工）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
-    - @sakura2_sales = @detailAppCount * 33000
-    - @sakura2_incentives = @detailAppCount * 33000
-    th
-      | さくら（食品加工）
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @sakura2_sales
-    td
-      = @sakura2_incentives
-br
-br
-br
+    th 企業名
+    th コール数
+    th コールアポ率
+    th アポ数
+    th 売上
+    th インセンティブ単価
+    th インセンティブ合計
+  - @form.industries.each do |industry|
+    tr
+      th = industry.key
+      td = link_to industry.call_count, customers_path(@form.link_to_queries(industry.key))
+      td = number_to_percentage(industry.appointment_rate, precision: 1)
+      td = industry.appointment_count
+      td = industry.sales
+      td
+        = industry.incentive_unit
+        - if industry.incentive_active
+          .edit-incentive-unit[data-toggle="modal" data-target="#editIncentiveUnit" data-key="#{industry.key}" data-incentive-unit="#{industry.incentive_unit}"]
+            | (変更)
+      td = industry.incentive_total
+
+#createTicket.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = form_for(@form, url: information_path, method: :get, html: {style: 'padding: 0 40px;'}) do |f|
+          = hidden_field_tag :type, 'analy3'
+          table.space
+            tbody
+              tr
+                th[colspan="4"] 検索
+              tr
+                th　担当者
+                td[colspan="3"] = f.select(:user_id, @form.users.map { |user| [user.user_name, user.id] }, { include_blank: true }, class: 'form-control')
+              tr
+                th 年
+                td = f.select(:year, (2020..2022).map { |year| ["#{year}年", year] }, {}, class: 'form-control')
+                th 月
+                td = f.select(:month, (1..12).map { |month| ["#{month}月", month] }, {}, class: 'form-control')
+              tr
+                th[colspan="4"] = f.submit '検索'
+
+#editIncentiveUnit.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = form_tag "/industries/:key", method: 'post'
+          = hidden_field_tag :_method, 'put'
+          table.space
+            tbody
+              tr
+                th 企業名
+                td = text_field :industry, :key
+              tr
+                th インセンティブ単価
+                td = text_field :industry, :incentive
+              tr
+                th[colspan="2"]
+                  button.update-button[type="submit"]
+                    | 更新
+
+javascript:
+  $(function() {
+    var editIncentiveUnitModal = $('#editIncentiveUnit');
+    $('.edit-incentive-unit').click(function() {
+      var current = $(this);
+      $('#industry_key').val(current.data('key'));
+      $('#editIncentiveUnit form').attr('action', '/industries/' + current.data('key'));
+      $('#industry_incentive').val(current.data('incentive-unit'));
+    });
+  });
