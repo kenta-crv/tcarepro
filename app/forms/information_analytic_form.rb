@@ -65,12 +65,11 @@ class InformationAnalyticForm
 
     queries = {
       last_call: {
-        created_at_from: "#{year}-#{month}-01",
-        created_at_to: "#{next_month.year}-#{next_month.month}-01",
+        created_at_from: "#{year}-#{'%02d' % month}-01",
+        created_at_to: "#{next_month.year}-#{'%02d' % next_month.month}-01",
+        statu: 'APP',
       },
-      q: {
-        statu: 'APP'
-      },
+      q: {},
     }
 
     queries[:q][:industry_cont] = key if key
