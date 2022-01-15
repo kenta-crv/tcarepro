@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 
   def current_user_to_js
     if current_user.present?
-      gon.current_user = current_user.calls
+      gon.current_user = current_user.calls.where('time > ?', Time.zone.now)
     end
   end
 
