@@ -1,4 +1,5 @@
 import re
+from tkinter.messagebox import NO
 from bs4.element import ResultSet
 from flask import json
 from selenium.webdriver.remote.webelement import WebElement
@@ -20,15 +21,15 @@ DISC_CANNOT_ENTER_FORM = 2
 class AutoInquery(Browser):
     def __init__(self):
         super().__init__();
-        self.browser = Browser()
-
+    def __del__(self):
+        super().__del__();
     # 自動問い合わせの実施
     def auto_inquery(self,contact_info:ContactInfo) -> Tuple[bool, int,str]:
         inquery_page_url,result = self.identify_inquery_page(contact_info=contact_info)
         if not result or inquery_page_url == None:
             return self.create_json_from_auto_inquery_result(result=False,disc=DISC_NOT_FOUND_INQUERY,url=None)
 
-        result , disc = self.enter_form(contact_info)
+        result , disc = self.enter_form(url=inquery_page_url,contact_info=contact_info)
         if not result:
             return self.create_json_from_auto_inquery_result(result=False,disc=disc,url=inquery_page_url)
         return self.create_json_from_auto_inquery_result(result=True,disc=DISC_SUCCESS,url=inquery_page_url)
@@ -57,9 +58,9 @@ class AutoInquery(Browser):
 
     # 問い合わせページの特定
     def identify_inquery_page(self,contact_info:ContactInfo) -> Tuple[Optional[str], bool]:
-        urls = self.create_inquery_page_options(url=contact_info.url,to_company=contact_info.to_company)
-        for url in urls:
-            result = self.is_inquery_page(contact_info=contact_info)
+        urls = self.create_inquery_page_options(url=contact_info.to_url,to_company=contact_info.to_company)
+        for url in set(urls):
+            result = self.is_inquery_page(contact_info=contact_info,url=url)
             if result:
                 return url,True
         return None,False
@@ -78,9 +79,9 @@ class AutoInquery(Browser):
             page_url_options.append(url + inquery_word)
 
         # google 検索のトップページの結果を候補に追加
-        serch_words = []
-        serch_words.append(to_company,"問い合わせ","フォーム")
-        page_url_options.append(self.browser.google_serch(serch_words=serch_words))
+        serch_words = [to_company,"問い合わせ","フォーム"]
+        # serch_words.append(to_company,"問い合わせ","フォーム")
+        page_url_options.extend(self.google_serch(serch_words=serch_words))
 
 		# ホームページに問い合わせ等の文字列を含むリンクのhrefを利用する
         inquery_link_from_top_page = self.get_inquery_link_from_top_page(url)
@@ -102,11 +103,11 @@ class AutoInquery(Browser):
 
     # ホームページに問い合わせ等の文字列を含むリンクのhrefを利用する
     def get_inquery_link_from_top_page(self,url:str) -> Optional[str]:
-        self.browser.get_access(url)
+        self.get_access(url)
         inqury_words = ["お問い合わせ","お問い合わせはこちら","問い合わせフォーム","コンタクトフォーム"]
         for word in inqury_words:
             xpath='//a[contains(text(),"' + word + '")]'
-            elem = self.browser.get_element_by_xpath(xpath=xpath)
+            elem = self.get_element_by_xpath(xpath=xpath)
             if elem != None:
                 try:
                     return elem.get_attribute("href")
@@ -116,29 +117,40 @@ class AutoInquery(Browser):
         return None
 
     # 問い合わせページかどうか判定
-    def is_inquery_page(self,contact_info:ContactInfo):
-        self.browser.get_access(contact_info.url)
-        result = True if self.browser.get_div_element_by_contain_text(text=contact_info.to_company) != None else False
-        _ ,submit_btn_result = self.get_form_elems_from_page()
+    def is_inquery_page(self,contact_info:ContactInfo,url:str):
+        if url.startswith(contact_info.to_url):
+            self.get_access(url)
+            result = True if self.get_element_by_contain_text(text=contact_info.to_company) != None else False
+            _ ,submit_btn_result = self.get_form_elems_from_page()
 
-        return result and submit_btn_result
+            return result or submit_btn_result
+            # return submit_btn_result
+        return False
 
     # 問い合わせページに記入
     def enter_form(self,url:str,contact_info:ContactInfo) -> Tuple[bool, int]:
-        self.browser.get_access(url)
+        self.get_access(url)
         form_elems,result = self.get_form_elems_from_page()
 
         if not result:
             return result,DISC_CANNOT_ENTER_FORM
-
-        for elem_key in form_elems.keys():
-            if elem_key != "submit":
-                self.browser.enter_text_to_elem(text= getattr(
-                    contact_info, elem_key) ,
-                    elem=form_elems[elem_key]
-                )
-        result = self.browser.click_elem(elem=form_elems['submit'])
-        if not result:
+        try:
+            print(form_elems.keys())
+            print(form_elems)
+            for elem_key in form_elems.keys():
+                if elem_key != "submit":
+                    if form_elems[elem_key] != None:
+                        print("form_elems")
+                        print(form_elems[elem_key].get_attribute('outerHTML'))
+                        self.enter_text_to_elem(text= str(getattr(
+                            contact_info, elem_key)) ,
+                            elem=form_elems[elem_key]
+                        )
+        except Exception as e:
+                print(e)
+            
+        result = self.click_elem(elem=form_elems['submit'])
+        if result:
             return True,DISC_SUCCESS
 
         return False,DISC_CANNOT_ENTER_FORM
@@ -155,7 +167,7 @@ class AutoInquery(Browser):
             'title':None,
             'person': None, 
             'from_tel': None, 
-            'from_email': None, 
+            'from_mail': None, 
             'content': None, 
             'submit': None
         }
@@ -196,7 +208,7 @@ class AutoInquery(Browser):
                                 "input_name_list": ["phone" , "tel" , "mobile"],
                                 "table_label_list":["電話番号" , "携帯番号"]
                             }, 
-            'from_email':   {
+            'from_mail':   {
                                 "input_name_list": ["email" , "mail" , "e-mail"],
                                 "table_label_list":["メール" , "メールアドレス"]
                             }, 
@@ -205,19 +217,30 @@ class AutoInquery(Browser):
                                 "table_label_list":["本文" , "その他" , "要望" , "問い合わせ"  , "内容"]
                             }, 
             'submit':       {
-                                "submit_name_list": []
+                                "submit_type_list": ["submit"]
                             }, 
         }
 
         for form_key in form_elems.keys():
             if form_key == 'submit':
                 form_elems[form_key] = self.get_from_submit_btn_elem_from_page(
-                    submit_name_list=form_attr_list[form_key]["submit_name_list"]
+                    submit_type_list=form_attr_list[form_key]["submit_type_list"]
                 )
+            elif form_key == 'content':
+                elem = None
+                elem = self.get_from_input_elem_from_page(
+                    input_name_list=form_attr_list[form_key]["input_name_list"],table_label_list=form_attr_list[form_key]["table_label_list"]
+                )
+                if elem == None:
+                    elem = self.get_from_textarea_elem_from_page(
+                        input_name_list=form_attr_list[form_key]["input_name_list"],table_label_list=form_attr_list[form_key]["table_label_list"]
+                    )
+                form_elems[form_key] = elem
             else:
                 form_elems[form_key] = self.get_from_input_elem_from_page(
                     input_name_list=form_attr_list[form_key]["input_name_list"],table_label_list=form_attr_list[form_key]["table_label_list"]
                 )
+        print(form_elems)
         result = False
         if form_elems['submit'] != None:
             result = True
@@ -225,29 +248,100 @@ class AutoInquery(Browser):
 
     # ページ内のフォームの記入欄を返却
     def get_from_input_elem_from_page(self,input_name_list:List[str],table_label_list:List[str]) -> Optional[WebElement]:
+        
         for input_name in input_name_list:
-            elem = self.browser.get_input_element_by_name(name=input_name)
+            elem = self.get_input_element_by_name(name=input_name)
             if elem != None:
                 return elem
-        tr_elems = self.browser.get_elements_by_tag_name(tag_name="tr")
-        if tr_elems == None:
-            return None
-        for tr_elem in tr_elems:
-            for table_label in table_label_list:
-                xpath='//tr[contains(text(),"' + table_label + '")]'
-                result = self.browser.get_element_by_xpath(xpath=xpath,from_elem=tr_elem)
-                if result == None:
-                    continue
-                result =  self.browser.get_element_by_tag_name(tag_name="input",from_elem=result)
-                if result == None:
-                    continue
-                return result
+            print("tr elem")
+        for table_label in table_label_list:
+            xpath='//tr/*[contains(text(),"' + table_label + '")]'
+            result = self.get_element_by_xpath(xpath=xpath)
+            
+            if result == None:
+                continue
+            print(result.get_attribute("outerHTML"))
+            parent = self.get_element_by_xpath(xpath="..",from_elem=result)
+            if parent == None:
+                continue
+            result = self.get_element_by_tag_name(tag_name="input",from_elem=parent)
+            if result == None:
+                continue
+            return result
+
+
+        # tr_elems = self.get_elements_by_tag_name(tag_name="tr")
+        # if tr_elems == None:
+        #     return None
+        # for tr_elem in tr_elems:
+        #     print("tr elem")
+        #     print(tr_elem.get_attribute("outerHTML"))
+        #     for table_label in table_label_list:
+        #         xpath='//th[contains(text(),"' + table_label + '")]'
+        #         result = self.get_element_by_xpath(xpath=xpath,from_elem=tr_elem)
+                
+        #         if result == None:
+        #             continue
+        #         print(result.get_attribute("outerHTML"))
+                
+        #         result =  self.get_element_by_tag_name(tag_name="input",from_elem=tr_elem)
+        #         if result == None:
+        #             continue
+        #         print("get_from_input_elem_from_page")
+        #         print(result.get_attribute("outerHTML"))
+        #         return result
         return None
+    # ページ内のフォームの記入欄を返却
+    def get_from_textarea_elem_from_page(self,input_name_list:List[str],table_label_list:List[str]) -> Optional[WebElement]:
         
+        for input_name in input_name_list:
+            elem = self.get_input_element_by_name(name=input_name)
+            if elem != None:
+                return elem
+            print("tr elem")
+        for table_label in table_label_list:
+            xpath='//tr/*[contains(text(),"' + table_label + '")]'
+            result = self.get_element_by_xpath(xpath=xpath)
+            
+            if result == None:
+                continue
+            print(result.get_attribute("outerHTML"))
+            parent = self.get_element_by_xpath(xpath="..",from_elem=result)
+            if parent == None:
+                continue
+            result = self.get_element_by_tag_name(tag_name="textarea",from_elem=parent)
+            if result == None:
+                continue
+            return result
+
+
+        # tr_elems = self.get_elements_by_tag_name(tag_name="tr")
+        # if tr_elems == None:
+        #     return None
+        # for tr_elem in tr_elems:
+        #     print("tr elem")
+        #     print(tr_elem.get_attribute("outerHTML"))
+        #     for table_label in table_label_list:
+        #         xpath='//th[contains(text(),"' + table_label + '")]'
+        #         result = self.get_element_by_xpath(xpath=xpath,from_elem=tr_elem)
+                
+        #         if result == None:
+        #             continue
+        #         print(result.get_attribute("outerHTML"))
+                
+        #         result =  self.get_element_by_tag_name(tag_name="input",from_elem=tr_elem)
+        #         if result == None:
+        #             continue
+        #         print("get_from_input_elem_from_page")
+        #         print(result.get_attribute("outerHTML"))
+        #         return result
+        return None
+
     # ページ内のサブミットボタンを提出
-    def get_from_submit_btn_elem_from_page(self,submit_name_list:List[str]) -> Optional[WebElement]:
-        for name in submit_name_list:
-            elem = self.browser.get_btn_element_by_name(name=name)
+    def get_from_submit_btn_elem_from_page(self,submit_type_list:List[str]) -> Optional[WebElement]:
+        for type in submit_type_list:
+            elem = self.get_btn_element_by_type(type=type)
+            # elem = self.get_btn_element_by_name(name=name)
             if elem != None:
                 return elem
         return None
