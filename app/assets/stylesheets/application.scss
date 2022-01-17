@@ -1127,6 +1127,7 @@ a.btn--shadow {
   .total {
     margin-bottom: 30px;
   }
+
   .edit-incentive-unit {
     display: inline-block;
     margin-left: 5px;
@@ -1135,6 +1136,10 @@ a.btn--shadow {
 }
 
 #editIncentiveUnit {
+  .fixed-text-field {
+    border: none;
+  }
+
   .update-button {
     width: 100%;
   }

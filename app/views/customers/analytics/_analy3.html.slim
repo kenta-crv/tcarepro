@@ -14,9 +14,9 @@ table.total[width="90%"]
     th 売上
     th インセンティブ合計
   tr
-    td = link_to @form.call_count, customers_path(@form.link_to_queries)
+    td = @form.call_count
     td = number_to_percentage(@form.appointment_rate, precision: 1)
-    td = @form.appointment_count
+    td = link_to @form.appointment_count, customers_path(@form.link_to_queries)
     td = @form.sales
     td = @form.incentive_total
 
@@ -34,15 +34,21 @@ table[width="90%"]
   - @form.industries.each do |industry|
     tr
       th = industry.key
-      td = link_to industry.call_count, customers_path(@form.link_to_queries(industry.key))
+      td = industry.call_count
       td = number_to_percentage(industry.appointment_rate, precision: 1)
-      td = industry.appointment_count
+      td = link_to industry.appointment_count, customers_path(@form.link_to_queries(industry.key))
       td = industry.sales
       td
         = industry.incentive_unit
-        - if industry.incentive_active
-          .edit-incentive-unit[data-toggle="modal" data-target="#editIncentiveUnit" data-key="#{industry.key}" data-incentive-unit="#{industry.incentive_unit}"]
-            | (変更)
+        .edit-incentive-unit[
+          data-toggle="modal"
+          data-target="#editIncentiveUnit"
+          data-key="#{industry.key}"
+          data-year="#{industry.year}"
+          data-month="#{industry.month}"
+          data-incentive-unit="#{industry.incentive_unit}"
+        ]
+          | (変更)
       td = industry.incentive_total
 
 #createTicket.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
@@ -76,18 +82,29 @@ table[width="90%"]
         button.close[type="button" data-dismiss="modal" aria-hidden="true"]
           | ×
       .modal-body
-        = form_tag "/industries/:key", method: 'post'
+        = form_tag "/incentives/:key/:year/:month", method: 'post'
           = hidden_field_tag :_method, 'put'
           table.space
             tbody
               tr
+                th[colspan="4"] インセンティブ単価
+              tr
                 th 企業名
-                td = text_field :industry, :key
+                td[colspan="3"] = text_field :incentive, \
+                  :customer_summary_key, \
+                  tabindex: '-1',
+                  readonly: true, \
+                  class: 'fixed-text-field'
+              tr
+                th 年
+                td = text_field :incentive, :year, readonly: true, tabindex: '-1', class: 'fixed-text-field'
+                th 月
+                td = text_field :incentive, :month, readonly: true, tabindex: '-1', class: 'fixed-text-field'
               tr
                 th インセンティブ単価
-                td = text_field :industry, :incentive
+                td[colspan="3"] = text_field :incentive, :value
               tr
-                th[colspan="2"]
+                th[colspan="4"]
                   button.update-button[type="submit"]
                     | 更新
 
@@ -96,8 +113,12 @@ javascript:
     var editIncentiveUnitModal = $('#editIncentiveUnit');
     $('.edit-incentive-unit').click(function() {
       var current = $(this);
-      $('#industry_key').val(current.data('key'));
-      $('#editIncentiveUnit form').attr('action', '/industries/' + current.data('key'));
-      $('#industry_incentive').val(current.data('incentive-unit'));
+      $('#incentive_customer_summary_key').val(current.data('key'));
+      $('#incentive_year').val(current.data('year'));
+      $('#incentive_month').val(current.data('month'));
+      $('#editIncentiveUnit form').attr(
+        'action', '/incentives/' + current.data('key') + '/' + current.data('year') + '/' + current.data('month')
+      );
+      $('#incentive_value').val(current.data('incentive-unit'));
     });
   });

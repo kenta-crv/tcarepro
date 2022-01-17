@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220108055126) do
+ActiveRecord::Schema.define(version: 20220114212658) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -212,36 +212,13 @@ ActiveRecord::Schema.define(version: 20220108055126) do
   end
 
   create_table "incentives", force: :cascade do |t|
-    t.string "month"
-    t.string "project_1"
-    t.string "number_1"
-    t.string "project_2"
-    t.string "number_2"
-    t.string "project_3"
-    t.string "number_3"
-    t.string "project_4"
-    t.string "number_4"
-    t.string "project_5"
-    t.string "number_5"
-    t.string "project_6"
-    t.string "number_6"
-    t.string "project_7"
-    t.string "number_7"
-    t.string "project_8"
-    t.string "number_8"
-    t.string "project_9"
-    t.string "number_9"
-    t.integer "customer_id"
+    t.string "customer_summary_key", null: false
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.integer "value", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["customer_id"], name: "index_incentives_on_customer_id"
-  end
-
-  create_table "industries", force: :cascade do |t|
-    t.string "key", null: false
-    t.integer "incentive"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["customer_summary_key", "year", "month"], name: "index_incentives_on_customer_summary_key_and_year_and_month"
   end
 
   create_table "inquiries", force: :cascade do |t|

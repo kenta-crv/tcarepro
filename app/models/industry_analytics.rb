@@ -56,9 +56,7 @@ class IndustryAnalytics
   # インセンティブ単価
   #
   def incentive_unit
-    return 0 unless incentive_active
-
-    record&.incentive || sales_unit # 売り上げと単価同じかどうか
+    incentive&.value || sales_unit # 売り上げと単価同じかどうか
   end
 
   #
@@ -70,13 +68,6 @@ class IndustryAnalytics
     return 0 if appointment_count > max_count
 
     appointment_count - appointment_count
-  end
-
-  #
-  # インセンティブ対象か ?
-  #
-  def incentive_active
-    key != 'SORAIRO'
   end
 
   private
@@ -93,8 +84,14 @@ class IndustryAnalytics
 
     calls = Call
       .joins(:customer)
-      .where("industry LIKE ?", "%#{key}%")
       .where(created_at: current_time.beginning_of_month..current_time.end_of_month)
+
+    if key == 'SORAIRO'
+      # SORAIRO のみ過去にキーが変更となっているため部分一致で検索する
+      calls = calls.where("industry LIKE ?", "%#{key}%")
+    else
+      calls = calls.where(customers: { industry: key })
+    end
 
     calls = calls.where(user_id: user_id) if user_id
 
@@ -103,7 +100,11 @@ class IndustryAnalytics
     calls.count
   end
 
-  def record
-    @record ||= Industry.find_or_initialize_by(key: key)
+  def incentive
+    @incentive ||= Incentive.find_or_initialize_by(
+      customer_summary_key: key,
+      year: year,
+      month: month
+    )
   end
 end
