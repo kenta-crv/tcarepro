@@ -48,7 +48,7 @@ class AutoInquery(Browser):
             disc_json_data = "NG:Unkown"
 
         data = {
-            "data": datetime.datetime.today(),
+            "date": datetime.datetime.today(),
             "result":result_json_data,
             "discription" : disc_json_data,
             "discription_code": disc,
