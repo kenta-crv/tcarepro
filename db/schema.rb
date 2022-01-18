@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220114212658) do
+ActiveRecord::Schema.define(version: 20220118075432) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -36,10 +36,12 @@ ActiveRecord::Schema.define(version: 20220114212658) do
     t.integer "admin_id"
     t.integer "crm_id"
     t.integer "user_id"
+    t.datetime "latest_confirmed_time"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id", "created_at"], name: "index_calls_on_customer_id_and_created_at"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
+    t.index ["user_id", "latest_confirmed_time", "time"], name: "index_calls_on_user_id_and_latest_confirmed_time_and_time"
     t.index ["user_id"], name: "index_calls_on_user_id"
   end
 

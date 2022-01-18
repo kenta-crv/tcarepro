@@ -20,36 +20,45 @@
   </style>
 
   <script>
-    var currenttime = function(){
-      var date = new Date();
-      format_str = 'YYYY-MM-DD hh:mm';
-      format_str = format_str.replace(/YYYY/g, date.getFullYear());
-      format_str = format_str.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-      format_str = format_str.replace(/DD/g, ('0' + date.getDate()).slice(-2));
-      format_str = format_str.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-      format_str = format_str.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
-      var user = gon.current_user;
-      $(document).ready(function(){
-        user.forEach(function( c ){
-          var called = new Date(c.time);
-          format_str1 = 'YYYY-MM-DD hh:mm';
-          format_str1 = format_str1.replace(/YYYY/g, called.getFullYear());
-          format_str1 = format_str1.replace(/MM/g, ('0' + (called.getMonth() + 1)).slice(-2));
-          format_str1 = format_str1.replace(/DD/g, ('0' + called.getDate()).slice(-2));
-          format_str1 = format_str1.replace(/hh/g, ('0' + called.getHours()).slice(-2));
-          format_str1 = format_str1.replace(/mm/g, ('0' + called.getMinutes()).slice(-2));
-          if(format_str1 === format_str){
-              $("#myToast").css( 'display', 'block' );
-              document.getElementById("edit_area").onclick = function(){
-                window.open('/customers/' + c.customer_id, "お客様情報ページへ", '_blank');
-              };
-          } else {
-            $('#myToast').css( 'display', 'none' );
-          }
-        });
+  $(document).ready(function() {
+    var calls = gon.current_user;
+    var nextCall = null;
+
+    var showToast = function(){
+      $("#myToast").css( 'display', 'block' );
+    }
+
+    var hideToast = function () {
+      $('#myToast').css('display', 'none');
+    }
+
+    var regist = function () {
+      var latestCallTime = sessionStorage.getItem('latestCallTime');
+
+      nextCall = calls.find(function (call) {
+        return !latestCallTime || latestCallTime < (new Date(call.time)).getTime()
       });
+
+      if (!nextCall) return;
+
+      var delay = (new Date(nextCall.time)).getTime() - Date.now();
+
+      if (delay <= 0) {
+        showToast();
+      }
+
+      return setTimeout(showToast, delay);
+    }
+
+    document.getElementById("edit_area").onclick = function(){
+      hideToast();
+      sessionStorage.setItem('latestCallTime', new Date(nextCall.time).getTime());
+      window.open('/customers/' + nextCall.customer_id + '?notified_call_id=' + nextCall.id, "お客様情報ページへ", '_blank');
+      regist();
     };
-    setInterval(currenttime, 10000);
+
+    regist();
+  });
   </script>
 </head>
 <body>

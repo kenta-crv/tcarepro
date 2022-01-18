@@ -10,7 +10,17 @@ class ApplicationController < ActionController::Base
 
   def current_user_to_js
     if current_user.present?
-      gon.current_user = current_user.calls.where('time > ?', Time.zone.now)
+      notified_call = params[:notified_call_id] && Call.find_by(id: params[:notified_call_id])
+
+      calls = current_user.calls.unread_notification.order(:time)
+
+      if notified_call
+        notified_call.latest_confirmed_time = Time.zone.now
+        notified_call.save
+        Rails.cache.delete(calls.cache_key)
+      end
+
+      gon.current_user = Rails.cache.fetch(calls.cache_key, expires_in: 1.minute) { calls }
     end
   end
 
