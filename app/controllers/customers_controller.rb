@@ -62,7 +62,7 @@ class CustomersController < ApplicationController
     @last_call_params = {}
     if params[:last_call] && !params[:last_call].values.all?(&:blank?)
       @last_call_params = params[:last_call]
-      last_call = Call.joins_last_call
+      last_call = Call.joins_last_call.select(:customer_id)
       last_call = last_call.where(statu: @last_call_params[:statu]) if !@last_call_params[:statu].blank?
       last_call = last_call.where("calls.time >= ?", @last_call_params[:time_from]) if !@last_call_params[:time_from].blank?
       last_call = last_call.where("calls.time <= ?", @last_call_params[:time_to]) if !@last_call_params[:time_to].blank?
@@ -73,7 +73,7 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
     @customers = @q.result || @q.result.includes(:last_call)
-    @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
+    @customers = @customers.where(id: last_call) if last_call
     @call = Call.new
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first

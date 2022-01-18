@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220108055126) do
+ActiveRecord::Schema.define(version: 20220114212658) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -211,11 +211,20 @@ ActiveRecord::Schema.define(version: 20220108055126) do
     t.index ["crm_id"], name: "index_images_on_crm_id"
   end
 
+<<<<<<< HEAD
   create_table "industries", force: :cascade do |t|
     t.string "key", null: false
     t.integer "incentive"
+=======
+  create_table "incentives", force: :cascade do |t|
+    t.string "customer_summary_key", null: false
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.integer "value", null: false
+>>>>>>> 4d67ecb5fe840ae2f501da2b06c71a9b58ba5cde
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["customer_summary_key", "year", "month"], name: "index_incentives_on_customer_summary_key_and_year_and_month"
   end
 
   create_table "inquiries", force: :cascade do |t|

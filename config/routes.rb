@@ -69,7 +69,7 @@ Rails.application.routes.draw do
     resources :estimates, except: [:index, :show]
   end
 
-  resources :industries, only: [:update], param: :key
+  put '/incentives/:customer_summary_key/:year/:month' => 'incentives#update', as: :incentive
 
   get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'

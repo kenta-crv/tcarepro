@@ -6,11 +6,12 @@
         <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-success" %>
       <% end %>
     </th>
-      <th>総コール：<%= @call.call_count_today %>Call</th>
-      <th>見込数：<%= @call.protect_count_today %>件</th>
-      <th>アポ数：<%= @call.app_count_today %>件</th>
-      <th>見込率：<%= @call.protect_convertion.ceil(2) %>%</th>
-      <th>アポ率：<%= @call.app_convertion.ceil(2) %>%</th>
+      <th>総コール：<%= Call.call_count_today.count %>Call</th>
+      <th>平均コール：<%= Call.active_user_count == 0 ? 0 : Call.call_count_hour.count / Call.active_user_count %>Call</th>
+      <th>見込数：<%= Call.protect_count_today.count %>件</th>
+      <th>アポ数：<%= Call.app_count_today.count %>件</th>
+      <th>見込率：<%= Call.protect_convertion.ceil(2) %>%</th>
+      <th>アポ率：<%= Call.app_convertion.ceil(2) %>%</th>
     <th rowspan="2">
       <% if @next_customer&.id %>
         <%= link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-success" %>
@@ -19,17 +20,19 @@
   </tr>
   <tr>
     <%- if admin_signed_in? %>
-      <th>自己コール：<%= current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>不足コール：<%= -35 + current_admin.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>総コール：<%= current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count %>Call</th>
-      <th>アポ数：<%= current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count %>Call</th>
-      <th>アポ率：<%= number_to_percentage(current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count / current_admin.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count.to_f * 100 ,precision: 1 ) %>Call</th>
+      <th>自己コール：<%= current_admin.calls.count %>Call</th>
+      <th>不足コール：<%= -35 + current_admin.calls.count %>Call</th>
+      <th>総コール：<%= current_admin.calls.call_count_today.count %>Call</th>
+      <th>アポ数：<%= current_admin.calls.call_count_today.where(statu: "APP").count %>Call</th>
+      <th>アポ率：<%= number_to_percentage(current_admin.calls.call_count_today.count / current_admin.calls.app_count_today.count.to_f * 100 ,precision: 1 ) %>Call</th>
+      <th></th>
     <%- elsif user_signed_in? %>
-      <th>自己コール：<%= current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>不足コール：<%= -35 + current_user.calls.where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour).count %>Call</th>
-      <th>総コール：<%= current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).count %>Call</th>
-      <th>アポ数：<%= current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count %>Call</th>
-      <th>アポ率：<%= number_to_percentage(current_user.calls.where(created_at: Time.current.day).count / current_user.calls.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day).where(statu: "APP").count.to_f * 100 ,precision: 1 ) %>Call</th>
+      <th>自己コール：<%= current_user.calls.call_count_hour.count %>Call</th>
+      <th>不足コール：<%= -35 + current_user.calls.call_count_hour.count %>Call</th>
+      <th>総コール：<%= current_user.calls.call_count_today.count %>Call</th>
+      <th>アポ数：<%= current_user.calls.app_count_today.count %>Call</th>
+      <th>アポ率：<%= number_to_percentage(current_user.calls.call_count_today.count / current_user.calls.app_count_today.count.to_f * 100 ,precision: 1 ) %>Call</th>
+      <th></th>
     <%- end %>
   </tr>
 </table>
