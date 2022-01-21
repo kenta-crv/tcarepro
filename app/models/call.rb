@@ -35,6 +35,11 @@ class Call < ApplicationRecord
     call_count_today.where(statu: "APP")
   }
 
+  scope :unread_notification, -> {
+    where.not(time: nil)
+      .where('latest_confirmed_time is null or time >= latest_confirmed_time')
+  }
+
   #call_import
     def  self.call_import(call_file)
       save_cnt = 0
