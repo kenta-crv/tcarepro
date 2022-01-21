@@ -23,13 +23,16 @@
   $(document).ready(function() {
     var calls = gon.current_user;
     var nextCall = null;
+    var toast = $('#myToast');
+    var linkButton = toast.find('[type="button"]');
 
     var showToast = function(){
-      $("#myToast").css( 'display', 'block' );
+      linkButton.prop('value', nextCall.customer_name + '様ページへ');
+      toast.css( 'display', 'block' );
     }
 
     var hideToast = function () {
-      $('#myToast').css('display', 'none');
+      toast.css('display', 'none');
     }
 
     var regist = function () {
@@ -50,12 +53,16 @@
       return setTimeout(showToast, delay);
     }
 
-    document.getElementById("edit_area").onclick = function(){
+    linkButton.click(function () {
       hideToast();
       sessionStorage.setItem('latestCallTime', new Date(nextCall.time).getTime());
-      window.open('/customers/' + nextCall.customer_id + '?notified_call_id=' + nextCall.id, "お客様情報ページへ", '_blank');
+      window.open(
+        '/customers/' + nextCall.customer_id + '?notified_call_id=' + nextCall.id,
+        nextCall.customer_name,
+        '_blank'
+      );
       regist();
-    };
+    })
 
     regist();
   });
@@ -66,6 +73,10 @@
   <div class="alert alert-primary alert-dismissable" id="myToast" style="display:none;position:fixed;">
     <button type="button" class="close" data-dismiss="alert" aria-hidden"true">&times;</button>
     　まもなく予約されたお電話の時間です。<br>
-    <input type="button" style="width:20%;background-color: #248;color: #fff;border-style: none;" id="edit_area" value="お客様ページへ" />
+    <input
+      type="button"
+      style="width:20%;background-color: #248;color: #fff;border-style: none;"
+      value="{companyName}様ページへ"
+    />
   </div>
 </body>
