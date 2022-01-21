@@ -8,19 +8,18 @@ class CallsController < ApplicationController
     @last_call_params = {}
     if params[:last_call] && !params[:last_call].values.all?(&:blank?)
       @last_call_params = params[:last_call]
-      last_call = Call.joins_last_call
+      last_call = Call.joins_last_call.select(:customer_id)
       last_call = last_call.where(statu: @last_call_params[:statu]) if !@last_call_params[:statu].blank?
       last_call = last_call.where("calls.time >= ?", @last_call_params[:time_from]) if !@last_call_params[:time_from].blank?
       last_call = last_call.where("calls.time <= ?", @last_call_params[:time_to]) if !@last_call_params[:time_to].blank?
       last_call = last_call.where("calls.created_at >= ?", @last_call_params[:created_at_from]) if !@last_call_params[:created_at_from].blank?
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
-      last_call_customer_ids = last_call.pluck(:customer_id)
     end
     @customer = Customer.find(params[:customer_id])
     @call = Call.new
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
     @customers = @q.result || @q.result.includes(:last_call)
-    @customers = @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
+    @customers = @customers.where( id: last_call )  if last_call
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
   end
@@ -49,8 +48,16 @@ class CallsController < ApplicationController
         end
       end
       @call.save
-      #@call.update_attribute(:customer_tel, @customer.tel)
-      redirect_to customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+
+      if @next_customer
+        redirect_to customer_path(
+          id: @next_customer.id,
+          q: params[:q]&.permit!,
+          last_call: params[:last_call]&.permit!
+        )
+      else
+        redirect_to request.referer, notice: 'リスト が終了しました。再度検索し架電を進めてください。'
+      end
   end
 
   def update
