@@ -13,12 +13,13 @@
 
 = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
  .scroll
+  = submit_tag '一括削除', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;'
   table[width="90%" cellpadding="0" cellspacing="0"]
 
     thead
       tr
         th
-          = submit_tag '削除'
+          input.checkable_delete_all[type="checkbox"]
         th
           | 会社名
         th
@@ -195,3 +196,29 @@
           = submit_tag "インポート",  class: 'btn btn-success'
         th
           = link_to 'エクスポート', customers_path(format: :csv), class: 'btn btn-success'
+
+javascript:
+  $(function() {
+    var allChecableBox = $('.checkable_delete_all');
+    var deleteCheckBoxs = $("[id^='deletes_']");
+
+    allChecableBox.change(function() {
+      if (this.checked) {
+        deleteCheckBoxs.prop('checked', true);
+      } else {
+        deleteCheckBoxs.prop('checked', false);
+      }
+    });
+
+    deleteCheckBoxs.change(function() {
+      var unCheckedExist = $("input:not(:checked)[id^='deletes_']").length > 0;
+      var checkedExist = $("input:checked[id^='deletes_']").length > 0;
+
+      if (checkedExist && unCheckedExist) {
+        allChecableBox.prop('indeterminate', true);
+      } else {
+        allChecableBox.prop('indeterminate', false);
+        allChecableBox.prop('checked', checkedExist);
+      }
+    });
+  });
