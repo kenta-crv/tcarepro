@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     if current_user.present?
       notified_call = params[:notified_call_id] && Call.find_by(id: params[:notified_call_id])
 
-      calls = current_user.calls.unread_notification.order(:time)
+      calls = current_user.calls.joins(:customer).unread_notification.order(:time)
 
       if notified_call
         notified_call.latest_confirmed_time = Time.zone.now
@@ -20,7 +20,16 @@ class ApplicationController < ActionController::Base
         Rails.cache.delete(calls.cache_key)
       end
 
-      gon.current_user = Rails.cache.fetch(calls.cache_key, expires_in: 1.minute) { calls }
+      gon.current_user = Rails.cache.fetch(calls.cache_key, expires_in: 1.minute) {
+        calls.map do |call|
+          {
+            id: call.id,
+            time: call.time,
+            customer_id: call.customer_id,
+            customer_name: call.customer.company,
+          }
+        end
+      }
     end
   end
 
