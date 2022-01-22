@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220118075432) do
+ActiveRecord::Schema.define(version: 20220122113512) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20220118075432) do
     t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id", "created_at"], name: "index_calls_on_customer_id_and_created_at"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
+    t.index ["statu"], name: "index_calls_on_statu"
     t.index ["user_id", "latest_confirmed_time", "time"], name: "index_calls_on_user_id_and_latest_confirmed_time_and_time"
     t.index ["user_id"], name: "index_calls_on_user_id"
   end
@@ -53,6 +54,7 @@ ActiveRecord::Schema.define(version: 20220118075432) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "industry", null: false
     t.index ["email"], name: "index_clients_on_email", unique: true
     t.index ["reset_password_token"], name: "index_clients_on_reset_password_token", unique: true
   end
@@ -163,6 +165,7 @@ ActiveRecord::Schema.define(version: 20220118075432) do
     t.string "extraction_count"
     t.string "send_count"
     t.integer "worker_id"
+    t.index ["created_at", nil], name: "index_customers_on_created_at_and_statu"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end

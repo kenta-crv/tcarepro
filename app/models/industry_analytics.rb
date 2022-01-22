@@ -19,14 +19,49 @@ class IndustryAnalytics
   # コール数
   #
   def call_count
-    @call_count ||= calc_count
+    @call_count ||= summary_statuses.values.sum
+  end
+
+  #
+  # 着信留守数
+  #
+  def incomming_absence_count
+    summary_status_count('着信留守')
+  end
+
+  #
+  # 担当者不在数
+  #
+  def manager_absence_count
+    summary_status_count('担当者不在')
+  end
+
+  #
+  # 見込数
+  #
+  def expected_count
+    summary_status_count('見込')
   end
 
   #
   # アポ数
   #
   def appointment_count
-    @appointment_count ||= calc_count { |calls| calls.where(statu: 'APP') }
+    summary_status_count('APP')
+  end
+
+  #
+  # キャンセル数
+  #
+  def cancel_count
+    summary_status_count('APPキャンセル')
+  end
+
+  #
+  # NG数
+  #
+  def ng_count
+    summary_status_count('NG')
   end
 
   #
@@ -72,14 +107,10 @@ class IndustryAnalytics
 
   private
 
-  def sales_unit
-    return 29000 if key == 'SORAIRO'
-    return 24750 if key == 'サンズ'
-
-    33000
-  end
-
-  def calc_count(&block)
+  #
+  # コール一覧
+  #
+  def calls
     current_time = Time.local(year, month)
 
     calls = Call
@@ -93,11 +124,22 @@ class IndustryAnalytics
       calls = calls.where(customers: { industry: key })
     end
 
-    calls = calls.where(user_id: user_id) if user_id
+    calls
+  end
 
-    calls = block.call(calls) if block
+  def summary_statuses
+    @summary_statuses ||= calls.group(:statu).count(:id)
+  end
 
-    calls.count
+  def summary_status_count(status)
+    summary_statuses[status] || 0
+  end
+
+  def sales_unit
+    return 29000 if key == 'SORAIRO'
+    return 24750 if key == 'サンズ'
+
+    33000
   end
 
   def incentive

@@ -53,11 +53,13 @@ class ApplicationController < ActionController::Base
       when User
          customers_path
       when Worker
-         worker_path(current_worker)
+        worker_path(current_worker)
       when Sender
-         sender_path(current_sender)
+        sender_path(current_sender)
+      when Client
+        client_path
       else
-         super
+        super
       end
     end
 
@@ -71,12 +73,15 @@ class ApplicationController < ActionController::Base
         new_worker_session_path
       when Sender, :sender, :senders
         new_sender_session_path
+      when Client, :client, :clients
+        new_sender_client_path
       else
         super
       end
     end
 
   # Layout per resource_name
+  # TODO: `layout_by_resource` メソッドがかぶっているので、このメソッドは不要に見える。不要なら消す。
   def layout_by_resource
     if devise_controller? && resource_name == :admin
         "admins"
