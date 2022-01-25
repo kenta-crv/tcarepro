@@ -73,7 +73,7 @@ class ContactInfoSchema(Schema):
 	address = fields.String(required=True)
 	age = fields.Integer(required=True)
 	title = fields.String(required=True)
-	from_url = fields.Integer(required=True)
+	from_url = fields.String(required=True)
 	from_tel = fields.String(required=True)
 	from_mail = fields.String(required=True)
 	content = fields.String(required=True)

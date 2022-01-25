@@ -7,7 +7,6 @@ import threading
 from datetime import datetime
 import json
 from json import dumps, loads
-from marshmallow import Schema, fields, ValidationError
 from flask import Flask, jsonify, request
 from marshmallow import Schema, fields, ValidationError
 
@@ -18,7 +17,7 @@ app = Flask(__name__)
 @app.route('/api/v1/contact', methods=['POST'])
 def contact():
 
-    request_data = request.json
+    request_data = json.loads(request.data.decode('utf-8'))
     schema = ContactInfoSchema()
     try:
         # ポストされたjsonをContactInfoSchemaとしてロードする
@@ -30,6 +29,7 @@ def contact():
     contact_info = ContactInfo(contact_info_json=contact_info_json)
     auto_inquery = AutoInquery()
     result_json = auto_inquery.auto_inquery(contact_info=contact_info)
+    del auto_inquery
     return result_json, 200
 
 
