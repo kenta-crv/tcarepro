@@ -12,8 +12,8 @@ class Clients::RegistrationsController < Devise::RegistrationsController
 
   private
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up)
-    devise_parameter_sanitizer.permit(:account_update)
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:industry])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:industry])
   end
   # GET /resource/sign_up
   # def new
@@ -64,7 +64,7 @@ class Clients::RegistrationsController < Devise::RegistrationsController
 
   # The path used after sign up.
    def after_sign_up_path_for(resource)
-     client_path(id: current_client.id)
+     client_path
    end
 
   # The path used after sign up for inactive accounts.

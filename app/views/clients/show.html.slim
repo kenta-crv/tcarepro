@@ -1,33 +1,7 @@
 br
-br
-br
-.center
- .row
-  .col-sm-4
-  .col-sm-2
-   select[name=""]
-    option[value=""]
-      | -
-    option[value="2020年"]
-      | 2020年
-    option[value="2021年"]
-      | 2021年
-    option[value="2022年"]
-      | 2022年
-  .col-sm-2
-   select[name=""]
-    option[value=""]
-      | -
-    option[value="1月"]
-      | 1月
-    option[value="2月"]
-      | 2月
-    option[value="3月"]
-      | 3月
-  .col-sm-4
 .tops-wrapper
   h2.headline
-    | ●月のコール状況
+    | #{@form.year}年#{@form.month}月のコール状況
   br
   br
   table.header-table.space[width="90%"]
@@ -51,37 +25,38 @@ br
         | APP獲得率
     tr
       td
-        /= @call_count_called.count
+        = @form.incomming_absence_count
       td
-        /= @call_count_absence.count
+        = @form.manager_absence_count
       td
-        /= @call_count_prospect.count
+        = @form.expected_count
       td
-        /= @call_count_app.count
+        = @form.appointment_count
       td
-        /= @call_count_cancel.count
+        = @form.cancel_count
       td
-        /= @call_count_ng.count
+        = @form.ng_count
       td
-        /= @app_convertion_month.ceil(2)
-        | %
+        = number_to_percentage(@form.appointment_rate, precision: 1)
     tr
       td
-        /= number_to_percentage(@call_count_called.count / @call_count_month.to_f * 100, precision: 1 )
+        = number_to_percentage(@form.incomming_absence_rate, precision: 1 )
       td
-        /= number_to_percentage(@call_count_absence.count / @call_count_month.to_f * 100, precision: 1 )
+        = number_to_percentage(@form.manager_absence_rate, precision: 1 )
       td
-        /= number_to_percentage(@call_count_prospect.count / @call_count_month.to_f * 100, precision: 1 )
+        = number_to_percentage(@form.expected_rate, precision: 1 )
       td
-        /= number_to_percentage(@call_count_app.count / @call_count_month.to_f * 100, precision: 1 )
+        = number_to_percentage(@form.appointment_rate, precision: 1 )
       td
-        /= number_to_percentage(@call_count_cancel.count / @call_count_month.to_f * 100, precision: 1 )
+        = number_to_percentage(@form.cancel_rate, precision: 1 )
       td
-        /= number_to_percentage(@call_count_ng.count / @call_count_month.to_f * 100, precision: 1 )
+        = number_to_percentage(@form.ng_rate, precision: 1 )
       td
 
   h2.headline
-    | ●月●日のコール状況
+    | #{@form.current_time.year}年#{@form.current_time.month}月#{@form.current_time.day}日のコール状況
+    = link_to '<', client_path(@form.prev_day_query), class: 'prev-link'
+    = link_to '>', client_path(@form.next_day_query), class: 'next-link'
   br
   table[width="90%"  class="header-table space"]
       colgroup
@@ -99,12 +74,36 @@ br
           | コメント
         th
           | コール日時
-      tr
-        th
-          /= @customer.company
-        td
-          /= @call.status
-        td
-          /= @call.comment
-        td
-          /= @call.created_at
+      - @form.today_calls.each do |call|
+        tr
+          th
+            = call.customer.company
+          td
+            = call.statu
+          td
+            = call.comment
+          td
+            = call.created_at
+
+#createList.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = form_for(@form, url: client_path(current_client), method: :get, html: {style: 'padding: 0 40px;'}) do |f|
+          table.space
+            tbody
+              tr
+                th[colspan="4"] 検索
+              tr
+                th[colspan="1"] 年
+                td[colspan="3"] = f.select(:year, (2020..2022).map { |year| ["#{year}年", year] }, {}, class: 'form-control')
+              tr
+                th 月
+                td = f.select(:month, (1..12).map { |month| ["#{month}月", month] }, {}, class: 'form-control')
+                th 日
+                td = f.select(:day, (1..31).map { |day| ["#{day}日", day] }, {}, class: 'form-control')
+              tr
+                th[colspan="4"] = f.submit '検索'

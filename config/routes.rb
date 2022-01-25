@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   devise_for :clients, controllers: {
     registrations: 'clients/registrations'
   }
-  resources :clients, only: [:show]
+  resource :client, only: [:show]
   #センダーアカウント
   devise_for :senders, controllers: {
     registrations: 'senders/registrations'

@@ -513,7 +513,15 @@ dd {
 		width:95%;
 		font-size:21px;
 		font-weight:bold;
-	    }
+
+    .prev-link {
+      margin-left: 10px
+    }
+
+    .next-link {
+      margin-left: 10px;
+    }
+  }
 	p {
 		line-height:2.5;
 		font-size:18px;
