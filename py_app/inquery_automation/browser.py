@@ -1,3 +1,4 @@
+from curses import noecho
 from datetime import datetime
 from logging import ERROR
 from selenium import webdriver
@@ -50,8 +51,12 @@ class Browser:
     _chromedriver:SingleChromeDriver=None
     def __init__(self):
         self._chromedriver=SingleChromeDriver()
-        self.driver= webdriver.Chrome(self._chromedriver.get_chrome_driver())
-
+        opt = webdriver.ChromeOptions()
+        opt.add_argument('--blink-settings=imagesEnabled=false')
+        self.driver= webdriver.Chrome(self._chromedriver.get_chrome_driver(),chrome_options=opt)
+    def __del__(self):
+        self.driver.close()
+        
     # グーグル検索の結果を返す
     def google_serch(self,serch_words:List[str]) -> List[str]:
         results = []
@@ -133,26 +138,44 @@ class Browser:
         return self.get_element_method_impl_wrapper(attr=xpath,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_XPATH)
 
     def get_div_element_by_contain_text(self,text:str,from_elem:Optional[WebElement]=None) -> Optional[WebElement]:
-        xpath='//input[contains(text(),"' + text + '")]'
+        xpath='//div[contains(text(),"' + text + '")]'
         return self.get_element_method_impl_wrapper(attr=xpath,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_XPATH)
 
-    # htmlタグ名から要素を取得する
-    def get_element_by_tag_name(self,tag_name:str,from_elem:Optional[WebElement]=None) -> Optional[WebElement]:
-        return self.get_element_method_impl_wrapper(attr=tag_name,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_TAG_NAME)
+    def get_element_by_contain_text(self,text:str,from_elem:Optional[WebElement]=None) -> Optional[WebElement]:
+        xpath='//*[contains(text(),"' + text + '")]'
+        return self.get_element_method_impl_wrapper(attr=xpath,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_XPATH)
+    # # htmlタグ名から要素を取得する
+    # def get_element_by_tag_name(self,tag_name:str,from_elem:Optional[WebElement]=None) -> Optional[WebElement]:
+    #     return self.get_element_method_impl_wrapper(attr=tag_name,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_TAG_NAME)
 
     # htmlタグ名から要素を取得する
     def get_element_by_tag_name(self,tag_name:str,from_elem:Optional[WebElement]=None) -> Optional[WebElement]:
-        return self.get_element_method_impl_wrapper(attr=tag_name,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEMS_BY_TAG_NAME)
+        # print("get_element_by_tag_name")
+        # if from_elem == None:
+        #     print("from elem none")
+        # else:
+        #     print(from_elem.get_attribute("outerHTML"))
+        # elem = self.get_element_method_impl_wrapper(attr=tag_name,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_TAG_NAME)
+        # if elem == None:
+        #     print("None")
+        # else:
+        #     print(elem.get_attribute("outerHTML"))
+        # return elem
+        return self.get_element_method_impl_wrapper(attr=tag_name,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_TAG_NAME)
 
     # htmlタグ名から名から複数要素を取得する
     def get_elements_by_tag_name(self,tag_name:str,from_elem:Optional[WebElement]=None) -> Optional[WebElement]:
         return self.get_element_method_impl_wrapper(attr=tag_name,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEMS_BY_TAG_NAME)
 
-    # 属性nameからぶっとn要素を取得する
+    # 属性nameからbutton要素を取得する
     def get_btn_element_by_name(self,name:str,from_elem:Optional[WebElement]=None) -> Optional[WebElement]:
-        xpath='//button[contains(@name="' + name + '")]'
+        xpath='//button[contains(@name,"' + name + '")]'
         return self.get_element_method_impl_wrapper(attr=xpath,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_XPATH) 
 
+    # 属性typeからぶっとn要素を取得する
+    def get_btn_element_by_type(self,type:str,from_elem:Optional[WebElement]=None) -> Optional[WebElement]:
+        xpath='//button[contains(@type,"' + type + '")]'
+        return self.get_element_method_impl_wrapper(attr=xpath,from_elem=from_elem,selenium_method=SELENIUM_METHOD_FIND_ELEM_BY_XPATH) 
     #要素にテキストを入れる
     def enter_text_to_elem(self,text:str,elem:WebElement):
         if elem != None:
@@ -167,12 +190,13 @@ class Browser:
             return True
         return False
 
-    # urlにアクセするう
+    # urlにアクセする
     def get_access(self,url):
-        
+        if url.endswith("/"):
+            url = url[:-1]
         self.driver.get(url);
 
-def check_time_up(self,st_time:datetime,interval:int):
+def check_time_up(st_time:datetime,interval:int):
         tim =time.time() - st_time
         if tim > interval:
             return True
