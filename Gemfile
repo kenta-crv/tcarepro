@@ -82,7 +82,7 @@ gem 'carrierwave'
 gem 'annotate'
 gem 'simple_enum'
 
-gem 'kaminari'
+
 #gem 'will_paginate'
 
 gem 'ransack'
