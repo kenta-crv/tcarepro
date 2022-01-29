@@ -30,6 +30,8 @@ class ApplicationController < ActionController::Base
           }
         end
       }
+    else
+      gon.current_user = []
     end
   end
 

@@ -4,7 +4,7 @@
 # @!attribute [r] key
 #   @return [String] キー
 # @!attribute [r] user_id
-#   @return [String] ユーザ ID
+#   @return [String, nil] ユーザ ID
 # @!attribute [r] year
 #   @return [Integer] 年
 # @!attribute [r] month
@@ -14,6 +14,39 @@ class IndustryAnalytics
   include ActiveModel::Model
 
   attr_accessor :key, :user_id, :year, :month
+
+  INDUSTRY_KEYS = [
+    'SORAIRO',
+    'サンズ',
+    'asia（介護）',
+    'asia（食品加工）',
+    '圏友（介護）',
+    '圏友（食品加工）',
+    'さくら（介護）',
+    'さくら（食品加工）',
+  ]
+
+  class << self
+    #
+    # 業界分析一覧を取得する
+    #
+    # @param [Integer] year 年
+    # @param [Integer] month 月
+    # @param [String, nil] user_id ユーザ ID
+    #
+    # @return [Array<IndustryAnalytics>] 業界分析一覧
+    #
+    def industries(year, month, user_id: nil)
+      INDUSTRY_KEYS.map do |industry_key|
+        IndustryAnalytics.new(
+          key: industry_key,
+          user_id: user_id,
+          year: year,
+          month: month
+        )
+      end
+    end
+  end
 
   #
   # コール数
@@ -91,7 +124,7 @@ class IndustryAnalytics
   # インセンティブ単価
   #
   def incentive_unit
-    incentive&.value || sales_unit # 売り上げと単価同じかどうか
+    incentive.value || sales_unit # 売り上げと単価同じかどうか
   end
 
   #
@@ -103,6 +136,21 @@ class IndustryAnalytics
     return 0 if appointment_count > max_count
 
     appointment_count - appointment_count
+  end
+
+  #
+  # インセンティブを更新する
+  #
+  def incentive_attributes=(new_incentive)
+    incentive.value = new_incentive[:value]
+  end
+
+  def save_incentive
+    if incentive.value
+      incentive.save!
+    elsif !incentive.new_record?
+      incentive.destroy
+    end
   end
 
   private
@@ -123,6 +171,8 @@ class IndustryAnalytics
     else
       calls = calls.where(customers: { industry: key })
     end
+
+    calls = calls.where(user_id: user_id) if user_id
 
     calls
   end

@@ -1,21 +1,28 @@
 class IncentivesController < ApplicationController
-  def update
-    incentive = Incentive.find_or_initialize_by(
-      customer_summary_key: params[:customer_summary_key],
+  def show
+    @form = IncentiveForm.new(
       year: params[:year],
       month: params[:month]
     )
-
-    incentive.attributes = incentive_params
-
-    incentive.save!
-
-    redirect_to request.referer
   end
 
-  private
+  def update
+    @form = IncentiveForm.new(
+      year: params[:year],
+      month: params[:month],
+      industries: params.require(:industries),
+    )
 
-  def incentive_params
-    params.require(:incentive).permit(:value)
+    ActiveRecord::Base.transaction do
+      @form.save!
+    end
+
+    redirect_to information_path(
+      type: 'analy3',
+      information_analytic_form: {
+        year: @form.year,
+        month: @form.month
+      }
+    )
   end
 end
