@@ -1,5 +1,5 @@
 import re
-from tkinter.messagebox import NO
+#from tkinter.messagebox import NO
 from bs4.element import ResultSet
 from flask import json
 from selenium.webdriver.remote.webelement import WebElement
@@ -113,7 +113,7 @@ class AutoInquery(Browser):
                     return elem.get_attribute("href")
                 except:
                     return None
-            
+
         return None
 
     # 問い合わせページかどうか判定
@@ -148,7 +148,7 @@ class AutoInquery(Browser):
                         )
         except Exception as e:
                 print(e)
-            
+
         result = self.click_elem(elem=form_elems['submit'])
         if result:
             return True,DISC_SUCCESS
@@ -158,67 +158,67 @@ class AutoInquery(Browser):
     # ページ内のフォームで利用できる記入欄を返却
     def get_form_elems_from_page(self) -> Tuple[Dict[str,Optional[WebElement]],bool]:
         form_elems:Dict[str,Optional[WebElement]] =  {
-            'from_company': None, 
+            'from_company': None,
             'kana':None,
             'post':None,
             'address':None,
             'from_url':None,
             'age':None,
             'title':None,
-            'person': None, 
-            'from_tel': None, 
-            'from_mail': None, 
-            'content': None, 
+            'person': None,
+            'from_tel': None,
+            'from_mail': None,
+            'content': None,
             'submit': None
         }
         form_attr_list:Dict[str,Dict[str,List[str]]] =  {
             'from_company': {
                                 "input_name_list":["company"],
                                 "table_label_list":["会社名"]
-                            }, 
+                            },
             'kana': {
                                 "input_name_list":["kana"],
                                 "table_label_list":["かな" , "カナ"]
-                            }, 
+                            },
             'post': {
                                 "input_name_list":["post"],
                                 "table_label_list":["郵便番号" , "〒"]
-                            }, 
+                            },
             'address': {
                                 "input_name_list":["address", "prefecture"],
                                 "table_label_list":["都道府県" , "住所"]
-                            }, 
+                            },
             'from_url': {
                                 "input_name_list":["url" , "hp"],
                                 "table_label_list":["ホームページURL"]
-                            }, 
+                            },
             'age': {
                                 "input_name_list":["age"],
                                 "table_label_list":["年齢"]
-                            }, 
+                            },
             'title': {
                                 "input_name_list":["title","head","headline"],
                                 "table_label_list":["件名"]
-                            }, 
+                            },
             'person':       {
                                 "input_name_list": ["name","manager","person","president"],
                                 "table_label_list":["担当者","お名前","名前"]
-                            }, 
+                            },
             'from_tel':     {
                                 "input_name_list": ["phone" , "tel" , "mobile"],
                                 "table_label_list":["電話番号" , "携帯番号"]
-                            }, 
+                            },
             'from_mail':   {
                                 "input_name_list": ["email" , "mail" , "e-mail"],
                                 "table_label_list":["メール" , "メールアドレス"]
-                            }, 
+                            },
             'content':      {
                                 "input_name_list": ["body" , "inquiry" , "content" , "contents" , "text"],
                                 "table_label_list":["本文" , "その他" , "要望" , "問い合わせ"  , "内容"]
-                            }, 
+                            },
             'submit':       {
                                 "submit_type_list": ["submit"]
-                            }, 
+                            },
         }
 
         for form_key in form_elems.keys():
@@ -248,7 +248,7 @@ class AutoInquery(Browser):
 
     # ページ内のフォームの記入欄を返却
     def get_from_input_elem_from_page(self,input_name_list:List[str],table_label_list:List[str]) -> Optional[WebElement]:
-        
+
         for input_name in input_name_list:
             elem = self.get_input_element_by_name(name=input_name)
             if elem != None:
@@ -257,7 +257,7 @@ class AutoInquery(Browser):
         for table_label in table_label_list:
             xpath='//tr/*[contains(text(),"' + table_label + '")]'
             result = self.get_element_by_xpath(xpath=xpath)
-            
+
             if result == None:
                 continue
             print(result.get_attribute("outerHTML"))
@@ -279,11 +279,11 @@ class AutoInquery(Browser):
         #     for table_label in table_label_list:
         #         xpath='//th[contains(text(),"' + table_label + '")]'
         #         result = self.get_element_by_xpath(xpath=xpath,from_elem=tr_elem)
-                
+
         #         if result == None:
         #             continue
         #         print(result.get_attribute("outerHTML"))
-                
+
         #         result =  self.get_element_by_tag_name(tag_name="input",from_elem=tr_elem)
         #         if result == None:
         #             continue
@@ -293,7 +293,7 @@ class AutoInquery(Browser):
         return None
     # ページ内のフォームの記入欄を返却
     def get_from_textarea_elem_from_page(self,input_name_list:List[str],table_label_list:List[str]) -> Optional[WebElement]:
-        
+
         for input_name in input_name_list:
             elem = self.get_input_element_by_name(name=input_name)
             if elem != None:
@@ -302,7 +302,7 @@ class AutoInquery(Browser):
         for table_label in table_label_list:
             xpath='//tr/*[contains(text(),"' + table_label + '")]'
             result = self.get_element_by_xpath(xpath=xpath)
-            
+
             if result == None:
                 continue
             print(result.get_attribute("outerHTML"))
@@ -324,11 +324,11 @@ class AutoInquery(Browser):
         #     for table_label in table_label_list:
         #         xpath='//th[contains(text(),"' + table_label + '")]'
         #         result = self.get_element_by_xpath(xpath=xpath,from_elem=tr_elem)
-                
+
         #         if result == None:
         #             continue
         #         print(result.get_attribute("outerHTML"))
-                
+
         #         result =  self.get_element_by_tag_name(tag_name="input",from_elem=tr_elem)
         #         if result == None:
         #             continue
@@ -345,5 +345,3 @@ class AutoInquery(Browser):
             if elem != None:
                 return elem
         return None
-
-    

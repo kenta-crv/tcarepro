@@ -5,6 +5,14 @@
  <%= render "sender" %>
 <% elsif admin_signed_in? && @customer.choice == "SFA" %>
  <%= render "section" %>
+<% elsif admin_signed_in? && @customer.choice == "アポ匠" %>
+ <%= render "section" %>
+<% elsif admin_signed_in? && @customer.choice == "アポスク" %>
+ <%= render "section" %>
+<% elsif admin_signed_in? && @customer.choice == "リノバス" %>
+ <%= render "section" %>
+<% elsif admin_signed_in? && @customer.choice == "社会保険" %>
+ <%= render "section" %>
 <% elsif user_signed_in?  %>
  <%= render "show" %>
 <% elsif worker_signed_in? %>

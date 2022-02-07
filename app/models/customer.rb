@@ -12,8 +12,8 @@ class Customer < ApplicationRecord
 
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
   validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
-  validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
-  validates :business, presence: true, if: -> { extraction_count.blank?}, on: :update
+  #validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
+  #validates :business, presence: true, if: -> { extraction_count.blank?}, on: :update
   validates :extraction_count, presence: true, if: -> { tel.blank?}, on: :update
 
 #customer_import
@@ -116,6 +116,7 @@ class Customer < ApplicationRecord
     ["IT・エンジニア","IT・エンジニア"],
     ["建設土木業","建設土木業"],
     ["農林水産業","農林水産業"],
+    ["その他","その他"]
   ]
   def self.BusinessStatus
     @@business_status

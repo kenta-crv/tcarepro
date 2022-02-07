@@ -45,10 +45,6 @@
           =telephone_field :customer, :address
       tr
         th
-          | 業種
-        td
-          = f.select(:business, Customer.BusinessStatus)
-        th
           | URL
         td
           =text_field :customer, :url
@@ -129,10 +125,6 @@
           | 開始時期
         td
           =text_field :customer, :start
-        th
-          | セレクト
-        td
-          = f.select(:choice, [["",""],["SFA","SFA"]])
       tr
         th
           | 備考

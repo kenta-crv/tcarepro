@@ -113,11 +113,11 @@ class CustomersController < ApplicationController
   end
 
   def update
-    @customers = Customer&.where(worker_id: current_worker.id)
-    @count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
+    #@customers = Customer&.where(worker_id: current_worker.id)
+    #@count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
     @customer = Customer.find(params[:id])
       if @customer.update(customer_params)
-        flash[:notice] = "登録が完了しました。1日あたりの残り作業実施件数は#{30 - @count_day}件です。"
+        #flash[:notice] = "登録が完了しました。1日あたりの残り作業実施件数は#{30 - @count_day}件です。"
         redirect_to customer_path
       else
         render 'edit'
@@ -390,7 +390,7 @@ class CustomersController < ApplicationController
   def sfa
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.where(choice: "SFA").page(params[:page]).per(20)
+    @customers = @customers.where.not(choice: nil).page(params[:page]).per(20)
   end
 
   def list

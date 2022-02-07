@@ -101,7 +101,6 @@ gem 'select2-rails'
 # cron
 gem 'whenever', require: false
 
-gem 'mini_racer'
 
 gem 'jp_prefecture'
 
