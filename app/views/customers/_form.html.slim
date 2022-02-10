@@ -66,13 +66,6 @@
           =text_field :customer, :industry
       tr
         th
-          | SFA
-        td
-          =text_field :customer, :choice
-        th
-        td
-      tr
-        th
           | 流入元
         td
           = f.select(:inflow, [\
@@ -125,6 +118,17 @@
           | 開始時期
         td
           =text_field :customer, :start
+        th
+          | SFA
+        td
+          = f.select(:choice, [\
+                      ["選択する","選択する"],\
+                      ["アポスク","アポスク"],\
+                      ["リノバス","リノバス"],\
+                      ["アポ匠","アポ匠"],\
+                      ["社会保険","社会保険"],\
+                      ["SFA","SFA"],\
+                      ["その他","その他"],])
       tr
         th
           | 備考
