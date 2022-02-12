@@ -17,6 +17,11 @@ class ClientsForm
     self.year ||= Time.zone.now.year
     self.month ||= Time.zone.now.month
     self.day ||= Time.zone.now.day
+    @industry_analytics = IndustryAnalytics.new(
+      key: self.industry,
+      year: self.year,
+      month: self.month
+    )
   end
 
   #
@@ -120,16 +125,5 @@ class ClientsForm
 
   private
 
-  def industry_analytics
-    @industry_analytics = Rails.cache.fetch(
-      "/client/#{industry}/#{year}/#{month}",
-      expires_in: 1.minute
-    ) do
-      IndustryAnalytics.new(
-        key: industry,
-        year: year,
-        month: month
-      )
-    end
-  end
+  attr_reader :industry_analytics
 end
