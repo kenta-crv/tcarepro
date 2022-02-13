@@ -1136,19 +1136,36 @@ a.btn--shadow {
     margin-bottom: 30px;
   }
 
-  .edit-incentive-unit {
-    display: inline-block;
-    margin-left: 5px;
-    cursor: pointer;
+  .change-incentive-unit {
+    margin-left: 4px;
+    color: #fff;
   }
 }
 
-#editIncentiveUnit {
-  .fixed-text-field {
-    border: none;
-  }
+#information-incentives-show {
+  .form {
+    padding: 20px 5%;
 
-  .update-button {
-    width: 100%;
+    &__key {
+      min-width: 180px;
+      margin: auto 0;
+      display: inline-block;
+      color: #1D9186;
+    }
+
+    &__title {
+      display: inline-block;
+      padding: 6px;
+    }
+
+    &__actions {
+      margin-top: 24px;
+      margin-left: 5%;
+    }
+
+    .input-group-text {
+      background-color: #1D9186;
+      color: #fff;
+    }
   }
 }

@@ -69,12 +69,15 @@ Rails.application.routes.draw do
     resources :estimates, except: [:index, :show]
   end
 
-  put '/incentives/:customer_summary_key/:year/:month' => 'incentives#update', as: :incentive
-
   get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'
 
-  get 'information' => 'customers#information' #分析
+  scope :information do
+    get '' => 'customers#information', as: :information #分析
+
+    resource :incentive, only: [:show, :update], path: '/incentives/:year/:month'
+  end
+
   get 'news' => 'customers#news'
 
   get 'sfa' => 'customers#sfa' #SFA
