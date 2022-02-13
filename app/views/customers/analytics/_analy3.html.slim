@@ -29,7 +29,9 @@ table[width="90%"]
     th コールアポ率
     th アポ数
     th 売上
-    th インセンティブ単価
+    th
+      | インセンティブ単価
+      = link_to '(変更)', incentive_path(year: @form.year, month: @form.month), class: 'change-incentive-unit'
     th インセンティブ合計
   - @form.industries.each do |industry|
     tr
@@ -38,17 +40,7 @@ table[width="90%"]
       td = number_to_percentage(industry.appointment_rate, precision: 1)
       td = link_to industry.appointment_count, customers_path(@form.link_to_queries(industry.key))
       td = industry.sales
-      td
-        = industry.incentive_unit
-        .edit-incentive-unit[
-          data-toggle="modal"
-          data-target="#editIncentiveUnit"
-          data-key="#{industry.key}"
-          data-year="#{industry.year}"
-          data-month="#{industry.month}"
-          data-incentive-unit="#{industry.incentive_unit}"
-        ]
-          | (変更)
+      td = industry.incentive_unit
       td = industry.incentive_total
 
 #createTicket.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
@@ -107,18 +99,3 @@ table[width="90%"]
                 th[colspan="4"]
                   button.update-button[type="submit"]
                     | 更新
-
-javascript:
-  $(function() {
-    var editIncentiveUnitModal = $('#editIncentiveUnit');
-    $('.edit-incentive-unit').click(function() {
-      var current = $(this);
-      $('#incentive_customer_summary_key').val(current.data('key'));
-      $('#incentive_year').val(current.data('year'));
-      $('#incentive_month').val(current.data('month'));
-      $('#editIncentiveUnit form').attr(
-        'action', '/incentives/' + current.data('key') + '/' + current.data('year') + '/' + current.data('month')
-      );
-      $('#incentive_value').val(current.data('incentive-unit'));
-    });
-  });

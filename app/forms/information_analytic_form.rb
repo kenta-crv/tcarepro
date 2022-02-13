@@ -1,17 +1,6 @@
 class InformationAnalyticForm
   include ActiveModel::Model
 
-  INDUSTRY_KEYS = [
-    'SORAIRO',
-    'サンズ',
-    'asia（介護）',
-    'asia（食品加工）',
-    '圏友（介護）',
-    '圏友（食品加工）',
-    'さくら（介護）',
-    'さくら（食品加工）',
-  ]
-
   attr_accessor :user_id, :year, :month
 
   def call_count
@@ -37,17 +26,7 @@ class InformationAnalyticForm
   end
 
   def industries
-    unless @industries
-      @industries = INDUSTRY_KEYS.map do |industry_key|
-        IndustryAnalytics.new(
-          key: industry_key,
-          user_id: user_id,
-          year: year,
-          month: month
-        )
-      end
-    end
-    @industries
+    @industries ||= IndustryAnalytics.industries(year, month, user_id: user_id)
   end
 
   def users
