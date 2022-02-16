@@ -24,6 +24,10 @@ class IndustryAnalytics
     '圏友（食品加工）',
     'さくら（介護）',
     'さくら（食品加工）',
+    'lapi（介護）',
+    'lapi（工場）',
+    'lapi（コール）',
+    'フェイス',
   ]
 
   class << self
@@ -188,6 +192,10 @@ class IndustryAnalytics
   def sales_unit
     return 29000 if key == 'SORAIRO'
     return 24750 if key == 'サンズ'
+    return 26950 if key == 'lapi（介護）'
+    return 26950 if key == 'lapi（コール）'
+    return 26950 if key == 'lapi（工場）'
+
 
     33000
   end
