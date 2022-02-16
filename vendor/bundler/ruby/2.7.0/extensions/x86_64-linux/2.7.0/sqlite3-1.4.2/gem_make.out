@@ -1,0 +1,76 @@
+current directory: /opt/webroot/tcarepro/vendor/bundler/ruby/2.7.0/gems/sqlite3-1.4.2/ext/sqlite3
+/home/smart/.anyenv/envs/rbenv/versions/2.7.0/bin/ruby -I /home/smart/.anyenv/envs/rbenv/versions/2.7.0/lib/ruby/site_ruby/2.7.0 -r ./siteconf20220207-17992-1qh67bk.rb extconf.rb
+checking for sqlite3.h... yes
+checking for pthread_create() in -lpthread... yes
+checking for -ldl... yes
+checking for sqlite3_libversion_number() in -lsqlite3... yes
+checking for rb_proc_arity()... yes
+checking for rb_integer_pack()... yes
+checking for sqlite3_initialize()... yes
+checking for sqlite3_backup_init()... yes
+checking for sqlite3_column_database_name()... yes
+checking for sqlite3_enable_load_extension()... yes
+checking for sqlite3_load_extension()... yes
+checking for sqlite3_open_v2()... yes
+checking for sqlite3_prepare_v2()... yes
+checking for sqlite3_int64 in sqlite3.h... yes
+checking for sqlite3_uint64 in sqlite3.h... yes
+creating Makefile
+
+current directory: /opt/webroot/tcarepro/vendor/bundler/ruby/2.7.0/gems/sqlite3-1.4.2/ext/sqlite3
+make DESTDIR\= clean
+
+current directory: /opt/webroot/tcarepro/vendor/bundler/ruby/2.7.0/gems/sqlite3-1.4.2/ext/sqlite3
+make DESTDIR\=
+compiling aggregator.c
+compiling backup.c
+compiling database.c
+database.c: 関数 ‘rb_sqlite3_open_v2’ 内:
+database.c:38:9: 警告: 使用されない変数 ‘flags’ です [-Wunused-variable]
+   VALUE flags;
+         ^~~~~
+database.c: 関数 ‘exec_batch’ 内:
+database.c:726:57: 警告: 互換性のないポインタ型から 3 番目の ‘sqlite3_exec’ の引数に渡しています [-Wincompatible-pointer-types]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), hash_callback_function, callback_ary, &errMsg);
+                                                         ^~~~~~~~~~~~~~~~~~~~~~
+In file included from ./sqlite3_ruby.h:25,
+                 from database.c:1:
+/usr/include/sqlite3.h:406:9: 備考: expected ‘int (*)(void *, int,  char **, char **)’ but argument is of type ‘int (*)(VALUE,  int,  char **, char **)’ {aka ‘int (*)(long unsigned int,  int,  char **, char **)’}
+   int (*callback)(void*,int,char**,char**),  /* Callback function */
+   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+database.c:726:81: 警告: 4 番目の ‘sqlite3_exec’ の引数へ渡すときに整数からキャスト無しにポインタを作成しています [-Wint-conversion]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), hash_callback_function, callback_ary, &errMsg);
+                                                                                 ^~~~~~~~~~~~
+In file included from ./sqlite3_ruby.h:25,
+                 from database.c:1:
+/usr/include/sqlite3.h:407:3: 備考: expected ‘void *’ but argument is of type ‘VALUE’ {aka ‘long unsigned int’}
+   void *,                                    /* 1st argument to callback */
+   ^~~~~~
+database.c:728:57: 警告: 互換性のないポインタ型から 3 番目の ‘sqlite3_exec’ の引数に渡しています [-Wincompatible-pointer-types]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), regular_callback_function, callback_ary, &errMsg);
+                                                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ./sqlite3_ruby.h:25,
+                 from database.c:1:
+/usr/include/sqlite3.h:406:9: 備考: expected ‘int (*)(void *, int,  char **, char **)’ but argument is of type ‘int (*)(VALUE,  int,  char **, char **)’ {aka ‘int (*)(long unsigned int,  int,  char **, char **)’}
+   int (*callback)(void*,int,char**,char**),  /* Callback function */
+   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+database.c:728:84: 警告: 4 番目の ‘sqlite3_exec’ の引数へ渡すときに整数からキャスト無しにポインタを作成しています [-Wint-conversion]
+     status = sqlite3_exec(ctx->db, StringValuePtr(sql), regular_callback_function, callback_ary, &errMsg);
+                                                                                    ^~~~~~~~~~~~
+In file included from ./sqlite3_ruby.h:25,
+                 from database.c:1:
+/usr/include/sqlite3.h:407:3: 備考: expected ‘void *’ but argument is of type ‘VALUE’ {aka ‘long unsigned int’}
+   void *,                                    /* 1st argument to callback */
+   ^~~~~~
+database.c: トップレベル:
+cc1: 警告: 認識できないコマンドラインオプション ‘-Wno-self-assign’ です
+cc1: 警告: 認識できないコマンドラインオプション ‘-Wno-parentheses-equality’ です
+cc1: 警告: 認識できないコマンドラインオプション ‘-Wno-constant-logical-operand’ です
+compiling exception.c
+compiling sqlite3.c
+compiling statement.c
+linking shared-object sqlite3/sqlite3_native.so
+
+current directory: /opt/webroot/tcarepro/vendor/bundler/ruby/2.7.0/gems/sqlite3-1.4.2/ext/sqlite3
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 sqlite3_native.so ./.gem.20220207-17992-dkuuk9/sqlite3

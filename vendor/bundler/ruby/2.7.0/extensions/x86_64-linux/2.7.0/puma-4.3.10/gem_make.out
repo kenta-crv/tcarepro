@@ -1,0 +1,36 @@
+current directory: /opt/webroot/tcarepro/vendor/bundler/ruby/2.7.0/gems/puma-4.3.10/ext/puma_http11
+/home/smart/.anyenv/envs/rbenv/versions/2.7.0/bin/ruby -I /home/smart/.anyenv/envs/rbenv/versions/2.7.0/lib/ruby/site_ruby/2.7.0 -r ./siteconf20220207-17992-t4uari.rb extconf.rb
+checking for BIO_read() in -lcrypto... yes
+checking for SSL_CTX_new() in -lssl... yes
+checking for openssl/bio.h... yes
+checking for DTLS_method() in openssl/ssl.h... yes
+checking for TLS_server_method() in openssl/ssl.h... yes
+checking for SSL_CTX_set_min_proto_version in openssl/ssl.h... yes
+creating Makefile
+
+current directory: /opt/webroot/tcarepro/vendor/bundler/ruby/2.7.0/gems/puma-4.3.10/ext/puma_http11
+make DESTDIR\= clean
+
+current directory: /opt/webroot/tcarepro/vendor/bundler/ruby/2.7.0/gems/puma-4.3.10/ext/puma_http11
+make DESTDIR\=
+compiling http11_parser.c
+compiling io_buffer.c
+compiling mini_ssl.c
+mini_ssl.c: 関数 ‘engine_init_server’ 内:
+mini_ssl.c:145:7: 警告: 使用されない変数 ‘min’ です [-Wunused-variable]
+   int min, ssl_options;
+       ^~~
+mini_ssl.c: 関数 ‘raise_error’ 内:
+mini_ssl.c:299:6: 警告: function might be candidate for attribute ‘noreturn’ [-Wsuggest-attribute=noreturn]
+ void raise_error(SSL* ssl, int result) {
+      ^~~~~~~~~~~
+mini_ssl.c: トップレベル:
+cc1: 警告: 認識できないコマンドラインオプション ‘-Wno-self-assign’ です
+cc1: 警告: 認識できないコマンドラインオプション ‘-Wno-parentheses-equality’ です
+cc1: 警告: 認識できないコマンドラインオプション ‘-Wno-constant-logical-operand’ です
+compiling puma_http11.c
+linking shared-object puma/puma_http11.so
+
+current directory: /opt/webroot/tcarepro/vendor/bundler/ruby/2.7.0/gems/puma-4.3.10/ext/puma_http11
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 puma_http11.so ./.gem.20220207-17992-1ymqcei/puma

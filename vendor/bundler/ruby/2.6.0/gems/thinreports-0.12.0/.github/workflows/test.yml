@@ -1,0 +1,51 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test against ruby ${{ matrix.ruby }} and prawn ${{ matrix.prawn }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby:
+          - 2.5
+          - 2.6
+          - 2.7
+          - 3.0
+          - jruby
+        prawn:
+          - 2.2
+          - 2.3
+          - 2.4
+        exclude:
+          - ruby: 3.0
+            prawn: 2.2
+          - ruby: 3.0
+            prawn: 2.3
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up diff-pdf
+      run: |
+        sudo apt-get update
+        sudo apt-get install make automake g++ libpoppler-glib-dev poppler-utils libwxgtk3.0-dev
+        git clone https://github.com/vslavik/diff-pdf.git -b v0.4.1 --depth 1 /tmp/diff-pdf-src
+        cd /tmp/diff-pdf-src
+        ./bootstrap && ./configure && make && sudo make install
+
+    - name: Set up Ruby ${{ matrix.ruby }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install --gemfile gemfiles/prawn-${{ matrix.prawn }}.gemfile --jobs 4 --retry 3
+
+    - name: Run tests
+      run: |
+        bundle exec rake test:units
+        bundle exec rake test:features

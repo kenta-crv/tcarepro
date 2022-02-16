@@ -1,0 +1,10 @@
+.DS_Store
+_site
+doc
+pkg
+*.rbc
+.*.sw?
+tmp
+Gemfile.lock
+gemfiles/*.lock
+:memory*
