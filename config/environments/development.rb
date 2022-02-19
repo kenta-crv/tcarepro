@@ -9,16 +9,6 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
 
-  ActionMailer::Base.delivery_method = :smtp
-  ActionMailer::Base.smtp_settings = {
-  address: 'smtp3.gmoserver.jp',
-  domain: 'mail@tcare.pro',
-  port: 587,
-  user_name: 'mail@tcare.pro',
-  password: 'sq9Gde$7',
-  authentication: 'plain',
-  enable_starttls_auto: true
-  }
   # Do not eager load code on boot.
   config.eager_load = false
 
