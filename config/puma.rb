@@ -15,6 +15,16 @@ port        ENV.fetch("PORT") { 3000 }
 #
 environment ENV.fetch("RAILS_ENV") { "development" }
 
+directory ENV.fetch("WEB_ROOT_DIRECTORY") { Dir.pwd }
+
+bind 'unix:///tmp/tcarepro.sock'
+
+pidfile "tmp/pid"
+
+state_path "tmp/state"
+
+activate_control_app
+
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked webserver processes. If using threads and workers together
 # the concurrency of the application would be max `threads` * `workers`.
@@ -54,5 +64,3 @@ preload_app!
 
 # Allow puma to be restarted by `rails restart` command.
 # plugin :tmp_restart
-
-activate_control_app

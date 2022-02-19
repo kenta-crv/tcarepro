@@ -85,9 +85,7 @@ gem 'simple_enum'
 
 #gem 'will_paginate'
 
-gem 'ransack'
 gem 'haml-rails'
-
 
 gem 'ransack'
 
