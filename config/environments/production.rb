@@ -90,5 +90,6 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.force_ssl = true
+  # TODO: 確認のため ssl を強制しない
+  config.force_ssl = false
 end
