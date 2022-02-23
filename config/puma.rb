@@ -13,8 +13,7 @@ port        ENV.fetch("PORT") { 3000 }
 
 # Specifies the `environment` that Puma will run in.
 #
-# environment ENV.fetch("RAILS_ENV") { "development" }
-environment "production"
+environment ENV.fetch("RAILS_ENV") { "development" }
 
 directory ENV.fetch("WEB_ROOT_DIRECTORY") { Dir.pwd }
 
