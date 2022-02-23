@@ -68,11 +68,6 @@ class EstimatesController < ApplicationController
     quantity2: @estimate.try(:quantity2),
     total2: @estimate.try(:calc2),
 
-    item2: @estimate.try(:item2),
-    price2: @estimate.try(:price2),
-    quantity2: @estimate.try(:quantity2),
-    total2: @estimate.try(:calc2),
-
     item3: @estimate.try(:item3),
     price3: @estimate.try(:price3),
     quantity3: @estimate.try(:quantity3),
