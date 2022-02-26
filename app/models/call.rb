@@ -53,7 +53,7 @@ class Call < ApplicationRecord
         lastRecords = self.where(customer_id: call.customer.id).order(created_at: :desc).limit(1)
         if !lastRecords.empty?
             lastRecord = lastRecords.first()
-            next if lastRecord.statu == "APP" and  "永久NG" and  "根本的NG"
+            next if ['APP', '永久NG', '根本的NG'].include?(lastRecord.statu)
         end
         #Callの最新のものでみる
         call.save!
