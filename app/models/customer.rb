@@ -1,3 +1,5 @@
+require 'scraping'
+
 class Customer < ApplicationRecord
   #belongs_to :admin
   belongs_to :user, optional: true
@@ -151,12 +153,11 @@ class Customer < ApplicationRecord
   enum status: {draft: 0, published: 1}
 
   def contact_url
-    @contact_url ||=
-      scraping.contact_from(url_2) ||
-      scraping.contact_from(url) ||
-      scraping.contact_from(
-        scraping.google_search([company, address, tel].compact.join(' '))
-      )
+    scraping.contact_from(url_2) ||
+    scraping.contact_from(url) ||
+    scraping.contact_from(
+      scraping.google_search([company, address, tel].compact.join(' '))
+    )
   end
 
   private

@@ -1,0 +1,90 @@
+<br>
+<br>
+<br>
+<%- set_meta_tags noindex: true%>
+<table width="100%" class="space">
+    <col width="25%">
+    <col width="25%">
+    <col width="25%">
+    <col width="25%">
+  <tbody>
+    <tr>
+      <th colspan="4">顧客情報（<%= link_to("編集", edit_customer_path,  target:"_blank") %>）</th>
+    </tr>
+    <tr>
+      <th>会社名</th>
+      <td><%= @contact_tracking.customer.company %></td>
+      <th>代表者</th>
+      <td><%= @contact_tracking.customer.first_name %>(<%= @contact_tracking.customer.first_kana %>)</td>
+    </tr>
+    <tr>
+      <th>検索対象</th>
+      <td><%= @contact_tracking.customer.industry %></td>
+      <th>電話番号</th>
+      <td><%= @contact_tracking.customer.tel %></td>
+    </tr>
+    <tr>
+      <th>住所</th>
+      <td colspan="3"><%= @contact_tracking.customer.address %></td>
+    </tr>
+    <tr>
+      <th>タイトル</th>
+      <td colspan="3"><%= @contact_tracking.customer.title %></td>
+    </tr>
+    <tr>
+      <th>URL1</th>
+      <td><%= link_to "Webサイト", @contact_tracking.customer.url, target:"_blank" %></td>
+      <th>URL2</th>
+      <td><%= link_to "求人サイト", @contact_tracking.customer.url_2, target:"_blank" %></td>
+    </tr>
+    <tr>
+      <th>人数</th>
+      <td><%= @contact_tracking.customer.people %></td>
+      <th>業種</th>
+      <td><%= @contact_tracking.customer.business %></td>
+    </tr>
+    <tr>
+      <th>問い合わせ</th>
+      <td colspan="3">
+        <% if @contact_tracking.contact_url.present? %>
+          <%= link_to "問い合わせのフォームをプレビュー", okurite_preview_path(okurite_id: @contact_tracking.customer.id), target:"_blank" %>
+        <% elsif @contact_tracking.customer.url %>
+          <%= link_to "Webサイトをプレビュー", okurite_preview_path(okurite_id: @contact_tracking.customer.id), target:"_blank" %>
+        <% else %>
+          問い合わせページが見つかりません
+        <% end %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table width="100%" class="space">
+    <col width="15%">
+    <col width="10%">
+    <col width="15%">
+    <col width="15%">
+    <col width="10%">
+<% if @contact_tracking.customer.counts.any? %>
+    <tr>
+      <th>送信日時</th>
+      <th>送信元会社</th>
+      <th>タイトル</th>
+      <th>ステータス</th>
+      <th>削除</th>
+    </tr>
+    <tr>
+    <% @contact_tracking.customer.counts.includes(:sender).each do |count| %>
+      <td><%= count.created_at %></td>
+      <td><%= count.company %></td>
+      <td><%= count.title %></td>
+      <td><%= count.statu %></td>
+      <td><%= link_to '編集', edit_customer_count_path(@customer, count), class: 'command'%>
+      <%= link_to '削除',
+                    customer_count_path(@customer, count) ,
+                    method: :delete,
+                    class: 'command',
+                    data: { confirm: '本当に削除しますか？'} %></td>
+    </tr>
+<% end %>
+</table>
+<% end %>

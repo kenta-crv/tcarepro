@@ -85,10 +85,16 @@ Rails.application.routes.draw do
   #TCARE
   get 'extraction' => 'customers#extraction'
   #Mailer
-  get 'okurite' => 'customers#okurite'
   delete :customers, to: 'customers#destroy_all'
   get 'customers/bulk_edit'
   put 'customers/bulk_update'
+
+  # okurite
+  resources :okurite, only: [:index, :show] do
+    get :preview, to: 'okurite#preview'
+    post :contact, to: 'okurite#create'
+  end
+  get 'callback' => 'okurite#callback', as: :callback
 
   #お問い合わせフォーム
   get 'contact' => 'contact#index'

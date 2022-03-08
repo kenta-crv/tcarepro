@@ -1,0 +1,95 @@
+<script>
+$(function () {
+  var autoTyping = function () {
+    var contents = $('iframe').contents();
+
+    $.each(gon.typings, function(name, typing) {
+      const element = contents.find('[name="' + name + '"]');
+
+      element.attr('placeholder', name);
+      element.val(typing.value);
+    });
+  }
+
+  $('iframe').load(autoTyping);
+
+  $('.entries > span').click(function () {
+    if ($('.entries__detail').is(':hidden')) {
+      $(this).text('↑');
+      $('.entries__detail').show();
+      $('iframe').css('left', '340px');
+      $('iframe').css('width', 'calc(100% - 340px)');
+    } else {
+      $(this).text('↓');
+      $('.entries__detail').hide();
+      $('iframe').css('left', '0');
+      $('iframe').css('width', '100%');
+    };
+  });
+});
+</script>
+
+<%
+  inquiry = @contact_tracking.inquiry
+%>
+
+<div id="okurite-preview">
+  <div class="entries">
+    <span class="entries__title">↓</span>
+
+    <div class="entries__detail entries--hide">
+      <%= link_to '別タブで表示', @contact_tracking.contact_url, target: :_blank  %>
+
+      <h4><%=  link_to inquiry.headline, inquiry_path(inquiry), target: :_blank %></h4>
+
+      <%= form_tag okurite_contact_url(okurite_id: @contact_tracking.customer), method: :post do %>
+        <% unless @contact_tracking.new_record? %>
+          <table class="table table-striped">
+            <tr>
+              <th>最終問い合わせ時間</th>
+              <td><%= @contact_tracking.sended_at || '-' %></td>
+            </tr>
+            <tr>
+              <th>最終コールバック時間</th>
+              <td><%= @contact_tracking.callbacked_at || '-' %></td>
+            </tr>
+          </table>
+        <% end %>
+
+        <dl>
+          <dt class="col-12">会社名</dt>
+          <dd class="col-12"><pre><%= inquiry.from_company %></pre></dd>
+          <dt class="col-12">担当者</dt>
+          <dd class="col-12"><pre><%= inquiry.person %></pre></dd>
+          <dt class="col-12">タントウシャ</dt>
+          <dd class="col-12"><pre><%= inquiry.person_kana %></pre></dd>
+          <dt class="col-12">電話番号</dt>
+          <dd class="col-12"><pre><%= inquiry.from_tel %></pre></dd>
+          <dt class="col-12">FAX番号</dt>
+          <dd class="col-12"><pre><%= inquiry.from_fax %></pre></dd>
+          <dt class="col-12">住所</dt>
+          <dd class="col-12"><pre><%= inquiry.address %></pre></dd>
+          <dt class="col-12">メールアドレス</dt>
+          <dd class="col-12"><pre><%= inquiry.from_mail %></pre></dd>
+          <dt class="col-12">URL</dt>
+          <dd class="col-12"><pre><%= inquiry.url %></pre></dd>
+          <dt class="col-12">件名</dt>
+          <dd class="col-12"><pre><%= inquiry.title %></pre></dd>
+          <dt class="col-12">本文</dt>
+          <dd class="col-12"><pre><%= inquiry.parse_content(@contact_tracking.customer.id) %></pre></dd>
+        </dl>
+
+        <%= hidden_field_tag :contact_url, @contact_tracking.contact_url %>
+        <%= hidden_field_tag :inquiry_id, inquiry.id %>
+
+        <%= submit_tag 'お問い合わせ済みにする' %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="tops-wrapper">
+    <div class="embed-responsive embed-responsive-16by9">
+      <iframe class="embed-responsive-item" src="<%= @contact_tracking.contact_url || @contact_tracking.customer.url %>" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>

@@ -43,7 +43,7 @@
         td
           = check_box_tag "deletes[#{customer.id}]", customer.id
         td
-          = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_count: params[:last_count]&.permit!)
+          = link_to customer.company, okurite_path(id: customer.id)
         td
           -if customer.url.present?
             = customer.url.truncate(20)

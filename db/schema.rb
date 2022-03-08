@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220323125456) do
+ActiveRecord::Schema.define(version: 20220320063142) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -65,6 +65,26 @@ ActiveRecord::Schema.define(version: 20220323125456) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["crm_id"], name: "index_comments_on_crm_id"
+  end
+
+  create_table "contact_trackings", force: :cascade do |t|
+    t.string "code", null: false
+    t.integer "customer_id", null: false
+    t.integer "inquiry_id", null: false
+    t.integer "sender_id"
+    t.integer "worker_id"
+    t.string "status", null: false
+    t.string "contact_url"
+    t.datetime "sended_at"
+    t.datetime "callbacked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_contact_trackings_on_code", unique: true
+    t.index ["customer_id", "inquiry_id", "sender_id", "worker_id"], name: "index_contact_trackings_on_colums"
+    t.index ["customer_id"], name: "index_contact_trackings_on_customer_id"
+    t.index ["inquiry_id"], name: "index_contact_trackings_on_inquiry_id"
+    t.index ["sender_id"], name: "index_contact_trackings_on_sender_id"
+    t.index ["worker_id"], name: "index_contact_trackings_on_worker_id"
   end
 
   create_table "contacts", force: :cascade do |t|
@@ -165,6 +185,7 @@ ActiveRecord::Schema.define(version: 20220323125456) do
     t.string "extraction_count"
     t.string "send_count"
     t.integer "worker_id"
+    t.index ["created_at", nil], name: "index_customers_on_created_at_and_statu"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
@@ -277,6 +298,7 @@ ActiveRecord::Schema.define(version: 20220323125456) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "rate_limit", default: 100
     t.index ["email"], name: "index_senders_on_email", unique: true
     t.index ["reset_password_token"], name: "index_senders_on_reset_password_token", unique: true
   end
@@ -351,8 +373,6 @@ ActiveRecord::Schema.define(version: 20220323125456) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "admin_id"
-    t.index ["admin_id"], name: "index_workers_on_admin_id"
     t.index ["email"], name: "index_workers_on_email", unique: true
     t.index ["reset_password_token"], name: "index_workers_on_reset_password_token", unique: true
   end

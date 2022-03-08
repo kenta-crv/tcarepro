@@ -1,0 +1,99 @@
+- 
+  id: 1
+  key: from_company
+  input_names:
+    - your-company
+    - 会社名
+    - 御社名
+    - 店名
+    - company_name
+    - company
+- 
+  id: 2
+  key: person
+  input_names:
+    - your-name
+    - yourname
+    - 担当者名
+    - contact[name]
+    - contact_name
+    - 名前
+- 
+  id: 3
+  key: person_kana
+  input_names:
+    - your-furigana
+    - kana
+    - bctt_kana
+    - your-kana
+    - company_furigana
+    - フリガナ
+    - ふりがな
+- 
+  id: 4
+  key: from_tel
+  input_names:
+    - tel
+    - 電話番号[data][0]
+    - 電話番号
+    - 連絡先電話番号
+    - contact[tel]
+    - your-tel
+    - your-phone
+- 
+  id: 5
+  key: from_fax
+  input_names:
+    - fax
+    - FAX番号
+- 
+  id: 6
+  key: address
+  input_names:
+    - ご住所
+    - contact[address]
+    - address_1
+    - address
+    - your-address
+- 
+  id: 7
+  key: url
+  input_names:
+    - ホームページ
+- 
+  id: 8
+  key: from_mail
+  input_names:
+    - your-email
+    - your-email_confirm
+    - yourmail
+    - メールアドレス
+    - email
+    - email_1
+    - emailConfirm_1
+    - email_confirm
+    - confirm_email
+    - contact[email]
+    - contact[email_confirmation]
+    - mail
+    - Email
+- 
+  id: 9
+  key: title
+  input_names:
+    - your-subject
+- 
+  id: 10
+  key: content
+  input_names:
+    - お問合せ
+    - お問い合わせ
+    - お問い合わせ内容
+    - 備考
+    - your-message
+    - description
+    - comment
+    - details_1
+    - content
+    - comments
+    - body

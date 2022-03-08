@@ -1169,3 +1169,55 @@ a.btn--shadow {
     }
   }
 }
+
+#okurite-preview {
+  padding-left: 60px;
+
+  dt {
+    padding-top: 6px;
+  }
+
+  dt, dd {
+    padding-left: 0;
+  }
+
+  pre {
+    min-height: 41px;
+    text-align: left;
+  }
+
+  .entries {
+    margin-top: 70px;
+    max-width: 400px;
+    background-color: #ffffee;
+    z-index: 1;
+    overflow: scroll;
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    bottom: 0;
+
+    th, td {
+      width: auto;
+    }
+
+    &__title {
+      display: inline-block;
+      cursor: pointer;
+      user-select: none;
+      padding: 6px 24px;
+    }
+
+    &__detail {
+      padding: 0 15px 15px 15px;
+
+      h4 {
+        margin-top: 10px;
+      }
+    }
+
+    &--hide {
+      display: none;
+    }
+  }
+}
