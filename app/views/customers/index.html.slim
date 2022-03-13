@@ -15,7 +15,16 @@
  .scroll
   = submit_tag '一括削除', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;'
   table[width="90%" cellpadding="0" cellspacing="0"]
-
+    col[width="3%"]
+    col[width="10%"]
+    col[width="10%"]
+    col[width="15%"]
+    col[width="10%"]
+    col[width="7%"]
+    col[width="10%"]
+    col[width="10%"]
+    col[width="12%"]
+    col[width="6%"]
     thead
       tr
         th
@@ -31,9 +40,11 @@
         th
           | 担当者
         th
-          = sort_link(@q, :created_at)
+          = sort_link(@q, "最終コール日",  :created_at)
         th
-          = sort_link(@q, :updated_at)
+          = sort_link(@q, "リストアップデート", :updated_at)
+        th
+          = sort_link(@q, "次回営業日", :time)
         th
           | 編集/削除
     - @customers.includes(:last_call).each_with_index do |customer, index|
@@ -51,15 +62,17 @@
         td
           = customer.calls.last&.user&.user_name
         td
-          = customer.last_call.try(:created_at)
+          = customer.last_call.try(:created_at).strftime("%Y年%m月%d日")
         td
-          = customer.updated_at.strftime("%Y年%m月%d日 %H時%M分")
+          = customer.updated_at.strftime("%Y年%m月%d日")
+        td
+          = customer.last_call.try(:time)&.strftime("%Y年%m月%d日")
         td
           = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'
           = link_to '削除',
           -                        customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}
     tr
-      th[colspan="9"]
+      th[colspan="10"]
         = paginate @customers
 
 
