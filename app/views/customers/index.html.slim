@@ -62,7 +62,7 @@
         td
           = customer.calls.last&.user&.user_name
         td
-          = customer.last_call.try(:created_at).strftime("%Y年%m月%d日")
+          = customer.last_call.try(:created_at)&.strftime("%Y年%m月%d日")
         td
           = customer.updated_at.strftime("%Y年%m月%d日")
         td

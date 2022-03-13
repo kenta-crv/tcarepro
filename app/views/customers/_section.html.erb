@@ -6,8 +6,10 @@
         <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-success" %>
       <% end %>
     </th>
-    <th>コール<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
-          <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %>
+    <th><label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
+          <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %> />
+          </br>
+          自動発信の場合チェック//, checked
         </label>
     </th>
   	<th>
@@ -50,7 +52,7 @@
      <th>住所</th>
      <td colspan = "3">〒<%=@customer.postnumber %><%=@customer.address %></td>
      <th>Mail</th>
-     <td><%= mail_to @customer.mail, @customer.mail %></td>
+     <td><%= mail_to @customer.mail, @customer.mail.truncate(30) %></td>
      <th>URL</th>
      <td><%= link_to @customer.url, @customer.url %></td>
    </tr>
