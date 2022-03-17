@@ -8,7 +8,10 @@ class ClientsForm
     :expected_count,
     :appointment_count,
     :cancel_count,
+    :front_ng_count,
     :ng_count,
+    :closing_ng_count,
+    :forever_ng_count,
     :appointment_rate,
     to: :industry_analytics
 
@@ -87,6 +90,33 @@ class ClientsForm
     return 0 if industry_analytics.call_count == 0
 
     ng_count * 100.0 / industry_analytics.call_count
+  end
+
+  #
+  # フロントNG率
+  #
+  def front_ng_rate
+    return 0 if industry_analytics.call_count == 0
+
+    front_ng_count * 100.0 / industry_analytics.call_count
+  end
+
+  #
+  # クロージングNG率
+  #
+  def closing_ng_rate
+    return 0 if industry_analytics.call_count == 0
+
+    closing_ng_count * 100.0 / industry_analytics.call_count
+  end
+
+  #
+  # 永久NG率
+  #
+  def forever_ng_rate
+    return 0 if industry_analytics.call_count == 0
+
+    forever_ng_count * 100.0 / industry_analytics.call_count
   end
 
   #

@@ -90,7 +90,7 @@ class CustomersController < ApplicationController
        if worker_signed_in?
          redirect_to extraction_path
        else
-         redirect_to customers_path
+         redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
        end
      else
        render 'new'
@@ -118,7 +118,7 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
       if @customer.update(customer_params)
         #flash[:notice] = "登録が完了しました。1日あたりの残り作業実施件数は#{30 - @count_day}件です。"
-        redirect_to customer_path
+        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
       else
         render 'edit'
       end

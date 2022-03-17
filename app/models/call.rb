@@ -146,5 +146,4 @@ class Call < ApplicationRecord
   #  U
   #end
 
-
 end

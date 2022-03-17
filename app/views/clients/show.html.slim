@@ -20,9 +20,15 @@ br
       th
         | キャンセル
       th
+        | フロントNG
+      th
         | NG
       th
-        | APP獲得率
+        | クロージングNG
+      th
+        | 永久NG
+      th
+        | 合計
     tr
       td
         = @form.incomming_absence_count
@@ -35,9 +41,15 @@ br
       td
         = @form.cancel_count
       td
+        = @form.front_ng_count
+      td
         = @form.ng_count
       td
-        = number_to_percentage(@form.appointment_rate, precision: 1)
+        = @form.closing_ng_count
+      td
+        = @form.forever_ng_count
+      td
+        = @form.incomming_absence_count + @form.manager_absence_count + @form.expected_count + @form.appointment_count + @form.cancel_count + @form.front_ng_count + @form.ng_count + @form.closing_ng_count + @form.forever_ng_count
     tr
       td
         = number_to_percentage(@form.incomming_absence_rate, precision: 1 )
@@ -50,7 +62,13 @@ br
       td
         = number_to_percentage(@form.cancel_rate, precision: 1 )
       td
+        = number_to_percentage(@form.front_ng_rate, precision: 1 )
+      td
         = number_to_percentage(@form.ng_rate, precision: 1 )
+      td
+        = number_to_percentage(@form.closing_ng_rate, precision: 1 )
+      td
+        = number_to_percentage(@form.forever_ng_rate, precision: 1 )
       td
 
   h2.headline

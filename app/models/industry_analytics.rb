@@ -102,6 +102,27 @@ class IndustryAnalytics
   end
 
   #
+  # フロントNG数
+  #
+  def front_ng_count
+    summary_status_count('フロントNG')
+  end
+
+  #
+  # クロージングNG数
+  #
+  def closing_ng_count
+    summary_status_count('クロージングNG')
+  end
+
+  #
+  # 永久NG数
+  #
+  def forever_ng_count
+    summary_status_count('永久NG')
+  end
+
+  #
   # コールアポ率
   #
   def appointment_rate
