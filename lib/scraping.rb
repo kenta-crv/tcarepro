@@ -82,17 +82,35 @@ class Scraping
     end
   end
 
+  #
+  # Google を検索し、最初の１件を検索する
+  #
+  # @param [String] keyword 検索するキーワード
+  #
+  # @return [String] URL
+  #
+  def google_search(keyword)
+    document = create_document(
+      "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component(keyword)}"
+    )
+    anchor = document.css('div.kCrYT > a')[0].get_attribute('href')
+
+    URI::decode_www_form(URI.parse(anchor).query)[0][1]
+  end
+
   private
 
   def create_document(url)
     Nokogiri::HTML(URI.open(url, :allow_redirections => :all))
   rescue Encoding::CompatibilityError
     Nokogiri::HTML(URI.open(url, 'r:Shift_JIS', :allow_redirections => :all))
-  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT
+  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, OpenSSL::SSL::SSLError
+    Rails.logger.error url
     Rails.logger.error $!
 
     nil
   rescue ArgumentError
+    Rails.logger.error url
     Rails.logger.error $!.backtrace.join("\n")
 
     nil

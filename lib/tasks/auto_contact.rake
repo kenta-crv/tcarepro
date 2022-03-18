@@ -5,7 +5,7 @@ namespace :auto_contact do
   task check: :environment do
     scraping = Scraping.new
 
-    Customer.limit(10).each do |customer|
+    Customer.limit(1000).each do |customer|
       contact = customer.attributes.compact.filter { |k, v| ['created_at', 'updated_at'].exclude?(k) }
 
       if customer.contact_url

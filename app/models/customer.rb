@@ -139,7 +139,12 @@ class Customer < ApplicationRecord
   enum status: {draft: 0, published: 1}
 
   def contact_url
-    @contact_url ||= scraping.contact_from(url_2) || scraping.contact_from(url)
+    @contact_url ||=
+      scraping.contact_from(url_2) ||
+      scraping.contact_from(url) ||
+      scraping.contact_from(
+        scraping.google_search([company, address, tel].compact.join(' '))
+      )
   end
 
   private
