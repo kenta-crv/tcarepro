@@ -13,6 +13,8 @@
  <%= render "section" %>
 <% elsif admin_signed_in? && @customer.choice == "社会保険" %>
  <%= render "section" %>
+<% elsif admin_signed_in? && @customer.choice == "Okurite Neo" %>
+ <%= render "section" %>
 <% elsif user_signed_in?  %>
  <%= render "show" %>
 <% elsif worker_signed_in? %>

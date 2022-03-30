@@ -34,20 +34,6 @@
           =telephone_field :customer, :tel
       tr
         th
-          | FAX番号
-          strong.label.label-blue ※あれば必須
-        td
-          =telephone_field :customer, :fax
-      tr
-        th
-          | 郵便番号
-          strong.label.label-blue ※あれば必須
-          strong.label.label-blue ※【半角のみ】【000-0000形式】）
-        td
-          | 〒
-          =telephone_field :customer, :postnumber
-      tr
-        th
           | 住所
           strong.label ※必須
           strong.label ※【住所と電話番号の市外局番は必ず一致】）
@@ -62,14 +48,7 @@
           /= f.select(:business, Customer.BusinessStatus)
       tr
         th
-          | URL
-          strong.label.label-blue ※あれば必須
-          strong.label.label-blue ※URLは空いている方に入力
-        td
-          =text_field :customer, :url
-      tr
-        th
-          | URL2
+          | 会社ホームページ
           strong.label.label-blue ※あれば必須
         td
           =text_field :customer, :url_2
@@ -104,12 +83,6 @@
         td
           = f.select(:extraction_count, Customer.ExtractionStatus,include_blank: true)
       tr
-        th
-          | メール送信者向けカウント
-          strong.label ※
-        td
-          = f.select(:send_count, Customer.SendStatus,include_blank:true)
-      tr
         td.attend[colspan="2"]
           |※支店の抽出は不可な案件があります。
           br
@@ -128,5 +101,5 @@
           = f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
 
       tr
+        td = link_to '登録せずに戻る', @customer,class:"btn btn-dafault"
         td = f.submit '登録する',class:"btn btn-success", data: { confirm: '抽出条件を理解せずに登録する方が非常に増えております。抽出エリア・抽出業種一致していますか？また、NG条件を登録しようとしていませんか？ミスして作業を進めると修正に多大な時間を要するため必ず確認して下さい。'}
-        td = link_to '登録せずに戻る', @customer,class:"btn btn-success"

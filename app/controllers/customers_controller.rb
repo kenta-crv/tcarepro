@@ -28,7 +28,7 @@ class CustomersController < ApplicationController
     #@customers = @q.result  @q.result.includes(:last_call)
     #@customers = @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call ) if last_call
-    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(30)
+    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(30) #エスクポート総数
     respond_to do |format|
      format.html
      format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
@@ -356,6 +356,41 @@ class CustomersController < ApplicationController
         format.html
         format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
       end
+    when "update_import"
+      respond_to do |format|
+       format.html
+       format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+      end
+    when "workers" then
+      @customers_app = @customers.where(call_id: 1)
+      #today
+      @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
+      @call_count_today = @call_today_basic.count
+      @protect_count_today = @call_today_basic.select { |call| call.statu == "見込" }.count
+      @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
+      @app_count_today = @call_today_basic.select { |call| call.statu == "APP" }.count
+      @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
+
+      #week
+      @call_week_basic = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).to_a
+      @call_count_week = @call_week_basic.count
+      @protect_count_week = @call_week_basic.select { |call| call.statu == "見込" }.count
+      @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
+      @app_count_week = @call_week_basic.select { |call| call.statu == "APP" }.count
+      @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
+
+      #month
+      @call_month_basic = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+      @call_count_month = @call_month_basic.count
+      @protect_count_month = @call_month_basic.select { |call| call.statu == "見込" }.count
+      @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
+      @app_count_month = @call_month_basic.select { |call| call.statu == "APP" }.count
+      @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
+
+      @workers = Worker.all
+
+      @detailcalls = Customer2.joins(:calls).select('calls.id')
+      @detailcustomers = Call.joins(:customer).select('customers.id')
     else
    end
   end
@@ -374,6 +409,11 @@ class CustomersController < ApplicationController
 
   def import
     cnt = Customer.import(params[:file])
+    redirect_to customers_url, notice:"#{cnt}件登録されました。"
+  end
+
+  def update_import
+    cnt = Customer.update_import(params[:update_file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
   end
 
@@ -402,8 +442,9 @@ class CustomersController < ApplicationController
   def extraction
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
-    #@customer = Customer.find(params[:id])
+    @customers = @customers.order("created_at DESC").where(extraction_count: nil).where(tel: nil).page(params[:page]).per(20)
+    #電話番号nilから作業ステータスがないものの一覧へ変更する
+    #@customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
   end
 
   def okurite

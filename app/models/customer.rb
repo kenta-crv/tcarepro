@@ -31,9 +31,21 @@ class Customer < ApplicationRecord
       save_cont
   end
   def self.updatable_attributes
-    ["company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
+    ["id","company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
      "caption","status","title","other","url_2","customer_tel","choice","inflow","business","history","area","target","meeting","experience","price",
      "number","start","remarks","business","extraction_count","send_count"]
+  end
+
+  #update_import
+  def self.update_import(update_file)
+    save_cnt = 0
+    CSV.foreach(update_file.path, headers: true) do |row|
+      customer = find_by(id: row["id"]) || new
+      customer.attributes = row.to_hash.slice(*updatable_attributes)
+      customer.save!
+      save_cnt += 1
+    end
+    save_cnt
   end
 
 #tcare_import
@@ -63,7 +75,7 @@ class Customer < ApplicationRecord
     end
   end
   def self.csv_attributes
-    ["company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
+    ["id","company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
      "caption","status","title","other","url_2","choice","inflow","business","history","area","target","meeting","experience","price",
      "number","start","remarks","business","extraction_count","send_count"]
   end

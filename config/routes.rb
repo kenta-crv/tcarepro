@@ -61,6 +61,7 @@ Rails.application.routes.draw do
     collection do
       get :complete
       post :import
+      post :update_import
       post :call_import
       post :tcare_import
       get :message
