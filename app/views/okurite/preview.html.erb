@@ -11,6 +11,9 @@ $(function () {
     });
   }
 
+  $('iframe').css('left', '340px');
+  $('iframe').css('width', 'calc(100% - 340px)');
+
   $('iframe').load(autoTyping);
 
   $('.entries > span').click(function () {
@@ -29,67 +32,138 @@ $(function () {
 });
 </script>
 
-<%
-  inquiry = @contact_tracking.inquiry
-%>
-
 <div id="okurite-preview">
   <div class="entries">
-    <span class="entries__title">↓</span>
+    <span class="entries__title">↑</span>
 
-    <div class="entries__detail entries--hide">
-      <%= link_to '別タブで表示', @contact_tracking.contact_url, target: :_blank  %>
+    <div class="entries__detail">
+      <% if @prev_customer %>
+        <%= link_to '前へ ←', sender_okurite_preview_path(okurite_id: @prev_customer.id, q: params[:q]&.permit!) %>
+      <% end %>
 
-      <h4><%=  link_to inquiry.headline, inquiry_path(inquiry), target: :_blank %></h4>
+      <% if @next_customer %>
+        <%= link_to '→ 次へ', sender_okurite_preview_path(okurite_id: @next_customer.id, q: params[:q]&.permit!) %>
+      <% end %>
 
-      <%= form_tag okurite_contact_url(okurite_id: @contact_tracking.customer), method: :post do %>
-        <% unless @contact_tracking.new_record? %>
-          <table class="table table-striped">
+      <h4>
+        <%= link_to '送り手情報', sender_path(@sender), target: :_blank %>
+      </h4>
+
+      <table class="table table-striped">
+        <tr>
+          <th>ユーザー名</th>
+          <td><%= @sender.user_name %></td>
+        </tr>
+        <tr>
+          <th>問い合わせ数</th>
+          <td><%= @sender.contact_trackings.count %> / <%= @sender.rate_limit %></td>
+        </tr>
+      </table>
+
+      <h4>
+        <%= link_to '顧客情報', sender_okurite_path(id: @customer.id, sender_id: @sender.id), target: :_blank %>
+      </h4>
+
+      <table class="table table-striped">
+        <tr>
+          <th>会社名</th>
+          <td><%= @customer.company %></td>
+        </tr>
+        <tr>
+          <th>お問い合わせ URL</th>
+          <td>
+            <% if @contact_url %>
+              <%= link_to '別タブで表示', @contact_url, target: :_blank  %><br>
+            <% end %>
+            <%= link_to 'Google で再検索', sender_okurite_preview_path(okurite_id: @customer.id, q: params[:q]&.permit!, force_google: true) %>
+          </td>
+        </tr>
+      </table>
+
+      <h4><%= link_to '問い合わせ', inquiry_path(@inquiry), target: :_blank %></h4>
+
+      <table class="table table-striped">
+        <tr>
+          <th>状態</th>
+          <td><%= @contact_tracking&.status || '-' %></td>
+        </tr>
+      </table>
+
+      <% if @contact_tracking %>
+        <table class="table table-striped">
+          <tr>
+            <th>最終確定日時</th>
+            <td><%= @contact_tracking.updated_at %></td>
+          </tr>
+          <% if @contact_tracking.success? %>
             <tr>
-              <th>最終問い合わせ時間</th>
-              <td><%= @contact_tracking.sended_at || '-' %></td>
+              <th>送信日時</th>
+              <td><%= @contact_tracking.sended_at %></td>
             </tr>
             <tr>
-              <th>最終コールバック時間</th>
+              <th>コールバック日時</th>
               <td><%= @contact_tracking.callbacked_at || '-' %></td>
             </tr>
-          </table>
+          <% end %>
+        </table>
+      <% else %>
+        <% if @sender.rate_limit > @sender.contact_trackings.count %>
+          <%= form_tag sender_okurite_contact_url(okurite_id: @customer), method: :post do %>
+            <%= hidden_field_tag :contact_url, @contact_url %>
+            <%= hidden_field_tag :inquiry_id, @inquiry.id %>
+            <%= hidden_field_tag :next_customer_id, @next_customer&.id %>
+
+            <div class="input-group">
+              <%= select_tag(
+                :status,
+                options_for_select(['送信済', '送信不可', '送信NG']),
+                class: 'custom-select'
+              )%>
+
+              <div class="input-group-append">
+                <%= submit_tag '確定', class: 'btn btn-outline-secondary' %>
+              </div>
+            </div>
+          <% end %>
+
+          <dl>
+            <dt class="col-12">会社名</dt>
+            <dd class="col-12"><pre><%= @inquiry.from_company %></pre></dd>
+            <dt class="col-12">担当者</dt>
+            <dd class="col-12"><pre><%= @inquiry.person %></pre></dd>
+            <dt class="col-12">タントウシャ</dt>
+            <dd class="col-12"><pre><%= @inquiry.person_kana %></pre></dd>
+            <dt class="col-12">電話番号</dt>
+            <dd class="col-12"><pre><%= @inquiry.from_tel %></pre></dd>
+            <dt class="col-12">FAX番号</dt>
+            <dd class="col-12"><pre><%= @inquiry.from_fax %></pre></dd>
+            <dt class="col-12">住所</dt>
+            <dd class="col-12"><pre><%= @inquiry.address %></pre></dd>
+            <dt class="col-12">メールアドレス</dt>
+            <dd class="col-12"><pre><%= @inquiry.from_mail %></pre></dd>
+            <dt class="col-12">URL</dt>
+            <dd class="col-12"><pre><%= @sender.callback_url(@customer.id) %></pre></dd>
+            <dt class="col-12">件名</dt>
+            <dd class="col-12"><pre><%= @inquiry.title %></pre></dd>
+            <dt class="col-12">本文</dt>
+            <dd class="col-12"><pre><%= @inquiry.parse_content(@sender, @customer.id) %></pre></dd>
+          </dl>
+        <% else %>
+          <div class="alert alert-danger" role="alert">
+            今月は上限に達しました
+          </div>
         <% end %>
-
-        <dl>
-          <dt class="col-12">会社名</dt>
-          <dd class="col-12"><pre><%= inquiry.from_company %></pre></dd>
-          <dt class="col-12">担当者</dt>
-          <dd class="col-12"><pre><%= inquiry.person %></pre></dd>
-          <dt class="col-12">タントウシャ</dt>
-          <dd class="col-12"><pre><%= inquiry.person_kana %></pre></dd>
-          <dt class="col-12">電話番号</dt>
-          <dd class="col-12"><pre><%= inquiry.from_tel %></pre></dd>
-          <dt class="col-12">FAX番号</dt>
-          <dd class="col-12"><pre><%= inquiry.from_fax %></pre></dd>
-          <dt class="col-12">住所</dt>
-          <dd class="col-12"><pre><%= inquiry.address %></pre></dd>
-          <dt class="col-12">メールアドレス</dt>
-          <dd class="col-12"><pre><%= inquiry.from_mail %></pre></dd>
-          <dt class="col-12">URL</dt>
-          <dd class="col-12"><pre><%= inquiry.url %></pre></dd>
-          <dt class="col-12">件名</dt>
-          <dd class="col-12"><pre><%= inquiry.title %></pre></dd>
-          <dt class="col-12">本文</dt>
-          <dd class="col-12"><pre><%= inquiry.parse_content(@contact_tracking.customer.id) %></pre></dd>
-        </dl>
-
-        <%= hidden_field_tag :contact_url, @contact_tracking.contact_url %>
-        <%= hidden_field_tag :inquiry_id, inquiry.id %>
-
-        <%= submit_tag 'お問い合わせ済みにする' %>
       <% end %>
     </div>
   </div>
 
   <div class="tops-wrapper">
-    <div class="embed-responsive embed-responsive-16by9">
-      <iframe class="embed-responsive-item" src="<%= @contact_tracking.contact_url || @contact_tracking.customer.url %>" allowfullscreen></iframe>
-    </div>
+    <% if @contact_url %>
+      <div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="<%= @contact_url %>" allowfullscreen></iframe>
+      </div>
+    <% else %>
+      <p class="col-12" style="width: 100%;text-align: center;">問い合わせページが不明です</p>
+    <% end %>
   </div>
 </div>

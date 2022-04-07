@@ -1,6 +1,7 @@
 class Contactor
-  def initialize(inquiry)
+  def initialize(inquiry, sender)
     @inquiry = inquiry
+    @sender = sender
   end
 
   #
@@ -23,7 +24,7 @@ class Contactor
 
       if name_mapping
         if name_mapping.key == 'content'
-          value = inquiry.parse_content(customer_id)
+          value = inquiry.parse_content(sender, customer_id)
         else
           value = inquiry.attributes[name_mapping.key]
         end
@@ -82,5 +83,5 @@ class Contactor
     @scraping ||= Scraping.new
   end
 
-  attr_reader :inquiry
+  attr_reader :inquiry, :sender
 end

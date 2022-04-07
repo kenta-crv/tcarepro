@@ -49,23 +49,23 @@ namespace :auto_contact do
     end
   end
 
-  task :run, ['customer_id'] => :environment do |task, args|
+  task :run, ['sender_id', 'customer_id'] => :environment do |task, args|
     config = Rails.root.join('auto_contact', 'config', 'customers', 'success')
 
     inquiry = Inquiry.first
+    sender = Sender.find(args['sender_id'])
 
     config.glob("#{args['customer_id'].presence || '*'}.yaml").sort.each do |yaml|
       contact = YAML.load_file(yaml)
 
       puts "customer_id: #{contact['id']}"
 
-      inquiry.generate_code(contact['id'])
-
       contact_tracking = ContactTracking.find_or_initialize_by(
-        code: inquiry.generate_code(contact['id']),
+        code: inquiry.generate_code(args['sender_id'], contact['id']),
       )
 
       contact_tracking.attributes = {
+        sender: sender,
         customer: Customer.find(contact['id']),
         inquiry: inquiry,
         contact_url: contact['contact_url'],
@@ -74,9 +74,10 @@ namespace :auto_contact do
       inquiry.contactor.send_contact(contact_tracking.contact_url, contact['id'])
 
       screenshot_path = Rails.root.join('auto_contact', 'screenshots', "#{contact['id']}.png")
-      inquiry.contactor.screenshot(screenshot_path)
+      contactor = Contactor.new(inquiry, sender)
+      contactor.screenshot(screenshot_path)
 
-      contact_tracking.save!
+      # contact_tracking.save!
     end
   end
 end

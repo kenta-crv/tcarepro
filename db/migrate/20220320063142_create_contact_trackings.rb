@@ -6,7 +6,8 @@ class CreateContactTrackings < ActiveRecord::Migration[5.1]
       t.references :inquiry, null: false
       t.references :sender
       t.references :worker
-      t.string :contact_url, null: false
+      t.string :status, null: false
+      t.string :contact_url
       t.datetime :sended_at
       t.datetime :callbacked_at
 
@@ -14,5 +15,7 @@ class CreateContactTrackings < ActiveRecord::Migration[5.1]
     end
 
     add_index :contact_trackings, [:customer_id, :inquiry_id, :sender_id, :worker_id], name: :index_contact_trackings_on_colums
+
+    add_column :senders, :rate_limit, :integer, default: 100
   end
 end

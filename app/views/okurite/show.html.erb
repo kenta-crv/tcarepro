@@ -13,47 +13,43 @@
     </tr>
     <tr>
       <th>会社名</th>
-      <td><%= @contact_tracking.customer.company %></td>
+      <td><%= @customer.company %></td>
       <th>代表者</th>
-      <td><%= @contact_tracking.customer.first_name %>(<%= @contact_tracking.customer.first_kana %>)</td>
+      <td><%= @customer.first_name %>(<%= @customer.first_kana %>)</td>
     </tr>
     <tr>
       <th>検索対象</th>
-      <td><%= @contact_tracking.customer.industry %></td>
+      <td><%= @customer.industry %></td>
       <th>電話番号</th>
-      <td><%= @contact_tracking.customer.tel %></td>
+      <td><%= @customer.tel %></td>
     </tr>
     <tr>
       <th>住所</th>
-      <td colspan="3"><%= @contact_tracking.customer.address %></td>
+      <td colspan="3"><%= @customer.address %></td>
     </tr>
     <tr>
       <th>タイトル</th>
-      <td colspan="3"><%= @contact_tracking.customer.title %></td>
+      <td colspan="3"><%= @customer.title %></td>
     </tr>
     <tr>
       <th>URL1</th>
-      <td><%= link_to "Webサイト", @contact_tracking.customer.url, target:"_blank" %></td>
+      <td>
+        <% if @customer.url %>
+          <%= link_to "Webサイト", @customer.url, target:"_blank" %>
+        <% end %>
+      </td>
       <th>URL2</th>
-      <td><%= link_to "求人サイト", @contact_tracking.customer.url_2, target:"_blank" %></td>
+      <td>
+        <% if @customer.url_2 %>
+          <%= link_to "求人サイト", @customer.url_2, target:"_blank" %>
+        <% end %>
+      </td>
     </tr>
     <tr>
       <th>人数</th>
-      <td><%= @contact_tracking.customer.people %></td>
+      <td><%= @customer.people %></td>
       <th>業種</th>
-      <td><%= @contact_tracking.customer.business %></td>
-    </tr>
-    <tr>
-      <th>問い合わせ</th>
-      <td colspan="3">
-        <% if @contact_tracking.contact_url.present? %>
-          <%= link_to "問い合わせのフォームをプレビュー", okurite_preview_path(okurite_id: @contact_tracking.customer.id), target:"_blank" %>
-        <% elsif @contact_tracking.customer.url %>
-          <%= link_to "Webサイトをプレビュー", okurite_preview_path(okurite_id: @contact_tracking.customer.id), target:"_blank" %>
-        <% else %>
-          問い合わせページが見つかりません
-        <% end %>
-      </td>
+      <td><%= @customer.business %></td>
     </tr>
   </tbody>
 </table>
@@ -64,7 +60,7 @@
     <col width="15%">
     <col width="15%">
     <col width="10%">
-<% if @contact_tracking.customer.counts.any? %>
+<% if @customer.counts.any? %>
     <tr>
       <th>送信日時</th>
       <th>送信元会社</th>
@@ -73,7 +69,7 @@
       <th>削除</th>
     </tr>
     <tr>
-    <% @contact_tracking.customer.counts.includes(:sender).each do |count| %>
+    <% @customer.counts.includes(:sender).each do |count| %>
       <td><%= count.created_at %></td>
       <td><%= count.company %></td>
       <td><%= count.title %></td>

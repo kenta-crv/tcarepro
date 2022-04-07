@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
       when Worker
         worker_path(current_worker)
       when Sender
-        sender_path(current_sender)
+        myself_path
       when Client
         client_path
       else

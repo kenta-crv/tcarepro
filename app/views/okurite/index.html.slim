@@ -5,60 +5,105 @@
     | (
     = @customers.current_page * 30 - 29
     | ~
-    = @customers.current_page * 30
+    = [@customers.page(1).per(30).total_count, @customers.current_page * 30].min
     | 件/
-    = @customers.page(1).per(30).total_pages * 30
+    = @customers.page(1).per(30).total_count
     | 件中
     | )
  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
-  table[width="90%"]
-    col[width="8%"]
-    col[width="10%"]
-    col[width="5%"]
-    col[width="7%"]
-    col[width="15%"]
-    col[width="10%"]
-    col[width="15%"]
-    col[width="8%"]
+  table[style="margin: 0 30px;"]
     thead
       tr
         th
-          = submit_tag '一括削除'
-        th
           | 会社名
         th
-          | URL1
+          | 業種
         th
-          | URL2
+          | 状態
         th
-          | メールアドレス
+          | 最終送信日時
         th
-          | ステータス
-        th
-          = sort_link(@q, :created_at)
-        th
-          | 編集/削除
+          | コールバック日時
     - @customers.each do |customer|
+      - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
       tr
         td
-          = check_box_tag "deletes[#{customer.id}]", customer.id
+          = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
         td
-          = link_to customer.company, okurite_path(id: customer.id)
+          = customer.industry
         td
-          -if customer.url.present?
-            = customer.url.truncate(20)
+          = contact_tracking&.status
         td
-          -if customer.url_2.present?
-            = customer.url_2.truncate(20)
+          = contact_tracking&.sended_at
         td
-          = customer.mail
-        td
-          /= customer.last_count.try(:statu)
-        td
-          /= customer.last_count.try(:created_at).strftime("%Y年%m月%d日 %H時%M分")
-        td
-          = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_count: params[:last_count]&.permit!), class: 'command'
-          = link_to '削除',customer_path(customer, q: params[:q]&.permit!, last_count: params[:last_count]&.permit!), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}
+          = contact_tracking&.callbacked_at
     tr
       th[colspan="8"]
         = paginate @customers
+
+#searchModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = search_form_for(@q, url: sender_okurite_index_path(sender_id: params[:sender_id])) do |f|
+          table
+            tbody
+              tr
+                th[colspan="4"]
+                  | 検索
+              tr
+                th
+                  | 会社名
+                td
+                  = f.search_field :company_cont, type: "text"
+                th
+                  | 電話番号
+                td
+                  = f.search_field :tel_cont, type: "text"
+              tr
+                th
+                  | 業種
+                td
+                  = f.search_field :industry_cont, type: "text"
+                th
+                  | 住所
+                td
+                  =  f.collection_select :address_cont_any, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'},
+                  {class: 'form-control', id: 'search_prefecture', multiple: true}
+              tr
+                th
+                  | 未送信
+                td
+                  = f.check_box :contact_tracking_id_null, {}, 'true', ''
+                th
+                  | 状態
+                td
+                  = f.select :contact_tracking_status_cont_any,
+                    options_for_select(['送信NG', '送信済', '送信不可'],
+                    params['q'] && params['q']['contact_tracking_status_cont_any']),
+                    {include_blank: '選択してください'},
+                    {class: 'form-control', id: 'search_prefecture', multiple: true}
+              tr
+                th
+                  | 最終インポート日時（最初）
+                td
+                  = f.date_field :created_at_gteq, class: 'date-picker form-control'
+                th
+                  | 最終インポート日時（最後）
+                td
+                  = f.date_field :created_at_lteq, class: 'date-picker form-control'
+              tr
+                th
+                  | 最終送信日時（最初）
+                td
+                  = f.date_field :contact_tracking_sended_at_gteq, class: 'date-picker form-control'
+                th
+                  | 最終送信日時（最後）
+                td
+                  = f.date_field :contact_tracking_sended_at_lteq, class: 'date-picker form-control'
+              tr
+                th[colspan="4"]
+                  = f.submit '検索'

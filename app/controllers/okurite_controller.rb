@@ -1,66 +1,58 @@
+require 'contactor'
+
 class OkuriteController < ApplicationController
-  before_action :authenticate_sender!, except: :callback
+  before_action :authenticate_worker_or_admin!, except: :callback
+  before_action :set_sender, except: :callback
+  before_action :set_customers, only: [:index, :preview]
 
   def index
-    @q = Customer.ransack(params[:q])
-    @customers = @q.result
-    @customers = @customers.where.not(url: nil).page(params[:page]).per(30)
+    @customers = @customers.page(params[:page]).per(30)
+
+    @contact_trackings = @customers.flat_map(&:contact_trackings).select do |contact_tracking|
+      contact_tracking.sender_id == @sender.id
+    end
   end
 
   def show
-    customer = Customer.find(params[:id])
-    inquiry = Inquiry.first
-
-    @contact_tracking = ContactTracking.find_or_initialize_by(
-      code: inquiry.generate_code(customer.id),
-    )
-
-    @contact_tracking.attributes = {
-      customer: customer,
-      inquiry: inquiry,
-      contact_url: customer.contact_url,
-    }
+    @customer = Customer.find(params[:id])
   end
 
   def create
-    customer = Customer.find(params[:okurite_id])
-    inquiry = Inquiry.first
-
-    @contact_tracking = ContactTracking.find_or_initialize_by(
-      code: inquiry.generate_code(customer.id),
+    @sender.send_contact!(
+      params[:okurite_id],
+      current_worker&.id,
+      params[:inquiry_id],
+      params[:contact_url],
+      params[:status]
     )
 
-    @contact_tracking.attributes = {
-      customer: customer,
-      sender: current_sender,
-      worker: current_worker,
-      inquiry: inquiry,
-      contact_url: customer.contact_url,
-      sended_at: Time.zone.now,
-    }
+    if params[:next_customer_id].present?
+      redirect_to sender_okurite_preview_path(
+        okurite_id: params[:next_customer_id], 
+        q: params[:q]&.permit!
+      )
+    else
+      flash[:notice] = "送信が完了しました"
 
-    @contact_tracking.save!
-
-    redirect_to okurite_url(@contact_tracking.customer)
+      redirect_to sender_okurite_index_path(sender_id: sender.id)
+    end
   end
 
   def preview
-    customer = Customer.find(params[:okurite_id])
-    inquiry = Inquiry.first
+    @customer = Customer.find(params[:okurite_id])
+    @inquiry = Inquiry.first
 
-    @contact_tracking = ContactTracking.find_or_initialize_by(
-      code: inquiry.generate_code(customer.id),
+    @prev_customer = @customers.where("customers.id < ?", @customer.id).last
+    @next_customer = @customers.where("customers.id > ?", @customer.id).first
+    @contact_tracking = ContactTracking.find_by(
+      code: @sender.generate_code(@customer.id),
     )
 
-    @contact_tracking.attributes = {
-      customer: customer,
-      sender: current_sender,
-      worker: current_worker,
-      inquiry: inquiry,
-      contact_url: customer.contact_url,
-    }
+    contactor = Contactor.new(@inquiry, @sender)
 
-    gon.typings = @contact_tracking.try_typings
+    @contact_url = params['force_google'] ? @customer.google_search_url : @customer.contact_url
+
+    gon.typings = contactor.try_typings(@contact_url, @customer.id)
   end
 
   def callback
@@ -71,5 +63,26 @@ class OkuriteController < ApplicationController
     @contact_tracking.save
 
     redirect_to @contact_tracking.inquiry.url
+  end
+
+  private
+
+  def set_sender
+    @sender = Sender.find(params[:sender_id])
+  end
+
+  def set_customers
+    @q = Customer.ransack(params[:q])
+    @customers = @q.result.distinct
+
+    if params[:q] && params[:q][:contact_tracking_status_cont_any].select { |c| c.present? }.count > 0
+      @customers = @customers.joins(:contact_trackings).where(contact_trackings: { sender_id: @sender.id })
+    end
+  end
+
+  def authenticate_worker_or_admin!
+    unless worker_signed_in? || admin_signed_in?
+       redirect_to new_worker_session_path, alert: 'error'
+    end
   end
 end

@@ -1188,7 +1188,6 @@ a.btn--shadow {
 
   .entries {
     margin-top: 70px;
-    max-width: 400px;
     background-color: #ffffee;
     z-index: 1;
     overflow: scroll;
@@ -1209,6 +1208,7 @@ a.btn--shadow {
     }
 
     &__detail {
+      width: 400px;
       padding: 0 15px 15px 15px;
 
       h4 {

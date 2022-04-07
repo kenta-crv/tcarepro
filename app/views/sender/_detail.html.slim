@@ -1,0 +1,33 @@
+h2.headline 送信者情報
+
+table[style="margin: 0 40px;"]
+  tr
+    th
+      | ユーザー名
+    td
+      = @form.user_name
+    th
+      | ログインアドレス
+    td
+      = @form.email
+    th
+      | 上限数
+    td
+      = @form.rate_limit
+  tr
+    th
+      | 問い合わせ数
+    td
+      = @form.contact_trackings.count
+    th
+      | 送信数 (率)
+    td
+      = @form.sended_contact_trackings.count
+      - if @form.sended_rate
+        = " (#{number_to_percentage(@form.sended_rate, precision: 1)})"
+    th
+      | コールバック数 (率)
+    td
+      = @form.callbacked_contact_trackings.count
+      - if @form.callbacked_rate
+        = " (#{number_to_percentage(@form.callbacked_rate, precision: 1)})"

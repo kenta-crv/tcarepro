@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'nokogiri'
+require 'timeout'
 
 class Scraping
   BLACKLIST_DOMAINS = [
@@ -28,13 +29,12 @@ class Scraping
     document.css('a').each do |anchor|
       next unless anchor.get_attribute('href')
 
-      # anchor.inner_html.encode('utf-8') + anchor.get_attribute('alt')
       if anchor.inner_html.encode('utf-8') =~ /問い合わせ|問合せ/
         href = URI.parse(URI.encode(anchor.get_attribute('href')))
 
         if !href.host && !href.scheme
           unless href.path[0] == '/'
-            href.path = customer_url.path + href.path
+            href.path = '/' + href.path
           end
 
           href.scheme = customer_url.scheme
@@ -117,10 +117,10 @@ class Scraping
   private
 
   def create_document(url)
-    Nokogiri::HTML(URI.open(url, :allow_redirections => :all))
+    Timeout.timeout(5) { Nokogiri::HTML(URI.open(url, :allow_redirections => :all)) }
   rescue Encoding::CompatibilityError
-    Nokogiri::HTML(URI.open(url, 'r:Shift_JIS', :allow_redirections => :all))
-  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, OpenSSL::SSL::SSLError, ArgumentError
+    Timeout.timeout(5) { Nokogiri::HTML(URI.open(url, 'r:Shift_JIS', :allow_redirections => :all)) }
+  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, OpenSSL::SSL::SSLError, Timeout::Error, ArgumentError
     Rails.logger.error("[url] #{url} [message] #{$!.class}: #{$!.to_s}")
 
     nil
