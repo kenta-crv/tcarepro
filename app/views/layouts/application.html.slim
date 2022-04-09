@@ -11,19 +11,23 @@ html
             =image_tag "rogo2.png", width: "70%", class:"header-image"
         .col-xs-4
         .col-xs-4.right
-           - if @customers && (controller.action_name != 'list')  && (controller.action_name != 'extraction')
+          - if controller.controller_name == 'okurite' && controller.action_name == 'index'
+            li
+              button.btn.btn-success.btn-md[data-toggle="modal" data-target="#searchModal"]
+               |  検索する
+          - elsif @customers && (controller.action_name != 'list')  && (controller.action_name != 'extraction')
             li
               button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createTicket"]
                |  検索する
-           - elsif list_path && (controller.action_name != 'extraction')
+          - elsif list_path && (controller.action_name != 'extraction')
             li
               button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createList"]
                |  検索する
-           - elsif extraction_path
+          - elsif extraction_path
             li
               button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createExtraction"]
                |  検索する
-           -else
+          -else
 
 
         .col-xs-1.hidden-xs

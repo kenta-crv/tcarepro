@@ -35,12 +35,13 @@ gem 'gon'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'selenium-webdriver'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
-  gem 'selenium-webdriver'
   # gem 'bullet'
   # gem 'rails-erd'
   # gem 'rack-mini-profiler'
@@ -109,3 +110,5 @@ gem 'sitemap_generator'
 gem 'lograge'
 
 gem 'open_uri_redirections'
+
+gem 'active_hash'

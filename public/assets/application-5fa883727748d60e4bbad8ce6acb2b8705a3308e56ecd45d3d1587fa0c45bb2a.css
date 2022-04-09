@@ -11759,3 +11759,59 @@ a.btn--shadow {
   background-color: #1D9186;
   color: #fff;
 }
+
+/* line 1174, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview {
+  padding-left: 60px;
+}
+/* line 1177, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview dt {
+  padding-top: 6px;
+}
+/* line 1181, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview dt, #okurite-preview dd {
+  padding-left: 0;
+}
+/* line 1185, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview pre {
+  min-height: 41px;
+  text-align: left;
+}
+/* line 1190, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview .entries {
+  margin-top: 70px;
+  max-width: 400px;
+  background-color: #ffffee;
+  z-index: 1;
+  overflow: scroll;
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  bottom: 0;
+}
+/* line 1201, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview .entries th, #okurite-preview .entries td {
+  width: auto;
+}
+/* line 1205, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview .entries__title {
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  padding: 6px 24px;
+}
+/* line 1212, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview .entries__detail {
+  padding: 0 15px 15px 15px;
+}
+/* line 1215, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview .entries__detail h4 {
+  margin-top: 10px;
+}
+/* line 1220, /Users/ino_h/Documents/workspace/perfect/app/assets/stylesheets/application.scss */
+#okurite-preview .entries--hide {
+  display: none;
+}

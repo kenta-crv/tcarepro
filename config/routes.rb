@@ -34,7 +34,15 @@ Rails.application.routes.draw do
   devise_for :senders, controllers: {
     registrations: 'senders/registrations'
   }
-  resources :senders, only: [:show]
+  resource :myself, only: :show, controller: :sender
+  resources :senders, only: [:index, :show] do
+    # okurite
+    resources :okurite, only: [:index, :show] do
+      get :preview, to: 'okurite#preview'
+      post :contact, to: 'okurite#create'
+    end
+  end
+  get 'callback' => 'okurite#callback', as: :callback
   #ワーカーアカウント
   devise_for :workers, controllers: {
     registrations: 'workers/registrations',
@@ -85,7 +93,6 @@ Rails.application.routes.draw do
   #TCARE
   get 'extraction' => 'customers#extraction'
   #Mailer
-  get 'okurite' => 'customers#okurite'
   delete :customers, to: 'customers#destroy_all'
   get 'customers/bulk_edit'
   put 'customers/bulk_update'

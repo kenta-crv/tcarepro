@@ -1,0 +1,86 @@
+<br>
+<br>
+<br>
+<%- set_meta_tags noindex: true%>
+<table width="100%" class="space">
+    <col width="25%">
+    <col width="25%">
+    <col width="25%">
+    <col width="25%">
+  <tbody>
+    <tr>
+      <th colspan="4">顧客情報（<%= link_to("編集", edit_customer_path,  target:"_blank") %>）</th>
+    </tr>
+    <tr>
+      <th>会社名</th>
+      <td><%= @customer.company %></td>
+      <th>代表者</th>
+      <td><%= @customer.first_name %>(<%= @customer.first_kana %>)</td>
+    </tr>
+    <tr>
+      <th>検索対象</th>
+      <td><%= @customer.industry %></td>
+      <th>電話番号</th>
+      <td><%= @customer.tel %></td>
+    </tr>
+    <tr>
+      <th>住所</th>
+      <td colspan="3"><%= @customer.address %></td>
+    </tr>
+    <tr>
+      <th>タイトル</th>
+      <td colspan="3"><%= @customer.title %></td>
+    </tr>
+    <tr>
+      <th>URL1</th>
+      <td>
+        <% if @customer.url %>
+          <%= link_to "Webサイト", @customer.url, target:"_blank" %>
+        <% end %>
+      </td>
+      <th>URL2</th>
+      <td>
+        <% if @customer.url_2 %>
+          <%= link_to "求人サイト", @customer.url_2, target:"_blank" %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <th>人数</th>
+      <td><%= @customer.people %></td>
+      <th>業種</th>
+      <td><%= @customer.business %></td>
+    </tr>
+  </tbody>
+</table>
+
+<table width="100%" class="space">
+    <col width="15%">
+    <col width="10%">
+    <col width="15%">
+    <col width="15%">
+    <col width="10%">
+<% if @customer.counts.any? %>
+    <tr>
+      <th>送信日時</th>
+      <th>送信元会社</th>
+      <th>タイトル</th>
+      <th>ステータス</th>
+      <th>削除</th>
+    </tr>
+    <tr>
+    <% @customer.counts.includes(:sender).each do |count| %>
+      <td><%= count.created_at %></td>
+      <td><%= count.company %></td>
+      <td><%= count.title %></td>
+      <td><%= count.statu %></td>
+      <td><%= link_to '編集', edit_customer_count_path(@customer, count), class: 'command'%>
+      <%= link_to '削除',
+                    customer_count_path(@customer, count) ,
+                    method: :delete,
+                    class: 'command',
+                    data: { confirm: '本当に削除しますか？'} %></td>
+    </tr>
+<% end %>
+</table>
+<% end %>
