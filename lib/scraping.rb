@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'nokogiri'
+require 'timeout'
 
 class Scraping
   BLACKLIST_DOMAINS = [
@@ -28,13 +29,12 @@ class Scraping
     document.css('a').each do |anchor|
       next unless anchor.get_attribute('href')
 
-      # anchor.inner_html.encode('utf-8') + anchor.get_attribute('alt')
       if anchor.inner_html.encode('utf-8') =~ /問い合わせ|問合せ/
         href = URI.parse(URI.encode(anchor.get_attribute('href')))
 
         if !href.host && !href.scheme
           unless href.path[0] == '/'
-            href.path = customer_url.path + href.path
+            href.path = '/' + href.path
           end
 
           href.scheme = customer_url.scheme
@@ -46,11 +46,9 @@ class Scraping
     end
 
     nil
-  rescue Net::OpenTimeout, Net::ReadTimeout
-    nil
-  rescue Encoding::CompatibilityError
-    nil
-  rescue ArgumentError
+  rescue Net::OpenTimeout, Net::ReadTimeout, Encoding::CompatibilityError, ArgumentError
+    Rails.logger.info("[message] #{$!.class}: #{$!.to_s}")
+
     nil
   end
 
@@ -71,13 +69,31 @@ class Scraping
       element unless ['hidden', 'submit', 'reset'].include?(element.get_attribute('type'))
     end.compact
 
+    elements.select! { |element| element.get_attribute('name').present? }
+
     elements.map do |element|
+      if element.get_attribute('id')
+        label = form.search("label[for='#{element.get_attribute('id')}']")&.inner_html
+      end
+
+      unless label.present?
+        parent = element.parent
+        parent = element.parent if parent.name != 'tr'
+        parent = parent.parent if parent.name != 'tr'
+
+        if parent.name == 'tr'
+          label = parent.at_css('th,td').inner_html
+        end
+      end
+
       {
         'id' => element.get_attribute('id'),
         'name' => element.get_attribute('name'),
+        'tag' => element.name,
         'class' => element.get_attribute('class'),
         'type' => element.get_attribute('type'),
         'value' => element.get_attribute('value'),
+        'label' => label&.encode('utf-8')&.gsub(/(\r\n?|\n|[[:space:]])/,""),
       }
     end
   end
@@ -101,17 +117,11 @@ class Scraping
   private
 
   def create_document(url)
-    Nokogiri::HTML(URI.open(url, :allow_redirections => :all))
+    Timeout.timeout(5) { Nokogiri::HTML(URI.open(url, :allow_redirections => :all)) }
   rescue Encoding::CompatibilityError
-    Nokogiri::HTML(URI.open(url, 'r:Shift_JIS', :allow_redirections => :all))
-  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, OpenSSL::SSL::SSLError
-    Rails.logger.error url
-    Rails.logger.error $!
-
-    nil
-  rescue ArgumentError
-    Rails.logger.error url
-    Rails.logger.error $!.backtrace.join("\n")
+    Timeout.timeout(5) { Nokogiri::HTML(URI.open(url, 'r:Shift_JIS', :allow_redirections => :all)) }
+  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, OpenSSL::SSL::SSLError, Timeout::Error, ArgumentError
+    Rails.logger.error("[url] #{url} [message] #{$!.class}: #{$!.to_s}")
 
     nil
   end

@@ -1,3 +1,5 @@
+require 'scraping'
+
 class Customer < ApplicationRecord
   #belongs_to :admin
   belongs_to :user, optional: true
@@ -9,6 +11,10 @@ class Customer < ApplicationRecord
   has_one :last_call, ->{
     order("created_at desc")
   }, class_name: :Call
+  has_many :contact_trackings
+  has_one :contact_tracking, ->{
+    eager_load(:contact_trackings).order(sended_at: :desc)
+  }
 
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
   validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
@@ -151,12 +157,19 @@ class Customer < ApplicationRecord
   enum status: {draft: 0, published: 1}
 
   def contact_url
-    @contact_url ||=
-      scraping.contact_from(url_2) ||
-      scraping.contact_from(url) ||
-      scraping.contact_from(
-        scraping.google_search([company, address, tel].compact.join(' '))
-      )
+    unless @contact_url
+      @contact_url =
+        scraping.contact_from(url_2) ||
+        scraping.contact_from(url) ||
+        scraping.contact_from(
+          scraping.google_search([company, address, tel].compact.join(' '))
+        )
+    end
+    @contact_url
+  end
+
+  def google_search_url
+    scraping.google_search([company, address, tel].compact.join(' '))
   end
 
   private

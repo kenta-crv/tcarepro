@@ -93,4 +93,6 @@ Rails.application.configure do
   config.force_ssl = false
 
   config.lograge.enabled = true
+
+  Rails.application.routes.default_url_options[:host] = 'https://tcare.pro'
 end

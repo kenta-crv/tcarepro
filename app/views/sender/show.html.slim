@@ -1,0 +1,8 @@
+.tops-wrapper
+  h3
+    = link_to "<", myself_path(year: @form.prev_month.year, month: @form.prev_month.month)
+    = "#{@form.year}年#{@form.month}月"
+    = link_to ">", myself_path(year: @form.next_month.year, month: @form.next_month.month)
+
+  = render 'detail'
+  = render 'history'

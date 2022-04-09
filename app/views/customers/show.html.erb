@@ -1,9 +1,7 @@
 <br>
 <br>
 <br>
-<% if sender_signed_in? %>
- <%= render "sender" %>
-<% elsif admin_signed_in? && @customer.choice == "SFA" %>
+<% if admin_signed_in? && @customer.choice == "SFA" %>
  <%= render "section" %>
 <% elsif admin_signed_in? && @customer.choice == "アポ匠" %>
  <%= render "section" %>

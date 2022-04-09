@@ -36,8 +36,8 @@ class ApplicationController < ActionController::Base
   end
 
 # 例外処理
-  rescue_from ActiveRecord::RecordNotFound, with: :render_404
-  rescue_from ActionController::RoutingError, with: :render_404
+  # rescue_from ActiveRecord::RecordNotFound, with: :render_404
+  # rescue_from ActionController::RoutingError, with: :render_404
   #rescue_from Exception, with: :render_500
 
   def render_404
@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
       when Worker
         worker_path(current_worker)
       when Sender
-        sender_path(current_sender)
+        myself_path
       when Client
         client_path
       else

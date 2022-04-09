@@ -1,0 +1,109 @@
+- set_meta_tags noindex: true
+.tops-wrapper
+ .headline
+    | Okuriteリスト
+    | (
+    = @customers.current_page * 30 - 29
+    | ~
+    = [@customers.page(1).per(30).total_count, @customers.current_page * 30].min
+    | 件/
+    = @customers.page(1).per(30).total_count
+    | 件中
+    | )
+ = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
+  table[style="margin: 0 30px;"]
+    thead
+      tr
+        th
+          | 会社名
+        th
+          | 業種
+        th
+          | 状態
+        th
+          | 最終送信日時
+        th
+          | コールバック日時
+    - @customers.each do |customer|
+      - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
+      tr
+        td
+          = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
+        td
+          = customer.industry
+        td
+          = contact_tracking&.status
+        td
+          = contact_tracking&.sended_at
+        td
+          = contact_tracking&.callbacked_at
+    tr
+      th[colspan="8"]
+        = paginate @customers
+
+#searchModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = search_form_for(@q, url: sender_okurite_index_path(sender_id: params[:sender_id])) do |f|
+          table
+            tbody
+              tr
+                th[colspan="4"]
+                  | 検索
+              tr
+                th
+                  | 会社名
+                td
+                  = f.search_field :company_cont, type: "text"
+                th
+                  | 電話番号
+                td
+                  = f.search_field :tel_cont, type: "text"
+              tr
+                th
+                  | 業種
+                td
+                  = f.search_field :industry_cont, type: "text"
+                th
+                  | 住所
+                td
+                  =  f.collection_select :address_cont_any, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'},
+                  {class: 'form-control', id: 'search_prefecture', multiple: true}
+              tr
+                th
+                  | 未送信
+                td
+                  = f.check_box :contact_tracking_id_null, {}, 'true', ''
+                th
+                  | 状態
+                td
+                  = f.select :contact_tracking_status_cont_any,
+                    options_for_select(['送信NG', '送信済', '送信不可'],
+                    params['q'] && params['q']['contact_tracking_status_cont_any']),
+                    {include_blank: '選択してください'},
+                    {class: 'form-control', id: 'search_prefecture', multiple: true}
+              tr
+                th
+                  | 最終インポート日時（最初）
+                td
+                  = f.date_field :created_at_gteq, class: 'date-picker form-control'
+                th
+                  | 最終インポート日時（最後）
+                td
+                  = f.date_field :created_at_lteq, class: 'date-picker form-control'
+              tr
+                th
+                  | 最終送信日時（最初）
+                td
+                  = f.date_field :contact_tracking_sended_at_gteq, class: 'date-picker form-control'
+                th
+                  | 最終送信日時（最後）
+                td
+                  = f.date_field :contact_tracking_sended_at_lteq, class: 'date-picker form-control'
+              tr
+                th[colspan="4"]
+                  = f.submit '検索'

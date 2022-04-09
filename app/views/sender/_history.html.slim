@@ -1,0 +1,19 @@
+h2.headline 問い合わせ履歴
+
+table
+  thead
+    tr
+      th 顧客名
+      th 問い合わせ日時
+      th コールバック日時
+  tbody
+  - @form.sended_contact_trackings.each do |contact_tracking|
+    tr
+      td = contact_tracking.customer.company
+      td = contact_tracking.sended_at
+      td -
+  - @form.callbacked_contact_trackings.each do |contact_tracking|
+    tr
+      td = contact_tracking.customer.company
+      td = contact_tracking.sended_at
+      td = contact_tracking.callbacked_at
