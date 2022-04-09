@@ -30,3 +30,6 @@ doc/
 /db/development.sqlite3
 
 .env
+
+auto_contact/config
+auto_contact/screenshots

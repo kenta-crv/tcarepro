@@ -107,3 +107,5 @@ gem 'kaminari-bootstrap', '~> 3.0.1'
 gem 'sitemap_generator'
 
 gem 'lograge'
+
+gem 'open_uri_redirections'
