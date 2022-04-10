@@ -37,21 +37,29 @@ $(function () {
     <span class="entries__title">↑</span>
 
     <div class="entries__detail">
-      <% if @prev_customer %>
-        <%= link_to '前へ ←', sender_okurite_preview_path(okurite_id: @prev_customer.id, q: params[:q]&.permit!) %>
-      <% end %>
-
-      <% if @next_customer %>
-        <%= link_to '→ 次へ', sender_okurite_preview_path(okurite_id: @next_customer.id, q: params[:q]&.permit!) %>
-      <% end %>
+       <div class="row">
+        <div class="col-sm-3">
+         <% if @prev_customer %>
+           <%= link_to '前へ ←', sender_okurite_preview_path(okurite_id: @prev_customer.id, q: params[:q]&.permit!), class:"btn btn-success" %>
+         <% end %>
+        </div>
+        <div class="col-sm-6"></div>
+        <div class="col-sm-3">
+         <% if @next_customer %>
+           <%= link_to '→ 次へ', sender_okurite_preview_path(okurite_id: @next_customer.id, q: params[:q]&.permit!), class:"btn btn-success" %>
+         <% end %>
+        </div>
+       </div>
 
       <h4>
-        <%= link_to '送り手情報', sender_path(@sender), target: :_blank %>
+        <%= link_to '送信情報', sender_path(@sender), target: :_blank %>
       </h4>
 
       <table class="table table-striped">
+        <col width="40%">
+    		<col width="60%">
         <tr>
-          <th>ユーザー名</th>
+          <th>取引企業名</th>
           <td><%= @sender.user_name %></td>
         </tr>
         <tr>
@@ -61,10 +69,12 @@ $(function () {
       </table>
 
       <h4>
-        <%= link_to '顧客情報', sender_okurite_path(id: @customer.id, sender_id: @sender.id), target: :_blank %>
+        <%= link_to '企業情報', sender_okurite_path(id: @customer.id, sender_id: @sender.id), target: :_blank %>
       </h4>
 
       <table class="table table-striped">
+        <col width="40%">
+    		<col width="60%">
         <tr>
           <th>会社名</th>
           <td><%= @customer.company %></td>
@@ -80,11 +90,13 @@ $(function () {
         </tr>
       </table>
 
-      <h4><%= link_to '問い合わせ', inquiry_path(@inquiry), target: :_blank %></h4>
+      <h4><%= link_to '送信履歴', inquiry_path(@inquiry), target: :_blank %></h4>
 
       <table class="table table-striped">
+        <col width="40%">
+    		<col width="60%">
         <tr>
-          <th>状態</th>
+          <th>ステータス</th>
           <td><%= @contact_tracking&.status || '-' %></td>
         </tr>
       </table>
@@ -116,12 +128,12 @@ $(function () {
             <div class="input-group">
               <%= select_tag(
                 :status,
-                options_for_select(['送信済', '送信不可', '送信NG']),
+                options_for_select(['送信済', '送信不可', '営業NG']),
                 class: 'custom-select'
               )%>
 
               <div class="input-group-append">
-                <%= submit_tag '確定', class: 'btn btn-outline-secondary' %>
+                <%= submit_tag '確定', class: 'btn btn-outline-secondary', class:"btn btn-success" %>
               </div>
             </div>
           <% end %>

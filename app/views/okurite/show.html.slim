@@ -1,0 +1,98 @@
+br
+br
+br
+- set_meta_tags noindex: true
+
+table.space[width="90%"]
+  col[width="25%"]
+  col[width="25%"]
+  col[width="25%"]
+  col[width="25%"]
+  tbody
+    tr
+      th[colspan="4"]
+        | 顧客情報（
+        = link_to("編集", edit_customer_path,  target:"_blank")
+        | ）
+    tr
+      th
+        | 会社名
+      td
+        = @customer.company
+      th
+        | 代表者
+      td
+        = @customer.first_name
+        | (
+        = @customer.first_kana
+        | )
+    tr
+      th
+        | 検索対象
+      td
+        = @customer.industry
+      th
+        | 電話番号
+      td
+        = @customer.tel
+    tr
+      th
+        | 住所
+      td[colspan="3"]
+        = @customer.address
+    tr
+      th
+        | タイトル
+      td[colspan="3"]
+        = @customer.title
+    tr
+      th
+        | URL1
+      td
+        - if @customer.url
+          = link_to @customer.url.truncate(30), @customer.url, target:"_blank"
+      th
+        | URL2
+      td
+        - if @customer.url_2
+          = link_to @customer.url, @customer.url_2.truncate(30), target:"_blank"
+    tr
+      th
+        | 人数
+      td
+        = @customer.people
+      th
+        | 業種
+      td
+        = @customer.business
+table.space[width="100%"]
+  col[width="15%"]
+  col[width="10%"]
+  col[width="15%"]
+  col[width="15%"]
+  col[width="10%"]
+  - if @customer.counts.any?
+    tr
+      th
+        | 送信日時
+      th
+        | 送信元会社
+      th
+        | タイトル
+      th
+        | ステータス
+      th
+        | 削除
+    tr
+      - @customer.counts.includes(:sender).each do |count|
+        td
+          = count.created_at
+        td
+          = count.company
+        td
+          = count.title
+        td
+          = count.statu
+        td
+          = link_to '編集', edit_customer_count_path(@customer, count), class: 'command'
+          = link_to '削除', customer_count_path(@customer, count) ,method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}

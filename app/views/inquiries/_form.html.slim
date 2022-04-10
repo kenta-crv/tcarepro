@@ -1,42 +1,65 @@
 = form_for @inquiry do |f|
 
-   table[width="90%"]
-     col[width="40%"]
-     col[width="60%"]
+   table.space[width="90%"]
+     col width="20%"
+     col width="10%"
+     col width="70%"
      tbody
       tr
-        th.arrow_box 案件名
+        th 案件名（案件判別のため任意）
+        td
+         strong.label 必須
         td.center = text_field :inquiry, :headline
       tr
         th.arrow_box 会社名
+        td
+         strong.label 必須
         td.center  = text_field :inquiry, :from_company
       tr
         th.arrow_box 担当者
+        td
+         strong.label 必須
         td.center  = text_field :inquiry, :person
       tr
         th.arrow_box タントウシャ
+        td
+         strong.label 必須
         td.center  =  text_field :inquiry, :person_kana
       tr
         th.arrow_box 電話番号
+        td
+         strong.label 必須
         td.center = text_field :inquiry, :from_tel
       tr
         th.arrow_box FAX番号
+        td
+         strong.label あれば必須
         td.center = text_field :inquiry, :from_fax
       tr
         th.arrow_box 住所
+        td
+         strong.label 必須
         td.center = text_field :inquiry, :address
       tr
         th.arrow_box メールアドレス
+        td
+         strong.label 必須
         td.center = text_field :inquiry, :from_mail
       tr
         th.arrow_box URL
+        td
+         strong.label 必須
         td.center = text_field :inquiry, :url
       tr
         th.arrow_box 件名
+        td
+         strong.label 必須
         td.center = text_field :inquiry, :title
       tr
-        th.arrow_box 本文
-        td.center = text_area :inquiry, :content
+        th.arrow_box 本文（400文字以内）
+        td
+         strong.label 必須
+        td.center[colspan="3"] = text_area :inquiry, :content
 
       tr
-        td.center[colspan="2"] = f.submit '投稿する'
+        td.center[colspan="4"] = f.submit '投稿する'

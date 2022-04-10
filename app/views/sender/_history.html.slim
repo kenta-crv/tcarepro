@@ -1,11 +1,15 @@
 h2.headline 問い合わせ履歴
 
-table
+table[width="90%"]
+  colgroup
+   col width="33%"
+   col width="33%"
+   col width="33%"
   thead
     tr
-      th 顧客名
-      th 問い合わせ日時
-      th コールバック日時
+      th 企業名
+      th 最終送信完了日時
+      th URLアクセス日時
   tbody
   - @form.sended_contact_trackings.each do |contact_tracking|
     tr

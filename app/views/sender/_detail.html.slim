@@ -3,7 +3,7 @@ h2.headline 送信者情報
 table[style="margin: 0 40px;"]
   tr
     th
-      | ユーザー名
+      | 企業名
     td
       = @form.user_name
     th
@@ -11,12 +11,12 @@ table[style="margin: 0 40px;"]
     td
       = @form.email
     th
-      | 上限数
+      | 月間送信上限件数
     td
       = @form.rate_limit
   tr
     th
-      | 問い合わせ数
+      | 月間送信数件数
     td
       = @form.contact_trackings.count
     th
@@ -26,7 +26,7 @@ table[style="margin: 0 40px;"]
       - if @form.sended_rate
         = " (#{number_to_percentage(@form.sended_rate, precision: 1)})"
     th
-      | コールバック数 (率)
+      | URLアクセス数 (率)
     td
       = @form.callbacked_contact_trackings.count
       - if @form.callbacked_rate

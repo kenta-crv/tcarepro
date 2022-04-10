@@ -15,22 +15,26 @@
     thead
       tr
         th
-          | 会社名
+          | 企業名
         th
-          | 業種
+          | URL1
         th
-          | 状態
+          | URL2
+        th
+          | ステータス
         th
           | 最終送信日時
         th
-          | コールバック日時
+          | URLアクセス日時
     - @customers.each do |customer|
       - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
       tr
         td
           = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
         td
-          = customer.industry
+          = customer.url&.truncate(30)
+        td
+          = customer.url_2&.truncate(30)
         td
           = contact_tracking&.status
         td
@@ -49,7 +53,7 @@
           | ×
       .modal-body
         = search_form_for(@q, url: sender_okurite_index_path(sender_id: params[:sender_id])) do |f|
-          table
+          table.space
             tbody
               tr
                 th[colspan="4"]
@@ -82,7 +86,7 @@
                   | 状態
                 td
                   = f.select :contact_tracking_status_cont_any,
-                    options_for_select(['送信NG', '送信済', '送信不可'],
+                    options_for_select(['営業NG', '送信済', '送信不可'],
                     params['q'] && params['q']['contact_tracking_status_cont_any']),
                     {include_blank: '選択してください'},
                     {class: 'form-control', id: 'search_prefecture', multiple: true}
@@ -105,5 +109,5 @@
                 td
                   = f.date_field :contact_tracking_sended_at_lteq, class: 'date-picker form-control'
               tr
-                th[colspan="4"]
+                td[colspan="4"]
                   = f.submit '検索'

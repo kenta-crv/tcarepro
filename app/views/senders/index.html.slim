@@ -1,12 +1,16 @@
 .tops-wrapper
   h2.headline 送信者一覧
-
-  table 
-    thead 
-      tr 
-        th ユーザー名
-        th お問い合わせ数
-        th 上限数
+  table[width="90%"]
+    colgroup
+     col width="25%"
+     col width="25%"
+     col width="25%"
+     col width="25%"
+    thead
+      tr
+        th 取引先企業名
+        th 月間送信件数
+        th 上限送信件数
         th
     tbody
       - @senders.each do |sender|
@@ -14,4 +18,4 @@
           td = link_to sender.user_name, sender_path(sender)
           td = sender.contact_trackings.count
           td = sender.rate_limit
-          td = link_to '問い合わせる', sender_okurite_index_path(sender)
+          td = link_to '送信業務開始', sender_okurite_index_path(sender), class: "btn btn-success"
