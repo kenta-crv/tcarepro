@@ -55,7 +55,6 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, :select])
   end
 
-
     # set for devise login redirector
     def after_sign_in_path_for(resource)
       case resource
@@ -66,7 +65,13 @@ class ApplicationController < ActionController::Base
       when Worker
         worker_path(current_worker)
       when Sender
-        myself_path
+        if current_sender.inquiries.empty?
+          flash[:notice] = "案件の内容を登録してください"
+
+          new_inquiry_path
+        else
+          myself_path
+        end
       when Client
         client_path
       else

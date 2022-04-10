@@ -123,6 +123,7 @@ $(function () {
           <%= form_tag sender_okurite_contact_url(okurite_id: @customer), method: :post do %>
             <%= hidden_field_tag :contact_url, @contact_url %>
             <%= hidden_field_tag :inquiry_id, @inquiry.id %>
+            <%= hidden_field_tag :callback_code, @callback_code %>
             <%= hidden_field_tag :next_customer_id, @next_customer&.id %>
 
             <div class="input-group">
@@ -154,11 +155,11 @@ $(function () {
             <dt class="col-12">メールアドレス</dt>
             <dd class="col-12"><pre><%= @inquiry.from_mail %></pre></dd>
             <dt class="col-12">URL</dt>
-            <dd class="col-12"><pre><%= @sender.callback_url(@customer.id) %></pre></dd>
+            <dd class="col-12"><pre><%= @sender.callback_url(@callback_code) %></pre></dd>
             <dt class="col-12">件名</dt>
             <dd class="col-12"><pre><%= @inquiry.title %></pre></dd>
             <dt class="col-12">本文</dt>
-            <dd class="col-12"><pre><%= @inquiry.parse_content(@sender, @customer.id) %></pre></dd>
+            <dd class="col-12"><pre><%= @inquiry.parse_content(@sender, @callback_code) %></pre></dd>
           </dl>
         <% else %>
           <div class="alert alert-danger" role="alert">

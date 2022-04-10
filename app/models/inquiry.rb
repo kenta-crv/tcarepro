@@ -3,7 +3,11 @@ require 'contactor'
 class Inquiry < ApplicationRecord
   has_many :contact_trackings
 
-  def parse_content(sender, customer_id)
-    content.gsub('${callback_url}', sender.callback_url(customer_id))
+  validates :headline, presence: true
+  validates :url, presence: true
+  validates :content, presence: true, format: { with: /\${callback_url}/ }
+
+  def parse_content(sender, code)
+    content.gsub('${callback_url}', sender.callback_url(code))
   end
 end
