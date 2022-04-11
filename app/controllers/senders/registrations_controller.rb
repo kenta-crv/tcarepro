@@ -66,7 +66,7 @@ class Senders::RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(resource)
     flash[:notice] = "案件の内容を登録してください"
 
-    new_inquiry_path
+    new_sender_inquiry_path(current_sender)
   end
   # The path used after sign up for inactive accounts.
   # def after_inactive_sign_up_path_for(resource)

@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   resource :myself, only: :show, controller: :sender do
     resources :inquiries, only: [:index]
   end
-  resources :senders, only: [:index, :show] do
+  resources :senders, only: [:index, :show, :edit, :update] do
     resources :inquiries do
       put :default, to: 'inquiries#default'
     end
