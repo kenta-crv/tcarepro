@@ -185,7 +185,6 @@ ActiveRecord::Schema.define(version: 20220410083432) do
     t.string "extraction_count"
     t.string "send_count"
     t.integer "worker_id"
-    t.index ["created_at", nil], name: "index_customers_on_created_at_and_statu"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
