@@ -1,30 +1,31 @@
 class InquiriesController < ApplicationController
-  before_action :authenticate_sender!
+  before_action :authenticate_admin_or_sender!
+  before_action :set_sender
 
   def index
-    @inquiries = current_sender.inquiries
+    @inquiries = @sender.inquiries
   end
 
   def show
-    @inquiry = current_sender.inquiries.find(params[:id])
+    @inquiry = @sender.inquiries.find(params[:id])
   end
 
   def new
-    @inquiry = current_sender.inquiries.new
+    @inquiry = @sender.inquiries.new
   end
 
   def create
-    @inquiry = current_sender.inquiries.new(inquiry_params)
+    @inquiry = @sender.inquiries.new(inquiry_params)
     if @inquiry.save
-      unless current_sender.default_inquiry
-        current_sender.default_inquiry = @inquiry
-        current_sender.save!
+      unless @sender.default_inquiry
+        @sender.default_inquiry = @inquiry
+        @sender.save!
       end
 
       if sender_signed_in?
         redirect_to myself_path
       else
-        fail 'TOOD'
+        redirect_to sender_inquiries_path(@sender)
       end
     else
       render 'new'
@@ -32,22 +33,37 @@ class InquiriesController < ApplicationController
   end
 
   def edit
-    @inquiry = current_sender.inquiries.find(params[:id])
+    @inquiry = @sender.inquiries.find(params[:id])
   end
 
   def destroy
-    @inquiry = current_sender.inquiries.find(params[:id])
+    @inquiry = @sender.inquiries.find(params[:id])
     @inquiry.destroy
-      redirect_to inquiries_path
+
+    if sender_signed_in?
+      redirect_to myself_path
+    else
+      redirect_to sender_inquiries_path(@sender)
+    end
   end
 
   def update
-    @inquiry = current_sender.inquiries.find(params[:id])
+    @inquiry = @sender.inquiries.find(params[:id])
     if @inquiry.update(inquiry_params)
-      redirect_to inquiries_path
+      redirect_to sender_inquiries_path(@sender)
     else
       render 'edit'
     end
+  end
+
+  def default
+    inquiry = @sender.inquiries.find(params[:inquiry_id])
+
+    @sender.default_inquiry = inquiry
+
+    @sender.save!
+
+    redirect_to sender_inquiries_path(@sender)
   end
 
   private
@@ -66,5 +82,15 @@ class InquiriesController < ApplicationController
       :title, #件名
       :content #本文
     )
+  end
+
+  def authenticate_admin_or_sender!
+    unless admin_signed_in? || sender_signed_in?
+       redirect_to new_sender_session_path, alert: 'error'
+    end
+  end
+
+  def set_sender
+    @sender = current_sender || Sender.find(params[:sender_id])
   end
 end
