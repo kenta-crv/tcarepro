@@ -38,6 +38,9 @@ Rails.application.routes.draw do
     resources :inquiries, only: [:index]
   end
   resources :senders, only: [:index, :show] do
+    resources :inquiries do
+      put :default, to: 'inquiries#default'
+    end
     # okurite
     resources :okurite, only: [:index, :show] do
       get :preview, to: 'okurite#preview'
@@ -54,7 +57,6 @@ Rails.application.routes.draw do
   }
   resources :workers, only: [:show]
 
-  resources :inquiries, except: [:index] #問い合わせいフォーム送信内容選択モデル
   resources :skillsheets
   resources :matters
   resources :posts
