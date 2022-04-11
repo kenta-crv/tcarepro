@@ -18,6 +18,11 @@
         <td> <%= f.text_field :user_name %></td>
       </tr>
       <tr>
+        <th>月間送信上限件数<span class="label label-blue">必須</span></br>
+              <small>1000</small></th>
+        <td> <%= f.number_field :rate_limit %></td>
+      </tr>
+      <tr>
         <th>ログインアドレス<span class="label label-blue">必須</span></br>
                 <small>aaa@crold-valieat.jp</small></th>
         <td> <%= f.email_field :email, autofocus: true, autocomplete: "email" %></td>

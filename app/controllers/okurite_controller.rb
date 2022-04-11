@@ -19,6 +19,7 @@ class OkuriteController < ApplicationController
 
   def create
     @sender.send_contact!(
+      params[:callback_code],
       params[:okurite_id],
       current_worker&.id,
       params[:inquiry_id],
@@ -40,17 +41,18 @@ class OkuriteController < ApplicationController
 
   def preview
     @customer = Customer.find(params[:okurite_id])
-    @inquiry = Inquiry.first
+
+    @inquiry = @sender.default_inquiry
 
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
-    @contact_tracking = ContactTracking.find_by(
-      code: @sender.generate_code(@customer.id),
-    )
+    @contact_tracking = @sender.contact_trackings.where(customer: @customer).order(created_at: :desc).first
 
     contactor = Contactor.new(@inquiry, @sender)
 
-    @contact_url = params['force_google'] ? @customer.google_search_url : @customer.contact_url
+    @contact_url = @customer.contact_url
+
+    @callback_code = @sender.generate_code
 
     gon.typings = contactor.try_typings(@contact_url, @customer.id)
   end

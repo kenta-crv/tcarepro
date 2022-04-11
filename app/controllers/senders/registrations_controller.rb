@@ -5,15 +5,10 @@ class Senders::RegistrationsController < Devise::RegistrationsController
   # before_action :configure_account_update_params, only: [:update]
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-
-  def after_sign_up_path_for(resource)
-    "/sender/#{currend_sender.id}"
-  end
-
   private
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:user_name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name, :rate_limit])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:user_name, :rate_limit])
   end
   # GET /resource/sign_up
   # def new
@@ -68,9 +63,11 @@ class Senders::RegistrationsController < Devise::RegistrationsController
   protected
 
   # The path used after sign up.
-   def after_sign_up_path_for(resource)
-     sender_path(id: current_sender.id)
-   end
+  def after_sign_up_path_for(resource)
+    flash[:notice] = "案件の内容を登録してください"
+
+    new_inquiry_path
+  end
   # The path used after sign up for inactive accounts.
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)

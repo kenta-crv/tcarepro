@@ -34,7 +34,9 @@ Rails.application.routes.draw do
   devise_for :senders, controllers: {
     registrations: 'senders/registrations'
   }
-  resource :myself, only: :show, controller: :sender
+  resource :myself, only: :show, controller: :sender do
+    resources :inquiries, only: [:index]
+  end
   resources :senders, only: [:index, :show] do
     # okurite
     resources :okurite, only: [:index, :show] do
@@ -52,7 +54,7 @@ Rails.application.routes.draw do
   }
   resources :workers, only: [:show]
 
-  resources :inquiries #問い合わせいフォーム送信内容選択モデル
+  resources :inquiries, except: [:index] #問い合わせいフォーム送信内容選択モデル
   resources :skillsheets
   resources :matters
   resources :posts
