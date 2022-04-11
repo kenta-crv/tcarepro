@@ -1,0 +1,29 @@
+<%- set_meta_tags noindex: true %>
+<div class="beige-wrapper">
+  <div class="heading"><h2>アカウント情報編集</h2>
+  <%= form_for(@sender, url: sender_path(@sender), html: { method: :put }) do |f| %>
+  <table>
+    <colgroup>
+      <col width="40%">
+      <col width="60%">
+    </colgroup>
+    <tr>
+      <th>企業名<span class="label label-blue">必須</span></br>
+            <small>株式会社ABC</small></th>
+      <td> <%= f.text_field :user_name %></td>
+    </tr>
+    <tr>
+      <th>月間送信上限件数<span class="label label-blue">必須</span></br>
+            <small>1000</small></th>
+      <td> <%= f.number_field :rate_limit %></td>
+    </tr>
+    <tr>
+      <th>ログインアドレス<span class="label label-blue">必須</span></br>
+              <small>aaa@crold-valieat.jp</small></th>
+      <td> <%= f.email_field :email, autofocus: true, autocomplete: "email" %></td>
+    </tr>
+    <tr>
+      <td colspan="2"><%= f.submit "更新する", class:"btn btn-success" %></td>
+    </tr>
+  </table>
+<% end %>
