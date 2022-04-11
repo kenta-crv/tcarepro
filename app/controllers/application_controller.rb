@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
         if current_sender.inquiries.empty?
           flash[:notice] = "案件の内容を登録してください"
 
-          new_inquiry_path
+          new_sender_inquiry_path(current_sender)
         else
           myself_path
         end

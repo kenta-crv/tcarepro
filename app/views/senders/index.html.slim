@@ -2,16 +2,18 @@
   h2.headline 送信者一覧
   table[width="90%"]
     colgroup
-     col width="20%"
-     col width="20%"
-     col width="20%"
-     col width="20%"
-     col width="20%"
+     col width="16%"
+     col width="16%"
+     col width="16%"
+     col width="16%"
+     col width="16%"
+     col width="16%"
     thead
       tr
         th 取引先企業名
         th 月間送信件数
         th 上限送信件数
+        th
         th
         th
     tbody
@@ -21,4 +23,5 @@
           td = sender.contact_trackings.count
           td = sender.rate_limit
           td = link_to '送信業務開始', sender_okurite_index_path(sender), class: "btn btn-success"
+          td = link_to '送信者情報編集', edit_sender_path(sender), class: 'btn btn-success'
           td = link_to '要件一覧編集', sender_inquiries_path(sender), class: 'btn btn-success'
