@@ -29,6 +29,10 @@ class SenderForm
     sender.contact_trackings.where(created_at: current_month...next_month)
   end
 
+  def inquiries
+    @sender.inquiries
+  end
+
   def prev_month
     current_month - 1.month
   end

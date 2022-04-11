@@ -38,9 +38,12 @@ Rails.application.routes.draw do
     resources :inquiries, only: [:index]
   end
   resources :senders, only: [:index, :show, :edit, :update] do
-    resources :inquiries do
+    resources :inquiries, except: [:index, :show] do
       put :default, to: 'inquiries#default'
     end
+    get 'history', to: 'senders_history#index'
+    get 'sended', to: 'senders_history#sended'
+    get 'callbacked', to: 'senders_history#callbacked'
     # okurite
     resources :okurite, only: [:index, :show] do
       get :preview, to: 'okurite#preview'

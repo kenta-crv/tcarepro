@@ -1,14 +1,6 @@
 class InquiriesController < ApplicationController
-  before_action :authenticate_admin_or_sender!
+  before_action :authenticate_admin_or_worker_or_sender!
   before_action :set_sender
-
-  def index
-    @inquiries = @sender.inquiries
-  end
-
-  def show
-    @inquiry = @sender.inquiries.find(params[:id])
-  end
 
   def new
     @inquiry = @sender.inquiries.new
@@ -22,11 +14,7 @@ class InquiriesController < ApplicationController
         @sender.save!
       end
 
-      if sender_signed_in?
-        redirect_to myself_path
-      else
-        redirect_to sender_inquiries_path(@sender)
-      end
+      success_to_redirect
     else
       render 'new'
     end
@@ -40,17 +28,13 @@ class InquiriesController < ApplicationController
     @inquiry = @sender.inquiries.find(params[:id])
     @inquiry.destroy
 
-    if sender_signed_in?
-      redirect_to myself_path
-    else
-      redirect_to sender_inquiries_path(@sender)
-    end
+    success_to_redirect
   end
 
   def update
     @inquiry = @sender.inquiries.find(params[:id])
     if @inquiry.update(inquiry_params)
-      redirect_to sender_inquiries_path(@sender)
+      success_to_redirect
     else
       render 'edit'
     end
@@ -63,7 +47,7 @@ class InquiriesController < ApplicationController
 
     @sender.save!
 
-    redirect_to sender_inquiries_path(@sender)
+    success_to_redirect
   end
 
   private
@@ -84,8 +68,16 @@ class InquiriesController < ApplicationController
     )
   end
 
-  def authenticate_admin_or_sender!
-    unless admin_signed_in? || sender_signed_in?
+  def success_to_redirect
+    if sender_signed_in?
+      redirect_to myself_path
+    else
+      redirect_to sender_path(@sender)
+    end
+  end
+
+  def authenticate_admin_or_worker_or_sender!
+    unless admin_signed_in? || worker_signed_in? || sender_signed_in?
        redirect_to new_sender_session_path, alert: 'error'
     end
   end

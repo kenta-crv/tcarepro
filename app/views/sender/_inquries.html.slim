@@ -1,0 +1,28 @@
+h2.headline
+  | 案件一覧
+
+= link_to '新規登録', new_sender_inquiry_path(@form.sender), class: 'btn btn-success'
+
+table.space[width="90%"]
+    tr
+      th 送信対象
+      th 案件タイトル
+      th 最終更新日
+      th
+    - @form.inquiries.each do |inquiry|
+      tr
+        td
+          - if @form.sender.default_inquiry == inquiry
+            = '送信対象'
+          - else
+            = form_tag(sender_inquiry_default_path(sender_id: @form.sender.id, inquiry_id: inquiry.id), method: 'put') do
+              = submit_tag '送信対象に設定'
+        td
+          = link_to inquiry.headline, sender_inquiries_path([@form.sender, inquiry])
+        td
+          = inquiry.updated_at.strftime("%Y年%m月%d日 %H時%M分")
+        td
+          = link_to '編集', edit_sender_inquiry_path(sender_id: @form.sender.id, id: inquiry.id), class: 'btn btn-success'
+          - unless @form.sender.default_inquiry == inquiry
+            = link_to '削除',
+            - sender_inquiry_path(sender_id: @form.sender.id, id: inquiry.id), method: :delete,class: 'btn btn-success',data: { confirm: '本当に削除しますか？'}
