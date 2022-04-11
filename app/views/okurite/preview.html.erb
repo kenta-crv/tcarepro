@@ -85,12 +85,16 @@ $(function () {
             <% if @contact_url %>
               <%= link_to '別タブで表示', @contact_url, target: :_blank  %><br>
             <% end %>
-            <%= link_to 'Google で再検索', sender_okurite_preview_path(okurite_id: @customer.id, q: params[:q]&.permit!, force_google: true) %>
+            <%=
+              link_to 'Google で再検索',
+              "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component([@customer.company, @customer.address, @customer.tel].join(' '))}",
+              target: :_blank
+            %>
           </td>
         </tr>
       </table>
 
-      <h4><%= link_to '送信履歴', inquiry_path(@inquiry), target: :_blank %></h4>
+      <h4><%= link_to '送信履歴', sender_path(@sender), target: :_blank %></h4>
 
       <table class="table table-striped">
         <col width="40%">
@@ -118,54 +122,54 @@ $(function () {
             </tr>
           <% end %>
         </table>
-      <% else %>
-        <% if @sender.rate_limit > @sender.contact_trackings.count %>
-          <%= form_tag sender_okurite_contact_url(okurite_id: @customer), method: :post do %>
-            <%= hidden_field_tag :contact_url, @contact_url %>
-            <%= hidden_field_tag :inquiry_id, @inquiry.id %>
-            <%= hidden_field_tag :callback_code, @callback_code %>
-            <%= hidden_field_tag :next_customer_id, @next_customer&.id %>
+      <% end %>
 
-            <div class="input-group">
-              <%= select_tag(
-                :status,
-                options_for_select(['送信済', '送信不可', '営業NG']),
-                class: 'custom-select'
-              )%>
+      <% if @sender.rate_limit > @sender.contact_trackings.count %>
+        <%= form_tag sender_okurite_contact_url(okurite_id: @customer), method: :post do %>
+          <%= hidden_field_tag :contact_url, @contact_url %>
+          <%= hidden_field_tag :inquiry_id, @inquiry.id %>
+          <%= hidden_field_tag :callback_code, @callback_code %>
+          <%= hidden_field_tag :next_customer_id, @next_customer&.id %>
 
-              <div class="input-group-append">
-                <%= submit_tag '確定', class: 'btn btn-outline-secondary', class:"btn btn-success" %>
-              </div>
+          <div class="input-group">
+            <%= select_tag(
+              :status,
+              options_for_select(['送信済', '送信不可', '営業NG']),
+              class: 'custom-select'
+            )%>
+
+            <div class="input-group-append">
+              <%= submit_tag '確定', class: 'btn btn-outline-secondary', class:"btn btn-success" %>
             </div>
-          <% end %>
-
-          <dl>
-            <dt class="col-12">会社名</dt>
-            <dd class="col-12"><pre><%= @inquiry.from_company %></pre></dd>
-            <dt class="col-12">担当者</dt>
-            <dd class="col-12"><pre><%= @inquiry.person %></pre></dd>
-            <dt class="col-12">タントウシャ</dt>
-            <dd class="col-12"><pre><%= @inquiry.person_kana %></pre></dd>
-            <dt class="col-12">電話番号</dt>
-            <dd class="col-12"><pre><%= @inquiry.from_tel %></pre></dd>
-            <dt class="col-12">FAX番号</dt>
-            <dd class="col-12"><pre><%= @inquiry.from_fax %></pre></dd>
-            <dt class="col-12">住所</dt>
-            <dd class="col-12"><pre><%= @inquiry.address %></pre></dd>
-            <dt class="col-12">メールアドレス</dt>
-            <dd class="col-12"><pre><%= @inquiry.from_mail %></pre></dd>
-            <dt class="col-12">URL</dt>
-            <dd class="col-12"><pre><%= @sender.callback_url(@callback_code) %></pre></dd>
-            <dt class="col-12">件名</dt>
-            <dd class="col-12"><pre><%= @inquiry.title %></pre></dd>
-            <dt class="col-12">本文</dt>
-            <dd class="col-12"><pre><%= @inquiry.parse_content(@sender, @callback_code) %></pre></dd>
-          </dl>
-        <% else %>
-          <div class="alert alert-danger" role="alert">
-            今月は上限に達しました
           </div>
         <% end %>
+
+        <dl>
+          <dt class="col-12">会社名</dt>
+          <dd class="col-12"><pre><%= @inquiry.from_company %></pre></dd>
+          <dt class="col-12">担当者</dt>
+          <dd class="col-12"><pre><%= @inquiry.person %></pre></dd>
+          <dt class="col-12">タントウシャ</dt>
+          <dd class="col-12"><pre><%= @inquiry.person_kana %></pre></dd>
+          <dt class="col-12">電話番号</dt>
+          <dd class="col-12"><pre><%= @inquiry.from_tel %></pre></dd>
+          <dt class="col-12">FAX番号</dt>
+          <dd class="col-12"><pre><%= @inquiry.from_fax %></pre></dd>
+          <dt class="col-12">住所</dt>
+          <dd class="col-12"><pre><%= @inquiry.address %></pre></dd>
+          <dt class="col-12">メールアドレス</dt>
+          <dd class="col-12"><pre><%= @inquiry.from_mail %></pre></dd>
+          <dt class="col-12">URL</dt>
+          <dd class="col-12"><pre><%= @sender.callback_url(@callback_code) %></pre></dd>
+          <dt class="col-12">件名</dt>
+          <dd class="col-12"><pre><%= @inquiry.title %></pre></dd>
+          <dt class="col-12">本文</dt>
+          <dd class="col-12"><pre><%= @inquiry.parse_content(@sender, @callback_code) %></pre></dd>
+        </dl>
+      <% else %>
+        <div class="alert alert-danger" role="alert">
+          今月は上限に達しました
+        </div>
       <% end %>
     </div>
   </div>

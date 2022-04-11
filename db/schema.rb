@@ -185,6 +185,7 @@ ActiveRecord::Schema.define(version: 20220410083432) do
     t.string "extraction_count"
     t.string "send_count"
     t.integer "worker_id"
+    t.index ["created_at", nil], name: "index_customers_on_created_at_and_statu"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
@@ -299,7 +300,7 @@ ActiveRecord::Schema.define(version: 20220410083432) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "rate_limit", default: 100
+    t.integer "rate_limit"
     t.integer "default_inquiry_id"
     t.index ["email"], name: "index_senders_on_email", unique: true
     t.index ["reset_password_token"], name: "index_senders_on_reset_password_token", unique: true

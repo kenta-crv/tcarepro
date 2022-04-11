@@ -41,15 +41,16 @@ class OkuriteController < ApplicationController
 
   def preview
     @customer = Customer.find(params[:okurite_id])
-    @inquiry = Inquiry.first
+
+    @inquiry = @sender.default_inquiry
 
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
-    @contact_tracking = @sender.contact_trackings.where(customer: @customer).order(sended_at: :desc).first
+    @contact_tracking = @sender.contact_trackings.where(customer: @customer).order(created_at: :desc).first
 
     contactor = Contactor.new(@inquiry, @sender)
 
-    @contact_url = params['force_google'] ? @customer.google_search_url : @customer.contact_url
+    @contact_url = @customer.contact_url
 
     @callback_code = @sender.generate_code
 
