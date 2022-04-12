@@ -85,11 +85,7 @@
                 th
                   | 状態
                 td
-                  = f.select :contact_tracking_status_cont_any,
-                    options_for_select(['営業NG', '送信済', '送信不可'],
-                    params['q'] && params['q']['contact_tracking_status_cont_any']),
-                    {include_blank: '選択してください'},
-                    {class: 'form-control', id: 'search_prefecture', multiple: true}
+                  = select_tag "statuses", options_for_select([['選択してください', ''], '営業NG', '送信済', '送信不可'], params['statuses']), multiple: true, class: "form-control"
               tr
                 th
                   | 最終インポート日時（最初）
