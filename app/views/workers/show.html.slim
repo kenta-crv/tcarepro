@@ -1,6 +1,6 @@
 .tops-wrapper
   h2.headline
-      | 今週の不足件数
+      | 今月の実施件数
   br
   table[width="90%"  class="header-table space"]
       colgroup
@@ -8,22 +8,22 @@
         |  　
       tr
         th
-          | 最低目標件数
-        th
           | 今日の実施件数
         th
           | 今週の実施件数
         th
-          | 今週最低不足件数
+          | 今週残週達成件数
+        th
+          | 今月残週達成件数
       tr
-        td
-          | 210
         td
           = @count_day
         td
           = @count_week
         td
-          = 210 - @count_week
+          = 700 - @count_week
+        td
+          = 3000 - @count_month
 
   h2.headline
       | お問い合わせ送信状況

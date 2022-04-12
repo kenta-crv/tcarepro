@@ -58,8 +58,8 @@
 		<tr>
 			<th>検索対象</th>
 			<td><%= @customer.industry %></td>
-      <th>業種</th>
-      <td><%= @customer.business %></td>
+      <th></th>
+      <td></td>
 		</tr>
     <tr>
 			<th>住所</th>
@@ -76,10 +76,10 @@
 			<td><%= link_to "Webサイト", @customer.url_2, target:"_blank" %></td>
     </tr>
     <tr>
-      <th>フォーマット</th>
-      <td><%= link_to "format", "manuals/format", target:"_blank" %></td>
       <th>業種</th>
       <td><%= @customer.business %></td>
+      <th>事業内容</th>
+      <td><%= @customer.other %></td>
 		</tr>
     <tr>
       <th>資本金</th>

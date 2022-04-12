@@ -71,7 +71,6 @@ class Call < ApplicationRecord
     "担当者不在",
     "フロントNG",
     "見込",
-    "資料送付APP",
     "APP",
     "APPキャンセル",
     "NG",

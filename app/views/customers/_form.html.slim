@@ -48,6 +48,18 @@
           | URL
         td
           =text_field :customer, :url
+        th
+          | SFA
+        td
+          = f.select(:choice, [\
+                      ["選択する","選択する"],\
+                      ["アポスク","アポスク"],\
+                      ["Okurite Neo","Okurite Neo"],\
+                      ["リノバス","リノバス"],\
+                      ["アポ匠","アポ匠"],\
+                      ["社会保険","社会保険"],\
+                      ["SFA","SFA"],\
+                      ["その他","その他"],])
   br
   table.space[width="90%"]
     col[width="20%"]
@@ -57,13 +69,13 @@
     tbody
       tr
         th
-          | 事業内容
+          | 業種
         td
           =text_field :customer, :business
         th
-          | 検索条件
+          | 事業内容
         td
-          =text_field :customer, :industry
+          =text_field :customer, :other
       tr
         th
           | 流入元
@@ -118,18 +130,8 @@
           | 開始時期
         td
           =text_field :customer, :start
-        th
-          | SFA
-        td
-          = f.select(:choice, [\
-                      ["選択する","選択する"],\
-                      ["アポスク","アポスク"],\
-                      ["Okurite Neo","Okurite Neo"],\
-                      ["リノバス","リノバス"],\
-                      ["アポ匠","アポ匠"],\
-                      ["社会保険","社会保険"],\
-                      ["SFA","SFA"],\
-                      ["その他","その他"],])
+
+
       tr
         th
           | 備考

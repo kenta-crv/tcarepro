@@ -37,9 +37,9 @@ class Customer < ApplicationRecord
       save_cont
   end
   def self.updatable_attributes
-    ["id","company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
-     "caption","status","title","other","url_2","customer_tel","choice","inflow","business","history","area","target","meeting","experience","price",
-     "number","start","remarks","business","extraction_count","send_count"]
+    ["id","company","first_name","tel","mobile","industry","mail","url","url_2","postnumber","address","people",
+     "caption","customer_tel","choice","inflow","business","other","history","area","target","meeting","experience","price",
+     "number","start","remarks","extraction_count","send_count"]
   end
 
   #update_import
@@ -81,9 +81,9 @@ class Customer < ApplicationRecord
     end
   end
   def self.csv_attributes
-    ["id","company","store","first_name","last_name","first_kana","last_kana","tel","tel2","fax","mobile","industry","mail","url","people","postnumber","address",
-     "caption","status","title","other","url_2","choice","inflow","business","history","area","target","meeting","experience","price",
-     "number","start","remarks","business","extraction_count","send_count"]
+    ["id","company","first_name","tel","mobile","industry","mail","url","url_2","postnumber","address","people",
+     "caption","customer_tel","choice","inflow","business","other","history","area","target","meeting","experience","price",
+     "number","start","remarks","extraction_count","send_count"]
   end
 
   def self.ransackable_scopes(_auth_object = nil)

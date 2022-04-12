@@ -38,70 +38,26 @@ aside#sidebar
            = link_to "事務マニュアル", manuals_officework_path
     li.sub-menu
       = link_to "#"
-       = image_tag "ma.gif", width:"40px"
-       -if admin_signed_in?
-        ul.sub-menu-nav
-         li
-
-    li.sub-menu
-      = link_to "#"
-       = image_tag "sfa.gif", width:"40px"
-       -if admin_signed_in?
-        ul.sub-menu-nav
-         li
-          = link_to "SFA","/crms"
-    li.sub-menu
-      = link_to "#"
-       = image_tag "estimate.gif", width:"40px"
-       -if admin_signed_in?
-        ul.sub-menu-nav
-         li
-          = link_to "見積書","/estimates"
-         br
-         li
-          = link_to "請求書","/estimates"
-    li.sub-menu
-      = link_to "#"
-       = image_tag "file.gif", width:"40px"
-       -if admin_signed_in?
-        ul.sub-menu-nav
-         li
-          = link_to "ファイル",'/uploader/index'
-    li.sub-menu
-      = link_to "#"
-       = image_tag "import.gif", width:"40px"
-       -if admin_signed_in?
-        ul.sub-menu-nav
-         li
-          = link_to "データインポート","#"
-    li.sub-menu
-      = link_to "#"
        = image_tag "analytics.gif", width:"40px"
        -if admin_signed_in?
         ul.sub-menu-nav
          li
-          = link_to "アナリティクス","/analytics"
+          = link_to "アナリティクス","/information"
     li.sub-menu
       = link_to "#"
        = image_tag "mypage.gif", width:"40px"
        ul.sub-menu-nav
          li
           - if user_signed_in?
-            = link_to "マイページ", user_path(current_user)
-          - else
-            = link_to 'ユーザーログイン', new_user_session_path , :class=>"col-md"
+            = link_to "従業員マイページ", user_path(current_user)
          br
          li
           - if worker_signed_in?
-            = link_to 'マイページ', worker_path(current_worker)
-          - else
-            = link_to 'ワーカーログイン', new_worker_session_path , :class=>"col-md"
+            = link_to '作業者マイページ', worker_path(current_worker)
          br
          li
           - if sender_signed_in?
-            = link_to "マイページ", sender_path(current_sender)
-          - else
-            = link_to 'センダーログイン', new_sender_session_path , :class=>"col-md"
+            = link_to "取引先イページ", sender_path(current_sender)
          br
          li
           - if admin_signed_in?
