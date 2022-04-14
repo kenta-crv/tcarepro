@@ -79,7 +79,6 @@ Rails.application.routes.draw do
       get :message
       get :bulk_destroy
     end
-    resources :estimates, except: [:index, :show]
   end
 
   get 'list' => 'customers#list'

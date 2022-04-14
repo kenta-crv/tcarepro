@@ -92,6 +92,14 @@
                     {class: 'form-control', id: 'search_prefecture', multiple: true}
               tr
                 th
+                  | SFA
+                td
+                  = f.search_field :choice_cont, type: "text"
+                th
+                td
+
+              tr
+                th
                   | 最終インポート日時（最初）
                 td
                   = f.date_field :created_at_gteq, class: 'date-picker form-control'

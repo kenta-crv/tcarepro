@@ -71,11 +71,12 @@
         th
           | 業種
         td
-          =text_field :customer, :business
+          = f.select(:business, Customer.BusinessStatus, include_blank: "選択する")
         th
           | 事業内容
         td
-          =text_field :customer, :other
+          -if customer.business == "人材関連業"
+           = f.select(:business, Customer.HumansStatus)
       tr
         th
           | 流入元

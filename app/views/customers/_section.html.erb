@@ -52,7 +52,7 @@
      <th>住所</th>
      <td colspan = "3">〒<%=@customer.postnumber %><%=@customer.address %></td>
      <th>Mail</th>
-     <td><%= mail_to @customer.mail, @customer.mail.truncate(30) %></td>
+     <td><%= mail_to @customer.mail, @customer.mail&.truncate(30) %></td>
      <th>URL</th>
      <td><%= link_to @customer.url, @customer.url %></td>
    </tr>
@@ -85,16 +85,6 @@
      <td><%=@customer.start %></td>
      <th>メール送信</th>
      <td><%= link_to "メール画面", "#"  %></td>
-   </tr>
-   <tr>
-     <th>見積書/請求書</th>
-     <td><%= link_to "新規見積書発行", new_customer_estimate_path(@customer, @estimate)  %></td>
-     <th>オンライン契約</th>
-     <td><%=link_to "契約締結", "https://contract.infomart.co.jp/contract/edit/input.page?66" %></td>
-     <th>Paid</th>
-     <td><%=link_to "審査", "https://paid.jp/v/do/login" %></td>
-     <th>slack</th>
-     <td><%=link_to "招待", "https://slack.com/ssb/get-started?ssb_vid=.2ubu5jegnwo1yv1vjetixdbzh#/create" %></td>
    </tr>
    <tr>
     <th>備考</th>

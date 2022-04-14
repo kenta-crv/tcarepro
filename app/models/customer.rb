@@ -38,7 +38,7 @@ class Customer < ApplicationRecord
   end
   def self.updatable_attributes
     ["id","company","first_name","tel","mobile","industry","mail","url","url_2","postnumber","address","people",
-     "caption","customer_tel","choice","inflow","business","other","history","area","target","meeting","experience","price",
+     "caption","choice","inflow","business","other","history","area","target","meeting","experience","price",
      "number","start","remarks","extraction_count","send_count"]
   end
 
@@ -82,7 +82,7 @@ class Customer < ApplicationRecord
   end
   def self.csv_attributes
     ["id","company","first_name","tel","mobile","industry","mail","url","url_2","postnumber","address","people",
-     "caption","customer_tel","choice","inflow","business","other","history","area","target","meeting","experience","price",
+     "caption","choice","inflow","business","other","history","area","target","meeting","experience","price",
      "number","start","remarks","extraction_count","send_count"]
   end
 
@@ -122,22 +122,40 @@ class Customer < ApplicationRecord
   end
 
   @@business_status = [
-    ["人材紹介業","人材紹介業"],
-    ["人材派遣業","人材派遣業"],
-    ["求人会社","求人会社"],
+    ["人材関連業","人材関連業"],
     ["広告業","広告業"],
     ["マーケティング業","マーケティング業"],
+    ["コンサルティング業","コンサルティング業"],
     ["飲食店","飲食店"],
-    ["美容院","美容院"],
+    ["美容業","美容業"],
     ["製造業","製造業"],
     ["Web制作","Web制作"],
     ["IT・エンジニア","IT・エンジニア"],
     ["建設土木業","建設土木業"],
     ["農林水産業","農林水産業"],
+    ["製造業","製造業"],
+    ["福祉・医療","福祉・医療"],
+    ["不動産","不動産"],
+    ["商社","商社"],
+    ["エンタメ業","エンタメ業"],
+    ["運輸・物流","運輸・物流"],
+    ["生活用品業","生活用品業"],
+    ["金融業","金融業"],
+    ["教育業","教育業"],
+    ["専門サービス業","専門サービス業"],
     ["その他","その他"]
   ]
   def self.BusinessStatus
     @@business_status
+  end
+
+  @Human_status = [
+    ["人材紹介","人材紹介"],
+    ["人材派遣","人材派遣"],
+    ["外国人紹介・協同組合","外国人紹介・協同組合"],
+    ["求人サービス","求人サービス"],]
+  def self.HumanStatus
+    @@human_status
   end
 
   @@extraction_status = [
