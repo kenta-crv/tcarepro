@@ -8,9 +8,7 @@ class OkuriteController < ApplicationController
   def index
     @customers = @customers.page(params[:page]).per(30)
 
-    @contact_trackings = @customers.flat_map(&:contact_trackings).select do |contact_tracking|
-      contact_tracking.sender_id == @sender.id
-    end
+    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
 
   def show
@@ -77,8 +75,8 @@ class OkuriteController < ApplicationController
     @q = Customer.ransack(params[:q])
     @customers = @q.result.distinct
 
-    if params[:q] && params[:q][:contact_tracking_status_cont_any].select { |c| c.present? }.count > 0
-      @customers = @customers.joins(:contact_trackings).where(contact_trackings: { sender_id: @sender.id })
+    if params[:statuses]&.map(&:presence)&.compact.present?
+      @customers = @customers.last_contact_trackings(@sender.id, params[:statuses])
     end
   end
 

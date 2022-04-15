@@ -11,23 +11,34 @@ table[style="margin: 0 40px;"]
     td
       = @form.email
     th
+      | 一日の送信数
+    td
+      = @form.daily_contact_trackings.count
+    th
+      | 直近一週間の送信数
+    td
+      = @form.weekly_contact_trackings.count
+  tr
+    th
       | 月間送信上限件数
     td
       = @form.rate_limit
-  tr
     th
       | 月間送信数件数
     td
-      = @form.contact_trackings.count
+      = link_to sender_history_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
+        = @form.monthly_contact_trackings.count
     th
       | 送信数 (率)
     td
-      = @form.sended_contact_trackings.count
-      - if @form.sended_rate
-        = " (#{number_to_percentage(@form.sended_rate, precision: 1)})"
+      = link_to sender_sended_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
+        = @form.sended_contact_trackings.count
+        - if @form.sended_rate
+          = " (#{number_to_percentage(@form.sended_rate, precision: 1)})"
     th
       | URLアクセス数 (率)
     td
-      = @form.callbacked_contact_trackings.count
-      - if @form.callbacked_rate
-        = " (#{number_to_percentage(@form.callbacked_rate, precision: 1)})"
+      = link_to sender_callbacked_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
+        = @form.callbacked_contact_trackings.count
+        - if @form.callbacked_rate
+          = " (#{number_to_percentage(@form.callbacked_rate, precision: 1)})"
