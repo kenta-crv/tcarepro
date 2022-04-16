@@ -16,6 +16,10 @@ class Customer < ApplicationRecord
     eager_load(:contact_trackings).order(sended_at: :desc)
   }
 
+  scope :last_contact_trackings, ->(sender_id, status){
+    joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id), status: status })
+  }
+
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
   validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
   #validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
