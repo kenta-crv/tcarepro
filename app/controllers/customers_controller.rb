@@ -367,6 +367,14 @@ class CustomersController < ApplicationController
 
       @detailcalls = Customer2.joins(:calls).select('calls.id')
       @detailcustomers = Call.joins(:customer).select('customers.id')
+    when "export" then
+      @q = Customer.search(params[:id])
+      @customers = @q.result
+      #@customers = @q.result.page(params[:page]).per(50)
+      respond_to do |format|
+       format.html
+       format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+      end
     else
    end
   end
@@ -451,7 +459,8 @@ class CustomersController < ApplicationController
         :choice,
         :contact_url, #問い合わせフォーム
         :inflow, #流入元
-        :business, #事業内容
+        :business, #業種
+        :genre, #事業内容
         :history, #過去アポ利用履歴
         :area, #ターゲットエリア
         :target, #対象者

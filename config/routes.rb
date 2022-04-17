@@ -60,15 +60,12 @@ Rails.application.routes.draw do
   }
   resources :workers, only: [:show]
 
-  resources :skillsheets
-  resources :matters
-  resources :posts
+  resources :matters #リスト案件情報
   resources :estimates, only: [:index, :show] do
     member do
       get :report
     end
   end
-
 
   resources :customers do
     resources :calls
@@ -93,15 +90,11 @@ Rails.application.routes.draw do
     resource :incentive, only: [:show, :update], path: '/incentives/:year/:month'
   end
 
-  get 'news' => 'customers#news'
-
+  get 'news' => 'customers#news' #インポート情報
+  get 'export' => 'customers#export' #
   get 'sfa' => 'customers#sfa' #SFA
-  #TCARE
-  get 'extraction' => 'customers#extraction'
-  #Mailer
-  delete :customers, to: 'customers#destroy_all'
-  get 'customers/bulk_edit'
-  put 'customers/bulk_update'
+  get 'extraction' => 'customers#extraction' #TCARE
+  delete :customers, to: 'customers#destroy_all' #Mailer
 
   #お問い合わせフォーム
   get 'contact' => 'contact#index'

@@ -71,15 +71,15 @@
     </tr>
     <tr>
       <th>URL1</th>
-			<td><%= link_to "求人サイト", @customer.url, target:"_blank" %></td>
+			<td><%= link_to @customer.url.truncate(30), @customer.url, target:"_blank" %></td>
       <th>URL2</th>
-			<td><%= link_to "Webサイト", @customer.url_2, target:"_blank" %></td>
+			<td><%= link_to @customer.url_2&.truncate(30), @customer.url_2, target:"_blank" %></td>
     </tr>
     <tr>
       <th>業種</th>
       <td><%= @customer.business %></td>
       <th>事業内容</th>
-      <td><%= @customer.other %></td>
+      <td><%= @customer.genre %></td>
 		</tr>
     <tr>
       <th>資本金</th>

@@ -69,30 +69,39 @@
                   = f.search_field :tel_cont, type: "text"
               tr
                 th
-                  | 業種
-                td
-                  = f.search_field :industry_cont, type: "text"
-                th
                   | 住所
                 td
                   =  f.collection_select :address_cont_any, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'},
                   {class: 'form-control', id: 'search_prefecture', multiple: true}
-              tr
-                th
-                  | 未送信
-                td
-                  = f.check_box :contact_tracking_id_null, {}, 'true', ''
                 th
                   | 状態
                 td
                   = select_tag "statuses", options_for_select([['選択してください', ''], '営業NG', '送信済', '送信不可'], params['statuses']), multiple: true, class: "form-control"
               tr
                 th
+                  | 未送信
+                td
+                  = f.check_box :contact_tracking_id_null, {}, 'true', ''
+                th
+                td
+              tr
+                th
+                  | 業種
+                td
+                  = f.search_field :business_cont, type: "text"
+                th
+                  | 事業内容
+                td
+                  = f.search_field :genre_cont, type: "text"
+              tr
+                th
                   | SFA
                 td
                   = f.search_field :choice_cont, type: "text"
                 th
+                  | 検索条件
                 td
+                  = f.search_field :industry_cont, type: "text"
 
               tr
                 th
