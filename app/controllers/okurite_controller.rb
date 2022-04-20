@@ -27,7 +27,7 @@ class OkuriteController < ApplicationController
 
     if params[:next_customer_id].present?
       redirect_to sender_okurite_preview_path(
-        okurite_id: params[:next_customer_id], 
+        okurite_id: params[:next_customer_id],
         q: params[:q]&.permit!
       )
     else

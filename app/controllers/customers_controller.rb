@@ -19,13 +19,12 @@ class CustomersController < ApplicationController
       last_call = last_call.where("calls.created_at >= ?", @last_call_params[:created_at_from]) if !@last_call_params[:created_at_from].blank?
       last_call = last_call.where("calls.created_at <= ?", @last_call_params[:created_at_to]) if !@last_call_params[:created_at_to].blank?
     end
-    #@q = Customer.ransack(params[:q]) or @customers.where( id: last_call_customer_ids )  if !last_call_customer_ids.nil?
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
-    #@q = User.ransack(params[:q])
     @customers = @q.result || @q.result.includes(:last_call)
-    #@q = Customer.ransack(params[:last_call])
-    #@customers = @q.result  @q.result.includes(:last_call)
-    #@customers = @q.result.includes(:last_call)
+    #3コール以内プログラム
+    #if params[:q] && params[:q][:calls_count_lt].present?
+     #@customers = @customers.ltec_calls_count(params[:q][:calls_count_lt])
+    #end
     @customers = @customers.where( id: last_call ) if last_call
     @customers = @customers.distinct.preload(:calls).page(params[:page]).per(30) #エスクポート総数
     respond_to do |format|
@@ -54,6 +53,7 @@ class CustomersController < ApplicationController
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
+    @user = current_user
   end
 
   def new
@@ -367,14 +367,6 @@ class CustomersController < ApplicationController
 
       @detailcalls = Customer2.joins(:calls).select('calls.id')
       @detailcustomers = Call.joins(:customer).select('customers.id')
-    when "export" then
-      @q = Customer.search(params[:id])
-      @customers = @q.result
-      #@customers = @q.result.page(params[:page]).per(50)
-      respond_to do |format|
-       format.html
-       format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-      end
     else
    end
   end
@@ -429,6 +421,19 @@ class CustomersController < ApplicationController
     @customers = @customers.order("created_at DESC").where(extraction_count: nil).where(tel: nil).page(params[:page]).per(20)
     #電話番号nilから作業ステータスがないものの一覧へ変更する
     #@customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
+  end
+
+  def contact
+    @customer = Customer.find_by(id: params[:id])
+    #@customer = Customer.new(customer_params)
+    render :action => 'contact'
+  end
+
+  def thanks
+    @customer = Contact.new(customer_params)
+    @customer.save
+    CustomerMailer.received_email(@customer).deliver
+    CustomerMailer.send_email(@customer).deliver
   end
 
   private

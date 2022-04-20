@@ -20,6 +20,15 @@ class Customer < ApplicationRecord
     joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id), status: status })
   }
 
+  scope :between_created_at, ->(from, to){
+    where(created_at: from..to)
+  }
+
+  #scope :ltec_calls_count, ->(count){
+  #  filter_ids = joins(:calls).group("calls.customer_id").having('count(*) < ?',count).count.keys
+  #  where(id: filter_ids)
+  #}
+
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
   validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
   #validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
@@ -41,8 +50,8 @@ class Customer < ApplicationRecord
       save_cont
   end
   def self.updatable_attributes
-    ["id","company","first_name","tel","mobile","industry","mail","url","url_2","postnumber","address","people",
-     "caption","choice","inflow","business","other","history","area","target","meeting","experience","price",
+    ["id","company","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
+     "caption","business","genre","mobile","choice","inflow","other","history","area","target","meeting","experience","price",
      "number","start","remarks","extraction_count","send_count"]
   end
 
@@ -85,8 +94,8 @@ class Customer < ApplicationRecord
     end
   end
   def self.csv_attributes
-    ["id","company","first_name","tel","mobile","industry","mail","url","url_2","postnumber","address","people",
-     "caption","choice","inflow","business","other","history","area","target","meeting","experience","price",
+    ["id","company","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
+     "caption","business","genre","mobile","choice","inflow","other","history","area","target","meeting","experience","price",
      "number","start","remarks","extraction_count","send_count"]
   end
 
@@ -128,23 +137,15 @@ class Customer < ApplicationRecord
   @@business_status = [
     ["人材関連業","人材関連業"],
     ["広告業","広告業"],
-    ["マーケティング業","マーケティング業"],
-    ["コンサルティング業","コンサルティング業"],
+    ["マーケ・コンサルティング業","マーケ・コンサルティング業"],
     ["飲食店","飲食店"],
     ["美容業","美容業"],
     ["製造業","製造業"],
-    ["Web制作","Web制作"],
-    ["IT・エンジニア","IT・エンジニア"],
+    ["IT・エンジニア・Web制作","IT・エンジニア・Web制作"],
     ["建設土木業","建設土木業"],
-    ["農林水産業","農林水産業"],
     ["製造業","製造業"],
     ["福祉・医療","福祉・医療"],
-    ["不動産","不動産"],
     ["商社","商社"],
-    ["エンタメ業","エンタメ業"],
-    ["運輸・物流","運輸・物流"],
-    ["生活用品業","生活用品業"],
-    ["金融業","金融業"],
     ["教育業","教育業"],
     ["専門サービス業","専門サービス業"],
     ["その他","その他"]
@@ -219,8 +220,6 @@ class Customer < ApplicationRecord
     ["┗情報セキュリティサービス業界の会社","┗情報セキュリティサービス業界の会社"],
     ["┗その他IT業界","┗その他IT業界"],
 
-    ["農林水産業","農林水産業"],
-
     ["製造業","製造業"],
     ["┗機械関係","┗機械関係"],
     ["┗金属・鉄鋼関係","┗金属・鉄鋼関係"],
@@ -240,18 +239,69 @@ class Customer < ApplicationRecord
     ["┗病院","┗病院"],
     ["┗その他医療福祉","┗その他医療福祉"],
 
-    ["不動産","不動産"],
     ["商社","商社"],
-    ["土木建設業","土木建設業"],
-    ["エンタメ業","エンタメ業"],
-    ["運輸・物流","運輸・物流"],
-    ["生活用品業","生活用品業"],
+    ["┗その他専門商社","┗その他専門商社"],
+    ["┗機械専門商社","┗機械専門商社"],
+    ["┗食品専門商社","┗食品専門商社"],
+    ["┗工業用機械専門商社","┗工業用機械専門商社"],
+    ["┗農産物食品専門商社","┗農産物食品専門商社"],
+    ["┗水産物食品専門商社","┗水産物食品専門商社"],
+    ["┗繊維・アパレル専門商社","┗繊維・アパレル専門商社"],
+    ["┗日用品・化粧品専門商社","┗日用品・化粧品専門商社"],
+    ["┗化学品・医薬品専門商社","┗化学品・医薬品専門商社"],
+    ["┗医療機器・器具専門商社","┗医療機器・器具専門商社"],
+    ["┗工業用機械専門商社","┗工業用機械専門商社"],
+    ["┗鉄鋼・金属専門商社","┗鉄鋼・金属専門商社"],
+    ["┗雑貨専門商社","┗雑貨専門商社"],
+    ["┗食肉・卵専門商社","┗食肉・卵専門商社"],
+    ["┗農林水産用機械専門商社","┗農林水産用機械専門商社"],
+    ["┗電子部品専門商社","┗電子部品専門商社"],
+    ["┗紙・パルプ専門商社","┗紙・パルプ専門商社"],
+    ["┗総合商社","┗総合商社"],
 
-    ["金融業","金融業"],
-    ["┗保険代理店","┗保険代理店"],
-    ["┗投資業","┗投資業"],
+    ["土木建設業","土木建設業"],
+    ["┗その他建築専門工事","┗その他建築専門工事"],
+    ["┗土木工事","┗土木工事"],
+    ["┗居住用リフォーム","┗居住用リフォーム"],
+    ["┗衛生設備工事","┗衛生設備工事"],
+    ["┗建造物建築","┗建造物建築"],
+    ["┗とび","┗とび"],
+    ["┗交通関連土木工事","┗交通関連土木工事"],
+    ["┗注文型住宅建築","┗注文型住宅建築"],
+    ["┗電気設備工事","┗電気設備工事"],
+    ["┗住宅・事業所向け設備","┗住宅・事業所向け設備"],
+    ["┗空調設備工事","┗空調設備工事"],
+    ["┗事業用リフォーム","┗事業用リフォーム"],
+    ["┗土木・建築設計","┗土木・建築設計"],
+    ["┗建造物解体工事","┗建造物解体工事"],
+    ["┗河川・港湾工事","┗河川・港湾工事"],
+    ["┗太陽光パネル","┗太陽光パネル"],
+    ["┗造園工事","┗造園工事"],
+    ["┗産業用電気設備工事","┗産業用電気設備工事"],
+    ["┗通信設備工事","┗通信設備工事"],
+    ["┗その他リフォーム","┗その他リフォーム"],
+    ["┗窯業系建材・石材製造","┗窯業系建材・石材製造"],
+    ["┗大型商業施設・公共施設建設","┗大型商業施設・公共施設建設"],
+    ["┗木材系建材製造","┗木材系建材製造"],
+    ["┗プラント設備工事","┗プラント設備工事"],
+    ["┗総合土木工事","┗総合土木工事"],
+    ["┗金属系建材製造","┗金属系建材製造"],
+    ["┗インテリアデザイン","┗インテリアデザイン"],
+    ["┗分譲型住宅建築業界","┗分譲型住宅建築業界"],
+    ["┗ビル建設","┗ビル建設"],
+    ["┗マンション建築","┗マンション建築"],
+    ["┗樹脂系建材製造","┗樹脂系建材製造"],
+    ["┗ゼネコン","┗ゼネコン"],
+    ["┗燃料タンク工事","┗燃料タンク工事"],
+
 
     ["教育業","教育業"],
+    ["┗企業研修業","┗企業研修業"],
+    ["┗学習塾","┗学習塾"],
+    ["┗資格取得","┗資格取得"],
+    ["┗児童・保育","┗児童・保育"],
+    ["┗学校","┗学校"],
+    ["┗その他教育業","┗その他教育業"],
 
     ["専門サービス業","専門サービス業"],
     ["┗税理士","┗税理士"],
@@ -261,7 +311,13 @@ class Customer < ApplicationRecord
     ["┗司法書士","┗司法書士"],
     ["┗その他士業","┗その他士業"],
 
-    ["その他","その他"]
+    ["その他","その他"],
+    ["┗農林水産業","┗農林水産業"],
+    ["┗エンタメ業","┗エンタメ業"],
+    ["┗生活用品業","┗生活用品業"],
+    ["┗運輸・物流","┗運輸・物流"],
+    ["┗不動産業","┗不動産業"],
+    ["┗金融業","┗金融業"],
   ]
   def self.GenreStatus
     @@genre_status

@@ -5,7 +5,6 @@ br
  .col-10.center
   = link_to "Callインポート", information_path(type: "call_import"), class:"btn btn-success both"
   = link_to "Customerアップデート", information_path(type: "update_import"), class:"btn btn-success both"
-  = link_to "Customerエクスポート", information_path(type: "export"), class:"btn btn-success both"
   = link_to "リスト製作者", information_path(type: "workers"), class:"btn btn-success both"
   = link_to "analytics1", information_path(type: "analy1"), class:"btn btn-success both"
   = link_to "analytics2", information_path(type: "analy2"), class:"btn btn-success both"
@@ -19,8 +18,6 @@ br
       = render partial: 'customers/analytics/call_import'
    - when "update_import"
       = render partial: 'customers/analytics/update_import'
-   - when "export"
-      = render partial: 'customers/analytics/export'
    - when "workers"
       = render partial: 'customers/analytics/workers'
    - when "analy1"

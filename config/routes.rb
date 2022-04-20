@@ -72,6 +72,8 @@ Rails.application.routes.draw do
     resources :counts
     collection do
       get :complete
+      get :contact
+      post :thanks
       post :import
       post :update_import
       post :call_import
@@ -93,6 +95,8 @@ Rails.application.routes.draw do
   get 'news' => 'customers#news' #インポート情報
   get 'export' => 'customers#export' #
   get 'sfa' => 'customers#sfa' #SFA
+  #post 'customers/contact' => 'customers#contact' #メール送信
+  #post 'customers/thanks' => 'ustomers#thanks' #メール送信完了
   get 'extraction' => 'customers#extraction' #TCARE
   delete :customers, to: 'customers#destroy_all' #Mailer
 

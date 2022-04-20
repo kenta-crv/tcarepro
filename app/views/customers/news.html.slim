@@ -32,190 +32,136 @@ table[width="90%" cellpadding="0" cellspacing="0"]
             | アポ匠（外国人）
         tr
           td.red
+            = 1.day.since.strftime("%Y/%m/%d")
+          td.red
+            = Customer.where("industry LIKE ?", "%サンズ%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%lapi（コール）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%lapi（介護）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%lapi（工場）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%さくら（介護）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%圏友（介護）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%フェイス%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td.red
+            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+        tr
+          td.red
             = Date.current.strftime("%Y/%m/%d")
           td.red
-            = Customer.where("industry LIKE ?", "%サンズ%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%サンズ%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%lapi（コール）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%lapi（コール）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%lapi（介護）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%lapi（介護）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%lapi（工場）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%lapi（工場）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%さくら（介護）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%さくら（介護）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%圏友（介護）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%圏友（介護）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%フェイス%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%フェイス%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
         tr
           td
             = 1.day.ago.strftime("%Y/%m/%d")
           td
-            = Customer.where("industry LIKE ?", "%サンズ%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%サンズ%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（コール）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（コール）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（介護）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（介護）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（工場）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（工場）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%さくら（介護）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%さくら（介護）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%圏友（介護）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%圏友（介護）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%フェイス%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%フェイス%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where(created_at: 1.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
         tr
           td
             = 2.day.ago.strftime("%Y/%m/%d")
           td
-            = Customer.where("industry LIKE ?", "%サンズ%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%サンズ%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（コール）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（コール）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（介護）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（介護）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（工場）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（工場）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%さくら（介護）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%さくら（介護）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%圏友（介護）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%圏友（介護）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%フェイス%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%フェイス%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where(created_at: 2.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
         tr
           td
             = 3.day.ago.strftime("%Y/%m/%d")
           td
-            = Customer.where("industry LIKE ?", "%サンズ%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%サンズ%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（コール）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（コール）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（介護）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（介護）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%lapi（工場）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%lapi（工場）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%さくら（介護）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%さくら（介護）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%圏友（介護）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%圏友（介護）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%フェイス%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%フェイス%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where(created_at: 3.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where(created_at: 3.day.ago.all_day).count
-        tr
-          td
-            = 4.day.ago.strftime("%Y/%m/%d")
-          td
-            = Customer.where("industry LIKE ?", "%サンズ%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（コール）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（介護）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（工場）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%さくら（介護）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%圏友（介護）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%フェイス%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where(created_at: 4.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where(created_at: 4.day.ago.all_day).count
-        tr
-          td
-            = 5.day.ago.strftime("%Y/%m/%d")
-          td
-            = Customer.where("industry LIKE ?", "%サンズ%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（コール）%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（介護）%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（工場）%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%さくら（介護）%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%圏友（介護）%").where(created_at: 5.day.ago.all_day).count
-          td
-              = Customer.where("industry LIKE ?", "%圏友（食品加工）%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%フェイス%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where(created_at: 5.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where(created_at: 5.day.ago.all_day).count
-        tr
-          td
-            = 6.day.ago.strftime("%Y/%m/%d")
-          td
-            = Customer.where("industry LIKE ?", "%サンズ%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（コール）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（介護）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%lapi（工場）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%さくら（介護）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%さくら（食品加工）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%圏友（介護）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%圏友（食品加工）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%フェイス%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where(created_at: 6.day.ago.all_day).count
-          td
-            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where(created_at: 6.day.ago.all_day).count
+            = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
