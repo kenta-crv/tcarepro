@@ -24,10 +24,10 @@ class Customer < ApplicationRecord
     where(created_at: from..to)
   }
 
-  #scope :ltec_calls_count, ->(count){
-  #  filter_ids = joins(:calls).group("calls.customer_id").having('count(*) < ?',count).count.keys
-  #  where(id: filter_ids)
-  #}
+  scope :ltec_calls_count, ->(count){
+    filter_ids = joins(:calls).group("calls.customer_id").having('count(*) <= ?',count).count.keys
+    where(id: filter_ids)
+  }
 
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
   validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update

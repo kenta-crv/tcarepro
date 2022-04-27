@@ -1,17 +1,12 @@
 .tops-wrapper
   .headline
-    | アカウント情報
+    | 管理者アカウント情報
   br
   table[width="90%"  class="header-table space"]
       colgroup
         col[width="40%"]
         col[width="60%"]
         |  　
-      tr
-        th
-          | セレクトエージェント
-        td
-          = @admin.select
       tr
         th
           | ユーザーネーム
@@ -22,58 +17,99 @@
           | ログインアドレス
         td
           = @admin.email
-  br
+
   .headline
-    | ツール一覧
+    | 取引先送信状況一覧
+  br
   br
   table[width="90%"  class="header-table space"]
-        colgroup
-          col[width="20%"]
-          col[width="20%"]
-          col[width="60%"]
-          |  　
-        tr
-          th
-            | シフト依頼
-          td
-            = link_to "スマレジ", "https://timecard1.smaregi.jp/shifts/shift_request", class:"btn btn-success", target: :_blank
-          td
-            | 20日シフト依頼・25日シフト受付を締め決定・翌日1日〜15日迄
-            br
-            |  5日シフト依頼・10日シフト受付を締め決定・翌日16日〜31日迄
-            br
-        tr
-          th
-            | シフト管理
-          td
-            = link_to "スマレジ", "https://timecard1.smaregi.jp/shifts/schedule", class:"btn btn-success", target: :_blank
-          td
-            | 毎月のシフトを確認・修正・管理。毎月5日に勤怠のズレを修正します。
-            br
-        tr
-          th
-            | 給与管理
-          td
-            = link_to "スマレジ", "https://timecard1.smaregi.jp/budgets/staff_month/", class:"btn btn-success", target: :_blank
-          td
-            | 毎月の給与を確認・修正・管理。毎月25日に支払いを行います。
-            br
-        tr
-          th
-            | 日報一覧
-          td
-            = link_to "スマレジ", "https://timecard1.smaregi.jp/daily_report/", class:"btn btn-success", target: :_blank
-          td
-            | 毎日の日報を確認できます。
-            br
-        tr
-          th
-            | 領収書入力
-          td
-            = link_to "MFクラウド", "https://biz.moneyforward.com/old_journals?cti=PZxAIOJ1QO9KyR8tV5-bWA", class:"btn btn-success", target: :_blank
-          td
-            | 毎月5日に領収書を整理し、CWに入力を委託します。
-            br
+      colgroup
+      tr
+        th
+          | 企業名
+        th
+          | 一日の送信数
+        th
+          | 直近一週間の送信数
+        th
+          | 月間送信上限件数
+        th
+          | 月間送信件数
+        th
+          | 送信数 (率)
+        th
+          | URLアクセス数 (率)
+      - @senders.each do |sender|
+       - @daily_contact_trackings = sender.contact_trackings.where(created_at: Date.today...(Date.today + 1.day))
+       - @weekly_contact_trackings = sender.contact_trackings.where(created_at: (Date.today - 6.days)...(Date.today + 1.day))
+       - @monthly_contact_trackings = sender.contact_trackings.where(created_at: Time.current.all_month)
+       - @sended_contact_trackings = @monthly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
+       - @sended_rate = @sended_contact_trackings.count / @monthly_contact_trackings.count.to_f * 100
+       - @callbacked_contact_trackings =  @monthly_contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
+       - @callbacked_rate = @callbacked_contact_trackings.count / @sended_contact_trackings.count.to_f * 100
+
+       tr
+        td.hover_color
+          = link_to sender.user_name, sender_path(sender)
+        td
+          = @daily_contact_trackings.count
+        td
+          = @weekly_contact_trackings.count
+        td
+          = sender.rate_limit
+        td
+          /= link_to sender_history_path(sender_id: sender.sender.id, year: sender.year, month: sender.month) do
+          = @monthly_contact_trackings.count
+        td
+          /= link_to sender_sended_path(sender_id: sendersender.id, year: senderyear, month: sendermonth) do
+          = @sended_contact_trackings.count
+          /- if @sendersended_rate
+          = " (#{number_to_percentage(@sended_rate, precision: 1)})"
+        td
+          /= link_to sender_callbacked_path(sender_id: sender.sender.id, year: sender.year, month: sender.month) do
+          = @callbacked_contact_trackings.count
+          /- if sender.callbacked_rate
+          = " (#{number_to_percentage(@callbacked_rate, precision: 1)})"
+
+
+
+  .headline
+    | クラウドワーカー送信状況一覧
+  br
+  br
+  table[width="90%"  class="header-table space"]
+      colgroup
+        /col[width="40%"]
+        /col[width="60%"]
+      tr
+        th ワーカー名
+        th 送信完了件数
+        th 送信不可件数
+        th 営業NG件数
+        th 送信率
+        th 一日の送信数
+        th 直近一週間の送信数
+        th 月間送信数
+      - @workers.each do |worker|
+       - @contact_trackings_month = worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
+       - @contact_trackings_day = worker.contact_trackings.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
+       - @contact_trackings_week = worker.contact_trackings.where(created_at: Time.current.beginning_of_week..Time.current.end_of_week)
+       - @send_success_count_month = @contact_trackings_month.where(status: '送信済').count.to_i
+       - @send_error_count_month = @contact_trackings_month.where(status: '送信不可').count.to_i
+       - @send_ng_count_month = @contact_trackings_month.where(status: '営業NG').count.to_i
+       - @send_count_month = @send_success_count_month + @send_error_count_month + @send_ng_count_month
+       - @send_count_day = @contact_trackings_day.count
+       - @send_count_week = @contact_trackings_week.count
+       tr
+        td.hover_color
+          = link_to worker.user_name, worker_path(worker)
+        td = @send_success_count_month
+        td = @send_error_count_month
+        td = @send_ng_count_month
+        td = number_to_percentage(@send_rate.to_f, precision: 1)
+        td = @send_count_day
+        td = @send_count_week
+        td = @send_count_month
   br
   br
   = link_to "アカウント情報編集", edit_admin_registration_path, class:"btn btn-success"

@@ -1,7 +1,7 @@
 h2.headline
-  | 案件一覧
+  | フォーム送信内容
 
-= link_to '新規登録', new_sender_inquiry_path(@form.sender), class: 'btn btn-success'
+= link_to '【フォーム送信内容新規登録】', new_sender_inquiry_path(@form.sender)
 
 table.space[width="90%"]
     tr
@@ -13,16 +13,16 @@ table.space[width="90%"]
       tr
         td
           - if @form.sender.default_inquiry == inquiry
-            = '送信対象'
+            = '送信設定中'
           - else
             = form_tag(sender_inquiry_default_path(sender_id: @form.sender.id, inquiry_id: inquiry.id), method: 'put') do
-              = submit_tag '送信対象に設定'
+              = submit_tag '送信対象に設定する'
         td
           = link_to inquiry.headline, sender_inquiries_path([@form.sender, inquiry])
         td
           = inquiry.updated_at.strftime("%Y年%m月%d日 %H時%M分")
         td
-          = link_to '編集', edit_sender_inquiry_path(sender_id: @form.sender.id, id: inquiry.id), class: 'btn btn-success'
+          = link_to '送信内容編集', edit_sender_inquiry_path(sender_id: @form.sender.id, id: inquiry.id)
           - unless @form.sender.default_inquiry == inquiry
             = link_to '削除',
-            - sender_inquiry_path(sender_id: @form.sender.id, id: inquiry.id), method: :delete,class: 'btn btn-success',data: { confirm: '本当に削除しますか？'}
+            - sender_inquiry_path(sender_id: @form.sender.id, id: inquiry.id), method: :delete,data: { confirm: '本当に削除しますか？'}

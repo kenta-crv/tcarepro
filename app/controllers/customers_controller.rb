@@ -21,15 +21,21 @@ class CustomersController < ApplicationController
     end
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
     @customers = @q.result || @q.result.includes(:last_call)
-    #3コール以内プログラム
-    #if params[:q] && params[:q][:calls_count_lt].present?
-     #@customers = @customers.ltec_calls_count(params[:q][:calls_count_lt])
-    #end
+  #  3コール以内プログラム
+    #binding.pry
+    if params[:search] && params[:search][:ltec_calls_count].present?
+     @customers = @customers.ltec_calls_count(params[:search][:ltec_calls_count].to_i)
+    end
     @customers = @customers.where( id: last_call ) if last_call
+    #これに変えると全抽出
+    @csv_customers = @customers.distinct.preload(:calls)
     @customers = @customers.distinct.preload(:calls).page(params[:page]).per(30) #エスクポート総数
+
     respond_to do |format|
      format.html
-     format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
+     format.csv do
+        send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv"
+     end
     end
   end
 

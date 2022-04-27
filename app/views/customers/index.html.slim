@@ -121,7 +121,7 @@
                 th
                   | 架電回数
                 td
-                  /= f.search_field :ltec_calls_count, type: "number"
+                  = number_field :search ,:ltec_calls_count
                 th
                   | 住所
                 td
@@ -214,7 +214,7 @@
         th
           = submit_tag "インポート",  class: 'btn btn-success'
         th
-          = link_to 'エクスポート', customers_path(format: :csv, q: params[:q], last_call: params[:last_call]), class: 'btn btn-success'
+          = link_to 'エクスポート', customers_path(format: :csv, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!, page: params[:page]), class: 'btn btn-success'
 
 javascript:
   $(function() {

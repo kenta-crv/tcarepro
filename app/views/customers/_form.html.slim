@@ -71,11 +71,11 @@
         th
           | 業種
         td
-          = f.select(:business, Customer.BusinessStatus, include_blank: "選択する", name: "business_name", id:"genre")
+          = f.select(:business, Customer.BusinessStatus, include_blank: "選択する", name: "business_name", id:"business")
         th
-          | 事業内容
+          | 事業内容（一覧にない場合その他入力）
         td
-           = f.select(:genre, Customer.GenreStatus, include_blank: "選択する", name: "business_name", id:"genre")
+           = f.select(:genre, Customer.GenreStatus, include_blank: "選択する", name: "genre_name", id:"genre")
       tr
         th
           | 流入元
