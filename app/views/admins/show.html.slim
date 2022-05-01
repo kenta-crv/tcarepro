@@ -83,10 +83,10 @@
         /col[width="60%"]
       tr
         th ワーカー名
-        th 送信完了件数
-        th 送信不可件数
-        th 営業NG件数
-        th 送信率
+        th 月間送信完了件数
+        th 月間送信不可件数
+        th 月間営業NG件数
+        th 月間送信率
         th 一日の送信数
         th 直近一週間の送信数
         th 月間送信数
@@ -106,7 +106,7 @@
         td = @send_success_count_month
         td = @send_error_count_month
         td = @send_ng_count_month
-        td = number_to_percentage(@send_rate.to_f, precision: 1)
+        td = number_to_percentage(@send_error_count_month.to_f / @send_success_count_month.to_f , precision: 1)
         td = @send_count_day
         td = @send_count_week
         td = @send_count_month

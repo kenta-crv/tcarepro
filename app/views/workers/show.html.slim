@@ -43,7 +43,7 @@
         td = @send_success_count_month
         td = @send_error_count_month
         td = @send_ng_count_month
-        td = number_to_percentage(@send_rate.to_f, precision: 1)
+        td = number_to_percentage(@send_error_count_month.to_f / @send_success_count_month.to_f, precision: 1)
         td = @send_count_day
         td = @send_count_week
         td = @send_count_month
