@@ -1,0 +1,34 @@
+doctype html
+html
+  head
+      = render template: 'layouts/_header.html.slim'
+      = include_gon
+
+  header
+      .row.okurite-navi
+
+        /.col-xs-3
+        /   = link_to "/"
+        /    =image_tag "rogo3.png", width: "70%", class:"header-image"
+        /.col-xs-4
+
+
+  body
+    p.notice
+       = notice
+    p.alert
+       = alert
+    aside#sidebar
+     nav#global-nav
+      ul
+        li.sub-menu
+          = link_to "#"
+           = image_tag "mypage.gif", width:"40px"
+           ul.sub-menu-nav
+             br
+             li
+              - if sender_signed_in?
+                = link_to "取引先マイページ", sender_path(current_sender)
+    main
+      = yield
+      / = debug(params) if Rails.env.development?

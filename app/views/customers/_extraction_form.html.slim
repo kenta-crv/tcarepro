@@ -1,5 +1,6 @@
 - set_meta_tags noindex: true
 = form_for @customer do |f|
+
   table.space[width="90%"]
     col[width="40%"]
     col[width="60%"]
@@ -18,13 +19,10 @@
           =text_field :customer, :mail
       tr
         th
-          | 担当者姓名
+          | 担当者名
           strong.label.label-blue ※あれば必須
         td
-          | 姓：
-          =text_field :customer, :first_name, class:"harf"
-          | 名：
-          =text_field :customer, :last_name, class:"harf"
+          =text_field :customer, :first_name
       tr
         th
           | 電話番号

@@ -11,6 +11,8 @@
 // about supported directives.
 //
 //
+//= require chartkick
+//= require Chart.bundle
 //= require popper
 //= require rails-ujs
 //= require turbolinks

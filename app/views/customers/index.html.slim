@@ -3,11 +3,11 @@
  h2.headline
     | コールリスト
     | (
-    = @customers.current_page * 30 - 29
+    = @customers.current_page * 100 - 99
     | ~
-    = [@customers.page(1).per(30).total_count, @customers.current_page * 30].min
+    = [@customers.page(1).per(100).total_count, @customers.current_page * 100].min
     | 件/
-    = @customers.page(1).per(30).total_count
+    = @customers.page(1).per(100).total_count
     | 件中
     | )
 

@@ -1,5 +1,8 @@
 {
   "name": "smart",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "chart.js": "^3.7.1",
+    "chartkick": "^4.1.1"
+  }
 }

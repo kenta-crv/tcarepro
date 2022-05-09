@@ -29,7 +29,7 @@ class CustomersController < ApplicationController
     @customers = @customers.where( id: last_call ) if last_call
     #これに変えると全抽出
     @csv_customers = @customers.distinct.preload(:calls)
-    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(30) #エスクポート総数
+    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エスクポート総数
 
     respond_to do |format|
      format.html
@@ -412,19 +412,19 @@ class CustomersController < ApplicationController
   def sfa
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.where.not(choice: nil).page(params[:page]).per(20)
+    @customers = @customers.where.not(choice: nil).page(params[:page]).per(100)
   end
 
   def list
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(20)
+    @customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(100)
   end
 
   def extraction
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.order("created_at DESC").where(extraction_count: nil).where(tel: nil).page(params[:page]).per(20)
+    @customers = @customers.order("created_at DESC").where(extraction_count: nil).where(tel: nil).page(params[:page]).per(100)
     #電話番号nilから作業ステータスがないものの一覧へ変更する
     #@customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
   end

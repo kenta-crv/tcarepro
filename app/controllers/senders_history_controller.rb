@@ -1,4 +1,5 @@
 class SendersHistoryController < ApplicationController
+  layout "send"
   before_action :authenticate_worker_or_admin_or_sender!
   before_action :set_sender
 

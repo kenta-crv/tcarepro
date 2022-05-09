@@ -50,6 +50,7 @@ Rails.application.routes.draw do
       post :contact, to: 'okurite#create'
     end
   end
+  get 'sender/question' => 'sender#question'
   get 'callback' => 'okurite#callback', as: :callback
   #ワーカーアカウント
   devise_for :workers, controllers: {

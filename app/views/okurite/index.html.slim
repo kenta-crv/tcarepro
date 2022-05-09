@@ -3,11 +3,11 @@
  .headline
     | Okuriteリスト
     | (
-    = @customers.current_page * 30 - 29
+    = @customers.current_page * 100 - 99
     | ~
-    = [@customers.page(1).per(30).total_count, @customers.current_page * 30].min
+    = [@customers.page(1).per(100).total_count, @customers.current_page * 100].min
     | 件/
-    = @customers.page(1).per(30).total_count
+    = @customers.page(1).per(100).total_count
     | 件中
     | )
  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
@@ -76,7 +76,7 @@
                 th
                   | 状態
                 td
-                  = select_tag "statuses", options_for_select([['選択してください', ''], '営業NG', '送信済', '送信不可'], params['statuses']), multiple: true, class: "form-control"
+                  = select_tag "statuses", options_for_select([['選択してください', ''], '営業NG', '送信済', '送信不可', 'メールAPP', 'テレアポAPP'], params['statuses']), multiple: true, class: "form-control"
               tr
                 th
                   | 未送信

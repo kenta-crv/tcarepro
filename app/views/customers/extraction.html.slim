@@ -3,11 +3,11 @@
  .headline
     | TCAREリスト
     | (
-    = @customers.current_page * 30 - 29
+    = @customers.current_page * 100 - 99
     | ~
-    = @customers.current_page * 30
+    = @customers.current_page * 100
     | 件/
-    = @customers.page(1).per(30).total_pages * 30
+    = @customers.page(1).per(100).total_pages * 100
     | 件中
     | )
  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do

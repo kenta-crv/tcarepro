@@ -3,6 +3,7 @@ class SendersController < ApplicationController
   before_action :set_sender, only: [:edit, :update]
 
   def index
+    #render :layout=>  "send"
     @senders = Sender.all
   end
 

@@ -132,11 +132,19 @@ $(function () {
           <%= hidden_field_tag :next_customer_id, @next_customer&.id %>
 
           <div class="input-group">
-            <%= select_tag(
+            <%- if admin_signed_in?%>
+             <%= select_tag(
+              :status,
+              options_for_select(['送信済', '送信不可', '営業NG', 'メールAPP', 'テレアポAPP']),
+              class: 'custom-select'
+             )%>
+            <%- else %>
+             <%= select_tag(
               :status,
               options_for_select(['送信済', '送信不可', '営業NG']),
               class: 'custom-select'
-            )%>
+             )%>
+            <%end%>
 
             <div class="input-group-append">
               <%= submit_tag '確定', class: 'btn btn-outline-secondary', class:"btn btn-success" %>
