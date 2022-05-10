@@ -4,15 +4,15 @@ table[width="90%"]
       th 企業名
       th 状態
       th 案件名
-      th 登録日時
+      th 送信日時
       th 最終送信完了日時
       th URLアクセス日時
   tbody
   - @contact_trackings.each do |contact_tracking|
     tr
-      td = contact_tracking.customer.company
+      td = contact_tracking.customer&.company
       td = contact_tracking.status
       td = contact_tracking.inquiry&.headline || 'N/A'
-      td = contact_tracking.created_at
-      td = contact_tracking.sended_at|| '-'
+      td = contact_tracking.created_at&.strftime("%Y年%-m月%-d日")
+      td = contact_tracking.sended_at&.strftime("%Y年%-m月%-d日") || '-'
       td = contact_tracking.callbacked_at || '-'

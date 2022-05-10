@@ -2,7 +2,9 @@
 .tops-wrapper
  h2.headline
     | 企業情報編集
- -if worker_signed_in?
+ -if admin_signed_in?
+   = render 'form', customer: @customer
+ -elsif worker_signed_in?
    = render 'extraction_form', customer: @customer
  -else
    = render 'form', customer: @customer

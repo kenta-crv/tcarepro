@@ -10,7 +10,10 @@ class WorkersController < ApplicationController
     @contact_trackings_day = @worker.contact_trackings.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
     @contact_trackings_week = @worker.contact_trackings.where(created_at: Time.current.beginning_of_week..Time.current.end_of_week)
 
+    @send_success_count_day = @contact_trackings_day.where(status: '送信済').count.to_i
+    @send_success_count_week = @contact_trackings_week.where(status: '送信済').count.to_i
     @send_success_count_month = @contact_trackings_month.where(status: '送信済').count.to_i
+
     @send_error_count_month = @contact_trackings_month.where(status: '送信不可').count.to_i
     @send_ng_count_month = @contact_trackings_month.where(status: '営業NG').count.to_i
     @send_count_month = @send_success_count_month + @send_error_count_month + @send_ng_count_month

@@ -12,7 +12,7 @@ class SendersHistoryController < ApplicationController
   end
 
   def callbacked
-    @contact_trackings = contact_trackings.where.not(callbacked_at: nil)
+    @contact_trackings = contact_trackings.where(status: '送信済').where.not(callbacked_at: nil)
   end
 
   private

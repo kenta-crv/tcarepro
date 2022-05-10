@@ -9,6 +9,14 @@ class SenderForm
     monthly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
   end
 
+  def weekly_sended_contact_trackings
+    weekly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
+  end
+
+  def daily_sended_contact_trackings
+    daily_contact_trackings.where(status: '送信済').order(sended_at: :desc)
+  end
+
   def callbacked_contact_trackings
     monthly_contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
   end

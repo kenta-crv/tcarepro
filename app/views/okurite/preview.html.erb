@@ -80,16 +80,25 @@ $(function () {
           <td><%= @customer.company %></td>
         </tr>
         <tr>
-          <th>お問い合わせ URL</th>
+          <th>送信情報が出ない場合検索</th>
           <td>
             <% if @contact_url %>
               <%= link_to '別タブで表示', @contact_url, target: :_blank  %><br>
             <% end %>
-            <%=
+            <% if @customer.company != blank? %>
+          　  <%=
               link_to 'Google で再検索',
               "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component([@customer.company, @customer.address, @customer.tel].join(' '))}",
+              target: :_blank%>
+            <%end%>
+            <br>
+            <% if @customer.url != blank? %>
+             <%=
+              link_to 'URLで検索',
+              "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component([@customer.company, @customer.address, @customer.tel].join(' '))}",
               target: :_blank
-            %>
+             %>
+            <%end%>
           </td>
         </tr>
       </table>
@@ -151,7 +160,17 @@ $(function () {
             </div>
           </div>
         <% end %>
-
+        <small class="red">
+          【減給対象】
+          <br>
+          ※重複する企業に送信を行う行為
+          <br>
+          ※企業HPとは異なる企業に送信する行為
+          <br>
+          ※送信していないにも関わらず送信カウントする行為
+          <br>
+          ※営業メール不可の企業に対して送信する行為
+        </small>
         <dl>
           <dt class="col-12">会社名</dt>
           <dd class="col-12"><pre><%= @inquiry.from_company %></pre></dd>

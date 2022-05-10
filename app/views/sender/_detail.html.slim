@@ -5,20 +5,20 @@ h2.headline 送信者情報
     .left-title
      | 一日の送信数
     .main-analy
-     = @form.daily_contact_trackings.count
+     = @form.daily_sended_contact_trackings.count
  .col-sm-4.o-analy
   .analy-color
    .left-title
      | 直近一週間の送信数
    .main-analy
-     = @form.weekly_contact_trackings.count
+     = @form.weekly_sended_contact_trackings.count
  .col-sm-4.o-analy
   .analy-color
     .left-title
      | 月間送信件数
     .main-analy
      = link_to sender_history_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
-      = @form.monthly_contact_trackings.count
+      = @form.sended_contact_trackings.count
 br
 br
 br
@@ -28,14 +28,13 @@ br
    .left-title
     | 残送信件数
    .main-analy
-    = @form.rate_limit - @form.monthly_contact_trackings.count
+    = @form.rate_limit -  @form.sended_contact_trackings.count
  .col-sm-4.o-analy
   .analy-color
    .left-title
-     | 送信数 (率)
+     | 送信成功数 (率)
    .main-analy
      = link_to sender_sended_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
-       = @form.sended_contact_trackings.count
        - if @form.sended_rate
          = " (#{number_to_percentage(@form.sended_rate, precision: 1)})"
  .col-sm-4.o-analy

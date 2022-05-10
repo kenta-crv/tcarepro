@@ -1,52 +1,24 @@
 .tops-wrapper
   h2.headline
-      | 今月の実施件数
-  br
-  table[width="90%"  class="header-table space"]
-      colgroup
-        col[width="25%"]
-        |  　
-      tr
-        th
-          | 今日の実施件数
-        th
-          | 今週の実施件数
-        th
-          | 今週残週達成件数
-        th
-          | 今月残週達成件数
-      tr
-        td
-          = @count_day
-        td
-          = @count_week
-        td
-          = 700 - @count_week
-        td
-          = 2501 - @count_month
-
-  h2.headline
-      | お問い合わせ送信状況
+      | 実施件数
   br
   table[width="90%"  class="header-table space"]
       colgroup
         |  　
       tr
-        th 送信完了件数
-        th 送信不可件数
-        th 営業NG件数
-        th 送信率
+        th 月間送信完了件数
+        th 月間送信不可件数
+        th 月間営業NG件数
+        th 月間送信成功率
         th 一日の送信数
         th 直近一週間の送信数
-        th 月間送信数
       tr
         td = @send_success_count_month
         td = @send_error_count_month
         td = @send_ng_count_month
-        td = number_to_percentage(@send_error_count_month.to_f / @send_success_count_month.to_f, precision: 1)
-        td = @send_count_day
-        td = @send_count_week
-        td = @send_count_month
+        td = number_to_percentage(@send_success_count_month.to_f / @contact_trackings_month.count.to_f * 100, precision: 1)
+        td = @send_success_count_day
+        td = @send_success_count_day
 
   h2.headline
     | アカウント情報
