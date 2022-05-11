@@ -73,9 +73,9 @@ class Customer < ApplicationRecord
       CSV.foreach(tcare_file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
-       next if customer.industry == nil
-       #next if self.where(company: customer.company).where(industry: nil).count > 0
-       #next if self.where(company: customer.company).where(industry: customer.industry).count > 0
+       next if customer.business == nil
+       next if self.where(url: customer.url).where(business: nil).count > 0
+       next if self.where(url: customer.url).where(business: customer.business).count > 0
        customer.save!
        save_cont += 1
       end

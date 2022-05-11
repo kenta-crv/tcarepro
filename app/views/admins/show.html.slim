@@ -90,18 +90,25 @@
         th 月間送信不可件数
         th 月間営業NG件数
         th 月間送信成功率
-        th 一日の送信数
+        th 本日の送信数
+        th 昨日の送信数
+        th 一昨日の送信数
         th 直近一週間の送信数
         th 月間送信数
+        th 登録日
       - @workers.each do |worker|
        - @contact_trackings_month = worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
        - @contact_trackings_day = worker.contact_trackings.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
+       - @contact_trackings_yesterday = worker.contact_trackings.where(created_at: 1.day.ago.beginning_of_day ..1.day.ago.end_of_day )
+       - @contact_trackings_2yesterday = worker.contact_trackings.where(created_at: 2.day.ago.beginning_of_day ..2.day.ago.end_of_day )
        - @contact_trackings_week = worker.contact_trackings.where(created_at: Time.current.beginning_of_week..Time.current.end_of_week)
        - @send_success_count_month = @contact_trackings_month.where(status: '送信済').count.to_i
        - @send_error_count_month = @contact_trackings_month.where(status: '送信不可').count.to_i
        - @send_ng_count_month = @contact_trackings_month.where(status: '営業NG').count.to_i
        - @send_count_month = @send_success_count_month + @send_error_count_month + @send_ng_count_month
        - @send_count_day = @contact_trackings_day.count
+       - @send_count_yesterday = @contact_trackings_yesterday .count
+       - @send_count_2yesterday = @contact_trackings_2yesterday .count
        - @send_count_week = @contact_trackings_week.count
        tr
         td.hover_color
@@ -112,8 +119,11 @@
         td = @send_ng_count_month
         td = number_to_percentage(@send_success_count_month.to_f / @contact_trackings_month.count.to_f * 100 , precision: 1)
         td = @send_count_day
+        td = @send_count_yesterday
+        td = @send_count_2yesterday
         td = @send_count_week
         td = @send_count_month
+        td = worker.created_at.strftime("%-m月%-d日")
   br
   br
   = link_to "アカウント情報編集", edit_admin_registration_path, class:"btn btn-success"
