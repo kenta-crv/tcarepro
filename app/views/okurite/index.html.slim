@@ -30,7 +30,12 @@
       - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
       tr
         td
+         - if customer.company != nil
           = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
+         - else
+          = link_to "", sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
+
+
         td
           = customer.url&.truncate(30)
         td
