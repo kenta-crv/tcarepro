@@ -55,7 +55,10 @@
         td
           = check_box_tag "deletes[#{customer.id}]", customer.id
         td
-          = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+          - if customer.company != nil
+            = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+          - else
+            = link_to customer.id, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
         td
           = customer.tel
         td
