@@ -58,12 +58,27 @@
 		<tr>
 			<th>検索対象</th>
 			<td><%= @customer.industry %></td>
-      <th>資料送付</th>
-			<td><%= mail_to @customer.mail, @customer.mail,
+      <th>
+        <% if @customer.mail != nil %>
+         <%= mail_to @customer.mail, "商談URL送信",
+              cc: 'info@ri-plus.jp',
+              subject: "オンラインURL発行のご案内",
+              body: "#{@customer.company} #{@customer.first_name}様\n\nお世話になっております。株式会社Ri-Plus#{@user&.user_name}でございます。\n\n先ほどは突然のご連絡ながら対応頂き、誠にありがとうございました。\n\n以下、商談に使用するオンラインURLのリンクをお送りさせて頂きます。\n\n 【https://meet.google.com/yzv-gkyn-kvi】 \n\n日程変更等ございましたら、info@ri-plus.jp迄ご連絡くださいませ。\n\nご確認の程、よろしくお願い致します。\n\n株式会社Ri-Plus\n電話番号：050-5480-1131\nMail：info@ri-plus.jp\nURL：https://ri-plus.jp\n所在地：〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7階\n問い合わせ時間：09:00-16:45",
+              target:"_blank", class:"btn btn-success"  %>
+        <%else%>
+          メールアドレス無
+        <%end%>
+     </th>
+			<th>
+        <% if @customer.mail != nil %>
+         <%= mail_to @customer.mail, "資料送付",
               cc: 'info@ri-plus.jp',
               subject: "Okurite Neo資料送付のご案内",
-              body: "#{@customer.company} #{@customer.first_name}様\n\nお世話になっております。株式会社Ri-Plus#{@user&.user_name}でございます。\n\n先ほどは突然のご連絡ながら対応頂き、誠にありがとうございました。\n\n改めて当社は、マーケティング代行を生業としている企業となります。\n\n以下、今回ご案内させて頂きました案件の資料URLをお送りさせて頂きます。\n\n 【資料URLリンク：https://ri-plus.jp/】 \n\nご確認の程、よろしくお願い致します。\n\n株式会社Ri-Plus\n電話番号：050-5480-1131\nMail：info@ri-plus.jp\nURL：https://ri-plus.jp\n所在地：〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7階\n問い合わせ時間：09:00-16:45",
-              target:"_blank"  %></td>
+              body: "#{@customer.company} #{@customer.first_name}様\n\nお世話になっております。株式会社Ri-Plus#{@user&.user_name}でございます。\n\n先ほどは突然のご連絡ながら対応頂き、誠にありがとうございました。\n\n改めて当社は、マーケティング代行を生業としている企業となります。\n\n以下、今回ご案内させて頂きました案件の資料URLをお送りさせて頂きます。\n\n 【資料URLリンク：https://ri-plus.jp/】 \n\n確認後、改めてご連絡させて頂ければと存じます。。\n\n株式会社Ri-Plus\n電話番号：050-5480-1131\nMail：info@ri-plus.jp\nURL：https://ri-plus.jp\n所在地：〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7階\n問い合わせ時間：09:00-16:45",
+              target:"_blank", class:"btn btn-success"  %>
+        <%else%>
+        <%end%>
+     </th>
 		</tr>
     <tr>
 			<th>住所</th>
@@ -103,11 +118,9 @@
 		<col width="30%">
 	<tbody>
 		<tr>
-			<th colspan="4">コール<label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
-        <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %> />自動発信の場合、必ずチェックして下さい。//, checked
+			<th colspan="2"><label for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;">
+        <input type="checkbox" id="check-auto-call"<%= @is_auto_call ? ' checked' : '' %> />チェック必須
       </label></th>
-		</tr>
-		<tr>
 			<td class="call-font"><%= @customer.tel%></td>
 			<th>
 				<%= select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect{ |o| [ o.device_name, o.token ] }), :include_blank => '（選択してください）') %>
@@ -158,7 +171,7 @@
 			<th>削除</th>
 		</tr>
 		<tr>
-		<% @customer.calls.includes([:admin, :user]).each do |call| %>
+		<% @customer.calls.includes([:admin, :user]).where(created_at: 3.months.ago..Date.tomorrow).each do |call| %>
 			<td><%= call.created_at %></td>
 			<td>
           <%= call.admin&.user_name %>

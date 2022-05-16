@@ -7,6 +7,8 @@ table[width="90%"]
       th 送信日時
       th 最終送信完了日時
       th URLアクセス日時
+      -if admin_signed_in?
+       th 送信担当者
   tbody
   - @contact_trackings.each do |contact_tracking|
     tr
@@ -16,3 +18,5 @@ table[width="90%"]
       td = contact_tracking.created_at&.strftime("%Y年%-m月%-d日")
       td = contact_tracking.sended_at&.strftime("%Y年%-m月%-d日") || '-'
       td = contact_tracking.callbacked_at || '-'
+      -if admin_signed_in?
+       td = contact_tracking.worker&.user_name

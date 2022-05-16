@@ -33,7 +33,7 @@
          - if customer.company != nil
           = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
          - else
-          = link_to "", sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
+          = link_to customer.id, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
 
 
         td

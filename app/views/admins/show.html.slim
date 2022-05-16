@@ -32,9 +32,9 @@
         th
           | 直近一週間の送信数
         th
-          | 月間残送信件数
-        th
           | 月間送信件数
+        th
+          | 月間残送信件数
         th
           | 送信数 (率)
         th
@@ -59,10 +59,10 @@
         td
           = @weekly_sended_contact_trackings.count
         td
-          = sender.rate_limit - @sended_contact_trackings.count
-        td
           /= link_to sender_history_path(sender_id: sender.sender.id, year: sender.year, month: sender.month) do
           = @sended_contact_trackings.count
+        td
+          = sender.rate_limit - @sended_contact_trackings.count
         td
           /= link_to sender_sended_path(sender_id: sendersender.id, year: senderyear, month: sendermonth) do
           = @sended_contact_trackings.count
