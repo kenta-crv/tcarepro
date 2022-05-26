@@ -39,6 +39,10 @@ class Call < ApplicationRecord
     where.not(time: nil)
       .where('latest_confirmed_time is null or time >= latest_confirmed_time')
   }
+  
+  scope :between_created_at, ->(from, to){
+    where(created_at: from..to)
+  }
 
   #call_import
     def  self.call_import(call_file)

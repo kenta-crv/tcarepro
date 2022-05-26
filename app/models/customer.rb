@@ -15,11 +15,28 @@ class Customer < ApplicationRecord
   has_one :contact_tracking, ->{
     eager_load(:contact_trackings).order(sended_at: :desc)
   }
+  
+  has_one :last_contact, ->{
+    order("created_at desc")
+  }, class_name: ContactTracking
 
   scope :last_contact_trackings, ->(sender_id, status){
     joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id), status: status })
   }
 
+  # Direct Mail Contact Trackings
+  has_many :direct_mail_contact_trackings
+  has_one :direct_mail_contact_tracking, ->{
+    eager_load(:direct_mail_contact_trackings).order(sended_at: :desc)
+  }
+  
+  has_one :last_mail_contact, ->{
+    order("created_at desc")
+  }, class_name: DirectMailContactTracking
+
+  scope :last_mail_contact_trackings, ->(sender_id, status){
+    joins(:direct_mail_contact_trackings).where(direct_mail_contact_trackings: { id: DirectMailContactTracking.latest(sender_id).select(:id), status: status })
+  }
   scope :between_created_at, ->(from, to){
     where(created_at: from..to)
   }
@@ -73,9 +90,9 @@ class Customer < ApplicationRecord
       CSV.foreach(tcare_file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
-       next if customer.business == nil
-       next if self.where(url: customer.url).where(business: nil).count > 0
-       next if self.where(url: customer.url).where(business: customer.business).count > 0
+       next if customer.industry == nil
+       #next if self.where(company: customer.company).where(industry: nil).count > 0
+       #next if self.where(company: customer.company).where(industry: customer.industry).count > 0
        customer.save!
        save_cont += 1
       end

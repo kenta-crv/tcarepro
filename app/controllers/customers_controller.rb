@@ -1,7 +1,7 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  before_action :authenticate_admin!, only: [:destroy, :destroy_all, :anayltics, :import, :call_import, :sfa, :mail]
-  before_action :authenticate_worker!, only: [:extraction]
+  before_action :authenticate_admin!, only: [:destroy, :destroy_all, :anayltics, :import, :call_import, :sfa, :mail, :call_history]
+  before_action :authenticate_worker!, only: [:extraction,:direct_mail_send]
   before_action :authenticate_user!, only: [:index]
   before_action :authenticate_worker_or_user, only: [:new, :edit]
   #before_action :authenticate_user_or_admin, only: [:index, :show]
@@ -9,6 +9,7 @@ class CustomersController < ApplicationController
 
   def index
     last_call_customer_ids = nil
+    Rails.logger.debug("params :" + params.to_s)
     @last_call_params = {}
     if params[:last_call] && !params[:last_call].values.all?(&:blank?)
       @last_call_params = params[:last_call]
@@ -29,7 +30,7 @@ class CustomersController < ApplicationController
     @customers = @customers.where( id: last_call ) if last_call
     #これに変えると全抽出
     @csv_customers = @customers.distinct.preload(:calls)
-    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エスクポート総数
+    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(30) #エスクポート総数
 
     respond_to do |format|
      format.html
@@ -39,6 +40,12 @@ class CustomersController < ApplicationController
     end
   end
 
+  def direct_mail_send
+   Rails.logger.info("Inside direct_mail_send") 
+   @customer = Customer.find(params[:id])
+   @user = current_user
+  end
+  
   def show
     last_call_customer_ids = nil
     @last_call_params = {}
@@ -60,6 +67,8 @@ class CustomersController < ApplicationController
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @is_auto_call = (params[:is_auto_call] == 'true')
     @user = current_user
+    @worker = current_worker
+    @sender = current_sender
   end
 
   def new
@@ -69,7 +78,11 @@ class CustomersController < ApplicationController
   def create
     @customer = Customer.new(customer_params)
      if @customer.save
-       redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+       if worker_signed_in?
+         redirect_to extraction_path
+       else
+         redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+       end
      else
        render 'new'
      end
@@ -385,6 +398,17 @@ class CustomersController < ApplicationController
     @app2Count = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
   end
 
+  def call_history
+    @customers =  Customer.all
+    @sanzCount = Customer.where("industry LIKE ?", "%サンズ%")
+    @factCount = Customer.where("industry LIKE ?", "%ファクト%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+    @asia1Count = Customer.where("industry LIKE ?", "%asia（介護）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+    @asia2Count = Customer.where("industry LIKE ?", "%asia（食品）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+    @asia3Count = Customer.where("industry LIKE ?", "%asia（農業）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+    @sorairoCount = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+    @app1Count = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+    @app2Count = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+  end
   def import
     cnt = Customer.import(params[:file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
@@ -408,19 +432,19 @@ class CustomersController < ApplicationController
   def sfa
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.where.not(choice: nil).page(params[:page]).per(100)
+    @customers = @customers.where.not(choice: nil).page(params[:page]).per(20)
   end
 
   def list
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(100)
+    @customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(20)
   end
 
   def extraction
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.order("created_at DESC").where(extraction_count: nil).where(tel: nil).page(params[:page]).per(100)
+    @customers = @customers.order("created_at DESC").where(extraction_count: nil).where(tel: nil).page(params[:page]).per(20)
     #電話番号nilから作業ステータスがないものの一覧へ変更する
     #@customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
   end

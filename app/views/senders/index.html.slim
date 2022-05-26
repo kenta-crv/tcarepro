@@ -18,8 +18,7 @@
       - @senders.each do |sender|
         tr
           td = link_to sender.user_name, sender_path(sender)
-          td = sender.contact_trackings.where(status: '送信済').count
+          td = sender.contact_trackings.count
           td = sender.rate_limit
           td = link_to '送信業務開始', sender_okurite_index_path(sender), class: "btn btn-success"
-          -if admin_signed_in?
-           td = link_to '送信者情報編集', edit_sender_path(sender), class: 'btn btn-success'
+          /td = link_to '送信者情報編集', edit_sender_path(sender), class: 'btn btn-success'

@@ -1,3 +1,6 @@
+.tops-wrapper
+  h2.headline URLアクセス履歴
+
 table[width="90%"]
   thead
     tr
@@ -10,9 +13,9 @@ table[width="90%"]
   tbody
   - @contact_trackings.each do |contact_tracking|
     tr
-      td = contact_tracking.customer.company
+      td = link_to contact_tracking.customer.company, customer_path(contact_tracking.customer, q: params[:q]&.permit!)
       td = contact_tracking.status
       td = contact_tracking.inquiry&.headline || 'N/A'
       td = contact_tracking.created_at.strftime("%Y年%m月%d日 %H時%M分")
       td = contact_tracking.sended_at.strftime("%Y年%m月%d日 %H時%M分") || '-'
-      td = contact_tracking.callbacked_at&.strftime("%Y年%m月%d日 %H時%M分") || '-'
+      td = contact_tracking.callbacked_at.strftime("%Y年%m月%d日 %H時%M分") || '-'

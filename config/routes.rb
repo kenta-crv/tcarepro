@@ -30,6 +30,9 @@ Rails.application.routes.draw do
     registrations: 'clients/registrations'
   }
   resource :client, only: [:show]
+  resource :sender, only: [:show]
+  
+  post 'senders/import' => 'senders#import'
   #センダーアカウント
   devise_for :senders, controllers: {
     registrations: 'senders/registrations'
@@ -43,15 +46,20 @@ Rails.application.routes.draw do
     end
     get 'history', to: 'senders_history#index'
     get 'sended', to: 'senders_history#sended'
+    get 'download_sended', to: 'senders_history#download_sended'
+    get 'download_callbacked', to: 'senders_history#download_callbacked'
     get 'callbacked', to: 'senders_history#callbacked'
+    get 'users_callbacked', to: 'senders_history#users_callbacked'
+    post 'okurite/autosettings', to: 'okurite#autosettings'
     # okurite
     resources :okurite, only: [:index, :show] do
       get :preview, to: 'okurite#preview'
       post :contact, to: 'okurite#create'
+
     end
   end
-  get 'sender/question' => 'sender#question'
   get 'callback' => 'okurite#callback', as: :callback
+  get 'direct_mail_callback' => 'okurite#direct_mail_callback', as: :direct_mail_callback
   #ワーカーアカウント
   devise_for :workers, controllers: {
     registrations: 'workers/registrations',
@@ -62,6 +70,7 @@ Rails.application.routes.draw do
   resources :workers, only: [:show]
 
   resources :matters #リスト案件情報
+  resources :sendlist
   resources :estimates, only: [:index, :show] do
     member do
       get :report
@@ -86,7 +95,8 @@ Rails.application.routes.draw do
 
   get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'
-
+  get 'direct_mail_send/:id' => 'customers#direct_mail_send' #SFA
+  #get 'sender/:id/' => 'sender#show'
   scope :information do
     get '' => 'customers#information', as: :information #分析
 
@@ -94,8 +104,10 @@ Rails.application.routes.draw do
   end
 
   get 'news' => 'customers#news' #インポート情報
+  get 'call_history'=> 'customers#call_history' #インポート情報
   get 'export' => 'customers#export' #
   get 'sfa' => 'customers#sfa' #SFA
+  
   #post 'customers/contact' => 'customers#contact' #メール送信
   #post 'customers/thanks' => 'ustomers#thanks' #メール送信完了
   get 'extraction' => 'customers#extraction' #TCARE
