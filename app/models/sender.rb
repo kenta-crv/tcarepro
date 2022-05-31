@@ -49,6 +49,7 @@ class Sender < ApplicationRecord
   end
   
   def auto_send_contact!(code, customer_id, worker_id, inquiry_id, date,contact_url, status)
+    code = generate_code
     contact_tracking = contact_trackings.new(
       code: code,
       customer_id: customer_id,
@@ -56,6 +57,7 @@ class Sender < ApplicationRecord
       inquiry_id: inquiry_id,
       contact_url: contact_url,
       scheduled_date: date,
+      callback_url: callback_url(code),
       sended_at: status == '送信済' && Time.zone.now,
       status: status,
     )

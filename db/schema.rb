@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220526075152) do
+ActiveRecord::Schema.define(version: 20220530131702) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 20220526075152) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "scheduled_date"
+    t.string "callback_url"
     t.index ["code"], name: "index_contact_trackings_on_code", unique: true
     t.index ["customer_id", "inquiry_id", "sender_id", "worker_id"], name: "index_contact_trackings_on_colums"
     t.index ["customer_id"], name: "index_contact_trackings_on_customer_id"

@@ -78,26 +78,28 @@ class OkuriteController < ApplicationController
     redirect_to "https://ri-plus.jp/"
   end
 
-def autosettings
+  def autosettings
     #Rails.logger.info( "date : " + DateTime.parse(params[:date]).to_yaml)
-    Rails.logger.info( "q : " + params[:q].to_s)
+    Rails.logger.info( "count : " + params[:count].to_s)
     @q = Customer.ransack(params[:q])
     @customers = @q.result.distinct
     save_cont = 0
     @sender = Sender.find(params[:sender_id])
      Rails.logger.info( "@sender : " + @sender.attributes.inspect)
     @customers.each do |cust|
-      @sender.auto_send_contact!(
-      @sender.generate_code,
-      cust.id,
-      current_worker&.id,
-      @sender.default_inquiry_id,
-      DateTime.parse(params[:date]),
-      cust.contact_url,
-      "自動送信予定"
-      )
+      unless ((params[:count]).to_i < (save_cont+1))
+        @sender.auto_send_contact!(
+        @sender.generate_code,
+        cust.id,
+        current_worker&.id,
+        @sender.default_inquiry_id,
+        DateTime.parse(params[:date]),
+        cust.contact_url,
+        "自動送信予定"
+        )
       save_cont += 1    
-      end      
+      end 
+    end       
       Rails.logger.info( "save_cont: " + save_cont.to_s)
     redirect_to sender_okurite_index_path(id:@sender.id,q: params[:q]&.permit!, page: params[:page]), notice:"#{save_cont}件登録されました。"
   end  

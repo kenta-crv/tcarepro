@@ -58,6 +58,8 @@
                     = datetime_field_tag 'date','',max: Time.now.strftime("%m/%d/%Y %H:%M %p"), required:true,class: "form-control"
                     span.input-group-addon
                       span.glyphicon.glyphicon-calendar
+        td
+          = number_field_tag 'count', 1, min: 1, required:true
         th
           = submit_tag "自動送信設定",  class: 'btn btn-success'
 #searchModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
@@ -91,7 +93,7 @@
                 th
                   | 状態
                 td
-                  = select_tag "statuses", options_for_select([['選択してください', ''], '営業NG', '送信済', '送信不可'], params['statuses']), multiple: true, class: "form-control"
+                  = select_tag "statuses", options_for_select([['選択してください', ''], '営業NG', '送信済', '送信不可','自動送信予定','自動送信エラー'], params['statuses']), multiple: true, class: "form-control"
               tr
                 th
                   | 未送信
