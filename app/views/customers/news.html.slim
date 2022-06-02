@@ -11,11 +11,11 @@ table[width="90%" cellpadding="0" cellspacing="0"]
           th
             | FUJI（食品）
           th
-            | シューマツ（マーケティング）
+            | シューマツワーカー（マーケティング）
           th
-            | シューマツ（ITエンジニア）
+            | シューマツワーカー（ITエンジニア）
           th
-            | シューマツ（デザイナー）
+            | シューマツワーカー（デザイナー）
           th
             | SORAIRO（工場）
           th
@@ -28,11 +28,11 @@ table[width="90%" cellpadding="0" cellspacing="0"]
           td.red
             = Customer.where("industry LIKE ?", "%FUJI（食品）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%シューマツ（マーケティング）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（マーケティング）%").between_updated_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%シューマツ（ITエンジニア）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（ITエンジニア）%").between_updated_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%シューマツ（デザイナー）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（デザイナー）%").between_updated_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
           td.red
             = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
           td.red
@@ -45,11 +45,11 @@ table[width="90%" cellpadding="0" cellspacing="0"]
           td.red
             = Customer.where("industry LIKE ?", "%FUJI（食品）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%シューマツ（マーケティング）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（マーケティング）%").between_updated_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%シューマツ（ITエンジニア）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（ITエンジニア）%").between_updated_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
-            = Customer.where("industry LIKE ?", "%シューマツ（デザイナー）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（デザイナー）%").between_updated_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
             = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td.red
@@ -62,11 +62,11 @@ table[width="90%" cellpadding="0" cellspacing="0"]
           td
             = Customer.where("industry LIKE ?", "%FUJI（食品）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（マーケティング）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（マーケティング）%").between_updated_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（ITエンジニア）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（ITエンジニア）%").between_updated_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（デザイナー）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（デザイナー）%").between_updated_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
             = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
@@ -79,11 +79,11 @@ table[width="90%" cellpadding="0" cellspacing="0"]
           td
             = Customer.where("industry LIKE ?", "%FUJI（食品）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（マーケティング）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（マーケティング）%").between_updated_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（ITエンジニア）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（ITエンジニア）%").between_updated_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（デザイナー）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（デザイナー）%").between_updated_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
             = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
@@ -96,11 +96,11 @@ table[width="90%" cellpadding="0" cellspacing="0"]
           td
             = Customer.where("industry LIKE ?", "%FUJI（食品）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（マーケティング）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（マーケティング）%").between_updated_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（ITエンジニア）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（ITエンジニア）%").between_updated_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
-            = Customer.where("industry LIKE ?", "%シューマツ（デザイナー）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
+            = Customer.where("industry LIKE ?", "%シューマツワーカー（デザイナー）%").between_updated_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
             = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
