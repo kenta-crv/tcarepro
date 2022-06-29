@@ -17,6 +17,10 @@ class Call < ApplicationRecord
     ).group(:customer_id)
   }
 
+  scope :last_call_notification, ->(sender_id){
+    includes(customer: :contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id) })
+  }
+  
   scope :call_count_today, -> {
     where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
   }

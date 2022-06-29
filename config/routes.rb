@@ -46,6 +46,8 @@ Rails.application.routes.draw do
     end
     get 'history', to: 'senders_history#index'
     get 'sended', to: 'senders_history#sended'
+    get 'mail_app', to: 'senders_history#mail_app'
+    get 'tele_app', to: 'senders_history#tele_app'
     get 'download_sended', to: 'senders_history#download_sended'
     get 'download_callbacked', to: 'senders_history#download_callbacked'
     get 'callbacked', to: 'senders_history#callbacked'

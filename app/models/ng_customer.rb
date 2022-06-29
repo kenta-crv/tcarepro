@@ -15,6 +15,7 @@ class NgCustomer < ApplicationRecord
   def self.import(file,current_sender,current_admin)
       save_cont = 0
       CSV.foreach(file.path, headers:true) do |row|
+       current_sender = current_sender ?  current_sender : Sender.find_by(id: row["sender"])
        ng_customer_id = row["customer"]+row["inquiry"]+(current_sender ? (current_sender.id.to_s) : (current_admin.id.to_s))
        Rails.logger.error("ng_customer_id :" + ng_customer_id)
        ng_customer = find_by(id: ng_customer_id) || new

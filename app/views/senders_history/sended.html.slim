@@ -3,11 +3,3 @@
 
   = render 'list'
 
-.heading
-  h2
-    | エクスポート
-  table.space[width="90%"]
-    tbody
-      tr
-        th
-          = link_to '送信完了エクスポート', sender_download_sended_path(format:"csv",id: @sender.id, year: params[:year], month: params[:month]), class: 'btn btn-success'

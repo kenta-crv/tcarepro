@@ -158,7 +158,7 @@
 			<th>削除</th>
 		</tr>
 		<tr>
-		<% @customer.calls.includes([:admin, :user]).each do |call| %>
+		<% @customer.calls.where(user:@user).each do |call| %>
 			<td><%= call.created_at %></td>
 			<td>
           <%= call.admin&.user_name %>

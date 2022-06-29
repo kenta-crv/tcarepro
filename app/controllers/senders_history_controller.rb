@@ -12,6 +12,15 @@ class SendersHistoryController < ApplicationController
     @contact_trackings = contact_trackings.where(status: '送信済')
   end
   
+  def mail_app
+    @contact_trackings = contact_trackings.where(status: 'メールAPP')
+  end
+  
+  def tele_app
+    @contact_trackings =  Customer.includes(:calls).where.not(calls: {id: nil}).last_contact_trackings( @sender,'送信済') &
+    contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
+   
+  end
   
   def download_sended
     Rails.logger.info("contact_trackings :" + @sender.contact_trackings.to_yaml)

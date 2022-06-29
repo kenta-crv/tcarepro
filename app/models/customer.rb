@@ -34,8 +34,8 @@ class Customer < ApplicationRecord
     order("created_at desc")
   }, class_name: DirectMailContactTracking
 
-  scope :last_mail_contact_trackings, ->(sender_id, status){
-    joins(:direct_mail_contact_trackings).where(direct_mail_contact_trackings: { id: DirectMailContactTracking.latest(sender_id).select(:id), status: status })
+  scope :last_mail_contact_trackings, ->(status){
+    joins(:direct_mail_contact_trackings).where(direct_mail_contact_trackings: { status: status })
   }
   scope :between_created_at, ->(from, to){
     where(created_at: from..to)

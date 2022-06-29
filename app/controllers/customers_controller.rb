@@ -400,14 +400,12 @@ class CustomersController < ApplicationController
 
   def call_history
     @customers =  Customer.all
-    @sanzCount = Customer.where("industry LIKE ?", "%サンズ%")
-    @factCount = Customer.where("industry LIKE ?", "%ファクト%").where("created_at > ?", Time.zone.now.beginning_of_day).count
-    @asia1Count = Customer.where("industry LIKE ?", "%asia（介護）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
-    @asia2Count = Customer.where("industry LIKE ?", "%asia（食品）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
-    @asia3Count = Customer.where("industry LIKE ?", "%asia（農業）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
-    @sorairoCount = Customer.where("industry LIKE ?", "%SORAIRO（工場）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
-    @app1Count = Customer.where("industry LIKE ?", "%アポ匠（人材）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
-    @app2Count = Customer.where("industry LIKE ?", "%アポ匠（外国人）%").where("created_at > ?", Time.zone.now.beginning_of_day).count
+    @notification = {}
+    Sender.all.each do |sender|
+      @notification[sender.id] = Call.all.last_call_notification(sender.id)
+      Rails.logger.info("@notidication : " + sender.id.to_s + " : " + @notification[sender.id].size.to_s)
+    end
+      
   end
   def import
     cnt = Customer.import(params[:file])

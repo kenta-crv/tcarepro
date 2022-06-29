@@ -15,8 +15,35 @@ class SendlistController < ApplicationController
     end
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_contact])
     @customers = @q.result || @q.result.includes(:last_contact)
+    @customers = @customers.last_mail_contact_trackings("送信済")
     @customers = @customers.distinct.preload(:last_contact).page(params[:page]).per(30)
   end
+  
+  def show
+    @contact_trackings = ContactTracking.where(sender_id: params[:id])
+    Rails.logger.info("sender : " + @sender.to_yaml)
+     Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
+    @contact_trackings = @contact_trackings.page(params[:page]).per(30)
+   
+  end
+  
+  def edit
+     Rails.logger.info("params : " + params[:id])
+    @contact_tracking = ContactTracking.find(params[:id])
+  end
+  
+  def update
+    #@customers = Customer&.where(worker_id: current_worker.id)
+    #@count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
+    @contact_tracking = ContactTracking.find(params[:id])
+      if @contact_tracking.update_attribute(:status, @contact_tracking.status)
+        #flash[:notice] = "登録が完了しました。1日あたりの残り作業実施件数は#{30 - @count_day}件です。"
+        redirect_to sendlist_path(id: @contact_tracking.sender.id), notice:"ステータスが編集されました。"
+      else
+        render 'edit'
+      end
+  end
+  
   private
     
 
