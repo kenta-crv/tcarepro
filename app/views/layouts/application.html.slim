@@ -10,6 +10,7 @@ html
            = link_to "/"
             =image_tag "rogo2.png", width: "70%", class:"header-image"
         .col-xs-4
+          = render template: 'layouts/_flash.html.erb'
         .col-xs-4.right
           - if controller.controller_name == 'okurite' && controller.action_name == 'index'
             li
@@ -74,7 +75,7 @@ html
        = notice
     p.alert
        = alert
-    = render template: 'layouts/_flash.html.erb'
+
     = render template: 'layouts/_sidenavi.html.slim'
     main
       = yield

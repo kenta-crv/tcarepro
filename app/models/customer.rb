@@ -41,6 +41,10 @@ class Customer < ApplicationRecord
     where(created_at: from..to)
   }
 
+  scope :between_updated_at, ->(from, to){
+    where(updated_at: from..to).where.not(tel: nil)
+  }
+
   scope :ltec_calls_count, ->(count){
     filter_ids = joins(:calls).group("calls.customer_id").having('count(*) <= ?',count).count.keys
     where(id: filter_ids)

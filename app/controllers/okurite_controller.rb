@@ -6,8 +6,7 @@ class OkuriteController < ApplicationController
   before_action :set_customers, only: [:index, :preview]
 
   def index
-    @customers = @customers.page(params[:page]).per(30)
-
+    @customers = @customers.where(forever: nil).where(choice: nil).page(params[:page]).per(100)
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
     Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
   end

@@ -108,7 +108,9 @@ class CustomersController < ApplicationController
     #@count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
     @customer = Customer.find(params[:id])
       if @customer.update(customer_params)
-        #flash[:notice] = "登録が完了しました。1日あたりの残り作業実施件数は#{30 - @count_day}件です。"
+        #if worker_sign_in?
+        #  flash[:notice] = "登録が完了しました。1日あたりの残り作業実施件数は#{30 - @count_day}件です。"
+        #end
         redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
       else
         render 'edit'
@@ -502,6 +504,7 @@ class CustomersController < ApplicationController
         :business, #業種
         :extraction_count,
         :send_count,
+        :forever,
         :status
        )&.merge(worker: current_worker)
     end

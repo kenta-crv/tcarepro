@@ -16,18 +16,14 @@ class IndustryAnalytics
   attr_accessor :key, :user_id, :year, :month
 
   INDUSTRY_KEYS = [
-    'SORAIRO',
-    'サンズ',
-    'asia（介護）',
-    'asia（食品加工）',
-    '圏友（介護）',
-    '圏友（食品加工）',
-    'さくら（介護）',
-    'さくら（食品加工）',
-    'lapi（介護）',
-    'lapi（工場）',
-    'lapi（コール）',
-    'フェイス',
+    'SORAIRO（工場）',
+    'SORAIRO（食品）',
+    'FUJI（介護）',
+    'FUJI（食品）',
+    'FUJI（工場）',
+    'シューマツワーカー（マーケティング）',
+    'シューマツワーカー（ITエンジニア）',
+    'シューマツワーカー（デザイナー）',
   ]
 
   class << self
