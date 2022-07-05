@@ -1,0 +1,2 @@
+module SendlistHelper
+end

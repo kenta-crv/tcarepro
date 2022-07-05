@@ -32,9 +32,9 @@
         th
           | 直近一週間の送信数
         th
-          | 月間送信件数
+          | 月間送信上限件数
         th
-          | 月間残送信件数
+          | 月間送信件数
         th
           | 送信数 (率)
         th
@@ -44,9 +44,6 @@
        - @weekly_contact_trackings = sender.contact_trackings.where(created_at: (Date.today - 6.days)...(Date.today + 1.day))
        - @monthly_contact_trackings = sender.contact_trackings.where(created_at: Time.current.all_month)
        - @sended_contact_trackings = @monthly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
-       - @weekly_sended_contact_trackings = @weekly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
-       - @daily_sended_contact_trackings = @daily_contact_trackings.where(status: '送信済').order(sended_at: :desc)
-       - @sended_contact_trackings = @monthly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
        - @sended_rate = @sended_contact_trackings.count / @monthly_contact_trackings.count.to_f * 100
        - @callbacked_contact_trackings =  @monthly_contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
        - @callbacked_rate = @callbacked_contact_trackings.count / @sended_contact_trackings.count.to_f * 100
@@ -55,14 +52,14 @@
         td.hover_color
           = link_to sender.user_name, sender_path(sender)
         td
-          = @daily_sended_contact_trackings.count
+          = @daily_contact_trackings.count
         td
-          = @weekly_sended_contact_trackings.count
+          = @weekly_contact_trackings.count
+        td
+          = sender.rate_limit
         td
           /= link_to sender_history_path(sender_id: sender.sender.id, year: sender.year, month: sender.month) do
-          = @sended_contact_trackings.count
-        td
-          = sender.rate_limit - @sended_contact_trackings.count
+          = @monthly_contact_trackings.count
         td
           /= link_to sender_sended_path(sender_id: sendersender.id, year: senderyear, month: sendermonth) do
           = @sended_contact_trackings.count
@@ -89,20 +86,17 @@
         th 月間送信完了件数
         th 月間送信不可件数
         th 月間営業NG件数
-        th 月間送信成功率
-        th 本日の送信数
-        th 昨日の送信数
-        th 一昨日の送信数
+        th 月間送信率
+        th 一日の送信数
         th 直近一週間の送信数
         th 月間送信数
         th 先月送信数
         th 登録日
+
       - @workers.each do |worker|
        - @contact_trackings_month = worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
        - @contact_trackings_before_month = worker.contact_trackings.where(created_at: 1.month.ago.beginning_of_month..1.month.ago.end_of_month)
        - @contact_trackings_day = worker.contact_trackings.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
-       - @contact_trackings_yesterday = worker.contact_trackings.where(created_at: 1.day.ago.beginning_of_day ..1.day.ago.end_of_day )
-       - @contact_trackings_2yesterday = worker.contact_trackings.where(created_at: 2.day.ago.beginning_of_day ..2.day.ago.end_of_day )
        - @contact_trackings_week = worker.contact_trackings.where(created_at: Time.current.beginning_of_week..Time.current.end_of_week)
        - @send_success_count_month = @contact_trackings_month.where(status: '送信済').count.to_i
        - @send_success_count_before_month = @contact_trackings_before_month.where(status: '送信済').count.to_i
@@ -117,11 +111,10 @@
        tr
         td.hover_color
           = link_to worker.user_name, worker_path(worker)
-        td
-           = @send_success_count_month
+        td = @send_success_count_month
         td = @send_error_count_month
         td = @send_ng_count_month
-        td = number_to_percentage(@send_success_count_month.to_f / @contact_trackings_month.count.to_f * 100 , precision: 1)
+        td = number_to_percentage(@send_error_count_month.to_f / @send_success_count_month.to_f , precision: 1)
         td = @send_count_day
         td = @send_count_yesterday
         td = @send_count_2yesterday
@@ -129,7 +122,24 @@
         td = @send_success_count_month
         td = @send_success_count_before_month
         td = worker.created_at.strftime("%-m月%-d日")
+
   br
   br
   = link_to "アカウント情報編集", edit_admin_registration_path, class:"btn btn-success"
   = link_to "ログアウト", destroy_admin_session_path, method: :delete, class:"btn btn-success"
+  
+.heading
+  h2
+    | インポート
+= form_tag '/senders/import', multipart: true do
+  = hidden_field_tag :id, params[:id]
+  table.space[width="90%"]
+    tbody
+      tr
+        th[colspan="3"]
+          | NG_CUSTOMER_CSVファイルインポート
+      tr
+        td
+          = file_field_tag :update_file
+        th
+          = submit_tag "インポート",  class: 'btn btn-success'

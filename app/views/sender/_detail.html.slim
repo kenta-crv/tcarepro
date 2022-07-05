@@ -1,73 +1,53 @@
 h2.headline 送信者情報
-.row.analy
- .col-sm-4.o-analy
-  .analy-color
-    .left-title
-     | 一日の送信数
-    .main-analy
-     = @form.daily_sended_contact_trackings.count
- .col-sm-4.o-analy
-  .analy-color
-   .left-title
-     | 直近一週間の送信数
-   .main-analy
-     = @form.weekly_sended_contact_trackings.count
- .col-sm-4.o-analy
-  .analy-color
-    .left-title
-     | 月間送信件数
-    .main-analy
-     = link_to sender_history_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
-      = @form.sended_contact_trackings.count
-br
-br
-br
-.row.analy
- .col-sm-4.o-analy
-  .analy-color
-   .left-title
-    | 残送信件数
-   .main-analy
-    = @form.rate_limit -  @form.sended_contact_trackings.count
- .col-sm-4.o-analy
-  .analy-color
-   .left-title
-     | 送信成功数 (率)
-   .main-analy
-     = link_to sender_sended_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
-       - if @form.sended_rate
-         = " (#{number_to_percentage(@form.sended_rate, precision: 1)})"
- .col-sm-4.o-analy
-  .analy-color
-   .left-title
-    | URLアクセス数 (率)
-   .main-analy
-    = link_to sender_callbacked_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
-      = @form.callbacked_contact_trackings.count
-      - if @form.callbacked_rate
-        = " (#{number_to_percentage(@form.callbacked_rate, precision: 1)})"
-br
-br
-br
-.row.analy
- .col-sm-4.o-analy
-  .analy-color
-   .left-title
-    | メール反応数（率）
-   .main-analy
-    | 準備中
- .col-sm-4.o-analy
-  .analy-color
-   .left-title
-    | テレアポコール数
-   .main-analy
-    | 準備中
- .col-sm-4.o-analy
-  .analy-color
-   .left-title
-    | テレアポAPP
-   .main-analy
-    | 準備中
-br
-br
-br
+
+table[style="margin: 0 40px;"]
+  tr
+    th
+      | 一日の送信数
+    td
+      = @form.daily_contact_trackings.count
+    th
+      | 直近一週間の送信数
+    td
+      = @form.weekly_contact_trackings.count
+    th
+      | 月間送信上限件数
+    td
+      = @form.rate_limit
+  tr
+    th
+      | 月間送信件数
+    td
+      = link_to sender_history_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
+        = @form.monthly_contact_trackings.count
+    th
+      | 送信数 (率)
+    td
+      = link_to sender_sended_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
+        = @form.sended_contact_trackings.count
+        - if @form.sended_rate
+          = " (#{number_to_percentage(@form.sended_rate, precision: 1)})"
+    th
+      | URLアクセス数 (率)
+    td
+      = link_to sender_callbacked_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
+        = @form.callbacked_contact_trackings.count
+        - if @form.callbacked_rate
+          = " (#{number_to_percentage(@form.callbacked_rate, precision: 1)})"
+  tr
+    th
+      | メール反応数 (率)
+    td
+      = link_to sender_mail_app_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
+        = @form.sended_contact_trackings.count
+        - if @form.mailapp_rate
+          = " (#{number_to_percentage(@form.mailapp_rate, precision: 1)})"
+    th
+      | テレアポコール数
+    td
+      = link_to sender_tele_app_path(sender_id: @form.sender.id, year: @form.year, month: @form.month) do
+        = @form.teleapp_contact_trackings.count
+    th
+      | テレアポAPP
+    td
+      | 準備中

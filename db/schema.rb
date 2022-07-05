@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 20220617082627) do
 
   create_table "admins", force: :cascade do |t|
@@ -79,6 +80,8 @@ ActiveRecord::Schema.define(version: 20220617082627) do
     t.datetime "callbacked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "scheduled_date"
+    t.string "callback_url"
     t.index ["code"], name: "index_contact_trackings_on_code", unique: true
     t.index ["customer_id", "inquiry_id", "sender_id", "worker_id"], name: "index_contact_trackings_on_colums"
     t.index ["customer_id"], name: "index_contact_trackings_on_customer_id"
@@ -186,7 +189,6 @@ ActiveRecord::Schema.define(version: 20220617082627) do
     t.string "send_count"
     t.integer "worker_id"
     t.string "genre"
-    t.string "forever"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
@@ -198,6 +200,25 @@ ActiveRecord::Schema.define(version: 20220617082627) do
     t.integer "next_customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "direct_mail_contact_trackings", force: :cascade do |t|
+    t.string "code", null: false
+    t.integer "customer_id", null: false
+    t.integer "sender_id"
+    t.integer "worker_id"
+    t.string "status", null: false
+    t.string "contact_url"
+    t.datetime "sended_at"
+    t.datetime "callbacked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["code"], name: "index_direct_mail_contact_trackings_on_code", unique: true
+    t.index ["customer_id"], name: "index_direct_mail_contact_trackings_on_customer_id"
+    t.index ["sender_id"], name: "index_direct_mail_contact_trackings_on_sender_id"
+    t.index ["user_id"], name: "index_direct_mail_contact_trackings_on_user_id"
+    t.index ["worker_id"], name: "index_direct_mail_contact_trackings_on_worker_id"
   end
 
   create_table "estimates", force: :cascade do |t|
@@ -278,6 +299,16 @@ ActiveRecord::Schema.define(version: 20220617082627) do
     t.datetime "updated_at", null: false
     t.index ["admin_id"], name: "index_matters_on_admin_id"
     t.index ["member_id"], name: "index_matters_on_member_id"
+  end
+
+  create_table "ng_customers", force: :cascade do |t|
+    t.integer "customer_id", null: false
+    t.integer "inquiry_id", null: false
+    t.integer "sender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "admin_id"
+    t.index ["admin_id"], name: "index_ng_customers_on_admin_id"
   end
 
   create_table "posts", force: :cascade do |t|

@@ -2,3 +2,12 @@
   h2.headline URLアクセス履歴
 
   = render 'list'
+.heading
+  h2
+    | エクスポート
+  table.space[width="90%"]
+    tbody
+      tr
+        th
+          = link_to 'URLアクセスエクスポート', sender_download_callbacked_path(format:"csv",id: @sender.id, year: params[:year], month: params[:month]), class: 'btn btn-success'
+  
