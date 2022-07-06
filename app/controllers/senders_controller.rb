@@ -1,5 +1,5 @@
 class SendersController < ApplicationController
-  before_action :authenticate_worker_or_admin!
+  before_action :authenticate_worker_or_admin!, except: [:show]
   before_action :set_sender, only: [:edit, :update]
 
   def index
@@ -21,17 +21,17 @@ class SendersController < ApplicationController
       sender = Sender.find(params[:id])
       cnt = NgCustomer.import(params[:update_file],sender,nil)
       redirect_to '/senders/'+sender.id.to_s, notice:"#{cnt}件登録されました。"
-    else 
+    else
       sender = Admin.find(params[:id])
       cnt = NgCustomer.import(params[:update_file],nil,sender)
       redirect_to '/admins/'+sender.id.to_s, notice:"#{cnt}件登録されました。"
-    end  
+    end
   end
-  
+
   def edit
   end
 
- 
+
   def update
     if @sender.update(sender_params)
       redirect_to senders_path

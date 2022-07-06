@@ -4,15 +4,22 @@ table[width="90%"]
       th 企業名
       th 状態
       th 案件名
-      th 登録日時
+      th 送信日時
       th 最終送信完了日時
       th URLアクセス日時
+      -if admin_signed_in?
+       th 送信担当者
   tbody
   - @contact_trackings.each do |contact_tracking|
     tr
-      td = contact_tracking.customer.company
+      /-if user_signed_in?
+       /td = link_to contact_tracking.customer&.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      /-else
+      td = contact_tracking.customer&.company
       td = contact_tracking.status
       td = contact_tracking.inquiry&.headline || 'N/A'
-      td = contact_tracking.created_at.strftime("%Y年%m月%d日 %H時%M分")
-      td = contact_tracking.sended_at.strftime("%Y年%m月%d日 %H時%M分") || '-'
-      td = contact_tracking.callbacked_at&.strftime("%Y年%m月%d日 %H時%M分") || '-'
+      td = contact_tracking.created_at&.strftime("%Y年%-m月%-d日")
+      td = contact_tracking.sended_at&.strftime("%Y年%-m月%-d日") || '-'
+      td = contact_tracking.callbacked_at || '-'
+      -if admin_signed_in?
+       td = contact_tracking.worker&.user_name

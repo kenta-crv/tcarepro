@@ -31,7 +31,7 @@ Rails.application.routes.draw do
   }
   resource :client, only: [:show]
   resource :sender, only: [:show]
-  
+
   post 'senders/import' => 'senders#import'
   #センダーアカウント
   devise_for :senders, controllers: {
@@ -60,6 +60,7 @@ Rails.application.routes.draw do
 
     end
   end
+  get 'sender/question' => 'sender#question'
   get 'callback' => 'okurite#callback', as: :callback
   get 'direct_mail_callback' => 'okurite#direct_mail_callback', as: :direct_mail_callback
   #ワーカーアカウント
@@ -109,7 +110,7 @@ Rails.application.routes.draw do
   get 'call_history'=> 'customers#call_history' #インポート情報
   get 'export' => 'customers#export' #
   get 'sfa' => 'customers#sfa' #SFA
-  
+
   #post 'customers/contact' => 'customers#contact' #メール送信
   #post 'customers/thanks' => 'ustomers#thanks' #メール送信完了
   get 'extraction' => 'customers#extraction' #TCARE

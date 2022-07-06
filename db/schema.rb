@@ -10,7 +10,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
 ActiveRecord::Schema.define(version: 20220617082627) do
 
   create_table "admins", force: :cascade do |t|
@@ -189,6 +188,7 @@ ActiveRecord::Schema.define(version: 20220617082627) do
     t.string "send_count"
     t.integer "worker_id"
     t.string "genre"
+    t.string "forever"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end

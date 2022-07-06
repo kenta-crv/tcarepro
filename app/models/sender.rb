@@ -32,7 +32,7 @@ class Sender < ApplicationRecord
 
     contact_tracking.save!
   end
-  
+
   def send_direct_mail_contact!(customer_id, user_id,worker_id)
     code = generate_code
     direct_mail_contact_tracking = direct_mail_contact_trackings.new(
@@ -47,7 +47,7 @@ class Sender < ApplicationRecord
     direct_mail_contact_tracking.save!
     Rails.application.routes.url_helpers.direct_mail_callback_url(t: code)
   end
-  
+
   def auto_send_contact!(code, customer_id, worker_id, inquiry_id, date,contact_url, status)
     code = generate_code
     contact_tracking = contact_trackings.new(
@@ -62,6 +62,6 @@ class Sender < ApplicationRecord
       status: status,
     )
 
-    contact_tracking.save! 
+    contact_tracking.save!
   end
 end

@@ -9,6 +9,4 @@ class SenderController < ApplicationController
     )
   end
   
-  
-  
 end

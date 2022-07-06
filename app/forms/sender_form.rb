@@ -9,6 +9,14 @@ class SenderForm
     monthly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
   end
 
+  def weekly_sended_contact_trackings
+    weekly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
+  end
+
+  def daily_sended_contact_trackings
+    daily_contact_trackings.where(status: '送信済').order(sended_at: :desc)
+  end
+
   def callbacked_contact_trackings
     monthly_contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
   end
@@ -17,11 +25,11 @@ class SenderForm
     Customer.includes(:calls).where.not(calls: {id: nil}).last_contact_trackings(sender,'送信済') &
     monthly_contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
   end
-  
+
   def mailapp_contact_trackings
     monthly_contact_trackings.where(status: 'メールAPP').order(sended_at: :desc)
   end
-  
+
   def sended_rate
     return nil if monthly_contact_trackings.count == 0
 
@@ -33,7 +41,7 @@ class SenderForm
 
     callbacked_contact_trackings.count / sended_contact_trackings.count.to_f * 100
   end
-  
+
   def mailapp_rate
     return nil if mailapp_contact_trackings.count == 0
 

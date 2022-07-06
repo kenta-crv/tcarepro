@@ -15,7 +15,7 @@ class Customer < ApplicationRecord
   has_one :contact_tracking, ->{
     eager_load(:contact_trackings).order(sended_at: :desc)
   }
-  
+
   has_one :last_contact, ->{
     order("created_at desc")
   }, class_name: ContactTracking
@@ -29,7 +29,7 @@ class Customer < ApplicationRecord
   has_one :direct_mail_contact_tracking, ->{
     eager_load(:direct_mail_contact_trackings).order(sended_at: :desc)
   }
-  
+
   has_one :last_mail_contact, ->{
     order("created_at desc")
   }, class_name: DirectMailContactTracking

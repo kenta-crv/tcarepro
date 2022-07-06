@@ -11,22 +11,22 @@ class SendersHistoryController < ApplicationController
   def sended
     @contact_trackings = contact_trackings.where(status: '送信済')
   end
-  
+
   def mail_app
     @contact_trackings = contact_trackings.where(status: 'メールAPP')
   end
-  
+
   def tele_app
     @contact_trackings =  Customer.includes(:calls).where.not(calls: {id: nil}).last_contact_trackings( @sender,'送信済') &
     contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
-   
+
   end
-  
+
   def download_sended
     Rails.logger.info("contact_trackings :" + @sender.contact_trackings.to_yaml)
     @contact_trackings = contact_trackings.where(status: '送信済')
     Rails.logger.info("@contact_trackings :" + @contact_trackings.to_yaml)
-    call_attributes = ["customer_id" ,"status", "inquiry_id","created_at","sended_at"]
+    call_attributes = ["customer_id","company","first_name","tel","postnumber","address","url","mail","people","industry","business","genre","contact","status","inquiry_id","created_at","sended_at","callbacked_at"]
       generate_sended =
         CSV.generate(headers:true) do |csv|
           csv << call_attributes
@@ -40,11 +40,11 @@ class SendersHistoryController < ApplicationController
         format.csv{ send_data generate_sended, filename: "sended-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
       end
   end
-  
+
   def download_callbacked
     @contact_trackings = contact_trackings.where.not(callbacked_at: nil)
     Rails.logger.info("@contact_trackings :" + @contact_trackings.to_yaml)
-    call_attributes = ["customer_id" ,"status", "inquiry_id","created_at","sended_at"]
+    call_attributes = ["customer_id","company","first_name","tel","postnumber","address","url","mail","people","industry","business","genre","contact","status","inquiry_id","created_at","sended_at","callbacked_at"]
       generate_callbacked =
         CSV.generate(headers:true) do |csv|
           csv << call_attributes
@@ -61,13 +61,13 @@ class SendersHistoryController < ApplicationController
 
   def callbacked
      Rails.logger.info("contact_trackings before :" + contact_trackings.to_yaml)
-    @contact_trackings = contact_trackings.where.not(callbacked_at: nil)
+    @contact_trackings = contact_trackings.where.not(callbacked_at: nil).where(status: '送信済')
     Rails.logger.info("contact_trackings :" + @contact_trackings.to_yaml)
   end
 
   def users_callbacked
      Rails.logger.info("contact_trackings before :" + contact_trackings.to_yaml)
-    @contact_trackings = contact_trackings.where.not(callbacked_at: nil)
+    @contact_trackings = contact_trackings.where.not(callbacked_at: nil).where(status: '送信済')
     Rails.logger.info("contact_trackings :" + @contact_trackings.to_yaml)
   end
   private
@@ -95,7 +95,7 @@ class SendersHistoryController < ApplicationController
     end
   end
   def authenticate_user!
-    unless user_signed_in? 
+    unless user_signed_in?
        redirect_to new_user_session_path, alert: 'error'
     end
   end
