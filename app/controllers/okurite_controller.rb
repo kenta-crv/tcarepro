@@ -1,13 +1,14 @@
 require 'contactor'
 
 class OkuriteController < ApplicationController
-  before_action :authenticate_worker_or_admin!, except: :callback
-  before_action :set_sender, except: :callback
+  before_action :authenticate_worker_or_admin!, except: [:callback,:direct_mail_callback]
+  before_action :set_sender, except: [:callback,:direct_mail_callback]
   before_action :set_customers, only: [:index, :preview]
 
   def index
     @customers = @customers.where(forever: nil).where(choice: nil).page(params[:page]).per(100)
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
+    Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
   end
 
   def show
@@ -55,6 +56,7 @@ class OkuriteController < ApplicationController
   end
 
   def callback
+    Rails.logger.info( "inside callback : ")
     @contact_tracking = ContactTracking.find_by!(code: params[:t])
 
     @contact_tracking.callbacked_at = Time.zone.now
@@ -63,12 +65,51 @@ class OkuriteController < ApplicationController
 
     redirect_to @contact_tracking.inquiry.url
   end
+  
+  def direct_mail_callback
+    Rails.logger.info( "inside direct mail callback : ")
+    @direct_mail_contact_tracking = DirectMailContactTracking.find_by!(code: params[:t])
 
+    @direct_mail_contact_tracking.callbacked_at = Time.zone.now
+
+    @direct_mail_contact_tracking.save
+
+    redirect_to "https://ri-plus.jp/"
+  end
+
+  def autosettings
+    #Rails.logger.info( "date : " + DateTime.parse(params[:date]).to_yaml)
+    Rails.logger.info( "count : " + params[:count].to_s)
+    @q = Customer.ransack(params[:q])
+    @customers = @q.result.distinct
+    save_cont = 0
+    @sender = Sender.find(params[:sender_id])
+     Rails.logger.info( "@sender : " + @sender.attributes.inspect)
+    @customers.each do |cust|
+      unless ((params[:count]).to_i < (save_cont+1))
+        @sender.auto_send_contact!(
+        @sender.generate_code,
+        cust.id,
+        current_worker&.id,
+        @sender.default_inquiry_id,
+        DateTime.parse(params[:date]),
+        cust.contact_url,
+        "自動送信予定"
+        )
+      save_cont += 1    
+      end 
+    end       
+      Rails.logger.info( "save_cont: " + save_cont.to_s)
+    redirect_to sender_okurite_index_path(id:@sender.id,q: params[:q]&.permit!, page: params[:page]), notice:"#{save_cont}件登録されました。"
+  end  
+  
   private
 
   def set_sender
     @sender = Sender.find(params[:sender_id])
   end
+  
+  
 
   def set_customers
     @q = Customer.ransack(params[:q])

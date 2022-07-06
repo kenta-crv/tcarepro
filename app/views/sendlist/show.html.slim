@@ -1,0 +1,46 @@
+- set_meta_tags noindex: true
+.tops-wrapper
+ .headline
+    |　送信リスト
+    | (
+    = @contact_trackings.current_page * 30 - 29
+    | ~
+    = [@contact_trackings.page(1).per(30).total_count, @contact_trackings.current_page * 30].min
+    | 件/
+    = @contact_trackings.page(1).per(30).total_count
+    | 件中
+    | )
+ = form_tag({ controller: :sendlist, action: :edit}, method: 'put') do
+  table[style="margin: 0 30px;"]
+    thead
+      tr
+        th
+          | 企業名
+        th
+          | URL
+        th
+          | ステータス
+        th
+          | 最終送信日時
+        th
+          | URLアクセス日時
+        th
+          | 編集  
+    - @contact_trackings.each do |contact_tracking|
+      tr
+        td
+          = link_to contact_tracking.customer.company, sender_okurite_preview_path(okurite_id: contact_tracking.customer.id,sender_id:contact_tracking&.sender.id, q: params[:q]&.permit!), target: :_blank
+        td
+          = contact_tracking&.customer.url&.truncate(30)
+        td
+          = contact_tracking&.status
+        td
+          = contact_tracking&.sended_at
+        td
+          = contact_tracking&.callbacked_at
+        td
+          = link_to '編集', edit_sendlist_path(contact_tracking), class: "btn btn-success"  
+    tr
+      th[colspan="8"]
+        = paginate @contact_trackings
+ 

@@ -17,6 +17,10 @@ class Call < ApplicationRecord
     ).group(:customer_id)
   }
 
+  scope :last_call_notification, ->(sender_id){
+    includes(customer: :contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id) })
+  }
+  
   scope :call_count_today, -> {
     where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
   }
@@ -38,6 +42,10 @@ class Call < ApplicationRecord
   scope :unread_notification, -> {
     where.not(time: nil)
       .where('latest_confirmed_time is null or time >= latest_confirmed_time')
+  }
+  
+  scope :between_created_at, ->(from, to){
+    where(created_at: from..to)
   }
 
   #call_import
