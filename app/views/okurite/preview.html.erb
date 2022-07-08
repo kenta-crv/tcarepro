@@ -80,10 +80,16 @@ $(function () {
           <td><%= @customer.company %></td>
         </tr>
         <tr>
-          <th>送信情報が出ない場合検索</th>
+          <th>送信情報が出ない場合検索
+            <br>
+            ※ポータルサイト先へは送信しないで下さい。
+          </th>
           <td>
-            <% if @contact_url %>
-              <%= link_to '別タブで表示', @contact_url, target: :_blank  %><br>
+            <% if @customer.url != nil %>
+              <%= link_to '別タブで表示1', @customer.url, target: :_blank %><br>
+            <% end %>
+            <% if @customer.url_2 != nil %>
+               <%= link_to '別タブで表示2', @customer.url_2, target: :_blank %><br>
             <% end %>
             <% if @customer.company != blank? %>
           　  <%=

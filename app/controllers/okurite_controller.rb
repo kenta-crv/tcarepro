@@ -65,7 +65,7 @@ class OkuriteController < ApplicationController
 
     redirect_to @contact_tracking.inquiry.url
   end
-  
+
   def direct_mail_callback
     Rails.logger.info( "inside direct mail callback : ")
     @direct_mail_contact_tracking = DirectMailContactTracking.find_by!(code: params[:t])
@@ -96,20 +96,20 @@ class OkuriteController < ApplicationController
         cust.contact_url,
         "自動送信予定"
         )
-      save_cont += 1    
-      end 
-    end       
+      save_cont += 1
+      end
+    end
       Rails.logger.info( "save_cont: " + save_cont.to_s)
     redirect_to sender_okurite_index_path(id:@sender.id,q: params[:q]&.permit!, page: params[:page]), notice:"#{save_cont}件登録されました。"
-  end  
-  
+  end
+
   private
 
   def set_sender
     @sender = Sender.find(params[:sender_id])
   end
-  
-  
+
+
 
   def set_customers
     @q = Customer.ransack(params[:q])

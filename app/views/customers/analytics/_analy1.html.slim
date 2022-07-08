@@ -261,7 +261,7 @@ table.header-table[width="90%"]
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%シューマツ%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailAppCount = @detailcalls.where("industry LIKE ?", "%シューマツ%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
-    - @syumatu_sales = @detailAppCount * 30000
+    - @syumatu_sales = @detailAppCount * 33000
     th
       | シューマツワーカー
     td
