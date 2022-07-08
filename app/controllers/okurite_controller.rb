@@ -45,7 +45,6 @@ class OkuriteController < ApplicationController
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @contact_tracking = @sender.contact_trackings.where(customer: @customer).order(created_at: :desc).first
-    @month_contact_tracking = sender.contact_trackings.where(created_at: current_month...next_month).where(status: '送信済').count
 
     contactor = Contactor.new(@inquiry, @sender)
 
