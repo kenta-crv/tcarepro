@@ -150,13 +150,13 @@ $(function () {
             <%- if admin_signed_in?%>
              <%= select_tag(
               :status,
-              options_for_select(['送信済', '送信不可', '営業NG', 'メールAPP', 'テレアポAPP']),
+              options_for_select(['送信済', '送信不可', 'メールAPP', 'テレアポAPP']),
               class: 'custom-select'
              )%>
             <%- else %>
              <%= select_tag(
               :status,
-              options_for_select(['送信済', '送信不可', '営業NG']),
+              options_for_select(['送信済', '送信不可']),
               class: 'custom-select'
              )%>
             <%end%>
