@@ -41,11 +41,11 @@ class CustomersController < ApplicationController
   end
 
   def direct_mail_send
-   Rails.logger.info("Inside direct_mail_send") 
+   Rails.logger.info("Inside direct_mail_send")
    @customer = Customer.find(params[:id])
    @user = current_user
   end
-  
+
   def show
     last_call_customer_ids = nil
     @last_call_params = {}
@@ -407,7 +407,7 @@ class CustomersController < ApplicationController
       @notification[sender.id] = Call.all.last_call_notification(sender.id)
       Rails.logger.info("@notidication : " + sender.id.to_s + " : " + @notification[sender.id].size.to_s)
     end
-      
+
   end
   def import
     cnt = Customer.import(params[:file])
