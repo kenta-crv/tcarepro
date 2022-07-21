@@ -132,9 +132,9 @@
                   {class: 'form-control', id: 'search_prefecture', multiple: true}
               tr
                 th
-                  | 電話番号有りのみ表示
+                  | 携帯番号
                 td
-                  /= f.search_field :tel, type: 'checkbox', value: 'true'
+                  = f.search_field :mobile_cont, type: "text"
                 th
                   | SFA
                 td
