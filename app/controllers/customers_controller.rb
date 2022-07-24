@@ -452,23 +452,31 @@ class CustomersController < ApplicationController
   def contact
     @customer = Customer.find_by(id: params[:id])
     @direct_mail_contact_tracking = DirectMailContactTracking.new(customer: @customer)
-    @url_arry = ["選択する"]
-    @url_arry.push(@customer.url) if @customer.url.present?
-    @url_arry.push(@customer.url_2) if @customer.url_2.present?
+    @url_arry = @customer.get_url_arry
   end
 
   def send_mail
     @customer = Customer.find_by(id: params[:id])
-    @direct_mail_contact_tracking = DirectMailContactTracking.new(customer: @customer, contact_url: params[:direct_mail_contact_tracking][:contact_url])
+    @direct_mail_contact_tracking = DirectMailContactTracking.new(
+      customer: @customer,
+      user: current_user,
+      status: "送信済",
+      sended_at: Time.current,
+      contact_url: params[:direct_mail_contact_tracking][:contact_url]
+    )
 
-    @url = params[:direct_mail_contact_tracking][:contact_url]
-    @content = "#{@customer.company} #{@customer.first_name}様\n\nお世話になっております。株式会社Ri-Plus#{current_user&.user_name}でございます。\n\n先ほどは突然のご連絡ながら対応頂き、誠にありがとうございました。\n\n改めて当社は、マーケティング代行を生業としている企業となります。\n\n以下、今回ご案内させて頂きましたサービスの資料URLをお送りさせて頂きます。\n\n 【資料URLリンク：#{@url}】 \n\n確認後、改めてご連絡させて頂ければと存じます。\n\nよろしくお願い致します。\n\n株式会社Ri-Plus\n電話番号：050-5480-1131\nMail：info@ri-plus.jp\nURL：https://ri-plus.jp\n所在地：〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7階\n問い合わせ時間：09:00-16:45",
-    # TODO: callbackURLの書き換え
-    # TODO: メールの内容書き換え
-    CustomerMailer.received_email(@customer).deliver
-    CustomerMailer.send_email(@customer).deliver
+    if @direct_mail_contact_tracking.save
+      @url = @direct_mail_contact_tracking.callback_url
+      @content = "#{@customer.company} #{@customer.first_name}様\n\nお世話になっております。株式会社Ri-Plus#{current_user&.user_name}でございます。\n\n先ほどは突然のご連絡ながら対応頂き、誠にありがとうございました。\n\n改めて当社は、マーケティング代行を生業としている企業となります。\n\n以下、今回ご案内させて頂きましたサービスの資料URLをお送りさせて頂きます。\n\n 【資料URLリンク：#{@url}】 \n\n確認後、改めてご連絡させて頂ければと存じます。\n\nよろしくお願い致します。\n\n株式会社Ri-Plus\n電話番号：050-5480-1131\nMail：info@ri-plus.jp\nURL：https://ri-plus.jp\n所在地：〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7階\n問い合わせ時間：09:00-16:45"
+      # TODO: メールの内容書き換え
+      # CustomerMailer.received_email(@customer).deliver
+      # CustomerMailer.send_email(@customer).deliver
 
-    redirect_to customers_psth(id: @customer), notice:"資料送付が完了しました。"
+      redirect_to customer_path(id: @customer), notice: "資料送付が完了しました。"
+    else
+      @url_arry = @customer.get_url_arry
+      render 'contact'
+    end
   end
 
   def thanks

@@ -376,6 +376,14 @@ class Customer < ApplicationRecord
     scraping.google_search([company, address, tel].compact.join(' '))
   end
 
+  def get_url_arry
+    url_arry = []
+    url_arry.push(url) if url.present?
+    url_arry.push(url_2) if url_2.present?
+
+    url_arry
+  end
+
   private
 
   def scraping

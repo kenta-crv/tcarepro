@@ -72,7 +72,7 @@
      </th>
 			<th>
         <% if @customer.mail != nil %>
-         <%= link_to "資料送付", "#{@customer.id}/contact", target:"_blank", class:"btn btn-success"  %>
+          <%= link_to "資料送付", contact_customer_path(id: @customer.id), target:"_blank", class:"btn btn-success"  %>
         <%else%>
         <%end%>
      </th>
