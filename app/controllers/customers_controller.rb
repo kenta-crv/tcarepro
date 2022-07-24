@@ -2,9 +2,9 @@ require 'rubygems'
 class CustomersController < ApplicationController
   before_action :authenticate_admin!, only: [:destroy, :destroy_all, :anayltics, :import, :call_import, :sfa, :mail, :call_history]
   before_action :authenticate_worker!, only: [:extraction,:direct_mail_send]
-  before_action :authenticate_user!, only: [:index]
+  # before_action :authenticate_user!, only: [:index]
   before_action :authenticate_worker_or_user, only: [:new, :edit]
-  #before_action :authenticate_user_or_admin, only: [:index, :show]
+  before_action :authenticate_user_or_admin, only: [:index, :show]
   #before_action :authenticate_worker_or_admin, only: [:extraction]
 
   def index
