@@ -24,6 +24,10 @@ class Customer < ApplicationRecord
     joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id), status: status })
   }
 
+  scope :last_contact_trackings_only, ->(sender_id){
+    joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id) })
+  }
+
   # Direct Mail Contact Trackings
   has_many :direct_mail_contact_trackings
   has_one :direct_mail_contact_tracking, ->{
