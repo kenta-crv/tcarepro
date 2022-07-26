@@ -16,6 +16,9 @@ class OkuriteController < ApplicationController
   end
 
   def create
+    customer = Customer.find(params[:okurite_id])
+    customer.update(forever: params[:forever][:forever])
+
     @sender.send_contact!(
       params[:callback_code],
       params[:okurite_id],
