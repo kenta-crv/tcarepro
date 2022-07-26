@@ -1,5 +1,5 @@
 class DirectMailContactTracking < ApplicationRecord
-  belongs_to :sender
+  belongs_to :sender, optional: true
   belongs_to :customer, optional: true
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
@@ -11,7 +11,23 @@ class DirectMailContactTracking < ApplicationRecord
     where(id: ContactTracking.select('max(id) as id').where(sender_id: sender_id).group(:customer_id))
   }
 
+  before_validation :set_code
+
+  def callback_url
+    Rails.application.routes.url_helpers.direct_mail_callback_url(t: code)
+  end
+
+  def generate_code
+    SecureRandom.hex
+  end
+
   def success?
     status == '送信済'
+  end
+
+  private
+
+  def set_code
+    self.code = generate_code
   end
 end
