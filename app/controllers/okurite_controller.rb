@@ -48,7 +48,7 @@ class OkuriteController < ApplicationController
 
     contactor = Contactor.new(@inquiry, @sender)
 
-    @contact_url = @customer.contact_url
+    @contact_url = @customer.get_search_url
 
     @callback_code = @sender.generate_code
 
@@ -93,7 +93,7 @@ class OkuriteController < ApplicationController
         current_worker&.id,
         @sender.default_inquiry_id,
         DateTime.parse(params[:date]),
-        cust.contact_url,
+        cust.get_search_url,
         "自動送信予定"
         )
       save_cont += 1
