@@ -85,8 +85,8 @@ $(function () {
             ※ポータルサイト先へは送信しないで下さい。
           </th>
           <td>
-            <% if @customer.url != nil %>
-              <%= link_to '別タブで表示1', @customer.url, target: :_blank %><br>
+            <% if @customer.contact_url != nil %>
+              <%= link_to '別タブで表示1', @customer.contact_url, target: :_blank %><br>
             <% end %>
             <% if @customer.url_2 != nil %>
                <%= link_to '別タブで表示2', @customer.url_2, target: :_blank %><br>

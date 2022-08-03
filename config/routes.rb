@@ -83,9 +83,12 @@ Rails.application.routes.draw do
   resources :customers do
     resources :calls
     resources :counts
+    member do
+      get :contact
+      post :send_mail
+    end
     collection do
       get :complete
-      get :contact
       post :thanks
       post :import
       post :update_import
