@@ -1273,3 +1273,13 @@ a.btn--shadow {
   width:30%;
   padding-right:10px;
  }
+
+
+.okurite-input-forever {
+  display: flex;
+  align-items: center;
+  input {
+    width: 15px;
+    margin-right: 3px;
+  }
+}

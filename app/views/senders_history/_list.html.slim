@@ -15,7 +15,8 @@ table[width="90%"]
       /-if user_signed_in?
        /td = link_to contact_tracking.customer&.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
       /-else
-      td = contact_tracking.customer&.company
+      / td = contact_tracking.customer&.company
+      td = link_to contact_tracking.customer&.company, customer_path(contact_tracking.customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
       td = contact_tracking.status
       td = contact_tracking.inquiry&.headline || 'N/A'
       td = contact_tracking.created_at&.strftime("%Y年%-m月%-d日")

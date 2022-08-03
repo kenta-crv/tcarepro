@@ -24,6 +24,10 @@ class Customer < ApplicationRecord
     joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id), status: status })
   }
 
+  scope :last_contact_trackings_only, ->(sender_id){
+    joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id) })
+  }
+
   # Direct Mail Contact Trackings
   has_many :direct_mail_contact_trackings
   has_one :direct_mail_contact_tracking, ->{
@@ -374,6 +378,14 @@ class Customer < ApplicationRecord
 
   def google_search_url
     scraping.google_search([company, address, tel].compact.join(' '))
+  end
+
+  def get_url_arry
+    url_arry = []
+    url_arry.push(url) if url.present?
+    url_arry.push(url_2) if url_2.present?
+
+    url_arry
   end
 
   private
