@@ -150,13 +150,13 @@ $(function () {
             <%- if admin_signed_in?%>
              <%= select_tag(
               :status,
-              options_for_select(['送信済', '送信不可', '営業NG', 'メールAPP', 'テレアポAPP']),
+              options_for_select(['送信済', '送信不可', 'メールAPP', 'テレアポAPP']),
               class: 'custom-select'
              )%>
             <%- else %>
              <%= select_tag(
               :status,
-              options_for_select(['送信済', '送信不可', '営業NG']),
+              options_for_select(['送信済', '送信不可']),
               class: 'custom-select'
              )%>
             <%end%>
@@ -164,6 +164,13 @@ $(function () {
             <div class="input-group-append">
               <%= submit_tag '確定', class: 'btn btn-outline-secondary', class:"btn btn-success" %>
             </div>
+          </div>
+          <div>
+            <label class="okurite-input-forever">
+              <% puts @customer.forever == "1" %>
+              <%= check_box :forever, "forever", { checked: @customer.forever == "1" ? "checked" : "" } %>
+              <span>フォーム送信NG</span>
+            </label>
           </div>
         <% end %>
         <small class="red">
