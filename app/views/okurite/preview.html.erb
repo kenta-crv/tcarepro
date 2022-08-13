@@ -165,12 +165,17 @@ $(function () {
               <%= submit_tag '確定', class: 'btn btn-outline-secondary', class:"btn btn-success" %>
             </div>
           </div>
-          <div>
-            <label class="okurite-input-forever">
-              <% puts @customer.forever == "1" %>
-              <%= check_box :forever, "forever", { checked: @customer.forever == "1" ? "checked" : "" } %>
-              <span>フォーム送信NG</span>
-            </label>
+        <% end %>
+        <%= form_tag sender_okurite_contact_url(okurite_id: @customer, forever_flag: true), method: :post do %>
+          <div class="input-group" style="margin: 10px 0;">
+            <%= select_tag(
+              :forever,
+              options_for_select([['フォーム送信OK', 0], ['フォーム送信NG', 1]], selected: @customer.forever.to_i),
+              class: 'custom-select'
+            )%>
+            <div class="input-group-append">
+              <%= submit_tag '確定', class: 'btn btn-outline-secondary', class:"btn btn-success" %>
+            </div>
           </div>
         <% end %>
         <small class="red">
