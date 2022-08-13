@@ -150,13 +150,13 @@ $(function () {
             <%- if admin_signed_in?%>
              <%= select_tag(
               :status,
-              options_for_select(['送信済', '送信不可', 'メールAPP', 'テレアポAPP']),
+              options_for_select(['送信済', 'メールAPP', 'テレアポAPP']),
               class: 'custom-select'
              )%>
             <%- else %>
              <%= select_tag(
               :status,
-              options_for_select(['送信済', '送信不可']),
+              options_for_select(['送信済']),
               class: 'custom-select'
              )%>
             <%end%>
@@ -170,7 +170,7 @@ $(function () {
           <div class="input-group" style="margin: 10px 0;">
             <%= select_tag(
               :forever,
-              options_for_select([['フォーム送信OK', 0], ['フォーム送信NG', 1]], selected: @customer.forever.to_i),
+              options_for_select(['フォーム送信NG'], selected: @customer.forever.to_i),
               class: 'custom-select'
             )%>
             <div class="input-group-append">
