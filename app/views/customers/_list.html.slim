@@ -153,7 +153,7 @@
                | 問い合わせURL
              td
                - if worker_signed_in?
-                 = @customer.contact_url
+                 = @customer.get_search_url
                - else
                  =link_to "#" do
                   =image_tag "lock.gif", height:"24px"

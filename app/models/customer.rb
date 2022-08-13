@@ -364,7 +364,7 @@ class Customer < ApplicationRecord
 
   enum status: {draft: 0, published: 1}
 
-  def contact_url
+  def get_search_url
     unless @contact_url
       @contact_url =
         scraping.contact_from(url_2) ||

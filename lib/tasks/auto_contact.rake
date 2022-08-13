@@ -27,10 +27,10 @@ namespace :auto_contact do
     customers.each do |customer|
       contact = customer.attributes.compact.filter { |k, v| ['created_at', 'updated_at'].exclude?(k) }
 
-      if customer.contact_url
-        contact['contact_url'] = customer.contact_url
+      if customer.get_search_url
+        contact['contact_url'] = customer.get_search_url
 
-        contact['attributes'] = scraping.input_attributes(customer.contact_url)
+        contact['attributes'] = scraping.input_attributes(customer.get_search_url)
       end
 
       [contact_url_missing_path(contact['id']), attributes_missing_path(contact['id']), success_path(contact['id'])].each do |path|
