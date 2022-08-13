@@ -37,7 +37,12 @@
           strong.label 必須
         td.arrow_box
           | URLリンク
-        td = f.select(:contact_url, @url_arry)
+        td = f.select(:contact_url,[ \
+         ["https://tcare.pro/","https://tcare.pro/"], \
+         ["https://tcare.pro/","https://tcare.pro/"], \
+        ])
+
+
       tr
         td colspan="3"
           = f.submit "送信"

@@ -452,7 +452,6 @@ class CustomersController < ApplicationController
   def contact
     @customer = Customer.find_by(id: params[:id])
     @direct_mail_contact_tracking = DirectMailContactTracking.new(customer: @customer)
-    @url_arry = @customer.get_url_arry
   end
 
   def send_mail
