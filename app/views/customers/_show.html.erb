@@ -59,7 +59,7 @@
 			<th>検索対象</th>
 			<td><%= @customer.industry %></td>
       <th>
-        <% if @customer.mail != nil %>
+        <% if @customer.mail.present? %>
          <%= mail_to @customer.mail, "商談URL送信",
               cc: 'info@ri-plus.jp',
               from: 'info@ri-plus.jp',
@@ -71,7 +71,7 @@
         <%end%>
      </th>
 			<th>
-        <% if @customer.mail != nil %>
+        <% if @customer.mail.present? %>
           <%= link_to "資料送付", contact_customer_path(id: @customer.id), target:"_blank", class:"btn btn-success"  %>
         <%else%>
         <%end%>
