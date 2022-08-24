@@ -21,9 +21,9 @@ class IndustryAnalytics
     'FUJI（介護）',
     'FUJI（食品）',
     'FUJI（工場）',
-    'シューマツワーカー（マーケティング）',
-    'シューマツワーカー（ITエンジニア）',
-    'シューマツワーカー（デザイナー）',
+    'シューマツワーカー',
+    'ジェイック',
+    'プラウド',
   ]
 
   class << self
@@ -212,8 +212,6 @@ class IndustryAnalytics
     return 26950 if key == 'lapi（介護）'
     return 26950 if key == 'lapi（コール）'
     return 26950 if key == 'lapi（工場）'
-
-
     33000
   end
 
