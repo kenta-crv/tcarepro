@@ -167,6 +167,8 @@ $(function () {
           </div>
         <% end %>
         <%= form_tag sender_okurite_contact_url(okurite_id: @customer, forever_flag: true), method: :post do %>
+          <%= hidden_field_tag :next_customer_id, @next_customer&.id %>
+
           <div class="input-group" style="margin: 10px 0;">
             <%= select_tag(
               :forever,
