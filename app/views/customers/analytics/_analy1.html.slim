@@ -282,7 +282,7 @@ table.header-table[width="90%"]
     - @ListCount = @detailcalls.where("industry LIKE ?", "%ジェイック%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%ジェイック%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ジェイック%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @detailRemainCount = (@detailAppCount > 100) ? 0 : 100 - @detailAppCount
     - @jaic_sales = @detailAppCount * 22000
     th
       | ジェイック
@@ -299,7 +299,7 @@ table.header-table[width="90%"]
     td
       = @detailRemainCount
     td
-      = @kaic_sales
+      = @jaic_sales
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%プラウド%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%プラウド%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
