@@ -19,12 +19,6 @@ class OkuriteController < ApplicationController
     if params[:forever_flag].present?
       customer = Customer.find(params[:okurite_id])
       customer.update(forever: params[:forever])
-      flash[:notice] = "送信が完了しました"
-
-      redirect_to sender_okurite_preview_path(
-        okurite_id: customer.id,
-        q: params[:q]&.permit!
-      )
     else
       @sender.send_contact!(
         params[:callback_code],
@@ -34,17 +28,17 @@ class OkuriteController < ApplicationController
         params[:contact_url],
         params[:status]
       )
+    end
 
-      if params[:next_customer_id].present?
-        redirect_to sender_okurite_preview_path(
-          okurite_id: params[:next_customer_id],
-          q: params[:q]&.permit!
-        )
-      else
-        flash[:notice] = "送信が完了しました"
+    if params[:next_customer_id].present?
+      redirect_to sender_okurite_preview_path(
+        okurite_id: params[:next_customer_id],
+        q: params[:q]&.permit!
+      )
+    else
+      flash[:notice] = "送信が完了しました"
 
-        redirect_to sender_okurite_index_path(sender_id: sender.id)
-      end
+      redirect_to sender_okurite_index_path(sender_id: sender.id)
     end
   end
 
