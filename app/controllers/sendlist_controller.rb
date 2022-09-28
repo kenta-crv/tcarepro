@@ -1,7 +1,7 @@
 class SendlistController < ApplicationController
-  
+
   before_action :authenticate_user_or_admin
-  
+
   def index
     @last_call_params = {}
     if params[:last_call] && !params[:last_call].values.all?(&:blank?)
@@ -18,20 +18,20 @@ class SendlistController < ApplicationController
     @customers = @customers.last_mail_contact_trackings("送信済")
     @customers = @customers.distinct.preload(:last_contact).page(params[:page]).per(30)
   end
-  
+
   def show
     @contact_trackings = ContactTracking.where(sender_id: params[:id])
     Rails.logger.info("sender : " + @sender.to_yaml)
      Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
     @contact_trackings = @contact_trackings.page(params[:page]).per(30)
-   
+
   end
-  
+
   def edit
      Rails.logger.info("params : " + params[:id])
     @contact_tracking = ContactTracking.find(params[:id])
   end
-  
+
   def update
     #@customers = Customer&.where(worker_id: current_worker.id)
     #@count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
@@ -43,9 +43,9 @@ class SendlistController < ApplicationController
         render 'edit'
       end
   end
-  
+
   private
-    
+
 
     def authenticate_user_or_admin
       unless user_signed_in? || admin_signed_in?

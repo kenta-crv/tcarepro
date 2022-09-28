@@ -119,9 +119,7 @@ class OkuriteController < ApplicationController
   def set_customers
     @q = Customer.ransack(params[:q])
     @customers = @q.result.distinct
-
-    @customers = @customers.last_contact_trackings_only(@sender.id)
-
+    #@customers = @customers.last_contact_trackings_only(@sender.id)
     if params[:statuses]&.map(&:presence)&.compact.present?
       @customers = @customers.where(contact_trackings: { status: params[:statuses] })
     end
