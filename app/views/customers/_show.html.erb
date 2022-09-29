@@ -168,7 +168,7 @@
 			<th>削除</th>
 		</tr>
 		<tr>
-		<% @customer.calls.includes([:admin, :user]).where(created_at: 3.months.ago..Date.tomorrow).each do |call| %>
+		<% @customer.calls.includes([:admin, :user]).each do |call| %>
 			<td><%= call.created_at %></td>
 			<td>
           <%= call.admin&.user_name %>

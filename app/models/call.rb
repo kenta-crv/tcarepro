@@ -20,7 +20,7 @@ class Call < ApplicationRecord
   scope :last_call_notification, ->(sender_id){
     includes(customer: :contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id) })
   }
-  
+
   scope :call_count_today, -> {
     where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
   }
@@ -43,7 +43,7 @@ class Call < ApplicationRecord
     where.not(time: nil)
       .where('latest_confirmed_time is null or time >= latest_confirmed_time')
   }
-  
+
   scope :between_created_at, ->(from, to){
     where(created_at: from..to)
   }
@@ -57,7 +57,7 @@ class Call < ApplicationRecord
         call.attributes = row.to_hash.slice(*call_attributes)
         call.customer_id = customer&.id
         #直近１ヶ月以内にcallをcreated_atしていない
-        next if self.where(customer_id: call.customer.id).where("created_at > ?", Time.now - 1.month).count > 0
+        next if self.where(customer_id: call.customer.id).where("created_at > ?", Time.now - 2.month).count > 0
         lastRecords = self.where(customer_id: call.customer.id).order(created_at: :desc).limit(1)
         if !lastRecords.empty?
             lastRecord = lastRecords.first()
