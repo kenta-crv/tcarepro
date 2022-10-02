@@ -33,8 +33,8 @@ class CallsController < ApplicationController
 
   def create
     @call = @customer.calls.new(call_params)
-      if @customer.calls.count >= 4
-        # 最新のステータスが着信留守4回連続の場合、5回目はNGとする
+      if @customer.calls.count >= 3
+        # 最新のステータスが着信留守3回連続の場合、4回目は永久NGとする
         if @customer.calls.order(created_at: :asc).limit(4).pluck(:statu).all? { |w| w == "着信留守"  }
           if @call.statu == "着信留守"
             @call.statu = "永久NG"
