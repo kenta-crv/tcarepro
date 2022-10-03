@@ -45,7 +45,7 @@
         th
           = sort_link(@q, "最終コール日",  :created_at)
         th
-          = sort_link(@q, "リストアップデート", :updated_at)
+          = sort_link(@q, "インポート日", :updated_at)
         th
           = sort_link(@q, "次回営業日", :time)
         th
@@ -71,9 +71,9 @@
         td
           = customer.calls.last&.user&.user_name
         td
-          = customer.last_call.try(:created_at)&.strftime("%Y年%m月%d日")
+          = customer.last_call.try(:created_at)&.strftime("%Y年%m月%d日H時i分s秒")
         td
-          = customer.updated_at.strftime("%Y年%m月%d日")
+          = customer.created_at.strftime("%Y年%m月%d日")
         td
           = customer.last_call.try(:time)&.strftime("%Y年%m月%d日")
         td
