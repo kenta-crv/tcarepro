@@ -147,9 +147,9 @@ table.header-table[width="90%"]
     th
       | 売上
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%%SORAIRO（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（工場）%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%%SORAIRO（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount
     - @sorairo1_sales = @detailAppCount * 29000
     th
@@ -169,9 +169,9 @@ table.header-table[width="90%"]
     td
       = @sorairo1_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%%SORAIRO（食品）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（食品）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（食品）%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%%SORAIRO（食品）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（食品）%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 30) ? 0 : 30 - @detailAppCount
     - @sorairo2_sales = @detailAppCount * 29000
     th
@@ -191,9 +191,9 @@ table.header-table[width="90%"]
     td
       = @sorairo2_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%FUJI（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%FUJI（介護）").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%FUJI（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%FUJI（介護）%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%FUJI（介護）").where.not("calls.statu":"再掲載").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%FUJI（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
     - @fuji1_sales = @detailAppCount * 33000
     th
@@ -213,9 +213,9 @@ table.header-table[width="90%"]
     td
       = @fuji1_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%FUJI（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%FUJI（食品）").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%FUJI（食品）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%FUJI（食品）%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%FUJI（食品）").where.not("calls.statu":"再掲載").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%FUJI（食品）%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
     - @fuji2_sales = @detailAppCount * 33000
     th
@@ -235,9 +235,9 @@ table.header-table[width="90%"]
     td
       = @fuji2_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%FUJI（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%FUJI（工場）").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%FUJI（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%FUJI（工場）%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%FUJI（工場）").where.not("calls.statu":"再掲載").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%FUJI（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
     - @fuji3_sales = @detailAppCount * 33000
     th
@@ -257,9 +257,9 @@ table.header-table[width="90%"]
     td
       = @fuji3_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%シューマツ%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%シューマツ%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%シューマツ%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%シューマツ%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%シューマツ%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%シューマツ%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
     - @syumatu_sales = @detailAppCount * 33000
     th
@@ -279,9 +279,9 @@ table.header-table[width="90%"]
     td
       = @syumatu_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%ジェイック%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ジェイック%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ジェイック%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%ジェイック%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ジェイック%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ジェイック%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 100) ? 0 : 100 - @detailAppCount
     - @jaic_sales = @detailAppCount * 22000
     th
@@ -301,9 +301,9 @@ table.header-table[width="90%"]
     td
       = @jaic_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%プラウド%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%プラウド%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%プラウド%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%プラウド%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%プラウド%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%プラウド%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
     - @proud_sales = @detailAppCount * 27500
     th
@@ -323,9 +323,9 @@ table.header-table[width="90%"]
     td
       = @proud_sales
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("customers.created_at > ?", 1.month.ago.beginning_of_month).where("customers.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%アポ匠（人材）%").where("calls.statu": "APP").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", 1.month.ago.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
     th
       | アポ匠（人材）
@@ -373,24 +373,24 @@ table.header-table.space[width="90%"]
     th
       | APP数
     th
-      | キャンセル数
+      | クロージングNG率
     th
       | APP率
   - @users.each do |user|
-    - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+    - user_calls_month = user.calls.where('created_at > ?', 1.month.ago.beginning_of_month).where('created_at < ?', 1.month.ago.end_of_month).to_a
     tr
       td
         = user.user_name
       td
-        = link_to user.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count, customers_path(calls_user_user_name_cont: user.user_name)
+        = link_to user.calls.where('created_at > ?', 1.month.ago.beginning_of_day).where('created_at < ?', 1.month.ago.end_of_day).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
-        = link_to user_calls_month.count, customers_path(q:{calls_user_user_name_cont: user.user_name, created_at_from: Time.current.beginning_of_month, created_at_to: Time.current.end_of_month})
+        = link_to user_calls_month.count, customers_path(q:{calls_user_user_name_cont: user.user_name, created_at_from: 1.month.ago.beginning_of_month, created_at_to: 1.month.ago.end_of_month})
       td
         = user_calls_month.select { |call| call.statu == "見込" }.count
       td
         = user_app = user_calls_month.select { |call| call.statu == "APP" }.count
       td
-        = user_calls_month.select { |call| call.statu == "キャンセル" }.count
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "クロージングNG" }.count / user_calls_month.count.to_f * 100, precision: 1)
       td
         = number_to_percentage(user_app.to_f / user_calls_month.count.to_f * 100, precision: 1)
 br
@@ -422,35 +422,35 @@ table.header-table.space[width="90%"]
       | 永久NG
   tr
     td
-      = @call = Call.where(statu:"着信留守").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count
+      = @call = Call.where(statu:"着信留守").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count
     td
-      = @call = Call.where(statu:"担当者不在").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count
+      = @call = Call.where(statu:"担当者不在").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count
     td
-      = @call = Call.where(statu:"見込").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count
+      = @call = Call.where(statu:"見込").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count
     td
-      = @call = Call.where(statu:"APP").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count
+      = @call = Call.where(statu:"APP").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count
     td
-      = @call = Call.where(statu:"NG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count
+      = @call = Call.where(statu:"NG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count
     td
-      = @call = Call.where(statu:"フロントNG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count
+      = @call = Call.where(statu:"フロントNG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count
     td
-      = @call = Call.where(statu:"クロージングNG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count
+      = @call = Call.where(statu:"クロージングNG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count
     td
-      = @call = Call.where(statu:"永久NG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count
+      = @call = Call.where(statu:"永久NG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count
   tr
     td
-      = number_to_percentage(Call.where(statu:"着信留守").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count.to_f * 100, precision: 1 )
+      = number_to_percentage(Call.where(statu:"着信留守").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(Call.where(statu:"担当者不在").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count.to_f * 100, precision: 1 )
+      = number_to_percentage(Call.where(statu:"担当者不在").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(Call.where(statu:"見込").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count.to_f * 100, precision: 1 )
+      = number_to_percentage(Call.where(statu:"見込").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(Call.where(statu:"APP").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count.to_f * 100, precision: 1 )
+      = number_to_percentage(Call.where(statu:"APP").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(Call.where(statu:"NG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count.to_f * 100, precision: 1 )
+      = number_to_percentage(Call.where(statu:"NG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(Call.where(statu:"フロントNG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count.to_f * 100, precision: 1 )
+      = number_to_percentage(Call.where(statu:"フロントNG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(Call.where(statu:"クロージングNG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count.to_f * 100, precision: 1 )
+      = number_to_percentage(Call.where(statu:"クロージングNG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(Call.where(statu:"永久NG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', Time.current.beginning_of_month).where('customers.created_at < ?', Time.current.end_of_month).to_a.count.to_f * 100, precision: 1 )
+      = number_to_percentage(Call.where(statu:"永久NG").joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count / Call.where.not(id: nil).joins(:customer).where("customers.industry": "ジェイック").where('customers.created_at > ?', 1.month.ago.beginning_of_month).where('customers.created_at < ?', 1.month.ago.end_of_month).to_a.count.to_f * 100, precision: 1 )

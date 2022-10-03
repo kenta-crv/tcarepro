@@ -58,11 +58,12 @@ class Call < ApplicationRecord
         call.customer_id = customer&.id
         #直近１ヶ月以内にcallをcreated_atしていない
         next if self.where(customer_id: call.customer.id).where("created_at > ?", Time.now - 2.month).count > 0
-        next if self.where(customer_id: call.customer.id).count == 0
         lastRecords = self.where(customer_id: call.customer.id).order(created_at: :desc).limit(1)
         if !lastRecords.empty?
             lastRecord = lastRecords.first()
             next if ['APP', '永久NG', '根本的NG'].include?(lastRecord.statu)
+        elsif call.id == nil
+          next if self.where(id: call.id).count == 0
         end
         #Callの最新のものでみる
         call.save!
