@@ -5,7 +5,7 @@ br
 br
 table.header-table[width="90%"]
   tr
-    th[colspan="10"]
+    th[colspan="7"]
       | ステータス別結果
   tr
     th
@@ -15,61 +15,43 @@ table.header-table[width="90%"]
     th
       | 見込
     th
-      | コロナ見込
-    th
-      | 折返待
-    th
       | APP
-    th
-      | キャンセル
     th
       | フロントNG
     th
-      | 根本的NG
+      | クロージングNG
     th
       | 永久NG
   tr
     td
-      = @call.where(statu: "着信留守").count
+      = @call_count.where(statu: "着信留守")
     td
-      = @call_count.where(statu: "担当者不在").count
+      = @call_count.where(statu: "担当者不在")
     td
-      = @call_count.where(statu: "見込").count
+      = @call_count.where(statu: "見込")
     td
-      = @call_count.where(statu: "コロナ見込").count
+      = @call_count.where(statu: "APP")
     td
-      = @call_count.where(statu: "折返待").count
+      = @call_count.where(statu: "フロントNG")
     td
-      = @call_count.where(statu: "APP").count
+      = @call_count.where(statu: "クロージングNG")
     td
-      = @call_count.where(statu: "キャンセル").count
-    td
-      = @call_count.where(statu: "フロントNG").count
-    td
-      = @call_count.where(statu: "根本的NG").count
-    td
-      = @call_count.where(statu: "永久NG").count
+      = @call_count.where(statu: "永久NG")
   tr
     td
-      = number_to_percentage(@call_count.where(statu: "着信留守").count / @call_count.count.to_f * 100, precision: 1 )
+      = number_to_percentage(@call_count.where(statu: "着信留守") / @call_count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(@call_count.where(statu: "担当者不在").count / @call_count.count.to_f * 100, precision: 1 )
+      = number_to_percentage(@call_count.where(statu: "担当者不在") / @call_count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(@call_count.where(statu: "見込").count / @call_count.count.to_f * 100, precision: 1 )
+      = number_to_percentage(@call_count.where(statu: "見込") / @call_count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(@call_count.where(statu: "コロナ見込").count / @call_count.count.to_f * 100, precision: 1 )
+      = number_to_percentage(@call_count.where(statu: "APP") / @call_count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(@call_count.where(statu: "折返待").count / @call_count.count.to_f * 100, precision: 1 )
+      = number_to_percentage(@call_count.where(statu: "フロントNG") / @call_count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(@call_count.where(statu: "APP").count / @call_count.count.to_f * 100, precision: 1 )
+      = number_to_percentage(@call_count.where(statu: "クロージングNG") / @call_count.to_f * 100, precision: 1 )
     td
-      = number_to_percentage(@call_count.where(statu: "キャンセル").count / @call_count.count.to_f * 100, precision: 1 )
-    td
-      = number_to_percentage(@call_count.where(statu: "フロントNG").count / @call_count.count.to_f * 100, precision: 1 )
-    td
-      = number_to_percentage(@call_count.where(statu: "根本的NG").count / @call_count.count.to_f * 100, precision: 1 )
-    td
-      = number_to_percentage(@call_count.where(statu: "永久NG").count / @call_count.count.to_f * 100, precision: 1 )
+      = number_to_percentage(@call_count.where(statu: "永久NG") / @call_count.to_f * 100, precision: 1 )
 br
 br
 br
