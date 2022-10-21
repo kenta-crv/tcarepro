@@ -48,7 +48,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%FUJI（介護）%").between_nexted_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
              .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%FUJI（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%FUJI（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+              = Customer.where("industry LIKE ?", "%FUJI（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"着信留守").where("calls.created_at > ?", 30.day.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%FUJI（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
         tr
           th
             | FUJI（食品）

@@ -62,8 +62,8 @@ class Call < ApplicationRecord
         if !lastRecords.empty?
             lastRecord = lastRecords.first()
             next if ['APP', '永久NG', '根本的NG'].include?(lastRecord.statu)
-        elsif call.id == nil
-          next if self.where(id: call.id).count == 0
+        else
+          next if call.id.nil?
         end
         #Callの最新のものでみる
         call.save!
