@@ -46,7 +46,7 @@ class Customer < ApplicationRecord
   }
 
   scope :between_nexted_at, ->(from, to){
-    Call.where(updated_at: from..to).where("calls.statu": "再掲載")
+    joins(:calls).where("calls.created_at": from..to).where("calls.statu": "再掲載")
   }
 
   scope :between_called_at, ->(from, to){
@@ -59,7 +59,7 @@ class Customer < ApplicationRecord
 
 
   scope :ltec_calls_count, ->(count){
-    filter_ids = Call.group("calls.customer_id").having('count(*) <= ?',count).count.keys
+    filter_ids = joins(:calls).group("calls.customer_id").having('count(*) <= ?',count).count.keys
     where(id: filter_ids)
   }
 
