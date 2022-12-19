@@ -27,7 +27,7 @@
         th
           | URLアクセス日時
     - @customers.each do |customer|
-      - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
+      - contact_tracking = @contact_trackings.first
       tr
         td
           = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
@@ -46,7 +46,7 @@
         = paginate @customers
 
 
-= form_tag sender_okurite_autosettings_path(sender_id: params[:sender_id],q: params[:q]&.permit!, date: params[:date]&.permit!, date:@date,page: params[:page]) do
+= form_tag sender_okurite_autosettings_path(sender_id: params[:sender_id],q: params[:q]&.permit!, date: params[:date]&.permit!, page: params[:page]) do
   table.space[width="90%"]
     tbody
     tr

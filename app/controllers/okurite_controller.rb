@@ -7,8 +7,9 @@ class OkuriteController < ApplicationController
 
   def index
     @customers = @customers.where(forever: nil).where(choice: nil).page(params[:page]).per(100)
-    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
-    Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
+    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id)).before_sended_at(params[:contact_tracking_sended_at_lteq])
+    #Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
+
   end
 
   def show
@@ -121,7 +122,10 @@ class OkuriteController < ApplicationController
     @customers = @q.result.distinct
     #@customers = @customers.last_contact_trackings_only(@sender.id)
     if params[:statuses]&.map(&:presence)&.compact.present?
-      @customers = @customers.where(contact_trackings: { status: params[:statuses] })
+      @customers = @customers.eager_load(:contact_trackings).where(contact_trackings: { status: params[:statuses] })
+    end
+    if params[:contact_tracking_sended_at_lteq]&.map(&:presence)&.compact.present?
+      @customers = @customers.before_sended_at(params[:contact_tracking_sended_at_lteq])
     end
   end
 

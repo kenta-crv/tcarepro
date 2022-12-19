@@ -11,6 +11,10 @@ class ContactTracking < ApplicationRecord
     where(id: ContactTracking.select('max(id) as id').where(sender_id: sender_id).group(:customer_id))
   }
 
+  scope :before_sended_at, ->(sended_at){
+    where("sended_at <= ?", sended_at).where.not(sended_at: nil)
+  }
+
   def success?
     status == '送信済'
   end

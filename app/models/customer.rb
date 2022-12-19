@@ -63,6 +63,10 @@ class Customer < ApplicationRecord
     where(id: filter_ids)
   }
 
+  scope :before_sended_at, ->(sended_at){
+    eager_load(:contact_trackings).marge(ContactTracking.before_sended_at(sended_at))
+  }
+
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
   validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
   #validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
