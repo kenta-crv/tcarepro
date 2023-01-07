@@ -1,7 +1,10 @@
 - set_meta_tags noindex: true
 h2.heading
     | 新規登録
-= render 'form', customer: @customer
+-if user_signed_in?
+ = render 'form', customer: @customer
+-else worker_signed_in?
+ = render 'extraction_form', customer: @customer
 br
 br
 = form_tag import_customers_path, multipart: true do
