@@ -5,15 +5,7 @@ Rails.application.routes.draw do
   get 'co' => 'top#co'
 
   get 'manuals' => 'manuals#index'
-  get 'manuals/format' => 'manuals#format' #アポフォーマット
-  get 'manuals/faq' => 'manuals#faq' #よくある質問
   get 'manuals/officework' => 'manuals#officework'
-
-  get 'manuals/homework' => 'manuals#homework' #２回目の出勤について
-  get 'manuals/first' => 'manuals#first' #１回目の出勤について
-  get 'manuals/script' => 'manuals#script' #トークスクリプト
-  get 'manuals/tool' => 'manuals#tool' #各種ツール紹介
-  get 'manuals/document' => 'manuals#document' #各種ツール紹介
 
   #管理者アカウント
   devise_for :admins, controllers: {

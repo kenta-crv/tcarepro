@@ -2,21 +2,7 @@ class ManualsController < ApplicationController
   def index
   end
 
-  def format
-  end
-
-  def faq
-  end
-
-  def tool
-  end
-
-  def first
-  end
-
-  def homework
-  end
-  
   def officework
   end
+
 end
