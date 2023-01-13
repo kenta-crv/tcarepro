@@ -299,35 +299,66 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%SOUND（食品）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%SOUND（食品）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
         tr
           th
-            | 外国人材協同組合
+            | 外国人材（介護）
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_nexted_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_nexted_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_nexted_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_nexted_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合").between_nexted_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）").between_nexted_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_nexted_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_nexted_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").between_nexted_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").between_nexted_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
           td
              .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%外国人材協同組合%").ltec_calls_count(1).joins(:calls).where("calls.statu":"着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%プロレド%").ltec_calls_count(1).joins(:calls).where("calls.statu":"担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+              = Customer.where("industry LIKE ?", "%外国人材（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%プロレド%").ltec_calls_count(1).joins(:calls).where("calls.statu":"担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+        tr
+          th
+            | 外国人材（食品）
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_nexted_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_created_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_nexted_at(Time.zone.now.beginning_of_day - 8.hours, Time.zone.now.beginning_of_day + 16.hours).count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_created_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）").between_nexted_at(1.day.ago.beginning_of_day - 8.hours, 1.day.ago.beginning_of_day + 16.hours).count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_created_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_nexted_at(2.day.ago.beginning_of_day - 8.hours, 2.day.ago.beginning_of_day + 16.hours).count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_created_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").between_nexted_at(3.day.ago.beginning_of_day - 8.hours, 3.day.ago.beginning_of_day + 16.hours).count
+          td
+             .ltec_calls_count
+              = Customer.where("industry LIKE ?", "%外国人材（食品）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%プロレド%").ltec_calls_count(1).joins(:calls).where("calls.statu":"担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
         tr
           th
             | エクスオード（メーカー）
