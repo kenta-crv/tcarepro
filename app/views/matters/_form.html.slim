@@ -1,30 +1,33 @@
 = form_for @matter do |f|
 
-   table[width="90%"]
+  table[width="90%"]
      tbody
       tr
-        th.arrow_box タイトル
+        th.arrow_box スプレッドシート名
+        td.center = f.text_field :sheets
+        th.arrow_box 作業タブ名
+        td.center  = f.text_field :tab
+  br
+  br
+  table[width="90%"]
+    tbody
       tr
-        td.center = text_field :matter, :title
+        th.arrow_box エリア
+        th.arrow_box 抽出業種
+        th.arrow_box 特例条件
+        th.arrow_box 注意点
       tr
-        th.arrow_box 抽出対象
+        td.center  = f.text_field :area
+        td.center = f.text_field :business
+        td.center = f.text_field :scale
+        td.center = f.text_field :warning
+  br
+  br
+  table[width="90%"]
+    tbody
       tr
-        td.center  = f.text_area :possible
+        th.arrow_box 備考
       tr
-        th.arrow_box 抽出不可
+        td.center  = f.text_area :other
       tr
-        td.center  = f.text_area :impossible
-      tr
-        th.arrow_box 詳細
-      tr
-        td.center = text_area :matter, :description
-      tr
-        th.arrow_box 送信情報
-      tr
-        td.center = text_area :matter, :information
-      tr
-        th.arrow_box 注意
-      tr
-        td.center = text_area :matter, :attention
-      tr
-        td.center = f.submit '投稿する'
+        th.center = f.submit '投稿する'

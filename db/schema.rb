@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220617082627) do
+ActiveRecord::Schema.define(version: 20230113060833) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -97,6 +97,26 @@ ActiveRecord::Schema.define(version: 20220617082627) do
     t.string "email"
     t.string "subject"
     t.string "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "contracts", force: :cascade do |t|
+    t.string "company"
+    t.string "service"
+    t.string "search_1"
+    t.string "target_1"
+    t.string "search_2"
+    t.string "target_2"
+    t.string "search_3"
+    t.string "target_3"
+    t.string "slack_account"
+    t.string "slack_id"
+    t.string "slack_password"
+    t.string "area"
+    t.string "sales"
+    t.string "calender"
+    t.string "other"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -287,18 +307,15 @@ ActiveRecord::Schema.define(version: 20220617082627) do
   end
 
   create_table "matters", force: :cascade do |t|
-    t.string "title"
-    t.string "description"
-    t.string "possible"
-    t.string "impossible"
-    t.string "information"
-    t.string "attention"
-    t.integer "admin_id"
-    t.integer "member_id"
+    t.string "sheets"
+    t.string "tab"
+    t.string "area"
+    t.string "business"
+    t.string "scale"
+    t.string "warning"
+    t.string "other"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_id"], name: "index_matters_on_admin_id"
-    t.index ["member_id"], name: "index_matters_on_member_id"
   end
 
   create_table "ng_customers", force: :cascade do |t|

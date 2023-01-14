@@ -126,6 +126,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :contracts
+
   get '*path', controller: 'application', action: 'render_404'
 
 

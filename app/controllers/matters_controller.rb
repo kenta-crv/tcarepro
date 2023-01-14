@@ -44,12 +44,13 @@ class MattersController < ApplicationController
     private
     def matter_params
       params.require(:matter).permit(
-        :title, #タイトル
-        :description, #詳細
-        :possible, #可能
-        :impossible, #不可能
-        :information, #送信情報
-        :attention #注意
+        :sheets,
+        :tab,
+        :area,
+        :business,
+        :scale,
+        :warning,
+        :other
         )
     end
 end
