@@ -61,3 +61,33 @@
         th.arrow_box 備考
       tr
         td.center = @contract.other
+
+  br
+  br
+
+table[width="90%"]
+  = form_for([@contract, @contract.images.build]) do |f|
+   tr
+    th.arrow_box
+     | ファイルアップロード
+    td
+      = f.text_field :title
+    th.arrow_box
+     = f.file_field :picture
+    td
+     = f.submit "送信"
+
+br
+table[width="90%"]
+ - if @contract.images.any?
+   - @contract.images.all.reverse_order.each do |image|
+    - if image.picture.present?
+    tr
+      th
+       = image.title
+      td.center
+       = link_to 'delete', contract_image_path(contract_id: @contract.id, id: image.id), method: :delete, class: 'btn btn-success', data: { confirm: '本当に削除しますか？' }
+      td.center
+       = link_to 'view', images_view_contract_path(image), {action: "view", id: image.id, :class => 'btn btn-success'}
+      td.center
+       = link_to 'download',images_pdf_contract_path(image), :class => 'btn btn-success'

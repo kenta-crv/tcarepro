@@ -8,8 +8,8 @@
        th 取引先企業名
        th 最終更新日
        th
-      tr
       - @contracts.each do |contract|
+       tr
         td
           = link_to contract.company, contract_path(contract)
         td

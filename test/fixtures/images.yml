@@ -1,9 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  crm: one
-  images: MyString
+  contract: one
 
 two:
-  crm: two
-  images: MyString
+  contract: two

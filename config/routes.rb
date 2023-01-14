@@ -126,7 +126,13 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :contracts
+  resources :contracts do
+    resources :images, only: [:create, :destroy, :update, :download, :edit]
+    member do
+      get 'images/view'
+      get 'images/download/:id' => 'images#download' ,as: :images_pdf
+    end
+  end
 
   get '*path', controller: 'application', action: 'render_404'
 
