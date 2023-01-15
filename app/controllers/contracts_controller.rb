@@ -58,7 +58,7 @@ class ContractsController < ApplicationController
         :area,
         :sales,
         :calender,
-        :other
+        :otherz
         )
     end
 end
