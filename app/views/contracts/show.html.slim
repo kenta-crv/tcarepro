@@ -65,15 +65,15 @@
   br
   br
 
-table[width="90%"]
-  = form_for([@contract, @contract.images.build]) do |f|
+= form_for([@contract, @contract.images.build]) do |f|
+  table[width="90%"]
    tr
     th.arrow_box
      | ファイルアップロード
     td
       = f.text_field :title
     th.arrow_box
-     = f.file_field :picture
+      = f.file_field :picture
     td
      = f.submit "送信"
 
