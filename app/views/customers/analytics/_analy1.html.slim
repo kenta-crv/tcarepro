@@ -449,6 +449,73 @@ table.header-table[width="90%"]
     td
       = @camtech2_sales
   tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（販売）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%コンシェルテック（販売）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（販売）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    - @concier_sale = @detailAppCount * 16500
+    th
+      | コンシェルテック（販売）
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @concier_sale
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（営業）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%コンシェルテック（営業）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（営業）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    - @concier_sales = @detailAppCount * 16500
+    th
+      | コンシェルテック（営業）
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @concier_sales
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%コンシェルテック（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    - @concier_nursing = @detailAppCount * 16500
+    th
+      | コンシェルテック（介護）
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @concier_nursing
+
+  tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%日本海（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%日本海（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailAppCount = @detailcalls.where("industry LIKE ?", "%日本海（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -492,7 +559,28 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @nihonkai2_sales
-
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%オリーヴ（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%オリーヴ（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%オリーヴ（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    - @orive_sales = @detailAppCount * 25000
+    th
+      | オリーヴ（介護）
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @orive_sales
   tr
     th
       | 合計
@@ -503,7 +591,7 @@ table.header-table[width="90%"]
     td
     td
     td
-      = @sorairo1_sales + @sorairo2_sales + @fuji1_sales + @fuji2_sales + @fuji3_sales + @ahr2_sales + @ahr_sales + @sound_sales + @sound2_sales + @foreign1_sales + @foreign2_sales + @ex2_sales + @ex3_sales + @camtech1_sales + @camtech2_sales + @nihonkai1_sales + @nihonkai2_sales
+      = @sorairo1_sales + @sorairo2_sales + @fuji1_sales + @fuji2_sales + @fuji3_sales + @ahr2_sales + @ahr_sales + @sound_sales + @sound2_sales + @foreign1_sales + @foreign2_sales + @ex2_sales + @ex3_sales + @camtech1_sales + @camtech2_sales + @concier_sale + @concier_sales + @concier_nursing + @orive_sales + @nihonkai1_sales + @nihonkai2_sales
 
 br
 br
