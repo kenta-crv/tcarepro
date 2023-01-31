@@ -4,33 +4,51 @@
  h1.headline 登録手順
  br
  .cp_qa
-  /.cp_actab
-  /  input#cp_tabfour0001[type="checkbox" name="tabs"]
-  /  label[for="cp_tabfour0001"]
-  /    | スマレジ登録
-  /  .cp_actab-content
-  /    p
-  /     | 勤怠管理システム『スマレジ』の招待をお送りします。招待メールが到着しましたら、ご登録をお願いします。（招待メールが届いていない場合はご連絡ください。）
-  /.cp_actab
-  /  input#cp_tabfour0002[type="checkbox" name="tabs"]
-  /  label[for="cp_tabfour0002"]
-  /    | TCAREシステムへの登録
-  /  .cp_actab-content
-  /    p
-  /     | CTIシステム『TCARE』は毎日のインポート処理を行うために使用します。以下URLより会員登録を行いましょう。
-  /     br
-  /     = link_to "ユーザー登録","https://tcare.pro/users/sign_up", class:"btn btn-success", target:"_brank"
-  /.cp_actab
-  /  input#cp_tabfour0202[type="checkbox" name="tabs"]
-  /  label[for="cp_tabfour0202"]
-  /    | 業務委託契約書の締結
-  /  .cp_actab-content
-  /    p
-  /     | 業務委託契約の締結を行います。弊社より業務委託契約書発送を行いますので、到着しましたら押印の上、一部は保管し、もう一部は弊社までご返送ください。
-  /     br
-  /     | 【送付先】
-  /     be
-  /     |〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7F　株式会社Ri-Plus　050-5480-1131
+  .cp_actab
+    input#cp_tabfour0001[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0001"]
+      | スマレジ登録（※現在は登録しなくてOK）
+    .cp_actab-content
+      p
+       | 勤怠管理システム『スマレジ』の招待をお送りします。招待メールが到着しましたら、ご登録をお願いします。（招待メールが届いていない場合はご連絡ください。）
+  .cp_actab
+    input#cp_tabfour0002[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0002"]
+      | TCAREシステムへの登録
+    .cp_actab-content
+      p
+       | CTIシステム『TCARE』は毎日のインポート処理を行うために使用します。以下URLよりユーザー登録・管理者登録登録を行いましょう。
+       br
+       .center
+        = link_to "ユーザー登録","https://tcare.pro/users/sign_up", class:"btn btn-success", target:"_blank"
+        = link_to "管理者登録","https://tcare.pro/admins/sign_up", class:"btn btn-success", target:"_blank"
+  .cp_actab
+    input#cp_tabfour033[type="checkbox" name="tabs"]
+    label[for="cp_tabfour033"]
+      | googleカレンダーのログイン
+    .cp_actab-content
+      p
+        | 面接者と日程調整を行う際に、googleカレンダーの閲覧が必要となりますのでログインをお願い致します。
+        .center
+         br
+         = link_to "googleカレンダー", "https://calendar.google.com/calendar/u/0/r", target:"_blank", class:"btn btn-success"
+         br
+         | ID:riplus1020@gmail.com  PASS:RiPlus20200402
+         br
+         small
+          | ※googleカレンダーはセキュリティが厳しいため、ログインができない可能性があります。その場合は初回オンライン研修時に行いますので申し出てください。
+         br
+  .cp_actab
+    input#cp_tabfour0202[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0202"]
+      | ※業務委託契約書の締結
+    .cp_actab-content
+      p
+       | 業務委託契約の締結を行います。弊社より業務委託契約書発送を行いますので、到着しましたら押印の上、一部は保管し、もう一部は弊社までご返送ください。
+       br
+       | 【送付先】
+       be
+       |〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7F　株式会社Ri-Plus　050-5480-1131
   .cp_actab
     input#cp_tabfour0003[type="checkbox" name="tabs"]
     label[for="cp_tabfour0003"]
@@ -46,33 +64,37 @@
       p
        | 弊社では業務のやりとりは全てslackで行なっております。業務委託の方とのやりとりは別slackのワークスペースを設けておりますので、以下よりログインをお願いします。
        br
-       = link_to "slackログイン", "https://app.slack.com/client/TPRF81CF7/CPE15NXNX", class: "btn btn-success", target:"_brank"
-       br
-       | ワースクスペース：app-takumi.slack.com　ID：mail@ri-plus.jp　PASS：Riplus20200402
-       | ワースクスペース：mail-okurite.slack.com　ID：mail@ri-plus.jp　PASS：riplus20200402
+       small
+        | (※定期的にパスワード変更を行っている関係で、ログインできない場合がございます。その場合はご連絡下さい。)
+       .center
+        = link_to "slackログイン", "https://app.slack.com/client/TPRF81CF7/CPE15NXNX", class: "btn btn-success", target:"_brank"
+        br
+        br
+        | 【リスト制作者管理用】
+        br
+        | ワークスペース：app-takumi.slack.com　ID：mail@ri-plus.jp　PASS：Riplus20200402
+        br
+        | 【メール送信者管理用】
+        br
+        | ワークスペース：mail-okurite.slack.com　ID：mail@ri-plus.jp　PASS：riplus20200402
   .cp_actab
     input#cp_tabfour0106[type="checkbox" name="tabs"]
     label[for="cp_tabfour0106"]
       | メールアカウント登録
     .cp_actab-content
       p
-      | メールが来た際のチェックを行なって頂くメール設定を行なって頂きます。メール設定は使用するメーラーにより設定方法が異なりますので、インターネットサイトにて『お名前.com （メーラー名）　アカウント設定』等で検索いただければと存じます。
+      | メールが来た際のチェックを行なって頂くメール設定を行なって頂きます。メール設定は使用するメーラーにより設定方法が異なりますので、インターネットサイトにて『お名前.com （メーラー名）アカウント設定』等で検索いただければと存じます。
       br
       br
       | ❶メールアドレス：mail@ri-plus.jp	アカウント名：mail@ri-plus.jp	パスワード：pgkgbTnx#6　受信サーバー：pop3.gmoserver.jp	送信サーバー：smtp3.gmoserver.jp
       br
       br
-      | ❷メールアドレス：cost@comicomi.cc	アカウント名：cost@comicomi.cc	パスワード：uTXG##H8　受信サーバー：pop3.gmoserver.jp	送信サーバー：smtp3.gmoserver.jp
-      br
-      br
-      | ❸メールアドレス：subsidy@comicomi.cc	アカウント名：subsidy@comicomi.cc	パスワード：i&t1L972　受信サーバー：pop3.gmoserver.jp	送信サーバー：smtp3.gmoserver.jp
-      br
-      br
-      | ❹メールアドレス：mail@app-sc.jp	アカウント名：mail@app-sc.jp	パスワード：Xm8DuUL#Q　受信サーバー：pop3.gmoserver.jp	送信サーバー：smtp3.gmoserver.jp
+      | ❷メールアドレス：recruit@ri-plus.jp	アカウント名：recruit@ri-plus.jp	パスワード：yL4meDV#q　受信サーバー：pop3.gmoserver.jp	送信サーバー：smtp3.gmoserver.jp
+
   .cp_actab
     input#cp_tabfour0116[type="checkbox" name="tabs"]
     label[for="cp_tabfour0116"]
-      | SMART Talkのダウンロード・ログイン
+      | SMART Talkのダウンロード・ログイン（現在は登録しなくてOK）
     .cp_actab-content
       p
        | ご自身のスマートフォンに電話受付専用アプリのダウンロードをお願いします。会社に電話がかかってきた際に対応頂くアプリとなります。ログイン完了後、身内のダイヤル等でも構いませんので、電話接続が問題ないかのテストコールを必ず実施してください。
@@ -89,7 +111,7 @@
       p
        | 弊社ではクラウドワークスで業務委託者と契約や業務進行をしております。以下のURLよりログインを行なっておきましょう。（2つ目は旧アカウントとなります。使用する場合が御座いますので、こちらも控えておいてください。）
        br
-       = link_to "クラウドワークスログイン","https://crowdworks.jp/login?ref=toppage_hedder", target:"_brank"
+       = link_to "クラウドワークスログイン","https://crowdworks.jp/login?ref=toppage_hedder", target:"_brank", class:"btn btn-success"
        br
        | ID:other@ri-plus.jp PASS:Riplus20200402
 
@@ -104,89 +126,188 @@
       | クラウドワーカーの募集
     .cp_actab-content
       p
-      .center
-       = video_tag("/videos/発注作業.mov", :controls => true,  :width=> "70%")
+       | リスト制作者は全てCWを活用して募集します。事務の基本となる作業の中で、『リストを枯渇させずに制作管理』することが一番の重要ポイントとなります。枯渇しないよう、日々新規募集については新規掲載するよう心がけましょう。
+       br
+       | 尚、掲載中のタイトルを複数提示すると稀にアカウント制限が発生しますので、タイトル文面や内容については随時マイナーチェンジしながら新規掲載を行っていくことを心がけましょう。
+       .center
+        iframe width="560" height="315" src="https://www.youtube.com/embed/dnzdIbBpdlk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
   .cp_actab
     input#cp_tabfour002[type="checkbox" name="tabs"]
     label[for="cp_tabfour002"]
-      | 採用作業
+      | クラウドワーカー見極め
     .cp_actab-content
       p
-      .center
-       = video_tag("/videos/採択作業.mov", :controls => true,  :width=> "70%")
+       | CWを採択する際、基本的には全員採用の方針で構いません。この辺りは自身の実践経験を積みながら任意に行っていきましょう。推奨としては、
+       br
+       |・評価がない新規ユーザー
+       br
+       |・星の評価が低いユーザー
+       br
+       | は敬遠する方が無難かと思われます。また、採択しないユーザーについてはCWにて必ず断りに文章を送っておきましょう。（人数表示がされなくなり、管理しやすくなるため）
+  .cp_actab
+      input#cp_tabfour0022[type="checkbox" name="tabs"]
+      label[for="cp_tabfour0022"]
+        | クラウドワーカー発注
+      .cp_actab-content
+        p
+         | クラウドワーカーに発注を行う場合、テンプレートに従いDMの送信を行いましょう。この際、
+         br
+         |・トライアル実施契約金1000円
+         br
+         |・サービス外連絡申請
+         br
+         | を忘れずに行うようにしましょう。尚、応募を増やすために文面のマイナーチェンジや提示条件の変更も行い、人材が枯渇しないように心がけましょう。
+        .center
+         iframe width="560" height="315" src="https://www.youtube.com/embed/mqd0hPES6Dg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
   .cp_actab
     input#cp_tabfour202[type="checkbox" name="tabs"]
     label[for="cp_tabfour202"]
       | 契約・仮払い・Slack誘導
     .cp_actab-content
       p
+       | ワーカーの方からCWDM返信でメールアドレスが到着した場合、契約・仮払いを行い、slackへの招待を行いましょう。ここでもワーカーを選別するポイントとして、
+       br
+       | ・メールアドレスの返事がないユーザー
+       br
+       | は任意で決めて頂いても結構ですが、そのまま契約終了するのが無難です。理由としては、メールの送信内容を明らかに閲覧せずにおり、リスト制作時にも閲覧なく取り組むユーザーとなり得ます。
+       br
+       | このようなユーザーに当たり、対応をしてしまうと業務時間が大きくロスされてしまいますので、上手く線引きをするのがおすすめです。
       .center
-       = video_tag("/videos/契約仮払い.mov", :controls => true,  :width=> "70%")
+       iframe width="560" height="315" src="https://www.youtube.com/embed/3qpPtyaPNtQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
   .cp_actab
     input#cp_tabfour003[type="checkbox" name="tabs"]
     label[for="cp_tabfour003"]
       | 業務案内開始
     .cp_actab-content
       p
-        |お世話になっております。ご連絡遅くなり失礼しました。
+        | slackにユーザーがエントリーしたら、DMの株式会社Ri-Plusでユーザー割り振り、またスプレッドシートの各進捗状況を確認し、比較的進行の遅い箇所を補充するようにユーザーに作業割り振りを行いましょう。
         br
-        |先ほどスプレッドシートへのご招待が完了しました。
-        br
-        |#【チャンネル名】 の中の　
-        br
-        |業務名：【案件名】
-        br
-        |の作業をお願い出来ますでしょうか？
-        br
-        |ご不明点があればお問い合わせ下さいませ。
-        br
-        |行数：【行目】から作業お願いします。
-        br
-        |また件数において把握の目的より作業終了後に都度、以下内容を送信頂ければと存じます。
-        br
-        |●/● 実施●件
-        br
-        |また最初は確認のために20件抽出後にご連絡頂けますでしょうか？
-        br
-        |スタート時、抽出条件を読まずにミスをされる方が非常に多いので、必ず抽出条件を確認の上で最初は1件1件丁寧に進めてください。
-        br
-        |よろしくお願い致します。
+      .center
+        iframe width="560" height="315" src="https://www.youtube.com/embed/qz_L2Wnqk6Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
   .cp_actab
     input#cp_tabfour004[type="checkbox" name="tabs"]
     label[for="cp_tabfour004"]
-      | 業務チェック・管理
+      | 業務管理・追い・進行チェック
     .cp_actab-content
       p
+       | 事務の主となる業務は、『リスト進行の管理』がメインとなります。リストが不足することが最も会社にとって影響を与えますので、その部分に十分に注意し、ワーカーとのやり取りを行いましょう。
+       br
+       | 追い：初回DM送信から1日以上連絡がなければ『作業を行うかの確認』
+       br
+       | 業務管理：実施業務にミスがないかの確認
+       br
+       | ①熟練のワーカー：基本ミスがないので報告で遅延なく業務を行っているかチェックとインポート時に不備がないか確認程度（slackでスターを付けている方）
+       br
+       | ②初回チェッククリアスタッフ：ミスが発生している可能性もあるので③ほどではないにしても注意。どちらかというと業務を日々行っていただけるかを重点的に確認。（共に問題なければスターを付けてフェーズアップ）
+       br
+       | ③初回スタッフ：基本的にはミスが発生する可能性が多いので、入念にミスチェックと、業務報告を規定に従って実施しているかを重点的に確認。
+       br
       .center
-        = video_tag("/videos/内容チェック.mov", :controls => true,  :width=> "70%")
-        br
-        = video_tag("/videos/CW対応.mov", :controls => true,  :width=> "70%")
+       iframe width="560" height="315" src="https://www.youtube.com/embed/IFPFtk1dIBU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+  .cp_actab
+    input#cp_tabfour0044[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0044"]
+      | 契約終了リクエスト
+    .cp_actab-content
+      p
+       | 一人のユーザーに固執してしまうと、余分に業務時間が過ぎてしまいます。『実施しない方はしない』ので、
+       br
+       |・初回作業案内を行い、かつ催促を行っても作業がない
+       br
+       |・作業はあるが、質問数が異常に多い
+       br
+       |・業務は行うが、作業内容を閲覧していないであろう作業を繰り返す
+       br
+       |・業務報告がなく催促しないと実施しない
+       br
+       |・作業件数が少ない
+       br
+       | ユーザーについては契約終了をある程度積極的に実施し、人材の入れ替えを行っていきましょう。
+      .center
+        iframe width="560" height="315" src="https://www.youtube.com/embed/u6nJtJAAkx0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
   .cp_actab
     input#cp_tabfour106[type="checkbox" name="tabs"]
     label[for="cp_tabfour106"]
-      | 支払処理
+      | 検収
     .cp_actab-content
       p
-      .center
-        = video_tag("/videos/検収.mp4", :controls => true,  :width=> "70%")
+       | ワーカーが契約金額に達した際にCWより検収作業を行います。ワーカーによっては、契約金額に達していないにも関わらず納品を上げる方がいるため、確認を行ってから支払いを行いましょう。
+       br
+       | ①1000円の初回契約をクリアしたワーカー：次回契約更新の確認を行った上で、CW『（継続用）〜』タイトルで5000円継続契約
+       br
+       | ②5000円契約も終了したワーカー：次回以降は追加払いにて現状契約を保持し支払う旨の通知
   .cp_actab
     input#cp_tabfour116[type="checkbox" name="tabs"]
     label[for="cp_tabfour116"]
-      | 継続フロー
+      | 継続フロー（※後日掲載）
     .cp_actab-content
       p
       .center
-        = video_tag("/videos/継続発注.mov", :controls => true,  :width=> "70%")
   .cp_actab
     input#cp_tabfour006[type="checkbox" name="tabs"]
     label[for="cp_tabfour006"]
-      | スプレッドシート重複チェック
+      | リスト追加
     .cp_actab-content
       p
+       | リスト追加依頼があった際は、管理者にその旨をご連絡ください。管理者よりslackDMにて新規リストをお送りします。到着しましたら、スプレッドシートにアップロードし、ワーカーに通知しましょう。
       .center
-        = video_tag("/videos/スプレッドシート重複チェック.mov", :controls => true,  :width=> "70%")
+       iframe width="560" height="315" src="https://www.youtube.com/embed/tGnu5_E7HjQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
 
- h1.headline 日々業務
+  h1.headline 面接対応
+  br
+  .cp_qa
+   .cp_actab
+     input#cp_tabfour0071[type="checkbox" name="tabs"]
+     label[for="cp_tabfour0071"]
+       | indeedの掲載
+     .cp_actab-content
+       p
+        | 当社の求人募集は現在indeedにて行っており、有料広告を定期的に掲載します。掲載におけるポイントとして、
+        br
+        | ①掲載は基本新規広告で作成し、若干文面を変える（動画では複製ですが新規広告作成で対応）
+        br
+        | ②広告費は手動単価15円・総額4000円にて出稿
+        br
+        | ③差はありますが、20~30件台の応募が集まるとその後は募集が伸びないため、タイミングで①作業を繰り返す
+       .center
+         iframe width="560" height="315" src="https://www.youtube.com/embed/dF4kLwmE3pE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+   .cp_actab
+     input#cp_tabfour0081[type="checkbox" name="tabs"]
+     label[for="cp_tabfour0081"]
+       | 面接日程調整
+     .cp_actab-content
+       p
+         | indeedから応募メールを受信した場合、都度日程調整を行っていきます。日程調整の注意点は以下となります。
+         br
+         |・10:00~14:00で直近のカレンダー空き日３日を提示します
+         br
+         |・先方からは不可日程日のみを返信いただきます。（指定日を設けた返信は再度日時メールを依頼）
+         br
+         |・11~12時頃を優先に、早い日にちから日程を埋めていきます。
+         br
+         |・電話面接は10分置きの日程調整となり、必ず詰めて日程を埋めていきます。
+       .center
+        iframe width="560" height="315" src="https://www.youtube.com/embed/S2wHkd5xUFI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+   .cp_actab
+     input#cp_tabfour0082[type="checkbox" name="tabs"]
+     label[for="cp_tabfour0082"]
+       | 面接日程調整
+     .cp_actab-content
+       p
+         | indeedから応募メールを受信した場合、都度日程調整を行っていきます。日程調整の注意点は以下となります。
+         br
+         |・10:00~14:00で直近のカレンダー空き日３日を提示します
+         br
+         |・先方からは不可日程日のみを返信いただきます。（指定日を設けた返信は再度日時メールを依頼）
+         br
+         |・11~12時頃を優先に、早い日にちから日程を埋めていきます。
+         br
+         |・電話面接は10分置きの日程調整となり、必ず詰めて日程を埋めていきます。
+       .center
+        iframe width="560" height="315" src="https://www.youtube.com/embed/S2wHkd5xUFI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+
+
+ h1.headline 日々業務（※未作業）
  br
  .cp_qa
   .cp_actab
@@ -258,7 +379,7 @@
       .center
         = video_tag("/videos/アポ報告（カレンダー）.mov", :controls => true,  :width=> "70%")
 
- h1.headline 定期業務（20日/25日/30日）
+ h1.headline 定期業務（20日/25日/30日）（※未作業）
  br
  .cp_qa
   .cp_actab
@@ -296,7 +417,8 @@
     .cp_actab-content
       p
         | 弊社では、請求を決済代行会社Paidで行なっております。上記で集計を行なった後に、弊社担当者にチェックを受け、問題がないようでしたら請求書の発行手続きをお願いします。
- h1.headline 契約業務
+
+ h1.headline 契約業務（※未作業）
  br
  .cp_qa
   .cp_actab
@@ -361,78 +483,6 @@
     input#cp_tabfour025[type="checkbox" name="tabs"]
     label[for="cp_tabfour025"]
       | Googleカレンダー共有承認
-    .cp_actab-content
-      p
-        |
-
- h1.headline フリーランス管理
- br
- .cp_qa
-  .cp_actab
-    input#cp_tabfour026[type="checkbox" name="tabs"]
-    label[for="cp_tabfour026"]
-      | 面接日程調整
-    .cp_actab-content
-      p
-      .center
-        = video_tag("/videos/面接日程調整.mov", :controls => true,  :width=> "70%")
-  .cp_actab
-    input#cp_tabfour027[type="checkbox" name="tabs"]
-    label[for="cp_tabfour027"]
-      | オンライン面接日程調整
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour028[type="checkbox" name="tabs"]
-    label[for="cp_tabfour028"]
-      | 初回手続きメールの送信
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour029[type="checkbox" name="tabs"]
-    label[for="cp_tabfour029"]
-      | Slackでの質疑応答
-    .cp_actab-content
-      p
-        |
-
- h1.headline ブログ運用
- br
- .cp_qa
-  .cp_actab
-    input#cp_tabfour030[type="checkbox" name="tabs"]
-    label[for="cp_tabfour030"]
-      | 対象の10サイト
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour031[type="checkbox" name="tabs"]
-    label[for="cp_tabfour031"]
-      | ライティングタイトル考案
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour032[type="checkbox" name="tabs"]
-    label[for="cp_tabfour032"]
-      | クラウドワークスタスク募集
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour033[type="checkbox" name="tabs"]
-    label[for="cp_tabfour033"]
-      | 採用・不採択の見分け方
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour034[type="checkbox" name="tabs"]
-    label[for="cp_tabfour034"]
-      | 記事の貼り付け
     .cp_actab-content
       p
         |
