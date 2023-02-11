@@ -564,7 +564,7 @@ table.header-table[width="90%"]
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%オリーヴ（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailAppCount = @detailcalls.where("industry LIKE ?", "%オリーヴ（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @orive_sales = @detailAppCount * 25000
+    - @orive_sales = @detailAppCount * 27500
     th
       | オリーヴ（介護）
     td

@@ -5,7 +5,10 @@
   table[width="90%"]
      tbody
       tr
-        th.arrow_box 会社名
+        th.arrow_box 
+         | 会社名
+         = link_to '（編集）', edit_contract_path(@contract), class: 'command'
+
       tr
         td.center = @contract.company
   br

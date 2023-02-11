@@ -30,7 +30,6 @@
       p
         | 面接者と日程調整を行う際に、googleカレンダーの閲覧が必要となりますのでログインをお願い致します。
         .center
-         br
          = link_to "googleカレンダー", "https://calendar.google.com/calendar/u/0/r", target:"_blank", class:"btn btn-success"
          br
          | ID:riplus1020@gmail.com  PASS:RiPlus20200402
@@ -44,18 +43,14 @@
       | ※業務委託契約書の締結
     .cp_actab-content
       p
-       | 業務委託契約の締結を行います。弊社より業務委託契約書発送を行いますので、到着しましたら押印の上、一部は保管し、もう一部は弊社までご返送ください。
-       br
-       | 【送付先】
-       be
-       |〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7F　株式会社Ri-Plus　050-5480-1131
+       | 業務委託契約の締結を行います。slackにてPDFでお送り致しますので、押印頂き、slackでデータをご返信下さいませ。
   .cp_actab
     input#cp_tabfour0003[type="checkbox" name="tabs"]
     label[for="cp_tabfour0003"]
       | 本人確認書類送付
     .cp_actab-content
       p
-        |業務を行うにあたり、身分証明書・振り込み口座情報の分かる書類の送付をお願いします。書類はslack（担当：奥山）宛に添付データにてお送りくださいませ。
+        |  業務を行うにあたり、身分証明書・振り込み口座情報の分かる書類の送付をお願いします。書類はslack（担当：奥山）宛に添付データにてお送りくださいませ。
   .cp_actab
     input#cp_tabfour0004[type="checkbox" name="tabs"]
     label[for="cp_tabfour0004"]
@@ -90,7 +85,7 @@
       br
       br
       | ❷メールアドレス：recruit@ri-plus.jp	アカウント名：recruit@ri-plus.jp	パスワード：yL4meDV#q　受信サーバー：pop3.gmoserver.jp	送信サーバー：smtp3.gmoserver.jp
-
+      br
   .cp_actab
     input#cp_tabfour0116[type="checkbox" name="tabs"]
     label[for="cp_tabfour0116"]
@@ -99,7 +94,7 @@
       p
        | ご自身のスマートフォンに電話受付専用アプリのダウンロードをお願いします。会社に電話がかかってきた際に対応頂くアプリとなります。ログイン完了後、身内のダイヤル等でも構いませんので、電話接続が問題ないかのテストコールを必ず実施してください。
        br
-       = link_to "SMART TALK","https://ip-phone-smart.jp/smart/smartalk/", target: "_blank"
+       = link_to "SMART TALK","https://ip-phone-smart.jp/smart/smartalk/", target: "_blank", class:"btn btn-success"
        br
        | SIPアカウント：54801131 SIPパスワード：MnMMsWPz
 
@@ -109,7 +104,7 @@
       | クラウドワークスのアカウント
     .cp_actab-content
       p
-       | 弊社ではクラウドワークスで業務委託者と契約や業務進行をしております。以下のURLよりログインを行なっておきましょう。（2つ目は旧アカウントとなります。使用する場合が御座いますので、こちらも控えておいてください。）
+       | 弊社ではクラウドワークスで業務委託者と契約や業務進行をしております。以下のURLよりログインを行なっておきましょう。
        br
        = link_to "クラウドワークスログイン","https://crowdworks.jp/login?ref=toppage_hedder", target:"_brank", class:"btn btn-success"
        br

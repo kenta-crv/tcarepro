@@ -54,11 +54,11 @@ class ContractsController < ApplicationController
         :target_3,
         :slack_account,
         :slack_id,
-        :slack_pass,
+        :slack_password,
         :area,
         :sales,
         :calender,
-        :otherz
+        :other
         )
     end
 end
