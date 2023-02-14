@@ -34,9 +34,6 @@
         th
           | 電話番号
         th
-         - if admin_signed_in?
-          | メールアドレス
-         - else
           | 住所
         th
           | ステータス
@@ -62,9 +59,6 @@
         td
           = customer.tel
         td
-         - if admin_signed_in?
-          = customer.mail
-         - else
           = customer.address
         td
           = customer.last_call.try(:statu)
