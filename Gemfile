@@ -114,3 +114,5 @@ gem 'open_uri_redirections'
 gem 'active_hash'
 #グラフツール
 gem 'chartkick'
+
+gem 'zeroclipboard-rails'
