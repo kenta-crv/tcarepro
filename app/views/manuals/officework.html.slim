@@ -10,7 +10,10 @@
       | スマレジ登録（※現在は登録しなくてOK）
     .cp_actab-content
       p
-       | 勤怠管理システム『スマレジ』の招待をお送りします。招待メールが到着しましたら、ご登録をお願いします。（招待メールが届いていない場合はご連絡ください。）
+       | 勤怠管理システム『スマレジ』の招待をお送りします。招待メールが到着しましたら、ご登録をお願いします。
+       br
+       .center
+        = link_to "タイムカード", "https://timecard1.smaregi.jp/top", class:"btn btn-success"
   .cp_actab
     input#cp_tabfour0002[type="checkbox" name="tabs"]
     label[for="cp_tabfour0002"]
@@ -331,102 +334,59 @@
   .cp_actab
     input#cp_tabfour009[type="checkbox" name="tabs"]
     label[for="cp_tabfour009"]
-      | メールチェック（メールマーケティング）
+      | メールチェック
     .cp_actab-content
       p
+       日に一度、メールチェックを行いましょう。メールチェックを行い、問い合わせメールが見つかった場合、管理者に企業名やメールアドレス・文面を含め連絡を行いましょう。
       .center
-        = video_tag("/videos/メールチェック.mov", :controls => true,  :width=> "70%")
-  .cp_actab
-    input#cp_tabfour010[type="checkbox" name="tabs"]
-    label[for="cp_tabfour010"]
-      | メール対応（通常メール）
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour011[type="checkbox" name="tabs"]
-    label[for="cp_tabfour011"]
-      | Slack顧客対応
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour012[type="checkbox" name="tabs"]
-    label[for="cp_tabfour012"]
-      | Slackクラウドワーカー対応
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour111[type="checkbox" name="tabs"]
-    label[for="cp_tabfour111"]
-      | アポ報告（slack）
-    .cp_actab-content
-      p
-      .center
-        = video_tag("/videos/アポ報告（slack）mov", :controls => true,  :width=> "70%")
-  .cp_actab
-    input#cp_tabfour112[type="checkbox" name="tabs"]
-    label[for="cp_tabfour112"]
-      | アポ報告（カレンダー）
-    .cp_actab-content
-      p
-      .center
-        = video_tag("/videos/アポ報告（カレンダー）.mov", :controls => true,  :width=> "70%")
-
- h1.headline 定期業務（20日/25日/30日）（※未作業）
+        iframe width="560" height="315" src="https://www.youtube.com/embed/xyd-2lB7eco" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+ h1.headline 単発業務
  br
  .cp_qa
   .cp_actab
     input#cp_tabfour013[type="checkbox" name="tabs"]
     label[for="cp_tabfour013"]
-      | シフト依頼（毎月20日）・シフト共有（毎月25日）
+      | シフト依頼（毎月20日）
     .cp_actab-content
       p
-        | 弊社では毎月20日にスタッフにシフト提出依頼を行い、毎月25日にシフト決定連絡を行います。基本的には特例がない限り、シフト希望通りにシフトを組みます。
+        弊社では毎月20日にスタッフにシフト提出依頼を行いましょう。
+        .center
+         iframe width="560" height="315" src="https://www.youtube.com/embed/SW_aC4H5q9s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+
   .cp_actab
     input#cp_tabfour113[type="checkbox" name="tabs"]
     label[for="cp_tabfour113"]
       | シフト修正（毎月20日）
     .cp_actab-content
       p
-       | スタッフは毎日出勤の度に打刻を行います。その際、分単位のずれが毎月積み重なり、このままでは適切な計算が出来ません。当社では残業自体が御座いませんので、全てシフト希望時通りのシフトに適正変更します。
-  .cp_actab
-    input#cp_tabfour014[type="checkbox" name="tabs"]
-    label[for="cp_tabfour014"]
-      | 給与計算・インセンティブ計算（毎月20日）
-    .cp_actab-content
-      p
-        | 弊社では毎月25日にお給料日となります。シフト修正を行なった後、給与計算とインセンティブの計算を行います。
+       スタッフは毎日出勤の度に打刻を行います。その際、分単位のずれが毎月積み重なり、このままでは適切な計算が出来ません。当社では残業自体が御座いませんので、全てシフト希望時通りのシフトに適正変更します。
+       .center  
+        iframe width="560" height="315" src="https://www.youtube.com/embed/SW_aC4H5q9s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
   .cp_actab
     input#cp_tabfour015[type="checkbox" name="tabs"]
     label[for="cp_tabfour015"]
-      | アポイント件数集計（毎月月末）
+      | アポイント件数情報相違チェック（毎月最終平日夕方）
     .cp_actab-content
       p
-        | 毎月最終勤務日の夕方頃になりましたら、締め作業として月間で獲得したアポイントの分類と、計算を行います。月末作業は非常に重要であり、かつ必ず当日中に行う必要があります。
+        | 毎月最終勤務日の夕方頃になりましたら、締め作業として月間で獲得したアポイントの整合性の確認を行います。相違がある場合、管理者に必ずご連絡ください。
+        .center
+         iframe width="560" height="315" src="https://www.youtube.com/embed/tLYO7LCJ_F0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+
   .cp_actab
     input#cp_tabfour016[type="checkbox" name="tabs"]
     label[for="cp_tabfour016"]
-      | Paid請求（毎月月末）
+      | 請求書発行（未着手）
     .cp_actab-content
       p
-        | 弊社では、請求を決済代行会社Paidで行なっております。上記で集計を行なった後に、弊社担当者にチェックを受け、問題がないようでしたら請求書の発行手続きをお願いします。
+        | 毎月月末に業務が完了した後に、請求書を作成します。
 
- h1.headline 契約業務（※未作業）
+ h1.headline 契約業務
  br
  .cp_qa
   .cp_actab
     input#cp_tabfour017[type="checkbox" name="tabs"]
     label[for="cp_tabfour017"]
-      | 契約書雛形編集
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour018[type="checkbox" name="tabs"]
-    label[for="cp_tabfour018"]
-      | メール送信業務
+      | 契約書雛形編集（未着手）
     .cp_actab-content
       p
         |
@@ -435,49 +395,40 @@
     label[for="cp_tabfour019"]
       | BtoBプラットフォーム契約締結
     .cp_actab-content
-      p
-        |
+      p 
+        |当社ではオンラインで契約締結を行っております。動画の流れに沿って契約を行いましょう。
+        br
+        |【ログイン情報】
+        br
+        | ID:info@ri-plus.jp PS：riplus20200402
+        br
+        = link_to "BtoBプラットフォーム契約","https://contract.infomart.co.jp/contract/list.page?2293", class:"btn btn-success"
+        br
+        .center
+          iframe width="560" height="315" src="https://www.youtube.com/embed/t2huXVKTxKU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
   .cp_actab
     input#cp_tabfour020[type="checkbox" name="tabs"]
     label[for="cp_tabfour020"]
       | Paid審査
     .cp_actab-content
-      p
-        |
+      p 
+        |当社では後払いを導入しているため、リスクヘッジでPaidと言う後払い決済サービスを導入しております。動画の流れに沿って仮申請を行います。
+        br
+        |【ログイン情報】
+        br
+        | ID:okuyama@ri-plus.jp PS：riplus20200402
+        br
+        = link_to "Paid","https://paid.jp/v/do/logout", class:"btn btn-success"
+        br
+        .center  
+         iframe width="560" height="315" src="https://www.youtube.com/embed/bndWWSMq06Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
  .cp_qa
   .cp_actab
     input#cp_tabfour021[type="checkbox" name="tabs"]
     label[for="cp_tabfour021"]
-      | 請求書発行
+      | 初回費用請求書発行
     .cp_actab-content
       p
-        |
- .cp_qa
-  .cp_actab
-    input#cp_tabfour022[type="checkbox" name="tabs"]
-    label[for="cp_tabfour022"]
-      | リスト制作着手
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour023[type="checkbox" name="tabs"]
-    label[for="cp_tabfour023"]
-      | トークスクリプト確認依頼
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour024[type="checkbox" name="tabs"]
-    label[for="cp_tabfour024"]
-      | Slack招待（取引先・自社スタッフ）
-    .cp_actab-content
-      p
-        |
-  .cp_actab
-    input#cp_tabfour025[type="checkbox" name="tabs"]
-    label[for="cp_tabfour025"]
-      | Googleカレンダー共有承認
-    .cp_actab-content
-      p
-        |
+        上記２点終了後、契約書に基づき請求書を発行します。請求書は現在のシステムから変更予定となるため、名目の確認のみ行いましょう。
+        .center   
+          iframe width="560" height="315" src="https://www.youtube.com/embed/qb6etcXy4Fk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
