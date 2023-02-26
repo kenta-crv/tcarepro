@@ -16,7 +16,7 @@ table.total[width="90%"]
     td = @form.call_count
     td = number_to_percentage(@form.appointment_rate, precision: 1)
     td = link_to @form.appointment_count, customers_path(@form.link_to_queries)
-    td = @form.sales
+    td = @form.incentive_total
 
 table[width="90%"]
   tr
@@ -26,14 +26,18 @@ table[width="90%"]
     th コール数
     th コールアポ率
     th アポ数
-    th 売上
+    th
+      | 売上単価
+      = link_to '(変更)', incentive_path(year: @form.year, month: @form.month), class: 'change-incentive-unit'
+    th 売上合計
   - @form.industries.each do |industry|
     tr
       th = industry.key
       td = industry.call_count
       td = number_to_percentage(industry.appointment_rate, precision: 1)
       td = link_to industry.appointment_count, customers_path(@form.link_to_queries(industry.key))
-      td = industry.sales
+      td = industry.incentive_unit
+      td = industry.incentive_total
 
 #createTicket.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
   .modal-dialog
