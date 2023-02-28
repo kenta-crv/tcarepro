@@ -1,0 +1,79 @@
+- set_meta_tags noindex: true
+br
+br
+br
+br
+table.header-table.space[width="90%"]
+  tr
+    th[colspan="6"]
+      | １日のコール状況
+  tr
+    th
+    th
+      | コール数
+    th
+      | 見込獲得数
+    th
+      | アポ数
+    th
+      | 見込獲得数
+    th
+      | アポ獲得率
+  tr
+    th
+      | 1日のコール状況
+    td
+      = @call_count_today
+      | Call
+    td
+      = @protect_count_today
+      | 件
+    td
+      = @app_count_today
+      | 件
+    td
+      = @protect_convertion_today.ceil(2)
+      | %
+    td
+      = @app_convertion_today.ceil(2)
+      | %
+  tr
+    th
+      | 1週間のコール状況
+    td
+      = @call_count_week
+      | Call
+    td
+      = @protect_count_week
+      | 件
+    td
+      = @app_count_week
+      | 件
+    td
+      = @protect_convertion_week.ceil(2)
+      | %
+    td
+      = @app_convertion_week.ceil(2)
+      | %
+  tr
+    th
+      | 1ヶ月のコール状況
+    td
+      = @call_count_month
+      | Call
+    td
+      = @protect_count_month
+      | 件
+    td
+      = @app_count_month
+      | 件
+    td
+      = @protect_convertion_month.ceil(2)
+      | %
+    td
+      = @app_convertion_month.ceil(2)
+      | %
+br
+br
+br
+br
