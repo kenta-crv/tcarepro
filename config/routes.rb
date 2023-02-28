@@ -101,6 +101,7 @@ Rails.application.routes.draw do
     resource :incentive, only: [:show, :update], path: '/incentives/:year/:month'
   end
 
+  get 'closing' => 'customers#closing' #締め
   get 'news' => 'customers#news' #インポート情報
   get 'call_history'=> 'customers#call_history' #インポート情報
   get 'export' => 'customers#export' #

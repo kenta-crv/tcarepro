@@ -147,6 +147,62 @@ class CustomersController < ApplicationController
     redirect_to request.referer
   end
 
+  def closing 
+    @type = params[:type]
+    @calls = Call.all
+    @customers =  Customer.all
+    @admins = Admin.all
+    @users = User.all
+    @customers_app = @customers.where(call_id: 1)
+    #today
+    @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
+    @call_count_today = @call_today_basic.count
+    @protect_count_today = @call_today_basic.select { |call| call.statu == "見込" }.count
+    @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
+    @app_count_today = @call_today_basic.select { |call| call.statu == "APP" }.count
+    @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
+
+    #week
+    @call_week_basic = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).to_a
+    @call_count_week = @call_week_basic.count
+    @protect_count_week = @call_week_basic.select { |call| call.statu == "見込" }.count
+    @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
+    @app_count_week = @call_week_basic.select { |call| call.statu == "APP" }.count
+    @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
+
+    #month
+    @call_month_basic = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+    @call_count_month = @call_month_basic.count
+    @protect_count_month = @call_month_basic.select { |call| call.statu == "見込" }.count
+    @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
+    @app_count_month = @call_month_basic.select { |call| call.statu == "APP" }.count
+    @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
+
+    #  ステータス別結果
+    @call_count_called = @call_month_basic.select { |call| call.statu == "着信留守" }
+    @call_count_absence = @call_month_basic.select { |call| call.statu == "担当者不在" }
+    @call_count_prospect = @call_month_basic.select { |call| call.statu == "見込" }
+    @call_count_app = @call_month_basic.select { |call| call.statu == "APP" }
+    @call_count_cancel = @call_month_basic.select { |call| call.statu == "キャンセル" }
+    @call_count_ng = @call_month_basic.select { |call| call.statu == "NG" }
+
+    # 企業別アポ状況
+    @customer2_sorairo = Customer2.where("industry LIKE ?", "%SORAIRO%")
+    @customer2_takumi = Customer2.where("industry LIKE ?", "%アポ匠%")
+    @customer2_omg = Customer2.where("industry LIKE ?", "%OMG%")
+    @customer2_kousaido = Customer2.where("industry LIKE ?", "%廣済堂%")
+    @detail_sorairo = @customer2_sorairo.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_sorairo.present?
+    @detail_takumi = @customer2_takumi.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_takumi.present?
+    @detail_omg = @customer2_omg.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_omg.present?
+    @detail_kousaido = @customer2_kousaido.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_kousaido.present?
+
+    @admins = Admin.all
+    @users = User.all
+
+    @detailcalls = Customer2.joins(:calls).select('calls.id')
+    @detailcustomers = Call.joins(:customer).select('customers.id')
+  end
+
   def information
     @type = params[:type]
     @calls = Call.all

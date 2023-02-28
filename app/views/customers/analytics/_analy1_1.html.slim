@@ -1,0 +1,98 @@
+br/
+br/
+br/
+table.header-table.space[width="90%"]
+  tr
+    th
+      | 合計
+    td
+      = @sorairo1_sales + @sorairo2_sales + @fuji1_sales + @fuji2_sales + @fuji3_sales + @grobal_sales + @sound_sales + @sound2_sales + @takara1_sales + @takara2_sales + @ex2_sales + @ex3_sales + @camtech1_sales + @camtech2_sales + @concier_sale + @concier_sales + @concier_nursing + @orive_sales + @nihonkai1_sales + @nihonkai2_sales + @gaikoku1_sales + @gaikoku2_sales
+
+br/
+br/
+br/
+br/
+table.header-table.space[width="90%"]
+  tr
+    th[colspan="11"]
+      | スタッフ別コール
+  tr
+    th
+      | スタッフ名
+    th
+      | コール数
+    th
+      | 月間コール数
+    th
+      | 着信留守
+    th
+      | 担当者不在
+    th
+      | 見込
+    th
+      | APP
+    th
+      | NG
+    th
+      | フロントNG
+    th
+      | クロージングNG
+    th
+      | 永久NG
+  - @users.each do |user|
+    - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+    tr
+      td
+        = user.user_name
+      td
+        = link_to user.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count, customers_path(calls_user_user_name_cont: user.user_name)
+      td
+        = link_to user_calls_month.count, customers_path(q:{calls_user_user_name_cont: user.user_name, created_at_from: Time.current.beginning_of_month, created_at_to: Time.current.end_of_month})
+      td
+        = user_calls_month.select { |call| call.statu == "着信留守" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "着信留守" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
+        = user_calls_month.select { |call| call.statu == "担当者不在" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "担当者不在" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
+        = user_calls_month.select { |call| call.statu == "見込" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "見込" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
+        = user_calls_month.select { |call| call.statu == "APP" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "APP" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
+        = user_calls_month.select { |call| call.statu == "NG" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
+        = user_calls_month.select { |call| call.statu == "フロントNG" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "フロントNG" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
+        = user_calls_month.select { |call| call.statu == "クロージングNG" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "クロージングNG" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
+        = user_calls_month.select { |call| call.statu == "永久NG" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "永久NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)

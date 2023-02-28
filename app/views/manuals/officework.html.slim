@@ -370,6 +370,21 @@
        .center  
         iframe width="560" height="315" src="https://www.youtube.com/embed/SW_aC4H5q9s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
   .cp_actab
+    input#cp_tabfour0155[type="checkbox" name="tabs"]
+    label[for="cp_tabfour0155"]
+      | 締めの業務フロー
+    .cp_actab-content
+      p
+        | 毎月最終平日夕方は必ず当日中に終わらせる業務となります。ここでは業務フローの確認を行いましょう。
+        br
+        | ①分析結果で出ている合計件数と、システム検索で実際に調べた検索結果で相違がないか確認を行いましょう。相違がある場合、APPのステータスが上書きされている場合がありますので、slackのアポ報告から抜けている会社がないかチェックし、件数の穴を埋めていきます。
+        br
+        | ②①が整頓出来たら、請求書の発行へ移行します。単価は分析に明記のある結果を元に入力し、請求日等ミスのないよう確認しながら請求書を発行していきます。
+        br
+        | ③内容が問題ないか確認後、管理者に内容を共有しましょう。
+        br
+        | ④チェックが完了しましたら、/customersでAPP一覧を企業毎にエクスポートし、その一覧をslackで取引企業の#請求書項目へ請求書PDFと共に送信し完了となります。
+  .cp_actab
     input#cp_tabfour015[type="checkbox" name="tabs"]
     label[for="cp_tabfour015"]
       | アポイント件数情報相違チェック（毎月最終平日夕方）
@@ -386,7 +401,6 @@
     .cp_actab-content
       p
         | 毎月月末に業務が完了した後に、請求書を作成します。
-
  h1.headline 契約業務
  br
  .cp_qa
