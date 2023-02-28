@@ -375,15 +375,25 @@
       | 締めの業務フロー
     .cp_actab-content
       p
-        | 毎月最終平日夕方は必ず当日中に終わらせる業務となります。ここでは業務フローの確認を行いましょう。
-        br
         | ①分析結果で出ている合計件数と、システム検索で実際に調べた検索結果で相違がないか確認を行いましょう。相違がある場合、APPのステータスが上書きされている場合がありますので、slackのアポ報告から抜けている会社がないかチェックし、件数の穴を埋めていきます。
         br
-        | ②①が整頓出来たら、請求書の発行へ移行します。単価は分析に明記のある結果を元に入力し、請求日等ミスのないよう確認しながら請求書を発行していきます。
         br
-        | ③内容が問題ないか確認後、管理者に内容を共有しましょう。
+        | ②①が整頓出来たら、請求書の発行へ移行します。単価・支払日・会社名は分析に明記のある結果を元に入力し、請求日等ミスのないよう確認しながら請求書を発行していきます。尚、例えば『SORAIRO（工場）』『SORAIRO（食品）』とある場合、会社は同一のため合算して一つの請求書にまとめて問題ありません。
+        br/
+        = link_to "単価・支払い日確認", "https://tcare.pro/closing", class:"btn btn-success", target:"_blank"
+        = link_to "会社名チェック", "https://tcare.pro/contracts", class:"btn btn-success", target:"_blank"
         br
-        | ④チェックが完了しましたら、/customersでAPP一覧を企業毎にエクスポートし、その一覧をslackで取引企業の#請求書項目へ請求書PDFと共に送信し完了となります。
+        br/
+        | ③次に/customersでAPP一覧を企業毎にエクスポートし、獲得日・会社名を一覧化します。
+        br/
+        = link_to "企業検索ページ", "https://tcare.pro/customers", class:"btn btn-success", target:"_blank"
+        .center
+         iframe width="560" height="315" src="https://www.youtube.com/embed/bImL9YonGRs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+        br
+        br/
+        | ④内容が問題ないか確認後、②③を管理者に添付しチェックを受けて完了となります。
+        br
+        br
   .cp_actab
     input#cp_tabfour015[type="checkbox" name="tabs"]
     label[for="cp_tabfour015"]
@@ -393,14 +403,19 @@
         | 毎月最終勤務日の夕方頃になりましたら、締め作業として月間で獲得したアポイントの整合性の確認を行います。相違がある場合、管理者に必ずご連絡ください。
         .center
          iframe width="560" height="315" src="https://www.youtube.com/embed/tLYO7LCJ_F0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
-
   .cp_actab
     input#cp_tabfour016[type="checkbox" name="tabs"]
     label[for="cp_tabfour016"]
-      | 請求書発行（未着手）
+      | 請求書発行
     .cp_actab-content
       p
-        | 毎月月末に業務が完了した後に、請求書を作成します。
+        | 毎月月末に業務が完了した後に、請求書を発行します。請求書発行は以下ページより行いましょう。
+        br
+        = link_to "freee請求書", "https://invoice.secure.freee.co.jp/reports/invoices", class:"btn btn-success", target:"_blank"
+        br/
+        .center
+         iframe width="560" height="315" src="https://www.youtube.com/embed/dWqT4MUP2ZQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+        | ID:mail@ri-plus.jp PS:riplus20200402 
  h1.headline 契約業務
  br
  .cp_qa
