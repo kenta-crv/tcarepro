@@ -17,7 +17,7 @@ import sys
 import traceback
 
 options = webdriver.ChromeOptions()
-options.headless = False
+options.headless = True
 start = time.perf_counter()
 serv = Service(ChromeDriverManager().install())
 
