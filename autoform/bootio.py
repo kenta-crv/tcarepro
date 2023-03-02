@@ -69,21 +69,24 @@ class Score:
             "score":[]
         }
 
-        #SQL抽出
-        for sql in cur.fetchall():
-            frame["score"].append(sql[4])
+        success = 0
+        error = 0
 
-        df = pd.DataFrame(frame, columns=["score"])
-        df.columns = ["Score"]
-        
-        df.plot()
-        pyplot.ylim(0,100)
-        pyplot.xlabel('COUNT')
-        pyplot.ylabel('SCORE')
-        pyplot.title('DAYSCORE')
+        #SQL抽出
+        for curs in cur.fetchall():
+            if curs[3] == '送信済':
+                success += 1
+            elif curs[3] == '送信不可':
+                error += 1
+
+        df = pd.DataFrame(data=[success,error],index=['送信済','送信不可'])
+        df.columns = ["送信率"]
+        pyplot.rcParams["font.family"] = "Hiragino sans"
         cd = os.path.abspath('.')
         tdatetime = datetime.datetime.now()
+        df['送信率'].plot.pie(autopct='%.f%%')
         strings = tdatetime.strftime('%Y%m%d-%H%M%S')
+        pyplot.title(strings + '時点',fontdict="Hiragino sans")
         pyplot.savefig(cd + '/autoform/graph_image/shot/'+strings+'.png')
         conn.commit()
         conn.close()
@@ -107,21 +110,27 @@ class Score:
         }
 
         #SQL抽出
-        for sql in cur.fetchall():
-            frame["score"].append(sql[4])
+        success = 0
+        error = 0
+        for curs in cur.fetchall():
+            if curs[3] == '送信済':
+                success += 1
+            elif curs[3] == '送信不可':
+                error += 1
 
         df = pd.DataFrame(frame, columns=["score"])
         df.columns = ["Score"]
+
+        pyplot.title('Send Result')
+        pyplot.rcParams["font.family"] = "Hiragino sans"
+
+        df['status'].plot.pie(autopct='%.f%%')
         
         df.plot()
-        pyplot.ylim(0,100)
-        pyplot.xlabel('今まで')
-        pyplot.ylabel('スコア(点数)')
-        pyplot.title('今までののスコアグラフ')
         cd = os.path.abspath('.')
         tdatetime = datetime.datetime.now()
         strings = tdatetime.strftime('%Y%m%d-%H%M%S')
-        pyplot.savefig(cd + '/autoform/graph_image/shot/'+strings+'.png')
+        pyplot.savefig(cd + '/autoform/graph_image/day/'+strings+'.png')
         conn.commit()
         conn.close()
 
@@ -151,9 +160,9 @@ class Reservation:
 score = Score()
 reservation = Reservation()
 
-def random_chr(n: int) -> str:
-    random_list = [random.choice(string.ascii_letters + string.punctuation) for n in range(n)]
-    return "".join(random_list)
+def randomname(n):
+   randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
+   return ''.join(randlst)
 
 def boot(url,sender_id,count,worker_id,session_code):
     conn = sqlite3.connect(dbname)
@@ -225,6 +234,7 @@ def sql_reservation():
     # sqliteを操作するカーソルオブジェクトを作成
     cur = conn.cursor()
     cur.execute('SELECT contact_url,sender_id,scheduled_date,callback_url,worker_id FROM contact_trackings WHERE status = "自動送信予定"')
+    session_code = randomname(16)
     for index,item in enumerate(cur.fetchall()):
         url = item[0]
         gotime = item[2]
@@ -251,12 +261,10 @@ def sql_reservation():
                     data = ("送信不可",datetime.datetime.now(),callback,worker_id)
                     cur.execute(sql,data)
 
-
     conn.commit()
     conn.close()
     sabun = 0
     fime = 1
-    session_code = random_chr(16)
 
     for num,trigger in enumerate(reservation.alltime()):
         strtime = trigger["time"]

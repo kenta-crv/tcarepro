@@ -6,31 +6,40 @@ import os
 import datetime
 
 data = {
-    "score":[]
+    "status":[]
 }
 
 dbname = './db/development.sqlite3'
 conn = sqlite3.connect(dbname)
 cur = conn.cursor()
+cur.execute('SELECT status FROM autoform_shot')
 
 fig = pyplot.figure()
 
 cd = os.path.abspath('.')
 
-df = pd.read_sql_query('SELECT current_score FROM autoform_shot', conn)
+error = 0
+success = 0
 
-df.columns = ["Score"]
+for curs in cur.fetchall():
+    if curs[0] == '送信済':
+        success += 1
+    elif curs[0] == '送信不可':
+        error += 1
 
-pyplot.ylim(0,110)
-pyplot.xlabel('予約時間あたりの回数')
-pyplot.ylabel('スコア(点数)')
-pyplot.title('xxx時点のスコアグラフ')
+print(success,error)
 
-df.plot()
+df = pd.DataFrame(data=[success,error],index=['送信済','送信不可'])
+
+df.columns = ["status"]
+
+pyplot.title('xx' + '時点',fontname='Hiragino sans',fontsize=30)
+pyplot.rcParams["font.family"] = "Hiragino sans"
+
+df['status'].plot.pie(autopct='%.f%%')
 print(os.getcwd())
 tdatetime = datetime.datetime.now()
 strings = tdatetime.strftime('%Y%m%d-%H%M%S')
-pyplot.ylim(0,100)
 pyplot.savefig(cd + '/autoform/graph_image/'+strings+'.png')
 
 
