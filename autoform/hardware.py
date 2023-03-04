@@ -12,7 +12,6 @@ from selenium.webdriver.chrome.options import Options
 import requests
 from bs4 import BeautifulSoup
 import time
-from pykakasi import kakasi
 import sys
 import traceback
 
