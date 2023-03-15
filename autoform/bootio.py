@@ -21,6 +21,7 @@ class Score:
         self.count = 0
         self.rimes = []
         self.sumdic = []
+        self.time = ''
 
     def result(self,sender_id,worker_id,url,status,session_code):
         truecount = 0
@@ -76,17 +77,17 @@ class Score:
         for curs in cur.fetchall():
             if curs[3] == '送信済':
                 success += 1
-            elif curs[3] == '送信不可':
+            elif curs[3] == '送信エラー':
                 error += 1
 
-        df = pd.DataFrame(data=[success,error],index=['送信済','送信不可'])
+        df = pd.DataFrame(data=[success,error],index=['送信済','送信エラー'])
         df.columns = ["送信率"]
         pyplot.rcParams["font.family"] = "Hiragino sans"
         cd = os.path.abspath('.')
         tdatetime = datetime.datetime.now()
         df['送信率'].plot.pie(autopct='%.f%%')
         strings = tdatetime.strftime('%Y%m%d-%H%M%S')
-        pyplot.title(strings + '時点',fontdict="Hiragino sans")
+        pyplot.title(self.time + 'に'+ str(self.count) + '回実行したグラフ' ,fontname="Hiragino sans")
         pyplot.savefig(cd + '/autoform/graph_image/shot/'+strings+'.png')
         conn.commit()
         conn.close()
@@ -121,7 +122,9 @@ class Score:
         df = pd.DataFrame(frame, columns=["score"])
         df.columns = ["Score"]
 
-        pyplot.title('Send Result')
+        date = tdatetime.strftime('%Y-%m-%d')
+
+        pyplot.title(date + '今まで実行したグラフ',fontname='Hiragino sans')
         pyplot.rcParams["font.family"] = "Hiragino sans"
 
         df['status'].plot.pie(autopct='%.f%%')
@@ -211,11 +214,11 @@ def boot(url,sender_id,count,worker_id,session_code):
             print("送信エラー。。。")
             score.rimes.append(False)
             sql = 'UPDATE contact_trackings SET status = ?, sended_at = ? WHERE contact_url = ? AND worker_id = ?'
-            data = ("送信不可",datetime.datetime.now(),url,worker_id)
+            data = ("自動送信エラー",datetime.datetime.now(),url,worker_id)
             cur.execute(sql,data)
             conn.commit()
             conn.close()
-            s = score.result(sender_id,worker_id,url,"送信不可",session_code)
+            s = score.result(sender_id,worker_id,url,"送信エラー",session_code)
             print("---------------------------------")
             print("送信精度：",s)
             print("---------------------------------")
@@ -241,6 +244,7 @@ def sql_reservation():
         callback = item[3]
         worker_id = item[4]
         sender_id = item[1]
+        score.time = gotime
         c = reservation.check(url,sender_id)
         if c == True:
             print("This already exists")
@@ -249,7 +253,7 @@ def sql_reservation():
             if url == None:
                 print("No URL!!")
                 sql = 'UPDATE contact_trackings SET status = ?, sended_at = ? WHERE callback_url = ? AND worker_id = ?'
-                data = ("送信不可",datetime.datetime.now(),callback,worker_id)
+                data = ("自動送信エラー",datetime.datetime.now(),callback,worker_id)
                 cur.execute(sql,data)
             else:
                 if url.startswith('http'):
@@ -258,7 +262,7 @@ def sql_reservation():
                 else:
                     print("Invaild URL!!")
                     sql = 'UPDATE contact_trackings SET status = ?, sended_at = ? WHERE callback_url = ? AND worker_id = ?'
-                    data = ("送信不可",datetime.datetime.now(),callback,worker_id)
+                    data = ("自動送信エラー",datetime.datetime.now(),callback,worker_id)
                     cur.execute(sql,data)
 
     conn.commit()
