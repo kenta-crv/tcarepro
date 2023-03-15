@@ -12,7 +12,7 @@ import pandas as pd
 
 print(os.getcwd())
 
-dbname = './db/development.sqlite3'
+dbname = '../db/development.sqlite3'
 s = sched.scheduler()
 
 class Score:
