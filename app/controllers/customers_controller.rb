@@ -30,7 +30,7 @@ class CustomersController < ApplicationController
     @customers = @customers.where( id: last_call ) if last_call
     #これに変えると全抽出
     @csv_customers = @customers.distinct.preload(:calls)
-    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(20000) #エスクポート総数
+    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エスクポート総数
 
     respond_to do |format|
      format.html
@@ -108,9 +108,6 @@ class CustomersController < ApplicationController
     #@count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
     @customer = Customer.find(params[:id])
       if @customer.update(customer_params)
-        #if worker_sign_in?
-        #  flash[:notice] = "登録が完了しました。1日あたりの残り作業実施件数は#{30 - @count_day}件です。"
-        #end
         redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
       else
         render 'edit'
@@ -480,7 +477,7 @@ class CustomersController < ApplicationController
   def sfa
     @q = Customer.ransack(params[:q])
     @customers = @q.result
-    @customers = @customers.where.not(choice: nil).page(params[:page]).per(20)
+    @customers = @customers.where.not(choice: nil).page(params[:page]).per(500)
   end
 
   def list
