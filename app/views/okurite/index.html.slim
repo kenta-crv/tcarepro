@@ -36,11 +36,11 @@
         td
           = customer.url_2&.truncate(30)
         td
-          = contact_tracking&.status
+          = customer.status
         td
-          = contact_tracking&.sended_at
+          = "v"
         td
-          = contact_tracking&.callbacked_at
+          = "p"
     tr
       th[colspan="8"]
         = paginate @customers
