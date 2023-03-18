@@ -8,6 +8,7 @@ class Sender < ApplicationRecord
 
   has_many :counts
   has_many :contact_trackings
+  has_many :customers
   has_many :inquiries
   has_many :direct_mail_contact_trackings
 
@@ -48,7 +49,7 @@ class Sender < ApplicationRecord
     Rails.application.routes.url_helpers.direct_mail_callback_url(t: code)
   end
 
-  def auto_send_contact!(code, customer_id, worker_id, inquiry_id, date,contact_url, status)
+  def auto_send_contact!(code, customer_id, worker_id, inquiry_id, date,contact_url, status, customers_code)
     code = generate_code
     contact_tracking = contact_trackings.new(
       code: code,
@@ -60,6 +61,7 @@ class Sender < ApplicationRecord
       callback_url: callback_url(code),
       sended_at: status == '送信済' && Time.zone.now,
       status: status,
+      customers_code: customers_code,
     )
 
     contact_tracking.save!

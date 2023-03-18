@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20230115054236) do
+ActiveRecord::Schema.define(version: 20230318045801) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -25,6 +25,12 @@ ActiveRecord::Schema.define(version: 20230115054236) do
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
+
+# Could not dump table "autoform_day_graph" because of following StandardError
+#   Unknown type 'string' for column 'session_code'
+
+# Could not dump table "autoform_shot" because of following StandardError
+#   Unknown type 'string' for column 'url'
 
   create_table "calls", force: :cascade do |t|
     t.string "statu"
@@ -81,6 +87,7 @@ ActiveRecord::Schema.define(version: 20230115054236) do
     t.datetime "updated_at", null: false
     t.datetime "scheduled_date"
     t.string "callback_url"
+    t.string "customers_code"
     t.index ["code"], name: "index_contact_trackings_on_code", unique: true
     t.index ["customer_id", "inquiry_id", "sender_id", "worker_id"], name: "index_contact_trackings_on_colums"
     t.index ["customer_id"], name: "index_contact_trackings_on_customer_id"
@@ -209,6 +216,7 @@ ActiveRecord::Schema.define(version: 20230115054236) do
     t.integer "worker_id"
     t.string "genre"
     t.string "forever"
+    t.string "customers_code"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
@@ -267,6 +275,9 @@ ActiveRecord::Schema.define(version: 20230115054236) do
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_estimates_on_customer_id"
   end
+
+# Could not dump table "graph_create_time" because of following StandardError
+#   Unknown type 'string' for column 'session_code'
 
   create_table "images", force: :cascade do |t|
     t.integer "contract_id"
