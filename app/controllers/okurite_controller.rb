@@ -1,4 +1,6 @@
 require 'contactor'
+require 'securerandom'
+require 'json'
 
 class OkuriteController < ApplicationController
   before_action :authenticate_worker_or_admin!, except: [:callback,:direct_mail_callback]
@@ -7,7 +9,7 @@ class OkuriteController < ApplicationController
 
   def index
     @customers = @customers.where(forever: nil).where(choice: nil).page(params[:page]).per(100)
-    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id)).before_sended_at(params[:contact_tracking_sended_at_lteq])
+    @contact_trackings = ContactTracking.where(sender_id:@sender.id)
     #Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
 
   end
@@ -89,32 +91,78 @@ class OkuriteController < ApplicationController
     @customer.update(status: status)
   end
 
+  def bombom(worker_id,inquiry_id,sender_id,date,contact_url,customers_code,reserve_code,generation_code)
+    uri = URI('http://localhost:6500/api/v1/rocketbumb')
+    begin
+      Rails.logger.info('登録を開始')
+      params = { worker_id:worker_id,inquiry_id:inquiry_id,sender_id:sender_id,date:date,contact_url:contact_url,customers_code:customers_code,reserve_code:reserve_code,generation_code: generation_code}
+      res = Net::HTTP.post(uri,params.to_json,'Content-Type' => 'application/json')
+      status = res.code
+      Rails.logger.info('ステータス⇨' + "#{status}")
+      case status
+      when 200 then
+        Rails.logger.info('@bot ' + '自動送信を登録しました。')
+        return 200
+      when 500 then
+        Rails.logger.info('@bot 自動送信登録不可 Error')
+        return 500
+      else
+        return 500
+      end
+    rescue => e
+      Rails.logger.info('@bot ' + e.to_s)
+      return 500
+    end
+  end
+
   def autosettings
     #Rails.logger.info( "date : " + DateTime.parse(params[:date]).to_yaml)
     Rails.logger.info( "count : " + params[:count].to_s)
     @q = Customer.ransack(params[:q])
     @customers = @q.result.distinct
     save_cont = 0
+    err_cont = 0
+    continue_cont = 0
+    @rancode = SecureRandom.alphanumeric(15)
     @sender = Sender.find(params[:sender_id])
      Rails.logger.info( "@sender : " + @sender.attributes.inspect)
     @customers.each do |cust|
       unless ((params[:count]).to_i < (save_cont+1))
-        okurite_new_status(cust.customers_code, "自動送信予定")
-        @sender.auto_send_contact!(
-        @sender.generate_code,
-        cust.id,
-        current_worker&.id,
-        @sender.default_inquiry_id,
-        DateTime.parse(params[:date]),
-        cust.get_search_url,
-        "自動送信予定",
-        cust.customers_code
+        @generation_code = SecureRandom.alphanumeric(15)
+        @bom = self.bombom(
+          current_worker&.id,
+          @sender.default_inquiry_id,
+          @sender.id,
+          DateTime.parse(params[:date]),
+          cust.get_search_url,
+          cust.customers_code,
+          @rancode,
+          @generation_code
         )
-      save_cont += 1
+        Rails.logger.info( "@bom : " + "#{@bom}")
+        if @bom == 200
+          @sender.auto_send_contact!(
+            @sender.generate_code,
+            cust.id,
+            current_worker&.id,
+            @sender.default_inquiry_id,
+            DateTime.parse(params[:date]),
+            cust.get_search_url,
+            "自動送信予定",
+            cust.customers_code,
+            @rancode,
+            @generation_code
+          )
+          continue_cont += 1
+        elsif @bom == 500
+          Rails.logger.info( "@bot : " + "データエラー")
+          err_cont += 1
+        end
+        save_cont += 1
       end
     end
       Rails.logger.info( "save_cont: " + save_cont.to_s)
-    redirect_to sender_okurite_index_path(id:@sender.id,q: params[:q]&.permit!, page: params[:page]), notice:"#{save_cont}件登録されました。"
+    redirect_to sender_okurite_index_path(id:@sender.id,q: params[:q]&.permit!, page: params[:page]), notice:"#{continue_cont}件登録成功しました。登録エラー#{err_cont}件"
   end
 
   private
