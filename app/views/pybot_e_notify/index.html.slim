@@ -1,0 +1,54 @@
+- set_meta_tags noindex: true
+.tops-wrapper
+ .headline
+    | Python自動送信システムメッセージ
+    button.btn.btn-danger.btn-md[style="margin-left:50px;"data-toggle="modal" data-target="#dialogModal"]
+               |  メッセージを全部削除する
+table[style="margin: 0 30px;"]
+    thead
+      tr
+        th
+          | タイトル
+        th
+          | メッセージ 
+        th
+          | 通知時間
+        th 
+          | ステータス
+    - @pynotify.each do |pynotify|
+      tr
+        td
+          = pynotify.title
+        td
+          = pynotify.message
+        td
+          - begin 
+            = pynotify.created_at
+          - rescue 
+            = ""
+        - begin
+            - if pynotify.status == "notify"
+             td = link_to "Notify", "#" , style: "color: fff" ,class: "btn btn-success"
+            - elsif pynotify.status == "error"
+             td = link_to "Error", "#" , style: "color: fff" ,class: "btn btn-danger"
+        - rescue 
+            td = link_to "Error", "#" , style: "color: fff" ,class: "btn btn-danger"
+
+#dialogModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        | 消去します
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        | Pythonから届いたメッセージを全て消去します。
+        button.btn.btn-danger.destroy[type="button" data-dismiss="modal" aria-hidden="true"]
+          | はい。削除してください。
+
+javascript:
+  $(function(){
+    $('.destroy').on('click', () => {
+      location.href = "/pybot/destroy"
+    })
+  })

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20230319034314) do
+ActiveRecord::Schema.define(version: 20230321071047) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -348,6 +348,15 @@ ActiveRecord::Schema.define(version: 20230319034314) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "pynotifies", force: :cascade do |t|
+    t.string "title"
+    t.string "message"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "sended_at"
   end
 
   create_table "senders", force: :cascade do |t|

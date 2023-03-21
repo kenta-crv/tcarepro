@@ -9,7 +9,7 @@ class OkuriteController < ApplicationController
 
   def index
     @customers = @customers.where(forever: nil).where(choice: nil).page(params[:page]).per(100)
-    @contact_trackings = ContactTracking.where(sender_id:@sender.id)
+    @contact_trackings = ContactTracking.where(sender_id:@sender.id,worker_id:current_worker.id)
     #Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
 
   end
@@ -91,13 +91,14 @@ class OkuriteController < ApplicationController
     @customer.update(status: status)
   end
 
-  def bombom(worker_id,inquiry_id,sender_id,date,contact_url,customers_code,reserve_code,generation_code)
+  def bombom(worker_id,inquiry_id,company_name,date,contact_url,customers_code,reserve_code,generation_code)
     uri = URI('http://localhost:6500/api/v1/rocketbumb')
     begin
       Rails.logger.info('登録を開始')
-      params = { worker_id:worker_id,inquiry_id:inquiry_id,sender_id:sender_id,date:date,contact_url:contact_url,customers_code:customers_code,reserve_code:reserve_code,generation_code: generation_code}
+      Rails.logger.info(date.strftime('%Y-%m-%d %H:%M:%S'))
+      params = { worker_id:worker_id,inquiry_id:inquiry_id,company_name:company_name,date:date.strftime('%Y-%m-%d %H:%M:%S'),contact_url:contact_url,customers_code:customers_code,reserve_code:reserve_code,generation_code: generation_code}
       res = Net::HTTP.post(uri,params.to_json,'Content-Type' => 'application/json')
-      status = res.code
+      status = res.code.to_i
       Rails.logger.info('ステータス⇨' + "#{status}")
       case status
       when 200 then
@@ -129,10 +130,11 @@ class OkuriteController < ApplicationController
     @customers.each do |cust|
       unless ((params[:count]).to_i < (save_cont+1))
         @generation_code = SecureRandom.alphanumeric(15)
+        @inquiry_id = @sender.default_inquiry_id
         @bom = self.bombom(
           current_worker&.id,
-          @sender.default_inquiry_id,
-          @sender.id,
+          @inquiry_id,
+          cust.company,
           DateTime.parse(params[:date]),
           cust.get_search_url,
           cust.customers_code,
@@ -140,12 +142,12 @@ class OkuriteController < ApplicationController
           @generation_code
         )
         Rails.logger.info( "@bom : " + "#{@bom}")
-        if @bom == 200
+        if @bom.to_i == 200
           @sender.auto_send_contact!(
             @sender.generate_code,
             cust.id,
             current_worker&.id,
-            @sender.default_inquiry_id,
+            @inquiry_id,
             DateTime.parse(params[:date]),
             cust.get_search_url,
             "自動送信予定",
@@ -154,8 +156,20 @@ class OkuriteController < ApplicationController
             @generation_code
           )
           continue_cont += 1
-        elsif @bom == 500
+        elsif @bom.to_i == 500
           Rails.logger.info( "@bot : " + "データエラー")
+          @sender.auto_send_contact!(
+            @sender.generate_code,
+            cust.id,
+            current_worker&.id,
+            @inquiry_id,
+            DateTime.parse(params[:date]),
+            cust.get_search_url,
+            "自動送信エラー",
+            cust.customers_code,
+            @rancode,
+            @generation_code
+          )
           err_cont += 1
         end
         save_cont += 1
@@ -175,10 +189,11 @@ class OkuriteController < ApplicationController
 
   def set_customers
     @q = Customer.ransack(params[:q])
-    @customers = @q.result.distinct
+    @customers = @q.result
     #@customers = @customers.last_contact_trackings_only(@sender.id)
+    Rails.logger.info(params[:q])
     if params[:statuses]&.map(&:presence)&.compact.present?
-      @customers = @customers.eager_load(:contact_trackings).where(contact_trackings: { status: params[:statuses] })
+      @customers = @customers.eager_load(:contact_trackings).where(contact_trackings: { status: params[:statuses], sender_id: @sender.id })
     end
     if params[:contact_tracking_sended_at_lteq]&.map(&:presence)&.compact.present?
       @customers = @customers.before_sended_at(params[:contact_tracking_sended_at_lteq])

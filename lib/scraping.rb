@@ -106,12 +106,15 @@ class Scraping
   # @return [String] URL
   #
   def google_search(keyword)
-    document = create_document(
-      "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component(keyword)}"
-    )
-    anchor = document.css('div.kCrYT > a')[0].get_attribute('href')
-
-    URI::decode_www_form(URI.parse(anchor).query)[0][1]
+    begin
+      document = create_document(
+        "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component(keyword)}"
+      )
+      anchor = document.css('div.kCrYT > a')[0].get_attribute('href')
+      URI::decode_www_form(URI.parse(anchor).query)[0][1]
+    rescue
+      Rails.logger.info("デコードエラー")
+    end
   end
 
   private
