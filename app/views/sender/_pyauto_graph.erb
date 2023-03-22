@@ -1,0 +1,16 @@
+<h2 class="headline">成功率</h2>
+<table class="space" width="90%">
+    <tr>
+        <th>自動送信時間</th>
+        <th>グラフ</th>
+        <th>自動送信成功率</th>
+    </tr>
+    <tr>
+        <% @data.each do |data| %>
+            <td><%= data.created_at.strftime("%Y年%m月%d日 %H時%M分") %></td>
+            <td><%= pie_chart [['成功',data.success_sent],['失敗',data.failed_sent]]%></td>
+            <td><%= data.success_sent %>%</td>
+        <% end %>
+    </tr>
+
+</table>
