@@ -22,9 +22,11 @@ app = Flask(__name__)
 statment = ""
 
 try:
-    statment = sys.argv[0]
+    statment = sys.argv[1]
 except Exception as e:
     statment = ""
+
+print(statment)
 
 #statment = sys.argv[0]
 server_domain = "http://tcare.pro"
@@ -32,28 +34,13 @@ server_domain = "http://tcare.pro"
 if statment == "local":
     server_domain = "http://localhost:3000"
 
+print(server_domain)
+
 def scheds():
     print('running...')
     schedule.run_pending()
 
 
-class Schedule:
-
-    def __init__(self):
-        self.shutdown = False
-
-    def starting(self):
-        print("BOTアラームをアクティブ化しました。Flask Servingを有効にしている間起動できます。")
-        while True:
-            date = datetime.datetime.today()
-            if self.shutdown == True:
-                break
-            
-            schedule.run_pending()
-            print(f"ただいまの時刻は、{date.hour} : {date.minute} : {date.second} です。")
-            time.sleep(1)
-
-schedules = Schedule()
 
 class Score:
     def __init__(self):
@@ -93,7 +80,7 @@ class Score:
         except ZeroDivisionError as e:
             return "0%"
         
-    def graph_make(self,session_code,company):
+    def graph_make(self,session_code,company,generate_code):
         #時間軸
         #1日毎
         #100回毎
@@ -121,19 +108,26 @@ class Score:
 
         self.result_data = []
 
-        df = pd.DataFrame(data=[success,error],index=['送信済','送信エラー'])
-        df.columns = ["送信率"]
-        pyplot.rcParams["font.family"] = "Hiragino sans"
-        cd = os.path.abspath('.')
-        tdatetime = datetime.datetime.now()
-        df['送信率'].plot.pie(autopct='%.f%%')
-        strings = tdatetime.strftime('%Y%m%d-%H%M%S')
-        pyplot.title(company+'の営業問い合わせを'+str(success + error) + '回行った送信成功率' ,fontname="Hiragino sans")
-        pyplot.savefig(cd + '/autoform/graph_image/shot/'+strings+'.png')
+        #df = pd.DataFrame(data=[success,error],index=['送信済','送信エラー'])
+        #df.columns = ["送信率"]
+        #pyplot.rcParams["font.family"] = "Hiragino sans"
+        #cd = os.path.abspath('.')
+        #tdatetime = datetime.datetime.now()
+        #df['送信率'].plot.pie(autopct='%.f%%')
+        #strings = tdatetime.strftime('%Y%m%d-%H%M%S')
+        #pyplot.title(company+'の営業問い合わせを'+str(success + error) + '回行った送信成功率' ,fontname="Hiragino sans")
+        #pyplot.savefig(cd + '/autoform/graph_image/shot/'+strings+'.png')
         self.count = 0
+
         headers = {"content-type": "application/json"}
         data = {"title":"オート送信実行完了","message":company+'の営業問い合わせの自動送信が終了しました。送信成功率を(./graph_image/shot)へ配置しております。',"status":"notify"}
         message_post = requests.post(server_domain + "/api/v1/pycall",data=json.dumps(data),headers=headers)
+
+        success_API = (success/(success+error)) * 100
+        failed_API = (error/(success+error)) * 100
+        data = {"generate_code":generate_code,"success_sent":success_API,"failed_sent":failed_API}
+        python_graph_post = requests.post(server_domain + "/api/v1/autoform_data_register",data=json.dumps(data),headers=headers)
+        print('グラフデータをRubyへPOSTしました。')
 
     def graph_summary(self):
 
@@ -221,8 +215,11 @@ class Mother:
                 
     def boot(self,url,inquiry_id,worker_id,session_code,generate_code):
         # inquiryをAPIで取得する
+        print(inquiry_id)
         headers = {"content-type": "application/json"}
         inquiry_get = requests.get(server_domain + "/api/v1/inquiry?id=" + str(inquiry_id),headers=headers)
+        time.sleep(3)
+        print(inquiry_get)
         inquiry_data = inquiry_get.json()
         data = inquiry_data["inquiry_data"]
 
@@ -274,14 +271,15 @@ class Mother:
         
 
         for bst in self.boottime:
-            if bst['generation_key'] == generate_code and bst['finalist'] == True:
-                print('quit.')
-                score.graph_make(session_code,form["company"])
-                for index,item in enumerate(self.boottime):
-                    if item['reserve_key'] == session_code:
-                        self.boottime.pop(index)
-            elif bst['generation_key'] == generate_code and bst['finalist'] == False:
-                print('not final.')
+            if bst['generation_key'] == generate_code:
+                if bst['finalist'] == True:
+                    print('quit.')
+                    score.graph_make(session_code,form["company"],generate_code)
+                    for index,item in enumerate(self.boottime):
+                        if item['reserve_key'] == session_code:
+                            self.boottime.pop(index)
+                elif bst['finalist'] == False:
+                    print('まだ続いています。')
                 
     def inset_schedule(self):
         for num,trigger in enumerate(self.boottime):
@@ -331,8 +329,8 @@ class Mother:
                 print('このデータは今日準備できません。')
 
 
-sched = BackgroundScheduler(daemon=True,job_defaults={'max_instances': 10})
-sched.add_job(scheds,'interval',minutes=1) 
+sched = BackgroundScheduler(daemon=True,job_defaults={'max_instances': 2})
+sched.add_job(scheds,'interval',seconds=30) 
 sched.start()
                 
     

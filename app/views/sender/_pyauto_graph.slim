@@ -1,0 +1,33 @@
+h2.headline 送信者情報
+table.space[width="90%"]
+    tr
+      th 自動送信時間
+      th リンク
+    - @data.each do |data|
+      tr 
+        - @data = [['mail',12],['data',12]]
+        td 
+          = data.created_at
+        td 
+          pie_chart
+
+
+br
+
+#dialogModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        | data on click
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = "aass"
+
+javascript:
+  function modalshow(success,failed,created_at){
+    $(function(){
+      $('#dialogModal').modal('show')
+      console.log(success,failed)
+    })
+  }
