@@ -116,3 +116,5 @@ gem 'active_hash'
 gem 'chartkick'
 
 gem 'zeroclipboard-rails'
+
+gem 'httparty'

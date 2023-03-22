@@ -117,6 +117,10 @@ Rails.application.routes.draw do
   post 'contact/confirm' => 'contact#confirm'
   post 'contact/thanks' => 'contact#thanks'
 
+  # エラー情報
+  get 'pybot' => 'pybot_e_notify#index'
+  get 'pybot/destroy' => 'pybot_e_notify#destroyer'
+
   # API
   namespace :api do
     namespace :v1 do
@@ -124,6 +128,11 @@ Rails.application.routes.draw do
       namespace :smartphone_logs do
         post '/' , :action => 'create'
       end
+      resources :pybotcenter 
+      post "pybotcenter/success" => "pybotcenter#success"
+      post "pybotcenter/failed" => "pybotcenter#failed"
+      post "pycall" => "pybotcenter#notify_post"
+      get "inquiry" => "pybotcenter#get_inquiry"
     end
   end
 
