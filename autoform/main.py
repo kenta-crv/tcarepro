@@ -16,14 +16,21 @@ matplotlib.use('agg')
 
 app = Flask(__name__)
 
-statment = "local"
+# ローカルで起動する場合は、『Python main.py local』
+# とコマンドを書いてください。
+
+statment = ""
+
+try:
+    statment = sys.argv[0]
+except Exception as e:
+    statment = ""
+
 #statment = sys.argv[0]
-server_domain = ""
+server_domain = "http://tcare.pro"
 
 if statment == "local":
     server_domain = "http://localhost:3000"
-elif statment == "global":
-    server_domain = "http://tcare.pro"
 
 def scheds():
     print('running...')
