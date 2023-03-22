@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20230321071047) do
+ActiveRecord::Schema.define(version: 20230322093116) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -28,6 +28,16 @@ ActiveRecord::Schema.define(version: 20230321071047) do
 
 # Could not dump table "autoform_day_graph" because of following StandardError
 #   Unknown type 'string' for column 'session_code'
+
+  create_table "autoform_results", force: :cascade do |t|
+    t.integer "customer_id"
+    t.integer "sender_id"
+    t.integer "worker_id"
+    t.integer "success_sent"
+    t.integer "failed_sent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
 # Could not dump table "autoform_shot" because of following StandardError
 #   Unknown type 'string' for column 'url'

@@ -1,0 +1,2 @@
+class AutoformResult < ApplicationRecord
+end
