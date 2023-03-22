@@ -672,7 +672,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%日本海（飲食店）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%日本海（飲食店）%").ltec_calls_count(1).joins(:calls).where("calls.statu":"担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
         tr
           th
-            | ファクトル
+            | ファクトル（営業）
           td
              .between_created_at
               = Customer.where("industry LIKE ?", "%ファクトル（営業）%").between_created_at(1.day.since.beginning_of_day - 8.hours, 1.day.since.beginning_of_day + 16.hours).count
