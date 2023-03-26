@@ -116,6 +116,14 @@ class OkuriteController < ApplicationController
     end
   end
 
+  def urlhanter(url)
+    if url.include? == "求人ボックス" or url.include? == "indeed.com"
+      return 500
+    end
+    return 200
+  end
+
+
   def autosettings
     #Rails.logger.info( "date : " + DateTime.parse(params[:date]).to_yaml)
     Rails.logger.info( "count : " + params[:count].to_s)
@@ -131,7 +139,13 @@ class OkuriteController < ApplicationController
       unless ((params[:count]).to_i < (save_cont+1))
         @generation_code = SecureRandom.alphanumeric(15)
         @inquiry_id = @sender.default_inquiry_id
-        @bom = self.bombom(
+        @bom = 0
+        @urlhanter = self.urlhanter(cust.get_search_url)
+        @bom = ""
+        if @urlhanter == 500
+          @bom = "500"
+        else
+          @bom = self.bombom(
           current_worker&.id,
           @inquiry_id,
           cust.company,
@@ -140,7 +154,8 @@ class OkuriteController < ApplicationController
           cust.customers_code,
           @rancode,
           @generation_code
-        )
+          )
+        end
         Rails.logger.info( "@bom : " + "#{@bom}")
         if @bom.to_i == 200
           @sender.auto_send_contact!(
