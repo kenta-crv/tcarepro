@@ -139,23 +139,17 @@ class OkuriteController < ApplicationController
       unless ((params[:count]).to_i < (save_cont+1))
         @generation_code = SecureRandom.alphanumeric(15)
         @inquiry_id = @sender.default_inquiry_id
-        @bom = 0
-        @urlhanter = self.urlhanter(cust.get_search_url)
-        @bom = ""
-        if @urlhanter == 500
-          @bom = "500"
-        else
-          @bom = self.bombom(
-          current_worker&.id,
-          @inquiry_id,
-          cust.company,
-          DateTime.parse(params[:date]),
-          cust.get_search_url,
-          cust.customers_code,
-          @rancode,
-          @generation_code
-          )
-        end
+        @url = cust.get_search_url
+        @bom = self.bombom(
+              current_worker&.id,
+              @inquiry_id,
+              cust.company,
+              DateTime.parse(params[:date]),
+              @url,
+              cust.customers_code,
+              @rancode,
+              @generation_code
+        )
         Rails.logger.info( "@bom : " + "#{@bom}")
         if @bom.to_i == 200
           @sender.auto_send_contact!(
@@ -164,7 +158,7 @@ class OkuriteController < ApplicationController
             current_worker&.id,
             @inquiry_id,
             DateTime.parse(params[:date]),
-            cust.get_search_url,
+            @url,
             "自動送信予定",
             cust.customers_code,
             @rancode,
