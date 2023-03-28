@@ -30,7 +30,7 @@ class CustomersController < ApplicationController
     @customers = @customers.where( id: last_call ) if last_call
     #これに変えると全抽出
     @csv_customers = @customers.distinct.preload(:calls)
-    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エスクポート総数
+    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(1000) #エスクポート総数
 
     respond_to do |format|
      format.html
