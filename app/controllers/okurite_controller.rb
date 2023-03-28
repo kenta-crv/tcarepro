@@ -174,7 +174,7 @@ class OkuriteController < ApplicationController
             @inquiry_id,
             DateTime.parse(params[:date]),
             cust.get_search_url,
-            "自動送信エラー",
+            "送信不可",
             cust.customers_code,
             @rancode,
             @generation_code
