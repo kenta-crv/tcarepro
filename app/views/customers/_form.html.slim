@@ -146,7 +146,7 @@
           | 公開設定
           strong.label ※
         td
-          = f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
+         /= f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
 
 
         td

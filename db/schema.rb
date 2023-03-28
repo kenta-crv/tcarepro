@@ -26,9 +26,6 @@ ActiveRecord::Schema.define(version: 20230322093116) do
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
-# Could not dump table "autoform_day_graph" because of following StandardError
-#   Unknown type 'string' for column 'session_code'
-
   create_table "autoform_results", force: :cascade do |t|
     t.integer "customer_id"
     t.integer "sender_id"
@@ -286,9 +283,6 @@ ActiveRecord::Schema.define(version: 20230322093116) do
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_estimates_on_customer_id"
   end
-
-# Could not dump table "graph_create_time" because of following StandardError
-#   Unknown type 'string' for column 'session_code'
 
   create_table "images", force: :cascade do |t|
     t.integer "contract_id"
