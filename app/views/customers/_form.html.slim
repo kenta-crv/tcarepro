@@ -75,6 +75,15 @@
         th
           | 業種
         td
+          = f.select(:business, Customer.BusinessStatus2, include_blank: "選択する", name: "business_name", id:"business")
+        th
+          | 事業内容（一覧にない場合その他入力）
+        td
+           = text_field :customer, :genre
+      /tr
+        th
+          | 業種
+        td
           = f.select(:business, Customer.BusinessStatus, include_blank: "選択する", name: "business_name", id:"business")
         th
           | 事業内容（一覧にない場合その他入力）

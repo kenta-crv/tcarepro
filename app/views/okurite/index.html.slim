@@ -109,12 +109,14 @@
                 td
                   = f.check_box :contact_tracking_id_null, {}, 'true', ''
                 th
+                  | url有りのみ
                 td
+                  = f.check_box :url
               tr
                 th
                   | 業種
                 td
-                  = f.search_field :business_cont, type: "text"
+                  = f.select(:business, Customer.BusinessStatus2, include_blank: "選択する", name: "business_name", id:"business")
                 th
                   | 事業内容
                 td
