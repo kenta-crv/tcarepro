@@ -105,7 +105,7 @@
                 th
                   | 状態
                 td
-                  = select_tag "statuses", options_for_select([['選択してください', ''], '営業NG', '送信済', '送信不可','自動送信予定','自動送信エラー'], params['statuses']), multiple: true, class: "form-control"
+                  = select_tag "statuses", options_for_select([['選択してください', ''], '自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可','自動送信予定','自動送信エラー'], params['statuses']), multiple: true, class: "form-control"
               tr
                 th
                   | 未送信
