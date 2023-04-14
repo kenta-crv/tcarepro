@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     get 'callbacked', to: 'senders_history#callbacked'
     get 'users_callbacked', to: 'senders_history#users_callbacked'
     post 'okurite/autosettings', to: 'okurite#autosettings'
+    delete 'bulk_delete', to: 'okurite#autosetting_bulk_delete'
     # okurite
     resources :okurite, only: [:index, :show] do
       get :preview, to: 'okurite#preview'
