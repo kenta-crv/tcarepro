@@ -200,6 +200,15 @@ class OkuriteController < ApplicationController
     redirect_to sender_okurite_index_path(id:@sender.id,q: params[:q]&.permit!, page: params[:page]), notice:"#{continue_cont}件登録成功しました。登録エラー#{err_cont}件"
   end
 
+  def bulk_delete
+    sender = Sender.find(params[:sender_id])
+    target = sender.contact_trackings.where(status: %w[自動送信不可 送信不可])
+    target.destroy_all!
+    redirect_to sender_okurite_index_path(sender.id, notice:"一括削除に成功しました")
+  rescue
+    redirect_to sender_okurite_index_path(sender.id, alert:"一括削除に失敗しました")
+  end
+
   private
 
   def set_sender
