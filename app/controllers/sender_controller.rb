@@ -7,7 +7,7 @@ class SenderController < ApplicationController
       year: params[:year]&.to_i || Time.zone.now.year,
       month: params[:month]&.to_i || Time.zone.now.month,
     )
-    @data = AutoformResult.where(sender_id:params[:id])
+    @data = AutoformResult.where(sender_id: current_sender.id)
   end
   
 end
