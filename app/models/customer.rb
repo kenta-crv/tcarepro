@@ -76,16 +76,23 @@ class Customer < ApplicationRecord
 #customer_import
   def self.import(file)
       save_cont = 0
+      update_count = 0
       CSV.foreach(file.path, headers:true) do |row|
        customer = find_by(id: row["id"]) || new
        customer.attributes = row.to_hash.slice(*updatable_attributes)
        next if customer.industry == nil
-       next if self.where(tel: customer.tel).where(industry: nil).count > 0
-       next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-       customer.save!
-       save_cont += 1
+       next if self.where(tel: customer.tel).where(industry: nil).count.positive? > 0
+       next if self.where(tel: customer.tel).where(industry: customer.industry).count.positive? && !overwrite > 0
+
+       if customer.persisted? && overwrite
+        customer.save!
+        update_cont += 1
+       elsif customer.new_record?
+        customer.save!
+        save_count += 1
+       end
       end
-      save_cont
+      { saved: save_count, updated: update_count }
   end
   def self.updatable_attributes
     ["id","company","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
@@ -176,22 +183,34 @@ class Customer < ApplicationRecord
     ["人材関連業","人材関連業"],
     ["協同組合","協同組合"],
     ["登録支援機関","登録支援機関"],
-    ["広告業","広告業"],
-    ["マーケティング業","マーケティング業"],
-    ["コンサルティング業","コンサルティング業"],
-    ["飲食店","飲食店"],
-    ["美容院","美容院"],
-    ["製造業","製造業"],
-    ["食品加工業","食品加工業"],
     ["IT・エンジニア","IT・エンジニア"],
     ["ホームページ制作","ホームページ制作"],
-    ["建設土木業","建設土木業"],
-    ["看護・病院","看護・病院"],
+    ["Webデザイナー","Webデザイナー"],
+    ["食品加工業","食品加工業"],
+    ["製造業","製造業"],
+    ["広告業","広告業"],
+    ["営業","営業"],
+    ["販売","販売"],
     ["介護","介護"],
+    ["マーケティング業","マーケティング業"],
+    ["コンサルティング業","コンサルティング業"],
+    ["不動産","不動産"],
     ["商社","商社"],
+    ["ドライバー","ドライバー"],
+    ["運送業","運送業"],
+    ["タクシー","タクシー"],
+    ["建設土木業","建設土木業"],
+    ["自動車整備工場","自動車整備工場"],
     ["教育業","教育業"],
-    ["専門サービス業","専門サービス業"],
-    ["その他","その他"]
+    ["飲食業","飲食業"],
+    ["美容院","美容院"],
+    ["看護・病院","看護・病院"],
+    ["弁護士","弁護士"],
+    ["社会保険労務士","社会保険労務士"],
+    ["保育士","保育士"],
+    ["旅行業","旅行業"],
+    ["警備業","警備業"],
+    ["その他","その他"],
   ]
   def self.BusinessStatus2
     @@business_status2

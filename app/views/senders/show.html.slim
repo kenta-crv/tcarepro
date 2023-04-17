@@ -2,13 +2,13 @@
   h3.row
    .col-sm-1
    .col-sm-1
-    = link_to "前月", myself_path(year: @form.prev_month.year, month: @form.prev_month.month), class: "btn btn-success"
+    = link_to "前月", sender_path(year: @form.prev_month.year, month: @form.prev_month.month), class: "btn btn-success"
    .col-sm-2
    .col-sm-4
     = "#{@form.year}年#{@form.month}月"
    .col-sm-2
    .col-sm-1
-    = link_to "翌月", myself_path(year: @form.next_month.year, month: @form.next_month.month), class: "btn btn-success"
+    = link_to "翌月", sender_path(year: @form.next_month.year, month: @form.next_month.month), class: "btn btn-success"
    .col-sm-1
 
   = render 'sender/detail'

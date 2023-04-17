@@ -9,7 +9,7 @@ class SendersController < ApplicationController
   def show
     @call
     @form = SenderForm.new(
-      sender: Sender.find(params[:id]),
+      sender: Sender.find_by(params[:id]),
       year: params[:year]&.to_i || Time.zone.now.year,
       month: params[:month]&.to_i || Time.zone.now.month,
     )

@@ -199,19 +199,22 @@
 .heading
   h2
     | インポート
-= form_tag import_customers_path, multipart: true do
+= form_with(url: import_customers_path, method: :post, local: true, multipart: true) do |f|
   table.space[width="90%"]
     tbody
       tr
-        th[colspan="3"]
+        th[colspan="4"]
           | CUSTOMER_CSVファイルインポート
       tr
         td
-          = file_field_tag :file
+          = f.file_field :file
+        td 
+          = f.label :overwrite, "上書き"
+          = f.check_box :overweite
         th
           = submit_tag "インポート",  class: 'btn btn-success'
         th
-          = link_to 'エクスポート', customers_path(format: :csv, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!, page: params[:page]), class: 'btn btn-success'
+          = link_to 'エクスポート', customers_path(format: :csv, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!, search: params[:search]&.permit!, page: params[:page]), class: 'btn btn-success'
 
 javascript:
   $(function() {
