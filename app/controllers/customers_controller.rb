@@ -35,7 +35,7 @@ class CustomersController < ApplicationController
     respond_to do |format|
      format.html
      format.csv do
-        send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv"
+        send_data @csv_customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv"
      end
     end
   end

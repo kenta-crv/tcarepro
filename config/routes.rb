@@ -29,9 +29,9 @@ Rails.application.routes.draw do
   devise_for :senders, controllers: {
     registrations: 'senders/registrations'
   }
-  resource :myself, only: :show, controller: :sender do
-    resources :inquiries, only: [:index]
-  end
+  #resource :myself, only: :show, controller: :sender do
+   # resources :inquiries, only: [:index]
+  #end
   resources :senders, only: [:index, :show, :edit, :update] do
     resources :inquiries, except: [:index, :show] do
       put :default, to: 'inquiries#default'
