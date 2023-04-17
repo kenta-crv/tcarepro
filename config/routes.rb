@@ -129,8 +129,8 @@ Rails.application.routes.draw do
         post '/' , :action => 'create'
       end
       resources :pybotcenter 
-      post "pybotcenter/success" => "pybotcenter#success"
-      post "pybotcenter/failed" => "pybotcenter#failed"
+      get "pybotcenter_success" => "pybotcenter#success"
+      get "pybotcenter_failed" => "pybotcenter#failed"
       post "autoform_data_register" => "pybotcenter#graph_register"
       post "pycall" => "pybotcenter#notify_post"
       get "inquiry" => "pybotcenter#get_inquiry"
