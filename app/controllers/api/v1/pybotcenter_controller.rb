@@ -6,15 +6,31 @@ class Api::V1::PybotcenterController < ApplicationController
 
     def success
         Rails.logger.info("success!!")
-        @data = ContactTracking.where(auto_job_code:params[:generation_code]).first
-        @data.update(status: "送信済")
+        Rails.logger.info("generation_code ⇨ " + params[:generation_code])
+        @data = ContactTracking.find_by(auto_job_code:params[:generation_code])
+        @data.status = "送信済"
+        @data.inquiry_id = params[:inquiry_id]
+        if @data.save == true
+            Rails.logger.info("データセーブをしました。")
+            Rails.logger.info(@data.status + "です。")
+        else
+            Rails.logger.info("セーブエラーです。")
+        end
         render status: 200, json: {data: 'success'}
     end
 
     def failed
         Rails.logger.info("failed!!")
-        @data = ContactTracking.where(auto_job_code:params[:generation_code]).first
-        @data.update(status: "自動送信エラー")
+        Rails.logger.info("generation_code ⇨ " + params[:generation_code])
+        @data = ContactTracking.find_by(auto_job_code:params[:generation_code])
+        @data.status = "自動送信エラー"
+        @data.inquiry_id = params[:inquiry_id]
+        if @data.save == true
+            Rails.logger.info("データセーブをしました。")
+            Rails.logger.info(@data.status + "です。")
+        else
+            Rails.logger.info("セーブエラーです。")
+        end
         render status: 200, json: {data: 'failed'}
     end
 

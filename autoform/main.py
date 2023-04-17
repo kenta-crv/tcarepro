@@ -16,6 +16,7 @@ matplotlib.use('agg')
 
 app = Flask(__name__)
 
+
 # ローカルで起動する場合は、『Python main.py local』
 # とコマンドを書いてください。
 
@@ -49,9 +50,10 @@ class Score:
         self.rimes = []
         self.sumdic = []
         self.result_data = []
+        self.sended = []
         self.time = ''
 
-    def result(self,status,session_code,generation_code):
+    def result(self,status,session_code,generation_code,inquiry_id):
         print(status)
         truecount = 0
         for tuc in self.rimes:
@@ -61,17 +63,17 @@ class Score:
         sum = int(int((truecount / len(self.rimes)) * 100))
         self.sumdic.append(sum)
 
+        self.sended.append(generation_code)
+
         # 自動送信成功した場合
         if status == "SUCCESS":
-            parameter = {"generation_code":generation_code}
-            r = requests.post(server_domain + "/api/v1/pybotcenter/success",data=json.dumps(parameter))
-            self.result_data.append({"session_code":session_code,"generation_code":generation_code,"status":"送信済"})
+            r = requests.get(server_domain + "/api/v1/pybotcenter_success?generation_code="+generation_code+"&inquiry_id="+str(inquiry_id))
+            self.result_data.append({"session_code":session_code,"generation_code":generation_code,"status":"送信済","inquiry_id":inquiry_id})
             print('SUCCESSデータを送信しました。')
         #自動送信失敗した場合
         elif status == "FAILED":
-            parameter = {"generation_code":generation_code}
-            r = requests.post(server_domain + "/api/v1/pybotcenter/failed",data=json.dumps(parameter))
-            self.result_data.append({"session_code":session_code,"generation_code":generation_code,"status":"送信エラー"})
+            r = requests.get(server_domain + "/api/v1/pybotcenter_failed?generation_code="+generation_code+"&inquiry_id="+str(inquiry_id))
+            self.result_data.append({"session_code":session_code,"generation_code":generation_code,"status":"送信エラー","inquiry_id":inquiry_id})
             print('FAILEDデータを送信しました。')
 
 
@@ -214,8 +216,18 @@ class Mother:
                     raise ValueError("httpからはじまっていません。")
                 
     def boot(self,url,inquiry_id,worker_id,session_code,generate_code):
+
+        print(f"This code is {generate_code}")
+        #スキップコマンド
+        for sended_id in score.sended:
+            print(f"{sended_id == generate_code}")
+            if sended_id == generate_code:
+                print("すでに送信されている。")
+                return 0
+
+        
         # inquiryをAPIで取得する
-        print(inquiry_id)
+        print(url + "へアクセス開始します。")
         headers = {"content-type": "application/json"}
         inquiry_get = requests.get(server_domain + "/api/v1/inquiry?id=" + str(inquiry_id),headers=headers)
         time.sleep(3)
@@ -252,19 +264,17 @@ class Mother:
             print("正常に送信されました。")
             score.rimes.append(True)
             # apiで送信済みにする
-            s = score.result("SUCCESS",session_code,generate_code)
+            s = score.result("SUCCESS",session_code,generate_code,inquiry_id)
             print("---------------------------------")
             print("現在の送信精度：",s)
             print("---------------------------------")
         elif go == "NG":
             print("送信エラー。。。")
             score.rimes.append(False)
-            sql = 'UPDATE contact_trackings SET status = ?, sended_at = ? WHERE contact_url = ? AND worker_id = ?'
-            data = ("自動送信エラー",datetime.datetime.now(),url,worker_id)
             # apiで送信エラーにする
-            s = score.result("FAILED",session_code,generate_code)
+            s = score.result("FAILED",session_code,generate_code,inquiry_id)
             print("---------------------------------")
-            print("送信精度：",s)
+            print("現在の送信精度：",s)
             print("---------------------------------")
 
         
@@ -277,9 +287,12 @@ class Mother:
                     score.graph_make(session_code,form["company"],generate_code)
                     for index,item in enumerate(self.boottime):
                         if item['reserve_key'] == session_code:
-                            self.boottime.pop(index)
+                            del self.boottime[index]
+                            print(f"{item}を削除しました。")
+                    return 1
                 elif bst['finalist'] == False:
                     print('まだ続いています。')
+                    return 1
                 
     def inset_schedule(self):
         for num,trigger in enumerate(self.boottime):
@@ -290,7 +303,8 @@ class Mother:
             minute = str(datetimes.minute+self.fime)
             if dtnow.year == datetimes.year and dtnow.month == datetimes.month and dtnow.day == datetimes.day:
                 if trigger["subscription"] == True:
-                    print(trigger["generation_key"] + "はすでに準備できています。")
+                    if trigger["finalist"] == True:
+                        print(trigger["company_name"] + "はすでに準備できています。" + "カウント数:" + str(num) + "個")
                 else:
                     trigger["subscription"] = True
                     if (num - self.sabun) >= 4:
@@ -302,12 +316,20 @@ class Mother:
                             self.fime += 1
 
                         if int(minute) > 59:
-                            if int(minute) > 119:
-                                newminute = str(120-int(minute))
+                            if int(minute) > 179:
+                                hour = int(hour)+1
+                                newminute = str(int(minute)-180)
+                                print(newminute)
+                            elif int(minute) > 119:
+                                hour = int(hour)+1
+                                print(hour)
+                                newminute = str(int(minute)-120)
+                                print(newminute)
                             else:
-                                newminute = str(60-int(minute))
-                            print(trigger["generation_key"] + "を"+ str(int(hour)).zfill(2)+'時'+str(int(newminute)*-1).zfill(2)+"分にスケジュールしました。")
-                            schedule.every().day.at(str(int(hour)).zfill(2)+':'+str(int(newminute)*-1).zfill(2)).do(self.boot,trigger["url"],trigger["inquiry_id"],trigger["worker_id"],trigger["reserve_key"],trigger["generation_key"])
+                                hour = int(hour)+1
+                                newminute = str(int(minute)-60)
+                            print(trigger["generation_key"] + "を"+ str(int(hour)).zfill(2)+'時'+str(int(newminute)*1).zfill(2)+"分にスケジュールしました。")
+                            schedule.every().day.at(str(int(hour)).zfill(2)+':'+str(int(newminute)*1).zfill(2)).do(self.boot,trigger["url"],trigger["inquiry_id"],trigger["worker_id"],trigger["reserve_key"],trigger["generation_key"])
                         else:
                             schedule.every().day.at(hour.zfill(2)+':'+minute.zfill(2)).do(self.boot,trigger["url"],trigger["inquiry_id"],trigger["worker_id"],trigger["reserve_key"],trigger["generation_key"])
                             print(trigger["generation_key"] + "を"+ str(int(hour)).zfill(2)+'時'+minute.zfill(2)+"分にスケジュールしました。")
@@ -315,13 +337,20 @@ class Mother:
                         newminute = 0
                         print(minute)
                         if int(minute) > 59:
-                            if int(minute) > 119:
-                                newminute = str(120-int(minute))
+                            if int(minute) > 179:
+                                hour = int(hour)+1
+                                newminute = str(int(minute)-180)
+                            elif int(minute) > 119:
+                                hour = int(hour)+1
+                                newminute = str(int(minute)-120)
+                                print(hour)
                                 print(newminute)
                             else:
-                                newminute = str(60-int(minute))
-                            schedule.every().day.at(str(int(hour))+':'+str(int(newminute)*-1).zfill(2)).do(self.boot,trigger["url"],trigger["inquiry_id"],trigger["worker_id"],trigger["reserve_key"],trigger["generation_key"])
-                            print(trigger["generation_key"] + "を"+ str(int(hour)).zfill(2)+'時'+str(int(newminute)*-1).zfill(2)+"分にスケジュールしました。")
+                                hour = int(hour)+1
+                                newminute = str(int(minute)-60)
+                                print(newminute)
+                            schedule.every().day.at(str(int(hour))+':'+str(int(newminute)*1).zfill(2)).do(self.boot,trigger["url"],trigger["inquiry_id"],trigger["worker_id"],trigger["reserve_key"],trigger["generation_key"])
+                            print(trigger["generation_key"] + "を"+ str(int(hour)).zfill(2)+'時'+str(int(newminute)*1).zfill(2)+"分にスケジュールしました。")
                         else:
                             schedule.every().day.at(hour.zfill(2)+':'+minute.zfill(2)).do(self.boot,trigger["url"],trigger["inquiry_id"],trigger["worker_id"],trigger["reserve_key"],trigger["generation_key"])
                             print(trigger["generation_key"] + "を"+ str(int(hour)).zfill(2)+'時'+minute.zfill(2)+"分にスケジュールしました。")
@@ -329,8 +358,8 @@ class Mother:
                 print('このデータは今日準備できません。')
 
 
-sched = BackgroundScheduler(daemon=True,job_defaults={'max_instances': 2})
-sched.add_job(scheds,'interval',seconds=30) 
+sched = BackgroundScheduler(daemon=True,job_defaults={'max_instances': 1})
+sched.add_job(scheds,'interval',minutes=1) 
 sched.start()
                 
     
@@ -371,4 +400,4 @@ def rocketbumb():
 
 
 if __name__ == "__main__":
-    app.run(port=6500,debug=True)
+    app.run(port=6400,debug=True,use_reloader=False)

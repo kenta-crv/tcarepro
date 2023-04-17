@@ -419,7 +419,7 @@ class Customer < ApplicationRecord
     @@send_status
   end
 
-  #enum status: {draft: 0, published: 1}
+  enum status: {draft: 0, published: 1}
 
   def get_search_url
     unless @contact_url
