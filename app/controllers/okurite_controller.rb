@@ -203,10 +203,12 @@ class OkuriteController < ApplicationController
   def bulk_delete
     sender = Sender.find(params[:sender_id])
     target = sender.contact_trackings.where(status: %w[自動送信不可 送信不可])
-    target.destroy_all!
-    redirect_to sender_okurite_index_path(sender.id, notice:"一括削除に成功しました")
+    target.destroy_all
+    flash[:notice] = "一括削除に成功しました"
+    redirect_to sender_okurite_index_path(sender.id)
   rescue
-    redirect_to sender_okurite_index_path(sender.id, alert:"一括削除に失敗しました")
+    flash[:alert] = "一括削除に失敗しました"
+    redirect_to sender_okurite_index_path(sender.id)
   end
 
   private
