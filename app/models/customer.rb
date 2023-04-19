@@ -85,13 +85,6 @@ class Customer < ApplicationRecord
     end
   }
 
-  scope :with_status, -> statuses {
-    status = statuses&.first
-    if status.present?
-      where(status: status)
-    end
-  }
-
   scope :with_is_contact_tracking, -> is_contact_tracking {
     if is_contact_tracking == "true"
       contact_trackings.exists?
