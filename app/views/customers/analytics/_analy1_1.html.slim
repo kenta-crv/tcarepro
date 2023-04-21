@@ -4,7 +4,7 @@ br/
 br/
 table.header-table.space[width="90%"]
   tr
-    th[colspan="11"]
+    th[colspan="12"]
       | スタッフ別コール
   tr
     th
@@ -29,6 +29,8 @@ table.header-table.space[width="90%"]
       | クロージングNG
     th
       | 永久NG
+    th
+      | NG率
   - @users.each do |user|
     - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
     tr
@@ -86,3 +88,9 @@ table.header-table.space[width="90%"]
         |(
         = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "永久NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
         |)
+      td
+        - user_app = user_calls_month.select { |call| call.statu == "APP" }.count
+        - total_calls = user_calls_month.select { |call| call.statu == "NG" }.count + user_calls_month.select { |call| call.statu == "フロントNG" }.count + user_calls_month.select { |call| call.statu == "クロージングNG" }.count + user_calls_month.select { |call| call.statu == "永久NG" }.count
+        - percentage = total_calls > 0 ? (user_app / total_calls.to_f) * 100 : 0
+        = number_to_percentage(percentage, precision: 1)
+
