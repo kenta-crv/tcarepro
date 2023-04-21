@@ -59,7 +59,7 @@
   table.space[width="90%"]
     tbody
     tr
-        th[colspan="3"]
+        th[colspan="4"]
           | 自動送信設定
     tr
         td
@@ -71,6 +71,9 @@
           = number_field_tag 'count', 1, min: 1, required:true
         th
           = submit_tag "自動送信設定",  class: 'btn btn-success'
+        th
+          = link_to '自動送信予定の一括削除', sender_bulk_delete_path, class: 'btn btn-danger', data: { method: :delete, confirm: '本当に削除しますか？'}
+
 #searchModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
   .modal-dialog
     .modal-content[style="width:900px; margin-left: -200px;"]
@@ -102,7 +105,7 @@
                 th
                   | 状態
                 td
-                  = select_tag "statuses", options_for_select([['選択してください', ''], '営業NG', '送信済', '送信不可','自動送信予定','自動送信エラー'], params['statuses']), multiple: true, class: "form-control"
+                  = select_tag "statuses", options_for_select([['選択してください', ''], '自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可','自動送信予定','自動送信エラー'], params['statuses']), multiple: true, class: "form-control"
               tr
                 th
                   | 未送信
