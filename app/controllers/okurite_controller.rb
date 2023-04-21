@@ -5,13 +5,28 @@ require 'json'
 class OkuriteController < ApplicationController
   before_action :authenticate_worker_or_admin!, except: [:callback,:direct_mail_callback]
   before_action :set_sender, except: [:callback,:direct_mail_callback]
-  before_action :set_customers, only: [:index, :preview]
+  before_action :set_customers, only: [:preview]
 
   def index
-    @customers = @customers.where(forever: nil).where(choice: nil).page(params[:page]).per(100)
+    _contact_trackings = { sender_id: @sender.id } 
+    _contact_trackings[:status] = params[:statuses] if params[:statuses].present?
+    @q = Customer.eager_load(:contact_trackings)
+                 .where(contact_trackings: _contact_trackings)
+                 .where(forever: nil)
+                 .with_company(params[:company_cont])
+                 .with_tel(params[:tel_cont])
+                 .with_address(params[:address_cont_any])
+                 .with_is_contact_tracking(params[:contact_tracking_id_null])
+                 .with_business(params[:business_cont])
+                 .with_genre(params[:genre_cont])
+                 .with_choice(params[:choice_cont])
+                 .with_industry(params[:industry_cont])
+                 .with_created_at(params[:created_at_gteq], params[:created_at_lteq])
+                 .with_contact_tracking_sended_at(params[:contact_tracking_sended_at_gteq], params[:contact_tracking_sended_at_lteq])                           
+                 .ransack(params[:q])
+    @customers = @q.result.page(params[:page]).per(100)
     @contact_trackings = ContactTracking.where(sender_id:@sender.id,worker_id:current_worker.id)
     #Rails.logger.info("@contact_trackings : " + @contact_trackings.to_yaml)
-
   end
 
   def show
@@ -186,6 +201,17 @@ class OkuriteController < ApplicationController
     end
       Rails.logger.info( "save_cont: " + save_cont.to_s)
     redirect_to sender_okurite_index_path(id:@sender.id,q: params[:q]&.permit!, page: params[:page]), notice:"#{continue_cont}件登録成功しました。登録エラー#{err_cont}件"
+  end
+
+  def bulk_delete
+    sender = Sender.find(params[:sender_id])
+    target = sender.contact_trackings.where(status: %w[自動送信不可 送信不可])
+    target.destroy_all
+    flash[:notice] = "一括削除に成功しました"
+    redirect_to sender_okurite_index_path(sender.id)
+  rescue
+    flash[:alert] = "一括削除に失敗しました"
+    redirect_to sender_okurite_index_path(sender.id)
   end
 
   private

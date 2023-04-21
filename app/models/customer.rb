@@ -67,6 +67,81 @@ class Customer < ApplicationRecord
     eager_load(:contact_trackings).marge(ContactTracking.before_sended_at(sended_at))
   }
 
+  scope :with_company, -> company {
+    if company.present?
+      where("company LIKE ?", "%#{company}%")
+    end
+  }
+
+  scope :with_tel, -> tel {
+    if tel.present?
+      where("tel LIKE ?", "%#{tel}%")
+    end
+  }
+
+  scope :with_address, -> address {
+    if address.present?
+      where(address: address)
+    end
+  }
+
+  scope :with_is_contact_tracking, -> is_contact_tracking {
+    if is_contact_tracking == "true"
+      contact_trackings.exists?
+    end
+  }
+
+  scope :with_business, -> business {
+    if business.present?
+      where("business LIKE ?", "%#{business}%")
+    end
+  }
+
+  scope :with_genre, -> genre {
+    if genre.present?
+      where("genre LIKE ?", "%#{genre}%")
+    end
+  }
+
+  scope :with_choice, -> choice {
+    if choice.present?
+      where("choice LIKE ?", "%#{choice}%")
+    end
+  }
+
+  scope :with_industry, -> industry {
+    if industry.present?
+      where("industry LIKE ?", "%#{industry}%")
+    end
+  }
+
+  scope :with_created_at, -> (from, to) {
+    from_date_time = Time.zone.parse(from).beginning_of_day if from.present?
+    to_date_time = Time.zone.parse(to).end_of_day if to.present?
+
+    if from_date_time.present? && to_date_time.present?
+      where(created_at: from_date_time..to_date_time)
+    elsif from_date_time.present?
+      where('created_at >= ?', from_date_time)
+    elsif to_date_time.present?
+      where('created_at <= ?', to_date_time)
+    end
+  }
+
+  scope :with_contact_tracking_sended_at, -> (from, to) {
+    from_date_time = Time.zone.parse(from).beginning_of_day if from.present?
+    to_date_time = Time.zone.parse(to).end_of_day if to.present?
+
+    if from_date_time.present? && to_date_time.present?
+      where(contact_tracking_sended_at: from_date_time..to_date_time)
+    elsif from_date_time.present?
+      where('contact_tracking_sended_at >= ?', from_date_time)
+    elsif to_date_time.present?
+      where('contact_tracking_sended_at <= ?', to_date_time)
+    end
+  }
+
+
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
   validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
   #validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
