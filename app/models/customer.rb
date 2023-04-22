@@ -148,26 +148,18 @@ class Customer < ApplicationRecord
   #validates :business, presence: true, if: -> { extraction_count.blank?}, on: :update
   validates :extraction_count, presence: true, if: -> { tel.blank?}, on: :update
 
-#customer_import
   def self.import(file)
-      save_cont = 0
-      update_count = 0
-      CSV.foreach(file.path, headers:true) do |row|
-       customer = find_by(id: row["id"]) || new
-       customer.attributes = row.to_hash.slice(*updatable_attributes)
-       next if customer.industry == nil
-       next if self.where(tel: customer.tel).where(industry: nil).count.positive? > 0
-       next if self.where(tel: customer.tel).where(industry: customer.industry).count.positive? && !overwrite > 0
-
-       if customer.persisted? && overwrite
-        customer.save!
-        update_cont += 1
-       elsif customer.new_record?
-        customer.save!
-        save_count += 1
-       end
-      end
-      { saved: save_count, updated: update_count }
+    save_cont = 0
+    CSV.foreach(file.path, headers:true) do |row|
+     customer = find_by(id: row["id"]) || new
+     customer.attributes = row.to_hash.slice(*updatable_attributes)
+     next if customer.industry == nil
+     next if self.where(tel: customer.tel).where(industry: nil).count > 0
+     next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
+     customer.save!
+     save_cont += 1
+    end
+    save_cont
   end
   def self.updatable_attributes
     ["id","company","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
