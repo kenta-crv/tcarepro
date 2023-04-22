@@ -70,8 +70,7 @@ class ApplicationController < ActionController::Base
 
           new_sender_inquiry_path(current_sender)
         else
-          sender
-          _path
+          sender_path
         end
       when Client
         client_path
