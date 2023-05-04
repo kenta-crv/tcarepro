@@ -85,6 +85,13 @@ class Customer < ApplicationRecord
     end
   }
 
+  scope :with_status, -> statuses {
+    status = statuses&.first
+    if status.present?
+      where(status: status)
+    end
+  }
+
   scope :with_is_contact_tracking, -> is_contact_tracking {
     if is_contact_tracking == "true"
       contact_trackings.exists?
@@ -143,10 +150,10 @@ class Customer < ApplicationRecord
 
 
   validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
-  validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
+  #validates :tel, presence: true, if: -> { extraction_count.blank?}, on: :update
   #validates :address, presence: true, if: -> { extraction_count.blank?}, on: :update
   #validates :business, presence: true, if: -> { extraction_count.blank?}, on: :update
-  validates :extraction_count, presence: true, if: -> { tel.blank?}, on: :update
+  #validates :extraction_count, presence: true, if: -> { tel.blank?}, on: :update
 
   def self.import(file)
     save_cont = 0
@@ -173,12 +180,15 @@ class Customer < ApplicationRecord
     CSV.foreach(update_file.path, headers: true) do |row|
       customer = find_by(id: row["id"]) || new
       customer.attributes = row.to_hash.slice(*updatable_attributes)
+      next if customer.industry == nil
+      next if self.where(tel: customer.tel).where(industry: nil).count > 0
+      next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
       customer.save!
       save_cnt += 1
     end
     save_cnt
   end
-
+ 
 #tcare_import
   def self.tcare_import(tcare_file)
       save_cont = 0
