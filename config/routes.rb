@@ -1,11 +1,5 @@
 Rails.application.routes.draw do
-  root to: 'top#index'
-  get 'usp' => 'top#usp'
-  get 'question' => 'top#question'
-  get 'co' => 'top#co'
-
-  get 'manuals' => 'manuals#index'
-  get 'manuals/officework' => 'manuals#officework'
+  root to: 'customers#index'
 
   #管理者アカウント
   devise_for :admins, controllers: {
@@ -17,6 +11,14 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
   resources :users, only: [:show]
+  #ワーカーアカウント
+  devise_for :workers, controllers: {
+    registrations: 'workers/registrations',
+    sessions: 'workers/sessions',
+    confirmations: 'workers/confirmations',
+    passwords: 'workers/passwords',
+  }
+  resources :workers, only: [:show]
   #クライアントアカウント
   devise_for :clients, controllers: {
     registrations: 'clients/registrations'
@@ -56,14 +58,6 @@ Rails.application.routes.draw do
   get 'sender/question' => 'sender#question'
   get 'callback' => 'okurite#callback', as: :callback
   get 'direct_mail_callback' => 'okurite#direct_mail_callback', as: :direct_mail_callback
-  #ワーカーアカウント
-  devise_for :workers, controllers: {
-    registrations: 'workers/registrations',
-    sessions: 'workers/sessions',
-    confirmations: 'workers/confirmations',
-    passwords: 'workers/passwords',
-  }
-  resources :workers, only: [:show]
 
   resources :matters #リスト案件情報
   resources :sendlist
@@ -105,18 +99,11 @@ Rails.application.routes.draw do
   get 'closing' => 'customers#closing' #締め
   get 'news' => 'customers#news' #インポート情報
   get 'call_history'=> 'customers#call_history' #インポート情報
-  get 'export' => 'customers#export' #
-  get 'sfa' => 'customers#sfa' #SFA
-
-  #post 'customers/contact' => 'customers#contact' #メール送信
-  #post 'customers/thanks' => 'ustomers#thanks' #メール送信完了
   get 'extraction' => 'customers#extraction' #TCARE
   delete :customers, to: 'customers#destroy_all' #Mailer
+  get 'manuals' => 'manuals#index'
+  get 'manuals/officework' => 'manuals#officework'
 
-  #お問い合わせフォーム
-  get 'contact' => 'contact#index'
-  post 'contact/confirm' => 'contact#confirm'
-  post 'contact/thanks' => 'contact#thanks'
 
   # エラー情報
   get 'pybot' => 'pybot_e_notify#index'
@@ -140,6 +127,7 @@ Rails.application.routes.draw do
 
   resources :contracts do
     resources :images, only: [:create, :destroy, :update, :download, :edit]
+    resources :knowledges
     member do
       get 'images/view'
       get 'images/download/:id' => 'images#download' ,as: :images_pdf
@@ -147,7 +135,6 @@ Rails.application.routes.draw do
   end
 
   get '*path', controller: 'application', action: 'render_404'
-
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
