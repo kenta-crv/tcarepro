@@ -1,2 +1,0 @@
-class Matter < ApplicationRecord
-end
