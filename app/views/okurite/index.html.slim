@@ -27,7 +27,7 @@
         th
           | URLアクセス日時
     - @customers.each do |customer|
-      - contact_tracking = @contact_trackings.where(customer_id:customer.id).take
+      - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
       tr
         td
           = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
@@ -37,17 +37,17 @@
           = customer.url_2&.truncate(30)
         td
           - begin 
-            = contact_tracking.status 
+            = contact_tracking&.status 
           - rescue 
             = ""
         td
           - begin 
-            = contact_tracking.sended_at
+            = contact_tracking&.sended_at
           - rescue 
             = ""
         td
           - begin 
-            = contact_tracking.sended_at
+            = contact_tracking&.sended_at
           - rescue 
             = ""
     tr

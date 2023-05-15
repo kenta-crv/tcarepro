@@ -19,13 +19,8 @@ Rails.application.routes.draw do
     passwords: 'workers/passwords',
   }
   resources :workers, only: [:show]
-  #クライアントアカウント
-  devise_for :clients, controllers: {
-    registrations: 'clients/registrations'
-  }
-  resource :client, only: [:show]
-  resource :sender, only: [:show]
 
+  resource :sender, only: [:show]
   post 'senders/import' => 'senders#import'
   #センダーアカウント
   devise_for :senders, controllers: {
@@ -59,7 +54,6 @@ Rails.application.routes.draw do
   get 'callback' => 'okurite#callback', as: :callback
   get 'direct_mail_callback' => 'okurite#direct_mail_callback', as: :direct_mail_callback
 
-  resources :matters #リスト案件情報
   resources :sendlist
   resources :estimates, only: [:index, :show] do
     member do

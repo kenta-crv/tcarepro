@@ -67,13 +67,10 @@ class ApplicationController < ActionController::Base
       when Sender
         if current_sender.inquiries.empty?
           flash[:notice] = "案件の内容を登録してください"
-
           new_sender_inquiry_path(current_sender)
         else
           sender_path
         end
-      when Client
-        client_path
       else
         super
       end
@@ -89,8 +86,6 @@ class ApplicationController < ActionController::Base
         new_worker_session_path
       when Sender, :sender, :senders
         new_sender_session_path
-      when Client, :client, :clients
-        new_sender_client_path
       else
         super
       end
