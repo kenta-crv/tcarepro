@@ -119,7 +119,7 @@
                 th
                   | 業種
                 td
-                  = f.select(:business, Customer.BusinessStatus2, include_blank: "選択する", name: "business_name", id:"business")
+                  = f.search_field :business_cont, type: "text"
                 th
                   | 事業内容
                 td
