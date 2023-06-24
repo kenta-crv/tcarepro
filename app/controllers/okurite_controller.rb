@@ -67,6 +67,51 @@ class OkuriteController < ApplicationController
     redirect_to @contact_tracking.inquiry.url
   end
 
+  def direct_mail_callback
+    Rails.logger.info( "inside direct mail callback : ")
+    @direct_mail_contact_tracking = DirectMailContactTracking.find_by!(code: params[:t])
+
+    @direct_mail_contact_tracking.callbacked_at = Time.zone.now
+
+    @direct_mail_contact_tracking.save
+
+    redirect_to "https://ri-plus.jp/"
+  end
+
+  def okurite_new_status(customers_code, status)
+    Rails.logger.info( "@sender : " + status + 'に設定')
+    @customer = Customer.where(customers_code: customers_code)
+    @customer.update(status: status)
+  end
+
+  def autosettings
+    #Rails.logger.info( "date : " + DateTime.parse(params[:date]).to_yaml)
+    Rails.logger.info( "count : " + params[:count].to_s)
+    @q = Customer.ransack(params[:q])
+    @customers = @q.result.distinct
+    save_cont = 0
+    @sender = Sender.find(params[:sender_id])
+     Rails.logger.info( "@sender : " + @sender.attributes.inspect)
+    @customers.each do |cust|
+      unless ((params[:count]).to_i < (save_cont+1))
+        okurite_new_status(cust.customers_code, "自動送信予定")
+        @sender.auto_send_contact!(
+        @sender.generate_code,
+        cust.id,
+        current_worker&.id,
+        @sender.default_inquiry_id,
+        DateTime.parse(params[:date]),
+        cust.get_search_url,
+        "自動送信予定",
+        cust.customers_code
+        )
+      save_cont += 1
+      end
+    end
+      Rails.logger.info( "save_cont: " + save_cont.to_s)
+    redirect_to sender_okurite_index_path(id:@sender.id,q: params[:q]&.permit!, page: params[:page]), notice:"#{save_cont}件登録されました。"
+  end
+
   private
 
   def set_sender

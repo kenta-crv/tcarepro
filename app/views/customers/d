@@ -1,11 +1,11 @@
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%ファクトリーラボ（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%%ファクトリーラボ（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ファクトリーラボ（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%コンシェルテック（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @labo_sales = @detailAppCount * 33000
+    - @concier_factory = @detailAppCount * 16500
     th
-      | ファクトリーラボ（工場）
+      | コンシェルテック（工場）
     td
       = @ListCount
     td
@@ -19,5 +19,5 @@
     td
       = @detailRemainCount
     td
-      = @labo_sales
+      = @concier3_sale
     td 10日
