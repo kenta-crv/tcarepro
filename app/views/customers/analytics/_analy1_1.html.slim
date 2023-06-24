@@ -32,14 +32,14 @@ table.header-table.space[width="90%"]
     th
       | NG率
   - @users.each do |user|
-    - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+    - user_calls_month = user.calls.where('created_at > ?', 1.month.ago.beginning_of_month).where('created_at < ?', 1.month.ago.end_of_month).to_a
     tr
       td
         = user.user_name
       td
-        = link_to user.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count, customers_path(calls_user_user_name_cont: user.user_name)
+        = link_to user.calls.where('created_at > ?', 1.month.ago.beginning_of_day).where('created_at < ?', 1.month.ago.end_of_day).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
-        = link_to user_calls_month.count, customers_path(q:{calls_user_user_name_cont: user.user_name, created_at_from: Time.current.beginning_of_month, created_at_to: Time.current.end_of_month})
+        = link_to user_calls_month.count, customers_path(q:{calls_user_user_name_cont: user.user_name, created_at_from: 1.month.ago.beginning_of_month, created_at_to: 1.month.ago.end_of_month})
       td
         = user_calls_month.select { |call| call.statu == "着信留守" }.count
         br
