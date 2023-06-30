@@ -12,10 +12,6 @@ class OkuriteController < ApplicationController
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
 
-  def sfa
-    @customers = @customers.where.not(choice: nil).page(params[:page]).per(30)
-    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
-  end
 
   def show
     @customer = Customer.find(params[:id])

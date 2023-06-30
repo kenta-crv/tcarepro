@@ -134,17 +134,20 @@ class Customer < ApplicationRecord
     end
   }
 
-  scope :with_contact_tracking_sended_at, -> (from, to) {
-    from_date_time = Time.zone.parse(from).beginning_of_day if from.present?
-    to_date_time = Time.zone.parse(to).end_of_day if to.present?
+  #scope :with_contact_tracking_sended_at, -> (from, to) {
+   # from_date_time = Time.zone.parse(from).beginning_of_day if from.present?
+   # to_date_time = Time.zone.parse(to).end_of_day if to.present?
 
-    if from_date_time.present? && to_date_time.present?
-      where(contact_tracking_sended_at: from_date_time..to_date_time)
-    elsif from_date_time.present?
-      where('contact_tracking_sended_at >= ?', from_date_time)
-    elsif to_date_time.present?
-      where('contact_tracking_sended_at <= ?', to_date_time)
-    end
+   # if from_date_time.present? && to_date_time.present?
+   #   where(contact_tracking_sended_at: from_date_time..to_date_time)
+   # elsif from_date_time.present?
+   #   where('contact_tracking_sended_at >= ?', from_date_time)
+   # elsif to_date_time.present?
+   #   where('contact_tracking_sended_at <= ?', to_date_time)
+   # end
+  #}
+  scope :with_contact_tracking_sended_at, ->(from, to) {
+    where(contact_tracking_sended_at: (from.beginning_of_day..to.end_of_day))
   }
 
 
