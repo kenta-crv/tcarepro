@@ -1,6 +1,14 @@
 class InquiriesController < ApplicationController
   before_action :authenticate_admin_or_worker_or_sender!
-  before_action :set_sender
+  before_action :set_sender, except: [:index, :show, :edit, :update, :destroy]
+
+  def index 
+    @inquiry = Inquiry.all
+  end
+
+  def show 
+    @inquiry = Inquiry.find(params[:id])
+  end
 
   def new
     @inquiry = @sender.inquiries.new
@@ -21,20 +29,19 @@ class InquiriesController < ApplicationController
   end
 
   def edit
-    @inquiry = @sender.inquiries.find(params[:id])
+    @inquiry = Inquiry.find(params[:id])
   end
 
   def destroy
-    @inquiry = @sender.inquiries.find(params[:id])
+    @inquiry = Inquiry.find(params[:id])
     @inquiry.destroy
-
-    success_to_redirect
+    redirect_to inquiries_path
   end
 
   def update
-    @inquiry = @sender.inquiries.find(params[:id])
+    @inquiry = Inquiry.find(params[:id])
     if @inquiry.update(inquiry_params)
-      success_to_redirect
+      redirect_to inquiries_path
     else
       render 'edit'
     end

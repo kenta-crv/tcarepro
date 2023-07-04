@@ -29,8 +29,10 @@ Rails.application.routes.draw do
   #resource :myself, only: :show, controller: :sender do
    # resources :inquiries, only: [:index]
   #end
+  resources :inquiries, only: [:index, :show, :edit, :update, :destroy] 
+
   resources :senders, only: [:index, :show, :edit, :update] do
-    resources :inquiries, except: [:index, :show] do
+    resources :inquiries, except: [:index, :show, :edit, :update, :destroy] do
       put :default, to: 'inquiries#default'
     end
     get 'history', to: 'senders_history#index'
