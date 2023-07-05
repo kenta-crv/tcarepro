@@ -26,9 +26,7 @@ Rails.application.routes.draw do
   devise_for :senders, controllers: {
     registrations: 'senders/registrations'
   }
-  #resource :myself, only: :show, controller: :sender do
-   # resources :inquiries, only: [:index]
-  #end
+
   resources :inquiries, only: [:index, :show, :edit, :update, :destroy] 
 
   resources :senders, only: [:index, :show, :edit, :update] do
@@ -65,7 +63,6 @@ Rails.application.routes.draw do
 
   resources :customers do
     resources :calls
-    resources :counts
     member do
       get :contact
       post :send_mail
