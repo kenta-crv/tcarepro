@@ -1,6 +1,6 @@
 require 'contactor'
-require 'securerandom'	
-require 'json'	
+require 'securerandom'
+require 'json'
 
 class OkuriteController < ApplicationController
   before_action :authenticate_worker_or_admin!, except: [:callback,:direct_mail_callback]
@@ -29,7 +29,7 @@ class OkuriteController < ApplicationController
 
     if params[:next_customer_id].present?
       redirect_to sender_okurite_preview_path(
-        okurite_id: params[:next_customer_id], 
+        okurite_id: params[:next_customer_id],
         q: params[:q]&.permit!
       )
     else
@@ -78,10 +78,12 @@ class OkuriteController < ApplicationController
     redirect_to "https://ri-plus.jp/"
   end
 
-  def okurite_new_status(customers_code, status)
+  def okurite_new_status(customer, status)
     Rails.logger.info( "@sender : " + status + 'に設定')
-    @customer = Customer.where(customers_code: customers_code)
-    @customer.update(status: status)
+    customer.contact_trackings.each do |contact_tracking|
+      contact_tracking.status = '自動送信予定'
+      contact_tracking.save!
+    end
   end
 
   def autosettings
@@ -91,10 +93,10 @@ class OkuriteController < ApplicationController
     @customers = @q.result.distinct
     save_cont = 0
     @sender = Sender.find(params[:sender_id])
-     Rails.logger.info( "@sender : " + @sender.attributes.inspect)
+    Rails.logger.info( "@sender : " + @sender.attributes.inspect)
     @customers.each do |cust|
       unless ((params[:count]).to_i < (save_cont+1))
-        okurite_new_status(cust.customers_code, "自動送信予定")
+        okurite_new_status(cust, "自動送信予定")
         @sender.auto_send_contact!(
         @sender.generate_code,
         cust.id,
@@ -129,7 +131,7 @@ class OkuriteController < ApplicationController
 
   def authenticate_worker_or_admin!
     unless worker_signed_in? || admin_signed_in?
-       redirect_to new_worker_session_path, alert: 'error'
+      redirect_to new_worker_session_path, alert: 'error'
     end
   end
 end
