@@ -23,7 +23,6 @@ class CustomersController < ApplicationController
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
     @customers = @q.result || @q.result.includes(:last_call)
   #  3コール以内プログラム
-    #binding.pry
     if params[:search] && params[:search][:ltec_calls_count].present?
      @customers = @customers.ltec_calls_count(params[:search][:ltec_calls_count].to_i)
     end
@@ -38,12 +37,6 @@ class CustomersController < ApplicationController
         send_data @csv_customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv"
      end
     end
-  end
-
-  def direct_mail_send
-   Rails.logger.info("Inside direct_mail_send")
-   @customer = Customer.find(params[:id])
-   @user = current_user
   end
 
   def show
@@ -88,30 +81,17 @@ class CustomersController < ApplicationController
      end
   end
 
-  def complete
-    @customer = Customer.find_by(params[:id])
-    if @customer.valid?
-        CustomerMailer.receive_email(@customer).deliver
-        CustomerMailer.send_email(@customer).deliver
-        flash[:notice] = "資料を送付しました"
-    else
-        flash[:notice] = "資料を送付しました"
-    end
-  end
-
   def edit
     @customer = Customer.find(params[:id])
   end
 
   def update
-    #@customers = Customer&.where(worker_id: current_worker.id)
-    #@count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
     @customer = Customer.find(params[:id])
-      if @customer.update(customer_params)
-        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
-      else
-        render 'edit'
-      end
+    if @customer.update(customer_params)
+      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+    else
+      render 'edit'
+    end
   end
 
   def destroy
@@ -127,21 +107,6 @@ class CustomersController < ApplicationController
     else
       render action: 'index'
     end
-  end
-
-  def bulk_edit
-    @ids = params[:ids]
-  end
-
-  def bulk_update
-    @ids = params[:ids].split(" ")
-    @ids.each do |id|
-      c = Customer.find(id.to_i)
-      c.update_attributes(
-        status: params[:status]
-      )
-    end
-    redirect_to request.referer
   end
 
   def closing 
@@ -256,139 +221,6 @@ class CustomersController < ApplicationController
 
       @detailcalls = Customer2.joins(:calls).select('calls.id')
       @detailcustomers = Call.joins(:customer).select('customers.id')
-    when "analy2"
-      @calls = Call.all
-      @call_ng = @calls.where("statu LIKE ?","%NG%")
-      @call_month_basic = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
-      @call_count_called = @call_month_basic.select { |call| call.statu == "着信留守" }
-      @call_count_absence = @call_month_basic.select { |call| call.statu == "担当者不在" }
-      @call_count_prospect = @call_month_basic.select { |call| call.statu == "見込" }
-      @call_count_app = @call_month_basic.select { |call| call.statu == "APP" }
-      @call_count_cancel = @call_month_basic.select { |call| call.statu == "キャンセル" }
-      @call_count_ng = @call_month_basic.select { |call| call.statu == "NG" }
-      #9時台
-      @call_total_9 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "09:00:00" }.select { |call| l(call.created_at, format: :prepare) < "09:59:59" }.count
-      @call_total_b9 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "00:00:00" }.select { |call| l(call.created_at, format: :prepare) < '00:59:59' }.count
-      @call_called_9 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "09:00:00" }.select { |call| l(call.created_at, format: :prepare) < "09:59:59" }.count
-      @call_called_b9 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "00:00:00" }.select { |call| l(call.created_at, format: :prepare) < '00:59:59' }.count
-      @call_absence_9 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "09:00:00" }.select { |call| l(call.created_at, format: :prepare) < "09:59:59" }.count
-      @call_absence_b9 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "00:00:00" }.select { |call| l(call.created_at, format: :prepare) < '00:59:59' }.count
-      @call_prospect_9 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "09:00:00" }.select { |call| l(call.created_at, format: :prepare) < "09:59:59" }.count
-      @call_prospect_b9 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "00:00:00" }.select { |call| l(call.created_at, format: :prepare) < '00:59:59' }.count
-      @call_app_9 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "09:00:00" }.select { |call| l(call.created_at, format: :prepare) < "09:59:59" }.count
-      @call_app_b9 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "00:00:00" }.select { |call| l(call.created_at, format: :prepare) < '00:59:59' }.count
-      @call_ng_9 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "09:00:00" }.select { |call| l(call.created_at, format: :prepare) < "09:59:59" }.count
-      @call_ng_b9 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "00:00:00" }.select { |call| l(call.created_at, format: :prepare) < '00:59:59' }.count
-
-      #10時台
-      @call_total_10 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "10:00:00" }.select { |call| l(call.created_at, format: :prepare) < "10:59:59" }.count
-      @call_total_b10 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "01:00:00" }.select { |call| l(call.created_at, format: :prepare) < "01:59:59" }.count
-      @call_called_10 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "10:00:00" }.select { |call| l(call.created_at, format: :prepare) < "10:59:59" }.count
-      @call_called_b10 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "01:00:00" }.select { |call| l(call.created_at, format: :prepare) < "01:59:59" }.count
-      @call_absence_10 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "10:00:00" }.select { |call| l(call.created_at, format: :prepare) < "10:59:59" }.count
-      @call_absence_b10 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "01:00:00" }.select { |call| l(call.created_at, format: :prepare) < "01:59:59" }.count
-      @call_prospect_10 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "10:00:00" }.select { |call| l(call.created_at, format: :prepare) < "10:59:59" }.count
-      @call_prospect_b10 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "01:00:00" }.select { |call| l(call.created_at, format: :prepare) < "01:59:59" }.count
-      @call_app_10 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "10:00:00" }.select { |call| l(call.created_at, format: :prepare) < "10:59:59" }.count
-      @call_app_b10 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "01:00:00" }.select { |call| l(call.created_at, format: :prepare) < "01:59:59" }.count
-      @call_ng_10 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "10:00:00" }.select { |call| l(call.created_at, format: :prepare) < "10:59:59" }.count
-      @call_ng_b10 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "01:00:00" }.select { |call| l(call.created_at, format: :prepare) < '01:59:59' }.count
-
-      #11時台
-      @call_total_11 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "11:00:00" }.select { |call| l(call.created_at, format: :prepare) < "11:59:59" }.count
-      @call_total_b11 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "02:00:00" }.select { |call| l(call.created_at, format: :prepare) < "02:59:59" }.count
-      @call_called_11 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "11:00:00" }.select { |call| l(call.created_at, format: :prepare) < "11:59:59" }.count
-      @call_called_b11 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "02:00:00" }.select { |call| l(call.created_at, format: :prepare) < "02:59:59" }.count
-      @call_absence_11 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "11:00:00" }.select { |call| l(call.created_at, format: :prepare) < "11:59:59" }.count
-      @call_absence_b11 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "02:00:00" }.select { |call| l(call.created_at, format: :prepare) < "02:59:59" }.count
-      @call_prospect_11 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "11:00:00" }.select { |call| l(call.created_at, format: :prepare) < "11:59:59" }.count
-      @call_prospect_b11 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "02:00:00" }.select { |call| l(call.created_at, format: :prepare) < "02:59:59" }.count
-      @call_app_11 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "11:00:00" }.select { |call| l(call.created_at, format: :prepare) < "11:59:59" }.count
-      @call_app_b11 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "02:00:00" }.select { |call| l(call.created_at, format: :prepare) < "02:59:59" }.count
-      @call_ng_11 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "11:00:00" }.select { |call| l(call.created_at, format: :prepare) < "11:59:59" }.count
-      @call_ng_b11 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "02:00:00" }.select { |call| l(call.created_at, format: :prepare) < '02:59:59' }.count
-
-      #13時台
-      @call_total_13 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "13:00:00" }.select { |call| l(call.created_at, format: :prepare) < "13:59:59" }.count
-      @call_total_b13 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "04:00:00" }.select { |call| l(call.created_at, format: :prepare) < "04:59:59" }.count
-      @call_called_13 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "13:00:00" }.select { |call| l(call.created_at, format: :prepare) < "13:59:59" }.count
-      @call_called_b13 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "04:00:00" }.select { |call| l(call.created_at, format: :prepare) < "04:59:59" }.count
-      @call_absence_13 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "13:00:00" }.select { |call| l(call.created_at, format: :prepare) < "13:59:59" }.count
-      @call_absence_b13 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "04:00:00" }.select { |call| l(call.created_at, format: :prepare) < "04:59:59" }.count
-      @call_prospect_13 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "13:00:00" }.select { |call| l(call.created_at, format: :prepare) < "13:59:59" }.count
-      @call_prospect_b13 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "04:00:00" }.select { |call| l(call.created_at, format: :prepare) < "04:59:59" }.count
-      @call_app_13 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "13:00:00" }.select { |call| l(call.created_at, format: :prepare) < "13:59:59" }.count
-      @call_app_b13 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "04:00:00" }.select { |call| l(call.created_at, format: :prepare) < "04:59:59" }.count
-      @call_ng_13 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "13:00:00" }.select { |call| l(call.created_at, format: :prepare) < "13:59:59" }.count
-      @call_ng_b13 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "04:00:00" }.select { |call| l(call.created_at, format: :prepare) < '04:59:59' }.count
-
-      #14時台
-      @call_total_14 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "14:00:00" }.select { |call| l(call.created_at, format: :prepare) < "14:59:59" }.count
-      @call_total_b14 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "05:00:00" }.select { |call| l(call.created_at, format: :prepare) < "05:59:59" }.count
-      @call_called_14 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "14:00:00" }.select { |call| l(call.created_at, format: :prepare) < "14:59:59" }.count
-      @call_called_b14 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "05:00:00" }.select { |call| l(call.created_at, format: :prepare) < "05:59:59" }.count
-      @call_absence_14 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "14:00:00" }.select { |call| l(call.created_at, format: :prepare) < "14:59:59" }.count
-      @call_absence_b14 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "05:00:00" }.select { |call| l(call.created_at, format: :prepare) < "05:59:59" }.count
-      @call_prospect_14 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "14:00:00" }.select { |call| l(call.created_at, format: :prepare) < "14:59:59" }.count
-      @call_prospect_b14 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "05:00:00" }.select { |call| l(call.created_at, format: :prepare) < "05:59:59" }.count
-      @call_app_14 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "14:00:00" }.select { |call| l(call.created_at, format: :prepare) < "14:59:59" }.count
-      @call_app_b14 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "05:00:00" }.select { |call| l(call.created_at, format: :prepare) < "05:59:59" }.count
-      @call_ng_14 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "14:00:00" }.select { |call| l(call.created_at, format: :prepare) < "14:59:59" }.count
-      @call_ng_b14 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "05:00:00" }.select { |call| l(call.created_at, format: :prepare) < '05:59:59' }.count
-
-      #15時台
-      @call_total_15 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "15:00:00" }.select { |call| l(call.created_at, format: :prepare) < "15:59:59" }.count
-      @call_total_b15 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "06:00:00" }.select { |call| l(call.created_at, format: :prepare) < "06:59:59" }.count
-      @call_called_15 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "15:00:00" }.select { |call| l(call.created_at, format: :prepare) < "15:59:59" }.count
-      @call_called_b15 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "06:00:00" }.select { |call| l(call.created_at, format: :prepare) < "06:59:59" }.count
-      @call_absence_15 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "15:00:00" }.select { |call| l(call.created_at, format: :prepare) < "15:59:59" }.count
-      @call_absence_b15 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "06:00:00" }.select { |call| l(call.created_at, format: :prepare) < "06:59:59" }.count
-      @call_prospect_15 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "15:00:00" }.select { |call| l(call.created_at, format: :prepare) < "15:59:59" }.count
-      @call_prospect_b15 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "06:00:00" }.select { |call| l(call.created_at, format: :prepare) < "06:59:59" }.count
-      @call_app_15 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "15:00:00" }.select { |call| l(call.created_at, format: :prepare) < "15:59:59" }.count
-      @call_app_b15 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "06:00:00" }.select { |call| l(call.created_at, format: :prepare) < "06:59:59" }.count
-      @call_ng_15 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "15:00:00" }.select { |call| l(call.created_at, format: :prepare) < "15:59:59" }.count
-      @call_ng_b15 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "06:00:00" }.select { |call| l(call.created_at, format: :prepare) < '06:59:59' }.count
-
-      #16時台
-      @call_total_16 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "16:00:00" }.select { |call| l(call.created_at, format: :prepare) < "16:59:59" }.count
-      @call_total_b16 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "07:00:00" }.select { |call| l(call.created_at, format: :prepare) < "07:59:59" }.count
-      @call_called_16 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "16:00:00" }.select { |call| l(call.created_at, format: :prepare) < "16:59:59" }.count
-      @call_called_b16 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "07:00:00" }.select { |call| l(call.created_at, format: :prepare) < "07:59:59" }.count
-      @call_absence_16 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "16:00:00" }.select { |call| l(call.created_at, format: :prepare) < "16:59:59" }.count
-      @call_absence_b16 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "07:00:00" }.select { |call| l(call.created_at, format: :prepare) < "07:59:59" }.count
-      @call_prospect_16 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "16:00:00" }.select { |call| l(call.created_at, format: :prepare) < "16:59:59" }.count
-      @call_prospect_b16 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "07:00:00" }.select { |call| l(call.created_at, format: :prepare) < "07:59:59" }.count
-      @call_app_16 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "16:00:00" }.select { |call| l(call.created_at, format: :prepare) < "16:59:59" }.count
-      @call_app_b16 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "07:00:00" }.select { |call| l(call.created_at, format: :prepare) < "07:59:59" }.count
-      @call_ng_16 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "16:00:00" }.select { |call| l(call.created_at, format: :prepare) < "16:59:59" }.count
-      @call_ng_b16 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "07:00:00" }.select { |call| l(call.created_at, format: :prepare) < '07:59:59' }.count
-
-      #17時台
-      @call_total_17 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "17:00:00" }.select { |call| l(call.created_at, format: :prepare) < "17:59:59" }.count
-      @call_total_b17 = @call_month_basic.select { |call| l(call.created_at, format: :prepare) >= "08:00:00" }.select { |call| l(call.created_at, format: :prepare) < "08:59:59" }.count
-      @call_called_17 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "17:00:00" }.select { |call| l(call.created_at, format: :prepare) < "17:59:59" }.count
-      @call_called_b17 = @call_count_called.select { |call| l(call.created_at, format: :prepare) >= "08:00:00" }.select { |call| l(call.created_at, format: :prepare) < "08:59:59" }.count
-      @call_absence_17 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "17:00:00" }.select { |call| l(call.created_at, format: :prepare) < "17:59:59" }.count
-      @call_absence_b17 = @call_count_absence.select { |call| l(call.created_at, format: :prepare) >= "08:00:00" }.select { |call| l(call.created_at, format: :prepare) < "08:59:59" }.count
-      @call_prospect_17 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "17:00:00" }.select { |call| l(call.created_at, format: :prepare) < "17:59:59" }.count
-      @call_prospect_b17 = @call_count_prospect.select { |call| l(call.created_at, format: :prepare) >= "08:00:00" }.select { |call| l(call.created_at, format: :prepare) < "08:59:59" }.count
-      @call_app_17 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "17:00:00" }.select { |call| l(call.created_at, format: :prepare) < "17:59:59" }.count
-      @call_app_b17 = @call_count_app.select { |call| l(call.created_at, format: :prepare) >= "08:00:00" }.select { |call| l(call.created_at, format: :prepare) < "08:59:59" }.count
-      @call_ng_17 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "17:00:00" }.select { |call| l(call.created_at, format: :prepare) < "17:59:59" }.count
-      @call_ng_b17 = @call_ng.select { |call| l(call.created_at, format: :prepare) >= "08:00:00" }.select { |call| l(call.created_at, format: :prepare) < '08:59:59' }.count
-      @admins = Admin.all
-      @users = User.all
-      #statu内容簡素化
-      @call_count = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month)
-    when "analy3"
-      attributes = params.fetch(:information_analytic_form, {}).permit(:user_id, :year, :month)
-
-      @form = InformationAnalyticForm.new(
-        user_id: attributes[:user_id].presence,
-        year: attributes[:year].presence || Time.current.year,
-        month: attributes[:month].presence || Time.current.month,
-      )
     when "call_import"
       call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
       generate_call =
@@ -445,15 +277,6 @@ class CustomersController < ApplicationController
     @customers =  Customer.all
   end
 
-  def call_history
-    @customers =  Customer.all
-    @notification = {}
-    Sender.all.each do |sender|
-      @notification[sender.id] = Call.all.last_call_notification(sender.id)
-      Rails.logger.info("@notidication : " + sender.id.to_s + " : " + @notification[sender.id].size.to_s)
-    end
-
-  end
   def import
     cnt = Customer.import(params[:file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
@@ -474,12 +297,6 @@ class CustomersController < ApplicationController
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
   end
 
-  def sfa
-    @q = Customer.ransack(params[:q])
-    @customers = @q.result
-    @customers = @customers.where.not(choice: nil).page(params[:page]).per(500)
-  end
-
   def list
     @q = Customer.ransack(params[:q])
     @customers = @q.result
@@ -493,45 +310,7 @@ class CustomersController < ApplicationController
     #電話番号nilから作業ステータスがないものの一覧へ変更する
     #@customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
   end
-
-  def contact
-    @customer = Customer.find_by(id: params[:id])
-    @direct_mail_contact_tracking = DirectMailContactTracking.new(customer: @customer)
-  end
-
-  def send_mail
-    @customer = Customer.find_by(id: params[:id])
-    @direct_mail_contact_tracking = DirectMailContactTracking.new(
-      customer: @customer,
-      user: current_user,
-      status: "送信済",
-      sended_at: Time.current,
-      contact_url: params[:direct_mail_contact_tracking][:contact_url]
-    )
-
-    if params[:direct_mail_contact_tracking][:contact_url].present? && @direct_mail_contact_tracking.save
-      url = @direct_mail_contact_tracking.callback_url
-      CustomerMailer.direct_mail(@customer, url, current_user).deliver
-
-      redirect_to customer_path(id: @customer), notice: "資料送付が完了しました。"
-    else
-      @url_arry = @customer.get_url_arry
-      if params[:direct_mail_contact_tracking][:contact_url].blank?
-        flash[:notice] = "URLを選択してください"
-      else
-        flash[:notice] = "送信できませんでした"
-      end
-      render 'contact'
-    end
-  end
-
-  def thanks
-    @customer = Contact.new(customer_params)
-    @customer.save
-    CustomerMailer.received_email(@customer).deliver
-    CustomerMailer.send_email(@customer).deliver
-  end
-
+  
   private
     def customer_params
       params.require(:customer).permit(

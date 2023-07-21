@@ -50,7 +50,6 @@ Rails.application.routes.draw do
 
     end
   end
-  get 'sender/question' => 'sender#question'
   get 'callback' => 'okurite#callback', as: :callback
   get 'direct_mail_callback' => 'okurite#direct_mail_callback', as: :direct_mail_callback
 
@@ -63,19 +62,13 @@ Rails.application.routes.draw do
 
   resources :customers do
     resources :calls
-    member do
-      get :contact
-      post :send_mail
-    end
     collection do
       get :complete
-      post :thanks
       post :import
       post :update_import
       post :call_import
       post :tcare_import
       get :message
-      get :bulk_destroy
     end
   end
 
@@ -85,13 +78,10 @@ Rails.application.routes.draw do
   #get 'sender/:id/' => 'sender#show'
   scope :information do
     get '' => 'customers#information', as: :information #分析
-
-    resource :incentive, only: [:show, :update], path: '/incentives/:year/:month'
   end
 
   get 'closing' => 'customers#closing' #締め
   get 'news' => 'customers#news' #インポート情報
-  get 'call_history'=> 'customers#call_history' #インポート情報
   get 'extraction' => 'customers#extraction' #TCARE
   delete :customers, to: 'customers#destroy_all' #Mailer
   get 'manuals' => 'manuals#index'
