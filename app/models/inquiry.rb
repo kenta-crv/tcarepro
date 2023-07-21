@@ -11,7 +11,7 @@ class Inquiry < ApplicationRecord
   validates :from_mail, presence: true
   validates :url, presence: true
   validates :title, presence: true
-  validates :content, presence: true, format: { with: /\${callback_url}/ }
+  validates :content, presence: true#, format: { with: /\${callback_url}/ }
 
   def parse_content(sender, code)
     content.gsub('${callback_url}', sender.callback_url(code))

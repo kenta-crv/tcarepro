@@ -8,7 +8,7 @@ class OkuriteController < ApplicationController
   before_action :set_customers, only: [:index, :preview]
 
   def index
-    @customers = @customers.where(choice: nil).page(params[:page]).per(30)
+    @customers = @customers.includes(:worker).where(choice: nil).page(params[:page]).per(30)
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
 

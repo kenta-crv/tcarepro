@@ -22,7 +22,7 @@ table.space[width="90%"]
         td
           = inquiry.updated_at.strftime("%Y年%m月%d日 %H時%M分")
         td
-          = link_to '送信内容編集', edit_sender_inquiry_path(@form.sender, inquiry)
+          /= link_to '送信内容編集', edit_sender_inquiry_path(@form.sender, inquiry)
           - unless @form.sender.default_inquiry == inquiry
             = link_to '削除',
             - sender_inquiry_path(sender_id: @form.sender.id, id: inquiry.id), method: :delete,data: { confirm: '本当に削除しますか？'}

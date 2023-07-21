@@ -21,6 +21,8 @@
         th
           | URL2
         th
+          | ワーカー名
+        th
           | ステータス
         th
           | 最終送信日時
@@ -35,6 +37,8 @@
           = customer.url&.truncate(30)
         td
           = customer.url_2&.truncate(30)
+        td 
+          = customer.worker&.user_name
         td
           - begin 
             = contact_tracking&.status 
