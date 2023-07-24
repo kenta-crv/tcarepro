@@ -71,10 +71,6 @@
         <%end%>
      </th>
 			<th>
-        <% if @customer.mail.present? %>
-          <%= link_to "資料送付", contact_customer_path(id: @customer.id), target:"_blank", class:"btn btn-success"  %>
-        <%else%>
-        <%end%>
      </th>
 		</tr>
     <tr>
