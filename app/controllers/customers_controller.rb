@@ -175,7 +175,7 @@ class CustomersController < ApplicationController
     when "analy1" then
       @customers_app = @customers.where(call_id: 1)
       #today
-      @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
+      @call_today_basic = @calls.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG"]).where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
       @call_count_today = @call_today_basic.count
       @protect_count_today = @call_today_basic.select { |call| call.statu == "見込" }.count
       @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
@@ -183,7 +183,7 @@ class CustomersController < ApplicationController
       @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
 
       #week
-      @call_week_basic = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).to_a
+      @call_week_basic = @calls.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG"]).where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).to_a
       @call_count_week = @call_week_basic.count
       @protect_count_week = @call_week_basic.select { |call| call.statu == "見込" }.count
       @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
@@ -191,7 +191,7 @@ class CustomersController < ApplicationController
       @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
 
       #month
-      @call_month_basic = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+      @call_month_basic = @calls.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG"]).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
       @call_count_month = @call_month_basic.count
       @protect_count_month = @call_month_basic.select { |call| call.statu == "見込" }.count
       @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
@@ -242,7 +242,7 @@ class CustomersController < ApplicationController
     when "workers" then
       @customers_app = @customers.where(call_id: 1)
       #today
-      @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
+      @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).where.not(statu:"永久NG").to_a
       @call_count_today = @call_today_basic.count
       @protect_count_today = @call_today_basic.select { |call| call.statu == "見込" }.count
       @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
@@ -250,7 +250,7 @@ class CustomersController < ApplicationController
       @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
 
       #week
-      @call_week_basic = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).to_a
+      @call_week_basic = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).where.not(statu:"永久NG").to_a
       @call_count_week = @call_week_basic.count
       @protect_count_week = @call_week_basic.select { |call| call.statu == "見込" }.count
       @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
