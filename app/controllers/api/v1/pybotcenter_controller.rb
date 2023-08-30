@@ -6,31 +6,13 @@ class Api::V1::PybotcenterController < ApplicationController
 
     def success
         Rails.logger.info("success!!")
-        Rails.logger.info("generation_code ⇨ " + params[:generation_code])
-        @data = ContactTracking.find_by(auto_job_code:params[:generation_code])
-        @data.status = "送信済"
-        @data.inquiry_id = params[:inquiry_id]
-        if @data.save == true
-            Rails.logger.info("データセーブをしました。")
-            Rails.logger.info(@data.status + "です。")
-        else
-            Rails.logger.info("セーブエラーです。")
-        end
+        update_status("送信済")
         render status: 200, json: {data: 'success'}
     end
 
     def failed
         Rails.logger.info("failed!!")
-        Rails.logger.info("generation_code ⇨ " + params[:generation_code])
-        @data = ContactTracking.find_by(auto_job_code:params[:generation_code])
-        @data.status = "自動送信エラー"
-        @data.inquiry_id = params[:inquiry_id]
-        if @data.save == true
-            Rails.logger.info("データセーブをしました。")
-            Rails.logger.info(@data.status + "です。")
-        else
-            Rails.logger.info("セーブエラーです。")
-        end
+        update_status("自動送信エラー")
         render status: 200, json: {data: 'failed'}
     end
 
@@ -41,18 +23,38 @@ class Api::V1::PybotcenterController < ApplicationController
 
     def graph_register
         Rails.logger.info("@pybots : グラフを登録します。")
-        @gcode = params[:generate_code]
-        p_success = params[:success_sent]
-        p_failed = params[:failed_sent]
-        @contra = ContactTracking.where(auto_job_code:params[:generate_code]).first
-        customer_id = @contra.customer_id
-        sender_id = @contra.sender_id
-        worker_id = @contra.worker_id
-        AutoformResult.create(customer_id:customer_id,sender_id:sender_id,worker_id:worker_id,success_sent:p_success,failed_sent:p_failed)
+        @contra = ContactTracking.find_by(auto_job_code:params[:generate_code])
+        return unless @contra
+
+        AutoformResult.create(
+          customer_id: @contra.customer_id,
+          sender_id: @contra.sender_id,
+          worker_id: @contra.worker_id,
+          success_sent: params[:success_sent],
+          failed_sent: params[:failed_sent]
+        )
     end
 
     def get_inquiry
         @set = Inquiry.find(params[:id])
         render status: 200, json: {inquiry_data: @set}
     end
+
+    private
+
+    def update_status(status)
+        Rails.logger.info("generation_code ⇨ " + params[:generation_code])
+        @data = ContactTracking.find_by(auto_job_code:params[:generation_code])
+        return unless @data
+
+        @data.status = status
+        @data.inquiry_id = params[:inquiry_id]
+        if @data.save
+            Rails.logger.info("データセーブをしました。")
+            Rails.logger.info(@data.status + "です。")
+        else
+            Rails.logger.info("セーブエラーです。")
+        end
+    end
+
 end
