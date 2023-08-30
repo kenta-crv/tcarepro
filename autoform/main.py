@@ -17,7 +17,7 @@ matplotlib.use('agg')
 app = Flask(__name__)
 
 
-# ローカルで起動する場合は、『Python main.py local』
+# ローカルで起動する場合は、『python main.py local』
 # とコマンドを書いてください。
 
 statment = ""
@@ -37,9 +37,13 @@ if statment == "local":
 
 print(server_domain)
 
+
 def scheds():
     print('running...')
-    schedule.run_pending()
+    try:
+        schedule.run_pending()
+    except Exception as e:
+        print(f"Error in scheds: {e}")
 
 
 
@@ -390,10 +394,10 @@ def rocketbumb():
     
     except Exception as e:
         print('[500] API Error')
-        print(e)
+        print(f"Error in rocketbumb: {e}")
         headers = {"content-type": "application/json"}
         data = {"title":f"{e.__class__.__name__}によるエラー","message":f"システムで以下のエラーが発生しました。\n\n{traceback.format_exception_only(type(e), e)}","status":"error"}
-        #message_post = requests.post(server_domain + "/api/v1/pycall",data=json.dumps(data),headers=headers)
+        requests.post(server_domain + "/api/v1/pycall",data=json.dumps(data),headers=headers)
         return abort(500)
 
 

@@ -16,9 +16,11 @@ import sys
 import traceback
 
 options = webdriver.ChromeOptions()
-options.headless = True
+options.add_argument('--headless')
+#options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 start = time.perf_counter()
-serv = Service(ChromeDriverManager().install())
+#serv = Service(ChromeDriverManager().install())
+serv = Service(executable_path='/usr/local/bin/chromedriver')
 
 class Place_enter():
     def __init__(self,url,formdata):
@@ -60,16 +62,22 @@ class Place_enter():
         self.formdata = formdata
 
         self.iframe_mode = False
-
+        
+        self.radio = []
         self.chk = []
 
 
         #BS4データ
         req = requests.get(self.endpoint)
-        self.pot = BeautifulSoup(req.text,"lxml")
+        req.encoding = req.apparent_encoding  # エンコーディングを自動的に推測して設定
+        self.pot = BeautifulSoup(req.text, "lxml")
+        self.form = self.target_form()
+        if not self.form:
+            print("No valid form found!")
+            return
+        tables = self.target_table()
 
         #formスキャン
-        self.form = self.target_form()
         if self.form == 0:
             print("form is not. iframe???")
             if self.pot.find('iframe'):
@@ -85,443 +93,131 @@ class Place_enter():
             else:
                 print('false')
         
-        #formの中はtableなのか??
-        tbl = self.target_table()
-        if tbl == 0:
-            dtdl = self.target_dtdl()
-            if dtdl == 0:
-                print('dtdl not found')
-                namelist = []
-                try:
-                    for lbl in self.form.find_all('span'):
-                        try:
-                            for input in lbl.find_all('input'):
-                                data = {}
-                                if input['type'] == 'radio' or input['type'] == 'checkbox':
-                                    data = {'object':'input','name':input['name'],'type':input['type'],'value':input['value'],'placeholder':input['placeholder']}
-                                elif input['type'] == 'hidden':
-                                    data = {'object':'hidden'}
-                                else:
-                                    try:
-                                        data = {'object':'input','name':input['name'],'type':input['type'],'value':input['value'],'placeholder':input['placeholder']}
-                                    except Exception as e:
-                                        data = {'object':'input','name':input['name'],'type':input['type']}
-                                namelist.append(data)
-                        except Exception as e:
-                            print('SKIP')
-                            print(e,'input')
-                except Exception as e:
-                    print(e)
-
-                try:
-                    for lbl in self.form.find_all('div'):
-                        try:
-                            for input in lbl.find_all('input'):
-                                data = {}
-                                if input['type'] == 'radio' or input['type'] == 'checkbox':
-                                    data = {'object':'input','name':input['name'],'type':input['type'],'value':input['value']}
-                                elif input['type'] == 'hidden':
-                                    data = {'object':'hidden'}
-                                else:
-                                    try:
-                                        data = {'object':'input','name':input['name'],'type':input['type'],'value':input['value'],'placeholder':input['placeholder']}
-                                    except Exception as e:
-                                        data = {'object':'input','name':input['name'],'type':input['type']}
-                                namelist.append(data)
-                        except Exception as e:
-                            print('SKIP')
-                            print(e,'input')
-                except Exception as e:
-                    print(e)
-
-
-                try:
-                    for lbl in self.form.find_all('span'):
-                        try:
-                            for textarea in lbl.find_all('textarea'):
-                                try:
-                                    data = {'object':'textarea','name':textarea['name'],'class':textarea['class']}
-                                    namelist.append(data)
-                                except Exception as e:
-                                    data = {'object':'textarea','name':textarea['name']}
-                                    namelist.append(data)
-                        except Exception as e:
-                            print('SKIP')
-                            print(e,'txarea')
-                except Exception as e:
-                    print(e)
-
-                try:
-                    for lbl in self.form.find_all('div'):
-                        try:
-                            for textarea in lbl.find_all('textarea'):
-                                try:
-                                    data = {'object':'textarea','name':textarea['name'],'class':textarea['class']}
-                                    namelist.append(data)
-                                except Exception as e:
-                                    data = {'object':'textarea','name':textarea['name']}
-                                    namelist.append(data)
-                        except Exception as e:
-                            print('SKIP')
-                            print(e,'textarea')
-                except Exception as e:
-                    print(e)
-
-                try:
-                    for lbl in self.form.find_all('span'):
-                        try:
-                            for select in lbl.find_all('select'):
-                                try:
-                                    data = {'object':'select','name':select['name'],'class':select['class']}
-                                    namelist.append(data)
-                                    for option in select.find_all('option'):
-                                        data = {'object':'option','link':select['name'],'class':option['class'],'value':option['value']}
-                                        namelist.append(data)
-                                except Exception as e:
-                                    data = {'object':'select','name':select['name']}
-                                    namelist.append(data)
-                                    for option in select.find_all('option'):
-                                        data = {'object':'option','link':select['name'],'class':option['class'],'value':option['value']}
-                                        namelist.append(data)
-                        except Exception as e:
-                            print('SKIP')
-                            print(e,'select error')
-                except Exception as e:
-                    print(e)
-
-                try:
-                    for lbl in self.form.find_all('div'):
-                        try:
-                            for select in lbl.find_all('select'):
-                                try:
-                                    data = {'object':'select','name':select['name'],'class':select['class']}
-                                    namelist.append(data)
-                                    for option in select.find_all('option'):
-                                        data = {'object':'option','link':select['name'],'class':option['class'],'value':option['value']}
-                                        namelist.append(data)
-                                except Exception as e:
-                                    data = {'object':'select','name':select['name']}
-                                    namelist.append(data)
-                                    for option in select.find_all('option'):
-                                        data = {'object':'option','link':select['name'],'value':option['value']}
-                                        namelist.append(data)
-                        except Exception as e:
-                            print('SKIP')
-                            print(e,'select error')
-                except Exception as e:
-                    print(e)
-
-                
-
-                self.logicer(namelist)
-
-                self.namelist = namelist
-
-
+        def extract_input_data(element):
+            data = {}
+            input_type = element.get('type')
+            if input_type in ['radio', 'checkbox']:
+                data = {'object': 'input', 'name': element.get('name'), 'type': input_type, 'value': element.get('value')}
+            elif input_type == 'hidden':
+                data = {'object': 'hidden'}
             else:
-                namelist = []
-                print('Read')
+                data = {'object': 'input', 'name': element.get('name'), 'type': input_type, 'value': element.get('value')}
+                placeholder = element.get('placeholder')
+                if placeholder:
+                    data['placeholder'] = placeholder
+            return data
 
-                try:
-                    for dx in dtdl:
-                        try:
-                            for dd in dx.find_all('dd'):
-                                try:
-                                    for input in dd.find_all('input'):
-                                        data = {}
-                                        if input['type'] == 'radio' or input['type'] == 'checkbox':
-                                            data = {'object':'input','name':input['name'],'type':input['type'],'value':input['value']}
-                                        elif input['type'] == 'hidden':
-                                            data = {'object':'hidden'}
-                                        else:
-                                            try:
-                                                data = {'object':'input','name':input['name'],'type':input['type'],'value':input['value'],'placeholder':input['placeholder']}
-                                            except Exception as e:
-                                                data = {'object':'input','name':input['name'],'type':input['type']}
-                                        namelist.append(data)
-                                except Exception as e:
-                                        print('SKIP')
-                                        print(e,'input')
-                        except Exception as e:
-                            print(e)
+        def extract_textarea_data(element):
+            data = {'object': 'textarea', 'name': element.get('name')}
+            if 'class' in element.attrs:
+                data['class'] = element.get('class')
+            return data
 
-                        try:
-                            for dd in dx.find_all('dd'):
-                                try:
-                                    for textarea in dd.find_all('textarea'):
-                                        try:
-                                            data = {'object':'textarea','name':textarea['name'],'class':textarea['class']}
-                                            namelist.append(data)
-                                        except Exception as e:
-                                            data = {'object':'textarea','name':textarea['name']}
-                                            namelist.append(data)
-                                except Exception as e:
-                                        print('SKIP')
-                                        print(e,'input')
-                        except Exception as e:
-                            print(e)
+        def extract_select_data(element):
+            data_list = []
+            data = {'object': 'select', 'name': element.get('name')}
+            if 'class' in element.attrs:
+                data['class'] = element.get('class')
+            data_list.append(data)
+            for option in element.find_all('option'):
+                option_data = {'object': 'option', 'link': element.get('name'), 'value': option.get('value')}
+                if 'class' in option.attrs:
+                    option_data['class'] = option.get('class')
+                data_list.append(option_data)
+            return data_list
 
-                        try:
-                            for dd in dx.find_all('dd'):
-                                try:
-                                    for select in dd.find_all('select'):
-                                        try:
-                                            data = {'object':'select','name':select['name'],'class':select['class']}
-                                            namelist.append(data)
-                                            for option in select.find_all('option'):
-                                                data = {'object':'option','link':select['name'],'value':option['value']}
-                                                namelist.append(data)
-                                        except Exception as e:
-                                            data = {'object':'select','name':select['name']}
-                                            namelist.append(data)
-                                            for option in select.find_all('option'):
-                                                data = {'object':'option','link':select['name'],'value':option['value']}
-                                                namelist.append(data)
-                                except Exception as e:
-                                        print('SKIP')
-                                        print(e,'input')
-                        except Exception as e:
-                            print(e)
+        def extract_elements_from_tags(tag, element_type):
+            data_list = []
+            for parent in self.form.find_all(tag):
+                for child in parent.find_all(element_type):
+                    if element_type == 'input':
+                        data_list.append(extract_input_data(child))
+                    elif element_type == 'textarea':
+                        data_list.append(extract_textarea_data(child))
+                    elif element_type == 'select':
+                        data_list.extend(extract_select_data(child))
+            return data_list
 
-                except Exception as e:
-                    print(e)
-                        
-                    
+        # 以下の部分で上記の関数を使用する
+
+        def extract_elements_from_dtdl(parent_element):
+            data_list = []
+            dt_text = parent_element.find('dt').get_text(strip=True) if parent_element.find('dt') else None
+            
+            for child in parent_element.find_all(['input', 'textarea', 'select']):
+                if child.name == 'input':
+                    data = extract_input_data(child)
+                elif child.name == 'textarea':
+                    data = extract_textarea_data(child)
+                elif child.name == 'select':
+                    data_list.extend(extract_select_data(child))
+                    continue
+
+                if dt_text:
+                    data['label'] = dt_text
+                data_list.append(data)
+            
+            return data_list
+        
+        def find_and_add_to_namelist(self, tables):
+            data_list = []
+            
+            for row in tables.find_all('tr'):
+                for col in row.find_all('td'):
+                    dt_text = col.find_previous_sibling('dt').get_text(strip=True) if col.find_previous_sibling('dt') else None  # <dt>のテキストを取得
+                    for elem_type in ['input', 'textarea', 'select']:
+                        elem = col.find(elem_type)
+                        if elem and 'name' in elem.attrs:
+                            name = elem['name']
+                            data = {
+                                'object': elem_type,
+                                'name': name,
+                                'label': dt_text  
+                            }
+                            if elem_type == 'input':
+                                data['type'] = elem.get('type')
+                                data['value'] = elem.get('value')
+                            data_list.append(data)
+
+            return data_list
 
 
-                self.logicer(namelist)
+        namelist = []
 
-                self.namelist = namelist
+        if self.target_table() == 0 and self.target_dtdl() == 0:#formだが、dtdlなし
+            print('dtdl not found')
 
-
-
-        else:
-            tables = tbl
+            for tag in ['span', 'div']:
+                namelist.extend(extract_elements_from_tags(tag, 'input'))
+                namelist.extend(extract_elements_from_tags(tag, 'textarea'))
+                namelist.extend(extract_elements_from_tags(tag, 'select'))
+        elif self.target_table() == 0:#formでかつ、dtdlあり
+            print('Read')
+            for dl in self.target_dtdl():
+                namelist.extend(extract_elements_from_dtdl(dl))
+        else:#table
             namelist = []
-            i = 0
-            j = 0
-            k = 0
-            try:
-                    try:
-                        try:
-                            if tables.find_all('tbody') == 0:
-                                print("tbody is not.")
-                            
-                            print(tables.find_all('input'))
-                            print(i)
-                            for input in tables.find_all('input'):
-                                data = {}
-                                if input['type'] == 'radio' or input['type'] == 'checkbox':
-                                    data = {'object':'input','name':input['name'],'type':input['type'],'value':input['value']}
-                                elif input['type'] == 'hidden':
-                                    data = {'object':'hidden'}
-                                else:
-                                    try:
-                                        data = {'object':'input','name':input['name'],'type':input['type'],'value':input['value'],'placeholder':input['placeholder']}
-                                    except Exception as e:
-                                        data = {'object':'input','name':input['name'],'type':input['type']}
-                                namelist.append(data)
-                            i += 1   
-                        except Exception as e:
-                            print('SKIP')
-                            print(e)
+            if not tables.find_all('tbody'):
+                print("tbody is not.")
 
-                        try:
-                            print(tables.find_all('span'))
-                            for textarea in tables.find_all('textarea'):
-                                try:
-                                    data = {'object':'textarea','name':textarea['name'],'class':textarea['class']}
-                                    namelist.append(data)
-                                except Exception as e:
-                                    data = {'object':'textarea','name':textarea['name']}
-                                    namelist.append(data)
-                            print(j)
-                            j += 1   
-                        except Exception as e:
-                            print('SKIP')
-                            print(e)
+            # Search for keywords in <td> and add to namelist
+            for table in self.target_table():
+                find_and_add_to_namelist(table)
 
-                        try:
-                            print(tables.find_all('span'))
-                            for select in tables.find_all('select'):
-                                try:
-                                    data = {'object':'select','name':select['name'],'class':select['class']}
-                                    namelist.append(data)
-                                    for option in select.find_all('option'):
-                                        data = {'object':'option','link':select['name'],'value':option['value']}
-                                        namelist.append(data)
-                                except Exception as e:
-                                    data = {'object':'select','name':select['name']}
-                                    namelist.append(data)
-                                    for option in select.find_all('option'):
-                                        data = {'object':'option','link':select['name'],'value':option['value']}
-                                        namelist.append(data)
-                            k += 1       
-                        except Exception as e:
-                            print('SKIP')
-                            print(e)
-
-                    except Exception as e:
-                        print('SKIP')
-                        print(e)
-
-                
-            except Exception as e:
-                print('ERROR')
-                print(e,sys.exc_info()[1])
-            
-
-            
-
-                #タグ解析ロジック        
-            self.logicer(namelist)
-
-            if self.company == '': ##会社を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '会社' in companyies_col.text or '貴社' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            self.company = ipt['name']
-
-            if self.company_kana == '': ##会社ふりがなを特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '会社ふりがな' in companyies_col.text or '貴社ふりがな' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            self.company_kana = ipt['name']
-
-            if self.manager == '': ##名前を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '名前' in companyies_col.text or '担当者名' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            self.manager = ipt['name']
-
-            if self.manager_kana == '': ##名前を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if 'ふりがな' in companyies_col.text or 'フリガナ' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            self.manager_kana = ipt['name']
-
-            if self.zip == '': ##名前を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '郵便番号' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            self.zip = ipt['name']
-
-            if self.address == '': ##住所を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '住所' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            self.address = ipt['name']
-
-            if self.pref == '': ##住所(都道府県)を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '都道府県' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            if ipt == None:
-                                print('OK')
-                                slc = td.find('select')
-                                self.pref = slc['name']
-                            else:
-                                self.pref = ipt['name']
-
-            if self.address_city == '': ##住所(市町村)を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '市区町村' in companyies_col.text or '市町村' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            self.address_city = ipt['name']
-
-            if self.address_thin == '': ##住所(詳細)を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '番地' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            self.address_thin = ipt['name']
-
-            if self.phone == '': ##住所(市町村)を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '電話番号' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            
-                            self.phone = ipt['name']
-
-            if self.mail == '': ##住所(市町村)を特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if 'メールアドレス' in companyies_col.text:
-                            td = companyies_row.find('td')
-                            ipt = td.find('input')
-                            
-                            self.mail = ipt['name']
-
-            if self.subjects == '': ##xxを特定
-                for companyies_row in tables.find_all('tr'):
-                    for companyies_col in companyies_row.find_all('th'):
-                        if '用件' in companyies_col.text:
-                            try:
-                                td = companyies_row.find('td')
-                                ipt = td.find_all('input')
-                                for inpt in ipt:
-                                    if inpt['type'] == 'checkbox':
-                                        self.subjects_radio_badge = True
-                                        self.subjects = inpt['name']
-                                    else:
-                                        self.subjects = inpt['name']
-                            except Exception as e:
-                                print('ERROR')
-                                print(traceback.format_exc())
-
-
-            self.namelist = namelist
-
-            
-
-
+        self.namelist = namelist 
+        self.logicer(self.namelist)
+        print(self.body)
         
-        
-
-
-
-
 
     def target_form(self):
-        for form in self.pot.find_all():
-            for forms in form.find_all('form'):
-                print(forms)
-                try:
-                    try:
-                        if 'search' in forms['class']:
-                            continue
-                        else:
-                            return forms
-                    except Exception as e:
-                        if 'search' in forms['id']:
-                            continue
-                        else:
-                            return forms
-                except Exception as e:
-                    print(e)
-                    return forms
-            
+        for form in self.pot.find_all('form'):
+            class_name = form.get('class', '')
+            id_name = form.get('id', '')
+        
+            if 'search' not in class_name and 'search' not in id_name:
+                return form
         return 0
-
+    
     def target_table(self):
         if self.form.find('table'):
             print('tableを見つけました')
@@ -535,190 +231,131 @@ class Place_enter():
             return self.form.find_all('dl')
         else: 
             return 0
-        
-    def logicer(self,lists):
-        radio = []
-        check = []
+    
+    
+
+    def logicer(self, lists):
         for list in lists:
-            if list["object"] == "input":
-                if list["type"] == "text":
-                    if "name" in list["name"] or "名前" in list["name"]:
-                        if "furigana" in list["name"] or "hurigana" in list["name"] or "ふりがな" in list["name"] or "kana" in list["name"]:
-                            self.manager_kana = list["name"]
-                        elif "company" in list["name"]:
-                            self.company = list["name"]
-                        else:
-                            self.manager = list["name"]
-                    elif "hurigana" in list["name"] or "furigana" in list["name"] or "フリガナ" in list["name"] or "kana" in list["name"]:
-                        if "mei" in list["name"] or "sei" in list["name"]:
-                            print("この要素は使わない")
-                        else:
-                            self.manager_kana = list["name"]
-                    elif "sei" in list["name"] or "姓" in list["name"]:
-                        self.manager_last = list["name"]
-                    elif "mei" in list["name"] or "名" in list["name"]:
-                        self.manager_first = list["name"]
-                    elif "kana_sei" in list["name"] or "セイ" in list["name"]:
-                        self.manager_last_kana = list["name"]
-                    elif "kana_mei" in list["name"] or "メイ" in list["name"]:
-                        self.manager_first_kana = list["name"]
-                    elif "company" in list["name"] or "company_name" in list["name"] or "会社" in list["name"] or "貴社" in list["name"] or "貴社名" in list["name"] or "499" in list["name"] or "御社" in list["name"]:
+            label = list.get('label', '')
+                      
+            if label:
+                if list["object"] == "input":
+                    if "会社" in label:
                         self.company = list["name"]
-                    elif "email" in list["name"] or "mail" in list["name"] or "メール" in list["name"]:
-                        if "confirm" in list["name"] or "2" in list["name"]:
-                            self.mail_c = list["name"]
-                        else:
-                            self.mail = list["name"]
-                    elif "tel[data][0]" in list["name"] or "[data][0]" in list["name"]:
-                        if "zip" in list["name"]:
-                            print("")
-                        else:
-                            self.phone0 = list["name"]
-                    elif "tel[data][1]" in list["name"] or "[data][1]" in list["name"]:
-                        if "zip" in list["name"]:
-                            print("")
-                        else:
-                            self.phone1 = list["name"]
-                    elif "tel[data][2]" in list["name"] or "[data][2]" in list["name"]:
-                        if "zip" in list["name"]:
-                            print("nothing")
-                        else:
-                            self.phone2 = list["name"]
-                    elif "zip" in list["name"]:
+                    elif "会社ふりがな" in label or "会社フリガナ" in label:
+                        self.company_kana = list["name"]
+                    elif "名前" in label:
+                        self.manager = list["name"]
+                    elif "ふりがな" in label or "フリガナ" in label:
+                        self.manager_kana = list["name"]
+                    elif "郵便番号" in label:
                         self.zip = list["name"]
-                    elif "tel" in list["name"] or "telephone" in list["name"] or "電話番号" in list["name"]:
-                        self.phone = list["name"]
-                    elif "address" in list["name"] or "住所" in list["name"] or "addr" in list["name"]:
-                        print("anything住所")
+                    elif "住所" in label:
                         self.address = list["name"]
-                    elif "subject" in list["name"] or "件名" in list["name"] or "タイトル" in list["name"]:
-                        self.subjects = list["name"]
-                elif list["type"] == "radio":
-                    radio.append({"radioname":list["name"],"value":list["value"]})
-                elif list["type"] == "checkbox":
-                    check.append({"checkname":list["name"],"value":list["value"]})
-                    self.chk.append({"checkname":list["name"],"value":list["value"]})
-                elif list["type"] == "email":
-                    if "mail" in list["name"] or "email" in list["name"] or "メール" in list["name"] or "メールアドレス" in list["name"]:
-                        if "confirm" in list["name"]:
-                            print("anythingメール確認")
-                            self.mail_c = list["name"]
-                        else:
-                            self.mail = list["name"]
-                            print("anythingメール")
-                elif list["type"] == "tel":
-                    if "tel" in list["name"] or "telephone" in list["name"] or "電話" in list["name"]:
+                    elif "都道府県" in label:
+                        self.pref = list["name"]
+                    elif "市区町村" in label:
+                        self.address_city = list["name"]
+                    elif "番地" in label:
+                        self.address_thin = list["name"]
+                    elif "電話番号" in label:
                         self.phone = list["name"]
-            elif list["object"] == "textarea":
-                print("anything_textarea")
-                self.body = list["name"]
-            elif list["object"] == "select":
-                print("anything_select")
-                if "pref" in list["name"]:
-                    self.pref = list["name"]
-                if "content" in list["name"] or "subject" in list["name"] or "slct2" in list["name"]:
-                    self.subjects = list["name"]
-
-        
-        for ph in lists:
-            try:
-                if "せい" in ph["placeholder"]:
-                    self.manager_last_kana = ph["name"]
-            except Exception as e:
-                print("nothing")
-
-        for ph in lists:
-            try:
-                if "めい" in ph["placeholder"]:
-                    self.manager_first_kana = ph["name"]
-            except Exception as e:
-                print("nothing")
-
-        
-
-        for r in radio:
-            if 'answer' in r['radioname'] or 'contact' in r['radioname'] or 'response' in r['radioname']:
-                self.response_contact.append({'name':r['radioname'],'value':r['value']})
-            elif 'type' in r['radioname']:
-                self.industry.append({'name':r['radioname'],'value':r['value']})
-
-        for c in check:
-            print(c)
-            if '規約' in c['checkname'] or 'privacy' in c['checkname'] or 'kakunin' in c['checkname']:
-                self.kiyakucheck['type'] = 'checkbox'
-                self.kiyakucheck['name'] = c['checkname']
-
-        
-        for form in self.form.find_all('input'):
-            try:
-                if form['type'] == 'checkbox':
-                    if 'agree' in form['name'] or 'check' in form['name'] or 'confirm' in form['name']:
-                        self.kiyakucheck['type'] = 'checkbox'
-                        self.kiyakucheck['name'] = form['name']
-            except Exception as e:
-                print("form error")
-
-
+                    elif "メールアドレス" in label or "email" in label:
+                        self.mail = list["name"]
+                    elif "用件" in label or "お問い合わせ" in label or "本文" in label:
+                        self.subjects = list["name"]
+                    elif list["type"] == "radio":
+                        self.radio.append({"radioname": list["name"], "value": list["value"]})
+                    elif list["type"] == "checkbox":
+                        self.chk.append({"checkname": list["name"], "value": list["value"]})
+                elif list["object"] == "textarea":
+                    if "用件" in label or "お問い合わせ" in label or "本文" in label:
+                        self.body = list["name"]
+                elif list["object"] == "select":
+                    if "都道府県" in label:
+                        self.pref = list["name"]
+                    if "用件" in label or "お問い合わせ" in label or "本文" in label:
+                        self.subjects = list["name"]
+                
     def go_selenium(self):
         driver = webdriver.Chrome(service=serv,options=options)
         driver.get(self.endpoint)
         time.sleep(3)
+        
+        def input_text_field(driver, field_name, value):
+            """テキストフィールドに値を入力するための関数"""
+            if field_name and value:
+                try:
+                    driver.find_element(By.NAME, field_name).send_keys(value)
+                except Exception as e:
+                    print(f"Error inputting into {field_name}: {e}")
 
-        #form入力　あるもので
-        #soup情報
+        def select_radio_button(driver, radio_name):
+            """ラジオボタンを選択するための関数"""
+            try:
+                radian = driver.find_elements(By.XPATH, f"//input[@type='radio' and @name='{radio_name}']")
+                if radian:
+                    if not radian[0].is_selected():
+                        radian[0].click()
+            except Exception as e:
+                print(f"Error clicking radio button {radio_name}: {e}")
+                    
+        def select_checkbox(driver, checkbox_name):
+            """チェックボックスを選択するための関数"""
+            try:
+                checkboxes = driver.find_elements(By.XPATH, f"//input[@type='checkbox' and @name='{checkbox_name}']")
+                for checkbox in checkboxes:
+                    if not checkbox.is_selected():
+                        checkbox.click()
+            except Exception as e:
+                print(f"Error clicking checkbox {checkbox_name}: {e}")
+
 
         if self.iframe_mode == True:
-            iframe = driver.find_element(By.TAG_NAME,'iframe')
+            try:
+                iframe = driver.find_element(By.TAG_NAME,'iframe')
+            except Exception as e:
+                print("iframe not found")
+                print(e)
             driver.switch_to.frame(iframe)
 
-            if self.company != '':
-                driver.find_element(By.NAME,self.company).send_keys(self.formdata['company'])
-        
-            if self.company_kana != '':
-                driver.find_element(By.NAME,self.company_kana).send_keys(self.formdata['company_kana'])
+            input_text_field(driver, self.company, self.formdata['company'])
+            input_text_field(driver, self.company_kana, self.formdata['company_kana'])
+            input_text_field(driver, self.manager, self.formdata['manager'])
+            input_text_field(driver, self.manager_kana, self.formdata['manager_kana'])
+            input_text_field(driver, self.phone, self.formdata['phone'])
+            input_text_field(driver, self.fax, self.formdata['fax'])
+            input_text_field(driver, self.address, self.formdata['address'])
+            input_text_field(driver, self.mail, self.formdata['mail'])
+            input_text_field(driver, self.mail_c, self.formdata['mail'])
+            
+            for radio_info in self.radio:
+                select_radio_button(driver, radio_info['name'])
 
-            if self.manager != '':
-                driver.find_element(By.NAME,self.manager).send_keys(self.formdata['manager'])
-            elif self.manager_first != '' and self.manager_last != '':
-                names = self.formdata['manager'].split('　')
-                try:
-                    driver.find_element(By.NAME,self.manager_last).send_keys(names[0])
-                    driver.find_element(By.NAME,self.manager_first).send_keys(names[1])
-                except Exception as e:
-                    print("名前エラー")
+            for checkbox_info in self.chk:
+                select_checkbox(driver, checkbox_info['name'])
 
-            if self.manager_kana != '':
-                driver.find_element(By.NAME,self.manager_kana).send_keys(self.formdata['manager_kana'])
-            elif self.manager_first_kana != '' and self.manager_last_kana != '':
-                names = self.formdata['manager_kana'].split('　')
-                try:
-                    driver.find_element(By.NAME,self.manager_last_kana).send_keys(names[0])
-                    driver.find_element(By.NAME,self.manager_first_kana).send_keys(names[1])
-                except Exception as e:
-                    print("Nameエラー")
-                    print(e)
-
-            #普通電話番号
-            if self.phone != '':
-                driver.find_element(By.NAME,self.phone).send_keys(self.formdata['phone'])
 
             #分割用電話番号 
-            if self.phone0 != '' and self.phone1 != '' and self.phone2 != '':
-                phonesplit = self.formdata['phone'].split('-')
-                driver.find_element(By.NAME,self.phone0).send_keys(phonesplit[0])
-                driver.find_element(By.NAME,self.phone1).send_keys(phonesplit[1])
-                driver.find_element(By.NAME,self.phone2).send_keys(phonesplit[2])
-        
-            if self.fax != '':
-                driver.find_element(By.NAME,self.fax).send_keys(self.formdata['fax'])
-
-            if self.address != '':
-                driver.find_element(By.NAME,self.address).send_keys(self.formdata['address'])
+            try:
+                if self.phone0 != '' and self.phone1 != '' and self.phone2 != '':
+                    phonesplit = self.formdata['phone'].split('-')
+                    driver.find_element(By.NAME,self.phone0).send_keys(phonesplit[0])
+                    driver.find_element(By.NAME,self.phone1).send_keys(phonesplit[1])
+                    driver.find_element(By.NAME,self.phone2).send_keys(phonesplit[2])
+            except Exception as e:
+                print("Error: Failed to submit form")
+                print(e)
+                
         
             if self.zip != '':
                 r = requests.get("https://api.excelapi.org/post/zipcode?address=" + self.formdata['address'])
                 postman = r.text
-                driver.find_element(By.NAME,self.zip).send_keys(postman[:3]+ "-" + postman[3:])
+                try:
+                    driver.find_element(By.NAME,self.zip).send_keys(postman[:3]+ "-" + postman[3:])
+                except Exception as e:
+                    print("Error: Failed to submit form")
+                    print(e)
 
             if self.pref != '':
                 pref_data = ''
@@ -733,244 +370,104 @@ class Place_enter():
                 ]
 
                 address = self.formdata['address']
-
-
-                for p in pref:
-                    if p in address:
-                        s = Select(driver.find_element(By.NAME,self.pref))
-                        s.select_by_visible_text(p)
-                        pref_data = p
+                
+                try:
+                    element = driver.find_element(By.NAME, self.pref)
+                    for p in pref:
+                        if p in address:
+                            if element.tag_name == "select":
+                                s = Select(element)
+                                s.select_by_visible_text(p)
+                                pref_data = p
+                            else:
+                                pref_data = p
                 
                 
-
-                r = requests.get("https://geoapi.heartrails.com/api/json?method=getTowns&prefecture=" + pref_data)
-                cityjs = r.json()
-                city = cityjs["response"]["location"]
-                print("cityjs")
-                for c in city:
-                    if c["city"] in address and c["town"] in address:
-                        driver.find_element(By.NAME,self.address_city).send_keys(c["city"])
-                        driver.find_element(By.NAME,self.address_thin).send_keys(c["town"])
-                            
-
-            if self.mail != '':
-                driver.find_element(By.NAME,self.mail).send_keys(self.formdata['mail'])
-
-            if self.mail_c != '':
-                driver.find_element(By.NAME,self.mail_c).send_keys(self.formdata['mail'])
-
-            if self.subjects != '':
-                matching = False
-                if self.subjects_radio_badge == True:
-                    print(self.chk)
-                    for c in self.chk:
-                        if 'お問い合わせ' in c['value']:
-                            checking = driver.find_element(By.XPATH,"//input[@name='" + c['name']+"' and @value='" + c['value']+"']")
-                            if not checking.is_selected():
-                                driver.execute_script("arguments[0].click();", checking)
-
-
-                if driver.find_element(By.NAME,self.subjects).tag_name == 'select':
-                    select = Select(driver.find_element(By.NAME,self.subjects))
-                    for opt in select.options:
-                        if self.formdata['subjects'] == opt:
-                            matching = True
-                            select.select_by_visible_text(opt)
-
-                    if matching == False:
-                        select.select_by_index(len(select.options)-1)
-
-                
-                else:
-                    driver.find_element(By.NAME,self.subjects).send_keys(self.formdata['subjects'])
-
-            if self.body != '':
-                driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
-
-            ##　規約 プライバシーポリシーチェック
-            try:
-                print(self.kiyakucheck)
-                if self.kiyakucheck != {}:
-                    checking = driver.find_element(By.XPATH,"//input[@name='" + self.kiyakucheck['name']+"']")
-                    if not checking.is_selected():
-                        driver.execute_script("arguments[0].click();", checking)
-            except Exception as e:
-                print("同意エラー")
-                print(e)
-
-            ## 連絡方法
-            try:
-                if self.response_contact != []:
-                    for radioarray in self.response_contact:
-                        radian = driver.find_elements(By.XPATH, "//input[@type='radio' and @name='"+ radioarray['name']+"']")
-                        for radio in radian:
-                            r = radio.get_attribute(("value"))
-                            if "どちらでも" in r:
-                                radio.click()
-
-            except Exception as e:
-                print("押せない")
-                print(e)
-
-            try:
-                print(self.industry)
-                if self.industry != []:
-                    for radioarray in self.industry:
-                        radian = driver.find_elements(By.XPATH, "//input[@type='radio' and @name='"+ radioarray['name']+"']")
-                        for radio in radian:
-                            r = radio.get_attribute(("value"))
-                            if 'メーカー' in r:
-                                driver.execute_script("arguments[0].click();", radio)
-            except Exception as e:
-                print(traceback.format_exc())
-
-
-        
-
-
-            time.sleep(2)
-
-            try:
-                before = driver.title
-                driver.find_element(By.NAME,self.body).submit()
-                try:
-                    confirm_source = BeautifulSoup(driver.page_source, "lxml").prettify()
-                    sourcer = BeautifulSoup(confirm_source, "lxml")
-                    for s in sourcer.find_all('input'):
-                        if '送信' in s['value']:
-                            driver.find_element(By.XPATH,"//input[@value='"+ s['value']+"']").click()
-
-                except Exception as e:
-                    print('一度送信')
-                time.sleep(3)
-                after = driver.title
-                driver.close()
-                return 'OK'
-            
-            except Exception as e:
-                driver.close()
-                return 'NG'
-            
-        else:
-
-
-
-            if self.company != '':
-                driver.find_element(By.NAME,self.company).send_keys(self.formdata['company'])
-        
-            if self.company_kana != '':
-                driver.find_element(By.NAME,self.company_kana).send_keys(self.formdata['company_kana'])
-
-            if self.manager != '':
-                driver.find_element(By.NAME,self.manager).send_keys(self.formdata['manager'])
-            elif self.manager_first != '' and self.manager_last != '':
-                names = self.formdata['manager'].split('　')
-                try:
-                    driver.find_element(By.NAME,self.manager_last).send_keys(names[0])
-                    driver.find_element(By.NAME,self.manager_first).send_keys(names[1])
-                except Exception as e:
-                    print("名前エラー")
-
-            if self.manager_kana != '':
-                driver.find_element(By.NAME,self.manager_kana).send_keys(self.formdata['manager_kana'])
-            elif self.manager_first_kana != '' and self.manager_last_kana != '':
-                names = self.formdata['manager_kana'].split('　')
-                try:
-                    driver.find_element(By.NAME,self.manager_last_kana).send_keys(names[0])
-                    driver.find_element(By.NAME,self.manager_first_kana).send_keys(names[1])
-                except Exception as e:
-                    print("Nameエラー")
-                    print(e)
-
-            #普通電話番号
-            if self.phone != '':
-                driver.find_element(By.NAME,self.phone).send_keys(self.formdata['phone'])
-
-            #分割用電話番号 
-            if self.phone0 != '' and self.phone1 != '' and self.phone2 != '':
-                phonesplit = self.formdata['phone'].split('-')
-                driver.find_element(By.NAME,self.phone0).send_keys(phonesplit[0])
-                driver.find_element(By.NAME,self.phone1).send_keys(phonesplit[1])
-                driver.find_element(By.NAME,self.phone2).send_keys(phonesplit[2])
-        
-            if self.fax != '':
-                driver.find_element(By.NAME,self.fax).send_keys(self.formdata['fax'])
-
-            if self.address != '':
-                driver.find_element(By.NAME,self.address).send_keys(self.formdata['address'])
-        
-            if self.zip != '':
-                r = requests.get("https://api.excelapi.org/post/zipcode?address=" + self.formdata['address'])
-                postman = r.text
-                driver.find_element(By.NAME,self.zip).send_keys(postman[:3]+ "-" + postman[3:])
-
-            if self.pref != '':
-                pref_data = ''
-                pref = [
-                    "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県",
-                    "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",
-                    "新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県",
-                    "静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県",
-                    "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県",
-                    "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県",
-                    "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
-                ]
-
-                address = self.formdata['address']
-
-                for p in pref:
-                    if p in address:
-                        s = Select(driver.find_element(By.NAME,self.pref))
-                        s.select_by_visible_text(p)
-                        pref_data = p
-
-                if self.address_city != '' and  self.address_thin != '':
                     r = requests.get("https://geoapi.heartrails.com/api/json?method=getTowns&prefecture=" + pref_data)
                     cityjs = r.json()
                     city = cityjs["response"]["location"]
                     print("cityjs")
                     for c in city:
-                        print(c["city"])
                         if c["city"] in address and c["town"] in address:
                             driver.find_element(By.NAME,self.address_city).send_keys(c["city"])
                             driver.find_element(By.NAME,self.address_thin).send_keys(c["town"])
+                            
+                except Exception as e:
+                    print("Error: Failed to submit form")
+                    print(e)
 
-            if self.mail != '':
-                driver.find_element(By.NAME,self.mail).send_keys(self.formdata['mail'])
+            try:
+                if self.subjects != '':
+                    matching = False
+                    if self.subjects_radio_badge == True:
+                        print(self.chk)
+                        for c in self.chk:
+                            if 'お問い合わせ' in c['value']:
+                                checking = driver.find_element(By.XPATH,"//input[@name='" + c['name']+"' and @value='" + c['value']+"']")
+                                if not checking.is_selected():
+                                    driver.execute_script("arguments[0].click();", checking)
 
-            if self.mail_c != '':
-                driver.find_element(By.NAME,self.mail_c).send_keys(self.formdata['mail'])
+                    if driver.find_element(By.NAME,self.subjects).tag_name == 'select':
+                        select = Select(driver.find_element(By.NAME,self.subjects))
+                        for opt in select.options:
+                            if self.formdata['subjects'] == opt:
+                                matching = True
+                                select.select_by_visible_text(opt)
 
-            print(self.subjects)
+                        if matching == False:
+                            select.select_by_index(len(select.options)-1)
 
-            if self.subjects != '':
-                matching = False
-                if self.subjects_radio_badge == True:
-                    print(self.chk)
-                    for c in self.chk:
-                        if 'お問い合わせ' in c['value']:
-                            checking = driver.find_element(By.XPATH,"//input[@name='" + c['checkname']+"' and @value='" + c['value']+"']")
-                            if not checking.is_selected():
-                                driver.execute_script("arguments[0].click();", checking)
+                    else:
+                        driver.find_element(By.NAME,self.subjects).send_keys(self.formdata['subjects'])
+            except Exception as e:
+                print(f"Error encountered: {e}")
+                # ここに追加のエラー処理を書くことができます。
 
+            try:
+                if self.body != '':
+                    driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
+            except Exception as e:
+                print(f"Error encountered: {e}")
+                # ここに追加のエラー処理を書くことができます。
+            
+            
+            try:
+                before = driver.title                
 
-                if driver.find_element(By.NAME,self.subjects).tag_name == 'select':
-                    select = Select(driver.find_element(By.NAME,self.subjects))
-                    for opt in select.options:
-                        if self.formdata['subjects'] == opt:
-                            matching = True
-                            select.select_by_visible_text(opt)
+                try:
+                    # 送信内容を確認するボタンが表示されるまで待機
+                    confirm_button = WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.XPATH, "//button[contains(text(), '送信内容を確認する')]"))
+                    )
+                    confirm_button.click()
 
-                    if matching == False:
-                        select.select_by_index(len(select.options)-1)
+                    # 上記内容で送信するボタンが表示されるまで待機
+                    submit_button = WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.XPATH, "//input[@value='上記内容で送信する']"))
+                    )
+                    submit_button.click()
+                except Exception as e:
+                    print(f"Error: {e}")
+
+                # 4. 送信が成功したかどうかの確認（ここでは例としてタイトルの変更を確認）
+                time.sleep(3)  # 送信後のページへの移動を待機
+                after = driver.title
+                if before != after:  # タイトルが変わった場合、送信成功と判断
+                    driver.close()
+                    return 'OK'
+                else:
+                    driver.close()
+                    print("Error: Failed to submit form")
+                    return 'NG'
+
+            except Exception as e:
+                print(f"Error: {e}")
+                print("submit false")
+                driver.close()
+                return 'NG'
 
                 
-                else:
-                    driver.find_element(By.NAME,self.subjects).send_keys(self.formdata['subjects'])
-
-            if self.body != '':
-                driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
-
+            """
             ##　規約 プライバシーポリシーチェック
             try:
                 print(self.kiyakucheck)
@@ -1007,36 +504,201 @@ class Place_enter():
                                 driver.execute_script("arguments[0].click();", radio)
             except Exception as e:
                 print(traceback.format_exc())
-
-
-        
-
-
+                
             time.sleep(2)
+            """
+            
+        else:
+            input_text_field(driver, self.company, self.formdata['company'])
+            input_text_field(driver, self.company_kana, self.formdata['company_kana'])
+            input_text_field(driver, self.manager, self.formdata['manager'])
+            input_text_field(driver, self.manager_kana, self.formdata['manager_kana'])
+            input_text_field(driver, self.phone, self.formdata['phone'])
+            input_text_field(driver, self.fax, self.formdata['fax'])
+            input_text_field(driver, self.address, self.formdata['address'])
+            input_text_field(driver, self.mail, self.formdata['mail'])
+            input_text_field(driver, self.mail_c, self.formdata['mail'])
+            
+            for radio_info in self.radio:
+                select_radio_button(driver, radio_info['name'])
+
+            for checkbox_info in self.chk:
+                select_checkbox(driver, checkbox_info['name'])
+
+            #分割用電話番号 
+            try:
+                if self.phone0 != '' and self.phone1 != '' and self.phone2 != '':
+                    phonesplit = self.formdata['phone'].split('-')
+                    driver.find_element(By.NAME,self.phone0).send_keys(phonesplit[0])
+                    driver.find_element(By.NAME,self.phone1).send_keys(phonesplit[1])
+                    driver.find_element(By.NAME,self.phone2).send_keys(phonesplit[2])
+            except Exception as e:
+                print("Error: Failed to submit form")
+                print(e)
+                
+            
+            try:
+                if self.zip != '':
+                    r = requests.get("https://api.excelapi.org/post/zipcode?address=" + self.formdata['address'])
+                    postman = r.text
+                    driver.find_element(By.NAME,self.zip).send_keys(postman[:3]+ "-" + postman[3:])
+            except Exception as e:
+                print("Error: Failed to submit form")
+                print(e)
 
             try:
-                before = driver.title
-                driver.find_element(By.NAME,self.body).submit()
-                try:
-                    confirm_source = BeautifulSoup(driver.page_source, "lxml").prettify()
-                    sourcer = BeautifulSoup(confirm_source, "lxml")
-                    for s in sourcer.find_all('input'):
-                        if '送信' in s['value']:
-                            driver.find_element(By.XPATH,"//input[@value='"+ s['value']+"']").click()
+                if self.pref != '':
+                    pref_data = ''
+                    pref = [
+                        "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県",
+                        "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",
+                        "新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県",
+                        "静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県",
+                        "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県",
+                        "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県",
+                        "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
+                    ]
 
-                except Exception as e:
-                    print('ERROR')
-                time.sleep(3)   
-                print('D')
-                after = driver.title
-                driver.close()
-                return 'OK'
-            
+                    address = self.formdata['address']
+                    
+                    element = driver.find_element(By.NAME, self.pref)
+                    for p in pref:
+                        if p in address:
+                            if element.tag_name == "select":
+                                s = Select(element)
+                                s.select_by_visible_text(p)
+                                pref_data = p
+                            else:
+                                pref_data = p
+
+                    if self.address_city != '' and  self.address_thin != '':
+                        r = requests.get("https://geoapi.heartrails.com/api/json?method=getTowns&prefecture=" + pref_data)
+                        cityjs = r.json()
+                        city = cityjs["response"]["location"]
+                        print("cityjs")
+                        for c in city:
+                            print(c["city"])
+                            if c["city"] in address and c["town"] in address:
+                                driver.find_element(By.NAME,self.address_city).send_keys(c["city"])
+                                driver.find_element(By.NAME,self.address_thin).send_keys(c["town"])
             except Exception as e:
+                print("Error: Failed to submit form")
+                print(e)
+            
+
+            try:
+                if self.subjects != '':
+                    matching = False
+                    if self.subjects_radio_badge == True:
+                        print(self.chk)
+                        for c in self.chk:
+                            if 'お問い合わせ' in c['value']:
+                                checking = driver.find_element(By.XPATH,"//input[@name='" + c['checkname']+"' and @value='" + c['value']+"']")
+                                if not checking.is_selected():
+                                    driver.execute_script("arguments[0].click();", checking)
+
+                    if driver.find_element(By.NAME,self.subjects).tag_name == 'select':
+                        select = Select(driver.find_element(By.NAME,self.subjects))
+                        for opt in select.options:
+                            if self.formdata['subjects'] == opt:
+                                matching = True
+                                select.select_by_visible_text(opt)
+
+                        if matching == False:
+                            select.select_by_index(len(select.options)-1)
+
+                
+                    else:
+                        driver.find_element(By.NAME,self.subjects).send_keys(self.formdata['subjects'])
+            except Exception as e:
+                print(f"Error encountered: {e}")
+                # ここに追加のエラー処理を書くことができます。
+            
+            try:
+                if self.body != '':
+                    driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
+            except Exception as e:
+                print(f"Error encountered: {e}")
+                # ここに追加のエラー処理を書くことができます。
+
+
+            try:
+                before = driver.title                
+
+                try:
+                    # 送信内容を確認するボタンが表示されるまで待機
+                    confirm_button = WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.XPATH, "//button[contains(text(), '送信内容を確認する')]"))
+                    )
+                    confirm_button.click()
+
+                    # 上記内容で送信するボタンが表示されるまで待機
+                    submit_button = WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.XPATH, "//input[@value='上記内容で送信する']"))
+                    )
+                    submit_button.click()
+                except Exception as e:
+                    print(f"Error: {e}")
+
+                # 4. 送信が成功したかどうかの確認（ここでは例としてタイトルの変更を確認）
+                time.sleep(3)  # 送信後のページへの移動を待機
+                after = driver.title
+                if before != after:  # タイトルが変わった場合、送信成功と判断
+                    driver.close()
+                    return 'OK'
+                else:
+                    driver.close()
+                    print("Error: Failed to submit form")
+                    return 'NG'
+
+            except Exception as e:
+                print(f"Error: {e}")
+                print("submit false")
                 driver.close()
                 return 'NG'
+                
+            """
+            ## 規約 プライバシーポリシーチェック
+            try:
+                print(self.kiyakucheck)
+                if self.kiyakucheck != {}:
+                    checking = driver.find_element(By.XPATH,"//input[@name='" + self.kiyakucheck['name']+"']")
+                    if not checking.is_selected():
+                        driver.execute_script("arguments[0].click();", checking)
+            except Exception as e:
+                print("同意エラー")
+                print(e)
 
-switch = 0 #debug mode
+            ## 連絡方法
+            try:
+                if self.response_contact != []:
+                    for radioarray in self.response_contact:
+                        radian = driver.find_elements(By.XPATH, "//input[@type='radio' and @name='"+ radioarray['name']+"']")
+                        for radio in radian:
+                            r = radio.get_attribute(("value"))
+                            if "どちらでも" in r:
+                                radio.click()
+
+            except Exception as e:
+                print("押せない")
+                print(e)
+
+            try:
+                print(self.industry)
+                if self.industry != []:
+                    for radioarray in self.industry:
+                        radian = driver.find_elements(By.XPATH, "//input[@type='radio' and @name='"+ radioarray['name']+"']")
+                        for radio in radian:
+                            r = radio.get_attribute(("value"))
+                            if 'メーカー' in r:
+                                driver.execute_script("arguments[0].click();", radio)
+            except Exception as e:
+                print(traceback.format_exc())
+
+            time.sleep(2)
+            """
+
+switch = 1 #debug mode
 
 if switch == 0:
     print("本番モード")
@@ -1053,9 +715,7 @@ elif switch == 1:
         "subjects":"システム開発！Webデザインは、YSMT製作所へ！",
         "body":"はじめまして。 たまがわです。この度、Webデザインを始めてみました。"
     }
+    #url = "https://ri-plus.jp/contact"
     url = "https://www.amo-pack.com/contact/index.html" 
     p = Place_enter(url,form_data)  
     print(p.go_selenium())
-
-
-
