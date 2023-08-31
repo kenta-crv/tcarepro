@@ -52,8 +52,7 @@ class Sender < ApplicationRecord
     Rails.application.routes.url_helpers.direct_mail_callback_url(t: code)
   end
 
-  def auto_send_contact!(code, customer_id, worker_id, inquiry_id, date,contact_url, status, customers_code,reserve_code,generation_code)
-    code = generate_code
+  def auto_send_contact!(code, customer_id, worker_id, inquiry_id, date,contact_url, status, customers_code)
     #API送信SSS
     contact_tracking = contact_trackings.new(
       code: code,
@@ -66,7 +65,7 @@ class Sender < ApplicationRecord
       sended_at: status == '送信済' && Time.zone.now,
       status: status,
       customers_code: customers_code,
-      auto_job_code: generation_code,
+      auto_job_code: generate_code,
     )
 
     contact_tracking.save!
