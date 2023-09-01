@@ -92,6 +92,30 @@ table.header-table[width="90%"]
       = @global_innovation
     td 10日
   tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%whita%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%whit%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%whit%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    - @whita = @detailAppCount * 27500
+    th
+      | whit
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @whita
+    td 請求済
+
+  tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%グローバル（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%グローバル（食品）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailAppCount = @detailcalls.where("industry LIKE ?", "%グローバル（食品）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -115,13 +139,13 @@ table.header-table[width="90%"]
       = @grobal_sales
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%グローバル（飲食店）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%グローバル（飲食店）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%グローバル（飲食店）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%グローバル（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%グローバル（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%グローバル（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
     - @grobal1_sales = @detailAppCount * 29700
     th
-      | グローバル（飲食店）
+      | グローバル（介護）
     td
       = @ListCount
     td
@@ -411,29 +435,6 @@ table.header-table[width="90%"]
       = @nihonkai2_sales
     td 末日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%日本海（宿泊）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%日本海（宿泊）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%日本海（宿泊）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @nihonkai1_sales = @detailAppCount * 27500
-    th
-      | 日本海（宿泊）
-    td
-      = @ListCount
-    td
-      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
-    td
-      = @detailCount
-    td
-      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
-    td
-      = @detailAppCount
-    td
-      = @detailRemainCount
-    td
-      = @nihonkai1_sales
-    td 請求済
-  tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%日本海（飲食店）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%日本海（飲食店）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailAppCount = @detailcalls.where("industry LIKE ?", "%日本海（飲食店）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -558,4 +559,4 @@ table.header-table.space[width="90%"]
     th
       | 合計
     td
-      = @nihonkai_sales + @nihonkai2_sales + @nihonkai1_sales + @nihonkai3_sales + @factoru_sales + @labo_sales + @labo1_sales + @labo2_sales + @sorairo1_sales + @sorairo2_sales + @global_innovation + @takumi + @takumi1 + @takumi2 + @grobal_sales + @grobal1_sales + @sound_sales + @sound2_sales + @concier_sale + @concier_sales + @concier_factory_sales + @work + @bloom
+      = @nihonkai_sales + @nihonkai2_sales + @whita + @nihonkai3_sales + @factoru_sales + @labo_sales + @labo1_sales + @labo2_sales + @sorairo1_sales + @sorairo2_sales + @global_innovation + @takumi + @takumi1 + @takumi2 + @grobal_sales + @grobal1_sales + @sound_sales + @sound2_sales + @concier_sale + @concier_sales + @concier_factory_sales + @work + @bloom
