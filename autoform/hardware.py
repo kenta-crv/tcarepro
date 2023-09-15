@@ -17,10 +17,10 @@ import traceback
 
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
-options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+#options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 start = time.perf_counter()
 #serv = Service(ChromeDriverManager().install())
-serv = Service(executable_path='/Users/kazuma/anaconda3/bin/chromedriver')
+serv = Service(executable_path='/usr/local/bin/chromedriver')
 
 class Place_enter():
     def __init__(self,url,formdata):
