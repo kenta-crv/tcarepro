@@ -17,10 +17,10 @@ import traceback
 
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
-#options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 start = time.perf_counter()
 #serv = Service(ChromeDriverManager().install())
-serv = Service(executable_path='/usr/local/bin/chromedriver')
+serv = Service(executable_path='/Users/kazuma/anaconda3/bin/chromedriver')
 
 class Place_enter():
     def __init__(self,url,formdata):
@@ -105,6 +105,7 @@ class Place_enter():
                 placeholder = element.get('placeholder')
                 if placeholder:
                     data['placeholder'] = placeholder
+            
             return data
 
         def extract_textarea_data(element):
@@ -124,6 +125,7 @@ class Place_enter():
                 if 'class' in option.attrs:
                     option_data['class'] = option.get('class')
                 data_list.append(option_data)
+            print("extract_select_data" + data_list)
             return data_list
 
         def extract_elements_from_tags(tag, element_type):
@@ -136,6 +138,8 @@ class Place_enter():
                         data_list.append(extract_textarea_data(child))
                     elif element_type == 'select':
                         data_list.extend(extract_select_data(child))
+            
+            print("extract_elements_from_tags" + data_list)
             return data_list
 
         # 以下の部分で上記の関数を使用する
@@ -157,29 +161,37 @@ class Place_enter():
                     data['label'] = dt_text
                 data_list.append(data)
             
+            print("extract_elements_from_dtdl" + str(data))
+            
             return data_list
         
-        def find_and_add_to_namelist(self, tables):
+        def find_and_add_to_namelist(tables):
             data_list = []
-            
+
             for row in tables.find_all('tr'):
-                for col in row.find_all('td'):
-                    dt_text = col.find_previous_sibling('dt').get_text(strip=True) if col.find_previous_sibling('dt') else None  # <dt>のテキストを取得
-                    for elem_type in ['input', 'textarea', 'select']:
+                cols = row.find_all('td')
+                label_texts = ' '.join([col.get_text(strip=True) for col in cols if col.get_text(strip=True)])
+                
+                for elem_type in ['input', 'textarea', 'select']:
+                    for col in cols:
                         elem = col.find(elem_type)
                         if elem and 'name' in elem.attrs:
                             name = elem['name']
                             data = {
                                 'object': elem_type,
                                 'name': name,
-                                'label': dt_text  
+                                'label': label_texts  # Add all the label texts from the row
                             }
                             if elem_type == 'input':
                                 data['type'] = elem.get('type')
                                 data['value'] = elem.get('value')
                             data_list.append(data)
 
+                            print("find" + str(data))
+                            print(label_texts)
+            
             return data_list
+
 
 
         namelist = []
@@ -196,17 +208,14 @@ class Place_enter():
             for dl in self.target_dtdl():
                 namelist.extend(extract_elements_from_dtdl(dl))
         else:#table
-            namelist = []
-            if not tables.find_all('tbody'):
-                print("tbody is not.")
-
             # Search for keywords in <td> and add to namelist
-            for table in self.target_table():
-                find_and_add_to_namelist(table)
+            for table in tables:
+                namelist.extend(find_and_add_to_namelist(table))
+
 
         self.namelist = namelist 
         self.logicer(self.namelist)
-        print(self.body)
+        print("namelist" + str(self.namelist))
         
 
     def target_form(self):
@@ -221,7 +230,7 @@ class Place_enter():
     def target_table(self):
         if self.form.find('table'):
             print('tableを見つけました')
-            return self.form.find('table')
+            return self.form.find_all('table')
         else: 
             return 0
 
@@ -231,8 +240,6 @@ class Place_enter():
             return self.form.find_all('dl')
         else: 
             return 0
-    
-    
 
     def logicer(self, lists):
         for list in lists:
@@ -244,7 +251,7 @@ class Place_enter():
                         self.company = list["name"]
                     elif "会社ふりがな" in label or "会社フリガナ" in label:
                         self.company_kana = list["name"]
-                    elif "名前" in label:
+                    elif "名前" in label or "担当者" in label:
                         self.manager = list["name"]
                     elif "ふりがな" in label or "フリガナ" in label:
                         self.manager_kana = list["name"]
@@ -284,6 +291,7 @@ class Place_enter():
         
         def input_text_field(driver, field_name, value):
             """テキストフィールドに値を入力するための関数"""
+            print(f"Field Name: {field_name}, Value: {value}")
             if field_name and value:
                 try:
                     driver.find_element(By.NAME, field_name).send_keys(value)
@@ -429,30 +437,43 @@ class Place_enter():
             except Exception as e:
                 print(f"Error encountered: {e}")
                 # ここに追加のエラー処理を書くことができます。
-            
+            def click_button(driver, button_texts):
+                for text in button_texts:
+                    xpaths = [
+                        f"//button[contains(text(), '{text}')]",
+                        f"//input[contains(@value, '{text}')]"
+                    ]
+                    for xpath in xpaths:
+                        try:
+                            button = WebDriverWait(driver, 10).until(
+                                EC.presence_of_element_located((By.XPATH, xpath))
+                            )
+                            button.click()
+                            return True
+                        except:
+                            continue
+                return False
             
             try:
-                before = driver.title                
+                before = driver.title
 
-                try:
-                    # 送信内容を確認するボタンが表示されるまで待機
-                    confirm_button = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.XPATH, "//button[contains(text(), '送信内容を確認する')]"))
-                    )
-                    confirm_button.click()
+                # "確認" ボタンをクリック
+                if not click_button(driver, ['確認']):
+                    print("Error: Could not find the 'confirm' button")
+                    driver.close()
+                    return 'NG'
 
-                    # 上記内容で送信するボタンが表示されるまで待機
-                    submit_button = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.XPATH, "//input[@value='上記内容で送信する']"))
-                    )
-                    submit_button.click()
-                except Exception as e:
-                    print(f"Error: {e}")
+                # "送信" ボタンをクリック
+                if not click_button(driver, ['送信']):
+                    print("Error: Could not find the 'submit' button")
+                    driver.close()
+                    return 'NG'
 
-                # 4. 送信が成功したかどうかの確認（ここでは例としてタイトルの変更を確認）
+                # 送信が成功したかどうかの確認（タイトルの変更を確認）
                 time.sleep(3)  # 送信後のページへの移動を待機
                 after = driver.title
-                if before != after:  # タイトルが変わった場合、送信成功と判断
+                page_source = driver.page_source
+                if before != after or "ありがとう" in page_source or "完了" in page_source:  # タイトルが変わった場合、送信成功と判断
                     driver.close()
                     return 'OK'
                 else:
@@ -510,13 +531,18 @@ class Place_enter():
             
         else:
             input_text_field(driver, self.company, self.formdata['company'])
+            print("company"+self.company)
             input_text_field(driver, self.company_kana, self.formdata['company_kana'])
             input_text_field(driver, self.manager, self.formdata['manager'])
+            print("manager"+self.manager)
             input_text_field(driver, self.manager_kana, self.formdata['manager_kana'])
             input_text_field(driver, self.phone, self.formdata['phone'])
+            print("phone"+self.phone)
             input_text_field(driver, self.fax, self.formdata['fax'])
             input_text_field(driver, self.address, self.formdata['address'])
+            print("address"+self.address)
             input_text_field(driver, self.mail, self.formdata['mail'])
+            print("mail"+self.mail)
             input_text_field(driver, self.mail_c, self.formdata['mail'])
             
             for radio_info in self.radio:
@@ -622,28 +648,43 @@ class Place_enter():
                 # ここに追加のエラー処理を書くことができます。
 
 
+            def click_button(driver, button_texts):
+                for text in button_texts:
+                    xpaths = [
+                        f"//button[contains(text(), '{text}')]",
+                        f"//input[contains(@value, '{text}')]"
+                    ]
+                    for xpath in xpaths:
+                        try:
+                            button = WebDriverWait(driver, 10).until(
+                                EC.presence_of_element_located((By.XPATH, xpath))
+                            )
+                            button.click()
+                            return True
+                        except:
+                            continue
+                return False
+
             try:
-                before = driver.title                
+                before = driver.title
 
-                try:
-                    # 送信内容を確認するボタンが表示されるまで待機
-                    confirm_button = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.XPATH, "//button[contains(text(), '送信内容を確認する')]"))
-                    )
-                    confirm_button.click()
+                # "確認" ボタンをクリック
+                if not click_button(driver, ['確認']):
+                    print("Error: Could not find the 'confirm' button")
+                    driver.close()
+                    return 'NG'
 
-                    # 上記内容で送信するボタンが表示されるまで待機
-                    submit_button = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.XPATH, "//input[@value='上記内容で送信する']"))
-                    )
-                    submit_button.click()
-                except Exception as e:
-                    print(f"Error: {e}")
+                # "送信" ボタンをクリック
+                if not click_button(driver, ['送信']):
+                    print("Error: Could not find the 'submit' button")
+                    driver.close()
+                    return 'NG'
 
-                # 4. 送信が成功したかどうかの確認（ここでは例としてタイトルの変更を確認）
+                # 送信が成功したかどうかの確認（タイトルの変更を確認）
                 time.sleep(3)  # 送信後のページへの移動を待機
                 after = driver.title
-                if before != after:  # タイトルが変わった場合、送信成功と判断
+                page_source = driver.page_source
+                if before != after or "ありがとう" in page_source or "完了" in page_source:  # タイトルが変わった場合、送信成功と判断
                     driver.close()
                     return 'OK'
                 else:
@@ -656,6 +697,7 @@ class Place_enter():
                 print("submit false")
                 driver.close()
                 return 'NG'
+
                 
             """
             ## 規約 プライバシーポリシーチェック
@@ -706,8 +748,8 @@ elif switch == 1:
     form_data = {
         "company":"Tamagawa",
         "company_kana":"たまがわ",
-        "manager":"多摩川　フラン",
-        "manager_kana":"タマガワ　フラン",
+        "manager":"多摩川 フラン",
+        "manager_kana":"タマガワ フラン",
         "phone":"090-3795-5760",
         "fax":"",
         "address":"東京都目黒区中目黒",
@@ -715,7 +757,7 @@ elif switch == 1:
         "subjects":"システム開発！Webデザインは、YSMT製作所へ！",
         "body":"はじめまして。 たまがわです。この度、Webデザインを始めてみました。"
     }
-    #url = "https://ri-plus.jp/contact"
-    url = "https://www.amo-pack.com/contact/index.html" 
+    url = "https://ri-plus.jp/contact"
+    #url = "https://www.amo-pack.com/contact/index.html" 
     p = Place_enter(url,form_data)  
     print(p.go_selenium())
