@@ -113,7 +113,7 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @whita
-    td 請求済
+    td 10日
 
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%グローバル（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
@@ -318,7 +318,7 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @work
-    td 末日
+    td 10日
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（販売）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%コンシェルテック（販売）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -410,7 +410,7 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @nihonkai_sales
-    td 末日
+    td 10日
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%日本海（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%日本海（食品）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -433,7 +433,7 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @nihonkai2_sales
-    td 末日
+    td 10日
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%日本海（飲食店）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%日本海（飲食店）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -456,7 +456,7 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @nihonkai3_sales
-    td 請求済
+    td 10日
   
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%ファクトル（営業）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
@@ -619,7 +619,7 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @gg2_sales
-    td 10日
+    td 末日
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%フコックス（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%フコックス（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%フコックス（介護）").count
@@ -642,7 +642,7 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @fucox_sales
-    td 10日
+    td 末日
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%フコックス（飲食店）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%フコックス（飲食店）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%フコックス（飲食店）%").count
@@ -665,7 +665,7 @@ table.header-table[width="90%"]
       = @detailRemainCount
     td
       = @fucox1_sales
-    td 10日
+    td 末日
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%フコックス（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%フコックス（食品）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%フコックス（食品）").count
