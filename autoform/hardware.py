@@ -19,8 +19,8 @@ options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 #options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 start = time.perf_counter()
-#serv = Service(ChromeDriverManager().install())
-serv = Service(executable_path='/usr/local/bin/chromedriver')
+serv = Service(ChromeDriverManager().install())
+#serv = Service(executable_path='/usr/local/bin/chromedriver')
 
 class Place_enter():
     def __init__(self,url,formdata):
@@ -740,7 +740,7 @@ class Place_enter():
             time.sleep(2)
             """
 
-switch = 1 #debug mode
+switch = 0 #debug mode
 
 if switch == 0:
     print("本番モード")
