@@ -18,7 +18,7 @@ class Scraping
   def contact_from(url)
     return nil if url.blank?
 
-    customer_url = URI.parse(URI.encode(url))
+    customer_url = URI.parse(URI.encode_www_form_component(url))
 
     return nil if BLACKLIST_DOMAINS.include?(customer_url.host)
 
