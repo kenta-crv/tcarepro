@@ -32,6 +32,7 @@ table.header-table.space[width="90%"]
     th
       | NG率
   - @users.each do |user|
+    /- user_calls_month = user.calls.where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).to_a
     - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
     tr
       td
