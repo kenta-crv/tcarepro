@@ -52,8 +52,37 @@ class Sender < ApplicationRecord
     Rails.application.routes.url_helpers.direct_mail_callback_url(t: code)
   end
 
-  def auto_send_contact!(code, customer_id, worker_id, inquiry_id, date,contact_url, status, customers_code)
-    #API送信SSS
+  def auto_send_contact!(code, customer_id, worker_id, inquiry_id, date, contact_url, status, customers_code)
+    # API送信の実装
+    uri = URI.parse("http://tcare.pro/api/v1/rocketbumb")  # APIエンドポイントのURLを設定
+    http = Net::HTTP.new(uri.host, uri.port)
+
+    request = Net::HTTP::Post.new(uri.path, {
+      'Content-Type' => 'application/json'
+    })
+
+    # 送信するデータを設定
+    data = {
+      code: code,
+      customer_id: customer_id,
+      worker_id: worker_id,
+      inquiry_id: inquiry_id,
+      scheduled_date: date,
+      contact_url: contact_url,
+      status: status,
+      customers_code: customers_code,
+    }
+    request.body = data.to_json
+
+    response = http.request(request)
+
+    # 応答をチェック
+    if response.code != "200"
+      # エラーログの記録や例外のスローなどのエラーハンドリングを行う
+      Rails.logger.error("API Error: #{response.body}")
+    end
+
+    # 既存の処理
     contact_tracking = contact_trackings.new(
       code: code,
       customer_id: customer_id,
