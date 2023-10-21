@@ -79,12 +79,19 @@ class OkuriteController < ApplicationController
   end
 
   def okurite_new_status(customer, status)
-    Rails.logger.info( "@sender : " + status + 'に設定')
-    customer.contact_trackings.each do |contact_tracking|
-      contact_tracking.status = '自動送信予定'
-      contact_tracking.save!
-    end
+      Rails.logger.info("@sender : " + status + 'に設定')
+      customer.contact_trackings.each do |contact_tracking|
+          contact_tracking.status = '自動送信予定'
+          
+          unless contact_tracking.valid?
+              Rails.logger.error("Contact Tracking ID #{contact_tracking.id}: " + contact_tracking.errors.full_messages.join(", "))
+              next # この行で次のループに移動し、save!をスキップします
+          end
+          
+          contact_tracking.save!
+      end
   end
+
 
   def autosettings
     #Rails.logger.info( "date : " + DateTime.parse(params[:date]).to_yaml)
