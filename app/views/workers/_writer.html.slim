@@ -1,0 +1,87 @@
+.info-wrapper
+  h2.headline
+    | 業務報告
+  br/
+  .center 
+   = link_to "本日の業務報告を行う", new_worker_writer_path(@worker), class: "btn btn-success"
+
+  h2.headline
+      | リスト制作実施件数
+  br/
+  br/
+  table[width="90%"  class="header-table space"]
+      colgroup
+        |  　
+      tr
+        th 本日の件数
+        th 今週の件数
+        th 今月の不足件数
+        th 今月の件数
+        th 先月の件数
+        th トータル件数
+      tr
+        td = @daily_titles
+        td = @weekly_titles
+        - if @weekly_titles.to_i < 150
+         td.red
+          = 100 - @weekly_titles.to_i
+        - else
+         td.red
+          | CLEAR
+        td = @monthly_titles
+        td = @last_month_titles
+        td = @total_titles
+  br/
+  h2.headline
+   .red
+    | ※初回業務者は必ず閲覧してください。
+  br/
+  br/
+  h3.caption 業務内容を動画で確認
+  br/
+  .center
+    iframe width="560" height="315" src="https://www.youtube.com/embed/JnSRmLPbvak?si=91GhgbpjPet_jPQV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+  br/
+  .check ※今回は動画にございます、メモ帳にペースト作業は不要です。
+  h2.headline
+   .red
+    | 使用するツールについて
+  br/
+  br/
+  h3.caption ●AIライティングツール『Katteb』
+  br/
+  p 当ライティングツールよりタイトル・見出しの生成を行って頂きます。使用方法については動画を参照して下さい。稼働前に試験実施を何度か頂いても結構ですので、使い方を事前に把握頂ければと存じます。
+  br/
+  .box 
+    |URL：https://katteb.com/en/dashboard/
+    |ID：avecdogpresence@gmail.com
+    |PASS：writing2023
+  br/
+  br/
+  h3.caption ●ターゲットについて
+  br/
+  p 記事については今回下記をご依頼させて頂きたく存じます。下記ターゲットに基づく記事をキーワードプランナー等を活用頂き、スモールワードからSEO対策を行ったタイトル・見出しを作成して下さい。
+  br/
+  .box 
+    |【ターゲット】システム・アプリ・ゲーム等を開発したい企業を集客するための記事
+  br/
+  br/
+  h3.caption ●見出しの最後について
+  br/
+  p Kattebで見出しを入力した最後のh2・h3には必ずサイトトップページへの流入を即すものとして下さい。
+  br/
+  .box 
+    |【URL】https://engist.jp
+    |【サイト名】システム開発の一括比較見積もり『ENGIST』 
+  br/
+  .box 
+    |ex. 
+    |h2 アプリ開発業者を比較するならアプリ開発の一括比較見積もり『ENGIST』がおすすめ
+    |h3 依頼内容を入力するだけでアプリ開発の優良会社を簡単に料金比較できる
+  br/
+  br/
+  h3.caption ●その他注意点
+  br/
+  .check ライティング生成を行った後、必ず本文の情報相違がないかをチェックし、不備がある場合はやり直しをお願いします。
+  .check 必要文字数は4000~7000文字となります。試験実施を通して、どの程度の見出しを作れば良いのかを認識お願い致します。
+  .check 毎月100件の作業となりますが、例えば月末等にまとめて作業はしないで下さい。前もって、もしくは定期的な作業をお願いします。

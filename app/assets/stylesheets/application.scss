@@ -1304,3 +1304,104 @@ a.btn--shadow {
   text-align:left;
   font-weight:normal;
 }
+
+.info-wrapper {
+  margin:50px 50px;
+
+	.headline {
+		padding: 0.4em 0.5em;/*文字の上下 左右の余白*/
+		color: #494949;/*文字色*/
+		background: #f4f4f4;/*背景色*/
+		border-left: solid 5px $main_color;/*左線*/
+		border-bottom: solid 3px #d7d7d7;/*下線*/
+		text-align:left;
+    margin-top: 30px;
+		width:95%;
+		font-size:21px;
+		font-weight:bold;
+  }
+
+  h3.caption {
+    color: #4B4A4B;
+    font-size: 24px;
+    padding: 0 20px;
+    font-weight: bold;
+  }
+
+  h3.caption:before {
+    content: '◆';
+    color: $main_color;
+    margin-right: 8px;
+  }
+
+  h4.caption {
+    color: #4B4A4B;
+    border-bottom: #4B4A4B;
+    font-size: 18px;
+    padding: 10px 40px;
+    font-weight: bold;
+    position: relative;
+    line-height: 1.4;
+  }
+
+  h4.caption:before {
+    font-family: "Font Awesome 5 Free";
+    content: "\f00c";/*アイコンのユニコード*/
+    font-weight: 900;
+    position: absolute;/*絶対位置*/
+    font-size: 1em;/*サイズ*/
+    left: 0;/*アイコンの位置*/
+    top: 0;/*アイコンの位置*/
+    color: $asort_color; /*アイコン色*/
+    font-weight: 900;
+    padding: 10px 25px;
+  }
+
+  p {
+    padding: 0 40px;
+    font-size: 15px;
+  }
+
+  .check {
+    padding: 0 50px;
+    font-size: 16px;
+    line-height: 30px;
+    font-weight: bold;
+    color: #4B4A4B;
+  }
+
+  .check:before {
+    content: '✅';
+    margin-right: 8px;
+  }
+
+  .box {
+    margin: 0 40px;
+    padding: 10px;
+    font-size: 12px;
+    color: orange;/*文字色*/
+    background: $sub_color;
+    border: solid 3px $sub_color;/*線*/
+    border-radius: 5px;/*角の丸み*/
+  }
+}
+
+
+.infobox {
+  margin-left: auto;
+  margin-right: auto;
+  height: 20em;
+  /* 高さを制限(※) */
+  width: 80%;
+  overflow: scroll;
+  /* スクロールバーを表示(※) */
+  border: #000 3px border;
+  /* 枠線を追加 */
+  background-color: #f0f0f0;
+  /* 背景色を追加 */
+  font-size: 1.2vw;
+  font-weight:normal;
+  text-align:left;
+  line-height:24px;
+}
+

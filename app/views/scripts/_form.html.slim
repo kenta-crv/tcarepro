@@ -1,0 +1,93 @@
+= form_with model: @script, local: true do |f|
+ table[width="90%"]
+     tbody
+      col[width="20%"]
+      col[width="30%"]
+      col[width="20%"]
+      col[width="30%"]
+      tr
+        th.arrow_box 会社名
+        td.center = f.text_field :company
+        th.arrow_box 担当者名
+        td.center = f.text_field :name
+      tr
+        th.arrow_box 電話番号
+        td.center = f.text_field :tel
+        th.arrow_box 住所
+        td.center = f.text_field :address
+      tr
+        th.arrow_box 備考
+        td[colspan="3"]
+          = f.text_area :remarks
+ br/
+ br/
+ .row 
+  .col-sm-7
+    table[width="90%"]
+     tbody
+      tr
+        th.arrow_box フロントトーク
+      tr
+        td.center  = f.text_area :front_talk, value: Script.front_talk
+      tr
+        th.arrow_box フロントトーク
+      tr
+        td.center  = f.text_area :first_talk, value: Script.first_talk
+      tr
+        th.arrow_box イントロダクション
+      tr
+        td.center  = f.text_area :introduction, value: Script.introduction
+      tr
+        th.arrow_box ヒアリング①
+      tr
+        td.center  = f.text_area :hearing_1, value: Script.hearing_1
+      tr
+        th.arrow_box ヒアリング②
+      tr
+        td.center  = f.text_area :hearing_2, value: Script.hearing_2
+      tr
+        th.arrow_box ヒアリング③
+      tr
+        td.center  = f.text_area :hearing_3, value: Script.hearing_3
+      tr
+        th.arrow_box クロージング
+      tr
+        td.center  = f.text_area :closing, value: Script.closing
+      tr 
+        th.arrow_box
+          = f.submit "登録する"
+  .col-sm-5
+    table[width="90%"]
+     tbody
+      tr
+        th.arrow_box 要件
+      tr
+        td.center  = f.text_area :requirement, value: Script.requirement
+      tr
+        th.arrow_box 料金
+      tr
+        td.center  = f.text_area :price, value: Script.price
+      tr
+        th.arrow_box 経験則
+      tr
+        td.center  = f.text_area :experience, value: Script.experience
+      tr
+        th.arrow_box 返金規定
+      tr
+        td.center  = f.text_area :refund, value: Script.refund
+      tr
+        th.arrow_box 強み
+      tr
+        td.center  = f.text_area :usp, value: Script.usp
+      tr
+        th.arrow_box その他
+      tr
+        td.center  = f.text_area :other_receive_1, value: Script.other_receive_1
+      tr
+        th.arrow_box その他
+      tr
+        td.center  = f.text_area :other_receive_2, value: Script.other_receive_2
+      tr
+        th.arrow_box その他
+      tr
+        td.center  = f.text_area :other_receive_3, value: Script.other_receive_3

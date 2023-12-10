@@ -109,6 +109,35 @@ class CustomersController < ApplicationController
     end
   end
 
+
+  def analytics
+    @users = User.all
+    # call_count（永久NGとuser.id == 1を除外）
+    @call_day = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ?", Time.zone.now.beginning_of_day, Time.zone.now.end_of_day).count
+    @call_week = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ?", Time.zone.now.beginning_of_week, Time.zone.now.end_of_week).count
+    @call_month = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ?", Time.zone.now.beginning_of_month, Time.zone.now.end_of_month).count
+    # call_app（同様に永久NGとuser.id == 1を除外）
+    @call_app_day = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ? AND statu = ?", Time.zone.now.beginning_of_day, Time.zone.now.end_of_day, "APP").count
+    @call_app_week = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ? AND statu = ?", Time.zone.now.beginning_of_week, Time.zone.now.end_of_week, "APP").count
+    @call_app_month = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ? AND statu = ?", Time.zone.now.beginning_of_month, Time.zone.now.end_of_month, "APP").count
+    # APP percentage（同様に永久NGとuser.id == 1を除外）
+    @app_day_percentage = @call_day.zero? ? 0 : (@call_app_day.to_f / @call_day.to_f) * 100
+    @app_week_percentage = @call_week.zero? ? 0 : (@call_app_week.to_f / @call_week.to_f) * 100
+    @app_month_percentage = @call_month.zero? ? 0 : (@call_app_month.to_i / @call_month.to_i) * 100
+
+    @customers = Customer.joins(calls: :contract)
+                         .where(calls: { statu: '契約' })
+                         .where(contracts: { id: Contract.select(:id) })
+                         .where(contracts: { search_1: Customer.select(:industry) })
+                         .distinct
+                         .select(:industry)
+                      
+    @industries_data = INDUSTRY_ADDITIONAL_DATA.keys.map do |industry_name|
+      Customer.analytics_for(industry_name)
+    end
+    @total_revenue = @industries_data.sum { |data| data[:unit_price_inc_tax] * data[:appointment_count] }
+  end
+
   def closing 
     @type = params[:type]
     @calls = Call.all
@@ -277,6 +306,12 @@ class CustomersController < ApplicationController
     @customers =  Customer.all
   end
 
+
+  def copy
+    @customer = Customer.find(params[:id])
+    @user = current_user
+  end
+
   def import
     cnt = Customer.import(params[:file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
@@ -303,6 +338,32 @@ class CustomersController < ApplicationController
     @customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(20)
   end
 
+ def print
+    report = Thinreports::Report.new layout: "app/reports/layouts/invoice.tlf"
+    
+    @industries_data.each do |data|
+      create_pdf_page(report, data)
+    end
+
+    send_data(report.generate, filename: "industries_report_#{Time.zone.now.to_formatted_s(:number)}.pdf", type: "application/pdf")
+  end
+
+  def generate_pdf
+    industry_name = params[:industry_name]
+    data = INDUSTRY_ADDITIONAL_DATA[industry_name]
+
+    if data.nil?
+      redirect_to some_path, alert: "#{industry_name}のデータが見つかりません。"
+      return
+    end
+
+    report = Thinreports::Report.new layout: 'app/reports/layouts/invoice.tlf'
+    create_pdf_page(report, data)
+
+    send_data report.generate, filename: "#{industry_name}.pdf", type: 'application/pdf', disposition: 'attachment'
+  end
+  
+
   def extraction
     @q = Customer.ransack(params[:q])
     @customers = @q.result
@@ -310,8 +371,62 @@ class CustomersController < ApplicationController
     #電話番号nilから作業ステータスがないものの一覧へ変更する
     #@customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
   end
+
+  def calculate
+    user = User.find(params[:user_id])
+    input_val = params[:input_val].to_i
+    user_calls_count = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
+  
+    answer = user_calls_count / input_val.to_f
+    answer = answer.nan? ? 0 : answer
+  
+    render json: { answer: answer.round(2) }
+  end
   
   private
+
+  def create_pdf_page(report, data)
+    report.start_new_page do |page|
+
+      industry_name = data[:name]
+      start_of_month = Time.current.beginning_of_month
+      end_of_month = Time.current.end_of_month
+  
+      appointment_count = Call.joins(:customer)
+                              .where("customers.industry LIKE ? AND calls.created_at >= ? AND calls.created_at <= ?", "%#{industry_name}%", start_of_month, end_of_month)
+                              .where(calls: { statu: "APP" })
+                              .count
+      # 現在の日時を取得し、指定の形式にフォーマット
+      current_time = Time.now.strftime('%Y年%m月%d日')  
+      # 合計値の計算
+      unit_price_ex_tax = data[:unit_price_ex_tax] || 0
+      appointment_count = data[:appointment_count] || 0
+      total = unit_price_ex_tax * appointment_count
+      # 税金の計算（合計値の10%とする）
+      tax = total * 0.10
+      # 税込み合計値の計算
+      all = total + tax
+      # 支払い月の計算（翌月の年月 + data[:closing_date]）
+      next_month = Time.now.next_month.strftime('%Y年%m月')
+      payment_month = "#{next_month}#{data[:closing_date]}"
+  
+      page.values(
+        company: data[:name], # 会社名
+        created_at: current_time, # 発行日
+        text: data[:appointment_count], # アポカウント
+        unit_price_ex_tax: data[:unit_price_ex_tax], # 単価
+        tax: tax, # 税金
+        tax2: tax, # 税金
+        all: all, # 税込み合計
+        all_1: all, # 税込み合計
+        payment: payment_month, # 支払い月
+        #total: total, # 合計
+        total_1: total, # 合計
+        text_2: total, # 合計
+      )
+    end
+  end
+  
     def customer_params
       params.require(:customer).permit(
         :company, #会社名

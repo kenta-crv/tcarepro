@@ -1,0 +1,16 @@
+br
+ .tops-wrapper
+    h2.headline
+       | 送信完了しました。
+    p.center ご対応いただきありがとうございます。本日より１週間以内に採用可否の通知を行わせて頂きます。採択可否についてはメールにてご案内させて頂きますので、何卒よろしくお願い致します。
+
+ .center
+  = button_tag "ウィンドウを閉じる", type: 'button', id: 'close-window-btn'
+br
+br
+
+
+javascript:
+  document.getElementById('close-window-btn').addEventListener('click', function() {
+    window.close();
+  });

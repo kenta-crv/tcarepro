@@ -40,13 +40,8 @@ table.header-table.space[width="90%"]
       td
         = link_to user.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
-        = link_to user_calls_month.count, customers_path(q:{calls_user_user_name_cont: user.user_name, created_at_from: Time.current.beginning_of_month, created_at_to: Time.current.end_of_month})
-      td
         = user_calls_month.select { |call| call.statu == "着信留守" }.count
         br
-        |(
-        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "着信留守" }.count / user_calls_month.count.to_f * 100, precision: 1)
-        |)
       td
         = user_calls_month.select { |call| call.statu == "担当者不在" }.count
         br
@@ -94,4 +89,3 @@ table.header-table.space[width="90%"]
         - total_calls = user_calls_month.select { |call| call.statu == "NG" }.count + user_calls_month.select { |call| call.statu == "フロントNG" }.count + user_calls_month.select { |call| call.statu == "クロージングNG" }.count + user_calls_month.select { |call| call.statu == "永久NG" }.count
         - percentage = total_calls > 0 ? (user_app / total_calls.to_f) * 100 : 0
         = number_to_percentage(percentage, precision: 1)
-

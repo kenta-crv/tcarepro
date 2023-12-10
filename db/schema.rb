@@ -10,20 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20230507054112) do
+ActiveRecord::Schema.define(version: 20231201071015) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "select"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "select"
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
+  end
+
+  create_table "assignments", force: :cascade do |t|
+    t.integer "crowdwork_id"
+    t.integer "worker_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crowdwork_id"], name: "index_assignments_on_crowdwork_id"
+    t.index ["worker_id"], name: "index_assignments_on_worker_id"
   end
 
   create_table "autoform_results", force: :cascade do |t|
@@ -44,13 +53,38 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "admin_id"
+    t.integer "crm_id"
     t.integer "user_id"
     t.datetime "latest_confirmed_time"
+    t.integer "contract_id"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
+    t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id", "created_at"], name: "index_calls_on_customer_id_and_created_at"
     t.index ["customer_id"], name: "index_calls_on_customer_id"
+    t.index ["statu"], name: "index_calls_on_statu"
     t.index ["user_id", "latest_confirmed_time", "time"], name: "index_calls_on_user_id_and_latest_confirmed_time_and_time"
     t.index ["user_id"], name: "index_calls_on_user_id"
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "industry"
+    t.index ["email"], name: "index_clients_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_clients_on_reset_password_token", unique: true
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.integer "crm_id"
+    t.string "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm_id"], name: "index_comments_on_crm_id"
   end
 
   create_table "contact_trackings", force: :cascade do |t|
@@ -77,29 +111,20 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.index ["worker_id"], name: "index_contact_trackings_on_worker_id"
   end
 
-  create_table "contracts", force: :cascade do |t|
+  create_table "contacts", force: :cascade do |t|
     t.string "company"
-    t.string "service"
-    t.string "search_1"
-    t.string "target_1"
-    t.string "search_2"
-    t.string "target_2"
-    t.string "search_3"
-    t.string "target_3"
-    t.string "slack_account"
-    t.string "slack_id"
-    t.string "slack_password"
-    t.string "area"
-    t.string "sales"
-    t.string "calender"
-    t.string "other"
+    t.string "name"
+    t.string "tel"
+    t.string "address"
+    t.string "email"
+    t.string "subject"
+    t.string "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "price"
-    t.string "upper"
-    t.string "payment"
-    t.string "statu"
   end
+
+# Could not dump table "contracts" because of following StandardError
+#   Unknown type 'jsonb' for column 'search'
 
   create_table "counts", force: :cascade do |t|
     t.string "company"
@@ -113,6 +138,51 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_counts_on_customer_id"
     t.index ["sender_id"], name: "index_counts_on_sender_id"
+  end
+
+  create_table "crms", force: :cascade do |t|
+    t.string "company"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "first_kana"
+    t.string "last_kana"
+    t.string "tel"
+    t.string "mobile"
+    t.string "fax"
+    t.string "mail"
+    t.string "postnumber"
+    t.string "prefecture"
+    t.string "city"
+    t.string "town"
+    t.string "building"
+    t.string "item"
+    t.string "statu"
+    t.string "price"
+    t.string "number"
+    t.string "history"
+    t.string "area"
+    t.string "target"
+    t.string "next"
+    t.string "content"
+    t.string "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "date_time"
+  end
+
+  create_table "crowdworks", force: :cascade do |t|
+    t.string "title"
+    t.string "sheet"
+    t.string "tab"
+    t.string "area"
+    t.string "business"
+    t.string "genre"
+    t.string "bad"
+    t.string "attention"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "worker_id"
+    t.index ["worker_id"], name: "index_crowdworks_on_worker_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -137,7 +207,7 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "choice"
+    t.string "memo_5"
     t.string "title"
     t.string "other"
     t.string "url_2"
@@ -149,6 +219,8 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.string "area"
     t.string "target"
     t.date "start"
+    t.string "choice"
+    t.string "sfa_statu"
     t.string "contact_url"
     t.string "meeting"
     t.string "experience"
@@ -160,6 +232,15 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.string "customers_code"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
+  end
+
+  create_table "customers_search_orders", force: :cascade do |t|
+    t.integer "admin_id"
+    t.integer "customer_id"
+    t.integer "prev_customer_id"
+    t.integer "next_customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "direct_mail_contact_trackings", force: :cascade do |t|
@@ -179,6 +260,33 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.index ["sender_id"], name: "index_direct_mail_contact_trackings_on_sender_id"
     t.index ["user_id"], name: "index_direct_mail_contact_trackings_on_user_id"
     t.index ["worker_id"], name: "index_direct_mail_contact_trackings_on_worker_id"
+  end
+
+  create_table "estimates", force: :cascade do |t|
+    t.integer "customer_id"
+    t.string "title"
+    t.string "status"
+    t.string "deadline"
+    t.string "payment"
+    t.string "subject"
+    t.string "item1"
+    t.string "item2"
+    t.string "item3"
+    t.string "item4"
+    t.string "item5"
+    t.string "price1"
+    t.string "price2"
+    t.string "price3"
+    t.string "price4"
+    t.string "price5"
+    t.string "quantity1"
+    t.string "quantity2"
+    t.string "quantity3"
+    t.string "quantity4"
+    t.string "quantity5"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_estimates_on_customer_id"
   end
 
   create_table "images", force: :cascade do |t|
@@ -228,6 +336,37 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.index ["contract_id"], name: "index_knowledges_on_contract_id"
   end
 
+  create_table "lists", force: :cascade do |t|
+    t.integer "worker_id"
+    t.string "number"
+    t.string "url"
+    t.string "check_1"
+    t.string "check_2"
+    t.string "check_3"
+    t.string "check_4"
+    t.string "check_5"
+    t.string "check_6"
+    t.string "check_7"
+    t.string "check_8"
+    t.string "check_9"
+    t.string "check_10"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["worker_id"], name: "index_lists_on_worker_id"
+  end
+
+  create_table "matters", force: :cascade do |t|
+    t.string "sheets"
+    t.string "tab"
+    t.string "area"
+    t.string "business"
+    t.string "scale"
+    t.string "warning"
+    t.string "other"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "ng_customers", force: :cascade do |t|
     t.integer "customer_id", null: false
     t.integer "inquiry_id", null: false
@@ -236,6 +375,17 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.datetime "updated_at", null: false
     t.integer "admin_id"
     t.index ["admin_id"], name: "index_ng_customers_on_admin_id"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.string "title"
+    t.string "file"
+    t.string "choice"
+    t.string "keyword"
+    t.string "description"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "pynotifies", force: :cascade do |t|
@@ -247,10 +397,65 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.datetime "sended_at"
   end
 
+  create_table "recruits", force: :cascade do |t|
+    t.string "name"
+    t.string "age"
+    t.string "email"
+    t.string "experience"
+    t.string "voice_data"
+    t.string "year"
+    t.string "commodity"
+    t.string "hope"
+    t.string "period"
+    t.string "pc"
+    t.string "start"
+    t.text "encoded_voice_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "tel"
+    t.string "agree_1"
+    t.string "agree_2"
+    t.string "emergency_name"
+    t.string "emergency_relationship"
+    t.string "emergency_tel"
+    t.string "identification"
+    t.string "bank"
+    t.string "branch"
+    t.string "bank_number"
+    t.string "bank_name"
+  end
+
+  create_table "scripts", force: :cascade do |t|
+    t.string "company"
+    t.string "name"
+    t.string "tel"
+    t.string "address"
+    t.string "front_talk"
+    t.string "first_talk"
+    t.string "introduction"
+    t.string "hearing_1"
+    t.string "hearing_2"
+    t.string "hearing_3"
+    t.string "hearing_4"
+    t.string "closing"
+    t.string "requirement"
+    t.string "price"
+    t.string "experience"
+    t.string "refund"
+    t.string "usp"
+    t.string "other_receive_1"
+    t.string "other_receive_2"
+    t.string "other_receive_3"
+    t.string "remarks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "senders", force: :cascade do |t|
     t.string "user_name", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.string "select"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -260,6 +465,20 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.integer "default_inquiry_id"
     t.index ["email"], name: "index_senders_on_email", unique: true
     t.index ["reset_password_token"], name: "index_senders_on_reset_password_token", unique: true
+  end
+
+  create_table "skillsheets", force: :cascade do |t|
+    t.string "name"
+    t.string "tel"
+    t.string "mail"
+    t.string "address"
+    t.string "age"
+    t.string "start"
+    t.string "experience"
+    t.string "history"
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "smartphone_logs", force: :cascade do |t|
@@ -272,6 +491,22 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.string "device_name", null: false
     t.string "token", null: false
     t.boolean "delete_flag", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "upload_data", force: :cascade do |t|
+    t.string "name"
+    t.string "file"
+    t.integer "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_upload_data_on_company_id"
+  end
+
+  create_table "upload_files", force: :cascade do |t|
+    t.string "name"
+    t.string "file"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -302,8 +537,36 @@ ActiveRecord::Schema.define(version: 20230507054112) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "select"
     t.index ["email"], name: "index_workers_on_email", unique: true
     t.index ["reset_password_token"], name: "index_workers_on_reset_password_token", unique: true
+  end
+
+  create_table "writers", force: :cascade do |t|
+    t.integer "worker_id"
+    t.string "title_1"
+    t.string "url_1"
+    t.string "title_2"
+    t.string "url_2"
+    t.string "title_3"
+    t.string "url_3"
+    t.string "title_4"
+    t.string "url_4"
+    t.string "title_5"
+    t.string "url_5"
+    t.string "title_6"
+    t.string "url_6"
+    t.string "title_7"
+    t.string "url_7"
+    t.string "title_8"
+    t.string "url_8"
+    t.string "title_9"
+    t.string "url_9"
+    t.string "title_10"
+    t.string "url_10"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["worker_id"], name: "index_writers_on_worker_id"
   end
 
 end

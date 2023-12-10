@@ -77,7 +77,7 @@ gem 'redis'
 gem 'redis-rails'
 gem 'pry-rails'
 
-gem 'bootstrap-sass'
+#gem 'bootstrap-sass'
 
 gem 'carrierwave'
 
@@ -117,6 +117,8 @@ gem 'active_hash'
 #グラフツール
 gem 'chartkick'
 
-gem 'zeroclipboard-rails'
-
 gem 'httparty'
+
+gem 'audiojs-rails'
+
+gem 'thinreports'

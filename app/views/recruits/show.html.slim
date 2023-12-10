@@ -1,0 +1,94 @@
+- set_meta_tags noindex: true
+
+.tops-wrapper
+
+  h2.heading  採用詳細ページ
+  table.company
+    colgroup
+     col width="10%"
+     col width="20%"
+     col width="70%"
+     tbody
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | お名前（フルネーム）
+        td = @recruit.name
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 年齢
+        td
+          = @recruit.age
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 電話番号
+        td
+          = @recruit.tel
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | メールアドレス
+        td
+          = @recruit.email
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 経験則
+        td
+          = @recruit.experience
+      tr
+          td
+            strong.label 必須
+          td.arrow_box
+            | 経験年数
+          td
+            = @recruit.year
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 経験商材
+        td
+          = @recruit.commodity
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 希望勤務日数
+        td
+          = @recruit.hope
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 希望期間
+        td
+          = @recruit.period
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | パソコンは保有していますか？
+        td
+          = @recruit.pc
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 音声データ貼り付け
+        td
+          = @recruit.voice_data
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 勤務開始希望日
+        td
+          = @recruit.start
