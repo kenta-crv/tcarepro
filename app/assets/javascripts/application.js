@@ -17,6 +17,7 @@
 //= require rails-ujs
 //= require turbolinks
 //= require jquery
+//= require audiojs
 //= require_tree .
 //
 
@@ -105,8 +106,66 @@ $(function() {
     }
   });
 
-  //= require zeroclipboard
+  
+  function calculateAnswer(userId) {
+    var inputVal = document.getElementById("input-" + userId).value;
+  
+    // Ajaxリクエストの送信
+    $.ajax({
+      url: "/path_to_your_controller_action", // コントローラのアクションへのパス
+      type: "GET",
+      data: { user_id: userId, input_val: inputVal },
+      dataType: "json",
+      success: function(data) {
+        // 計算結果を表示
+        document.getElementById("answer-" + userId).textContent = data.answer;
+        // 入力された数字を表示
+        document.getElementById("input-value-" + userId).textContent = inputVal;
+      }
+    });
+  }
 
-$(document).ready(function() {
-  var clip = new ZeroClipboard($("#d_clip_button"))
+
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("copy-button").addEventListener("click", function() {
+      var formContent = document.querySelector("form").innerText;
+      var tempTextArea = document.createElement("textarea");
+      tempTextArea.value = formContent;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempTextArea);
+      alert("コピーしました！");
+    });
+  });
+
+
+  javascript:
+      $(document).ready(function() {
+        $('#askButton').click(function() {
+          const question = $('#question').val();
+          $.ajax({
+            url: '/ask_gpt',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ question: question }),
+            success: function(data) {
+              $('#response').text(data.answer);
+            },
+            error: function(error) {
+              console.error('Error:', error);
+              $('#response').text('An error occurred');
+            }
+          });
+        });
+});
+
+$.ajax({
+  url: '/your_endpoint',
+  type: 'POST',
+  data: {
+    // 他のデータ
+    authenticity_token: $('meta[name="csrf-token"]').attr('content')
+  },
+  // その他のオプション
 });

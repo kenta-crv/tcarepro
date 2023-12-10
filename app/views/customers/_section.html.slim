@@ -1,0 +1,193 @@
+- set_meta_tags noindex: true
+table.header-table.space
+  tr
+    th
+      - if @prev_customer&.id
+        = link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: "prev btn btn-success"
+    th
+      label[for="check-auto-call" style="display:inline-block;margin-left:2em;margin-bottom:0;"]
+        input[type="checkbox" id="check-auto-call" checked=(@is_auto_call ? true : false)]
+        br
+        | 自動発信の場合チェック
+    th
+      = select_tag(:token, options_for_select(Smartphone.where(delete_flag: false).order(:id).all.collect { |o| [o.device_name, o.token] }), include_blank: '（選択してください）')
+      button#button-call[data-number=@customer.tel] 発信
+    th
+      - if @next_customer&.id
+        = link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: "prev btn btn-success"
+table.space[width="100%"]
+  col[width="10%"]
+  col[width="15%"]
+  col[width="10%"]
+  col[width="15%"]
+  col[width="10%"]
+  col[width="15%"]
+  col[width="10%"]
+  col[width="15%"]
+  tbody
+    tr
+      th[colspan="8"] 顧客情報（= link_to("編集", edit_customer_path, target: "_blank")）
+    tr
+      th 会社名
+      td = @customer.company
+      th 担当者
+      td = "#{@customer.first_name} #{@customer.last_name}"
+      th 電話番号
+      td = @customer.tel
+      th 携帯番号
+      td = @customer.mobile
+    tr
+      th 住所
+      td[colspan="3"] = "〒#{@customer.postnumber} #{@customer.address}"
+      th Mail
+      td = mail_to @customer.mail, @customer.mail&.truncate(30)
+      th URL
+      td = link_to @customer.url, @customer.url
+    tr
+      th 業種
+      td = @customer.business
+      th 事業内容
+      td = @customer.genre
+      th 流入元
+      td = @customer.inflow
+      th 代行履歴
+      td = @customer.history
+    tr
+      th エリア
+      td = @customer.area
+      th ターゲット
+      td = @customer.target
+      th 商談方法
+      td = @customer.meeting
+      th 経験則
+      td = @customer.experience
+    tr
+      th 料金
+      td = @customer.price
+      th 件数
+      td = @customer.number
+      th 開始時期
+      td = @customer.start
+      th メール送信
+      td = link_to "メール画面", "#"
+    tr
+      th 備考
+      td[colspan="6"] = @customer.remarks
+      td.center 
+        - contract_call_exists = @customer.calls.any? { |call| call.statu == "契約" }
+        - if contract_call_exists
+         = link_to '新規架電状況の登録', new_customer_contract_path(@customer), class: 'btn btn-success'
+
+
+
+= form_for([@customer, @call], url: customer_calls_path(customer_id: @customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)) do |f|
+  table.space
+    col[width="10%"]
+    col[width="10%"]
+    col[width="15%"]
+    col[width="10%"]
+    col[width="10%"]
+    col[width="45%"]
+    tbody
+      tr
+        th ステータス
+        td = f.select(:statu, Call.SfaStatus)
+        th 再コール日時
+        td = f.datetime_field :time
+        th コメント
+        td = f.text_area :comment
+      tr
+        th[colspan="6"] = f.submit
+- if @customer.calls.any?
+  table.space[width="100%"]
+    col[width="15%"]
+    col[width="8%"]
+    col[width="8%"]
+    col[width="10%"]
+    col[width="45%"]
+    col[width="7%"]
+    tbody
+      tr
+        th 日時
+        th 担当者
+        th ステータス
+        th 次回連絡日
+        th コメント
+        th 削除
+      - @customer.calls.includes([:admin, :user]).each do |call|
+        tr
+          td = call.created_at
+          td
+            = call.admin&.user_name
+            = call.user&.user_name
+          td = call.statu
+          td = call.time
+          td = call.comment
+          td
+            = link_to '編集', edit_customer_call_path(@customer, call), class: 'command'
+            = link_to '削除', customer_call_path(@customer, call), method: :delete, class: 'command', data: { confirm: '本当に削除しますか？'}
+
+
+javascript:
+  $(function() {
+    // 前回選択時の発信先を初期設定する
+    for (var cookie of document.cookie.split(';')) {
+      var keyValue = cookie.split('=');
+      if (keyValue[0] == 'token') {
+        $('select#token').val(keyValue[1]);
+      }
+    }
+
+    $('a.prev,a.next').on('click', function(event) {
+      var href = $(this).prop('href');
+      var s = href.split('?');
+      var url = s[0] + '/' + $('input#check-auto-call').prop('checked');
+      if (s.length > 1) {
+        url += '?' + s[1];
+      }
+      $(this).prop('href', url);
+    });
+
+    // 発信要求送信先端末選択時のイベント
+    $('select#token').on('change', function(event) {
+      var token = $(this).find('option:selected').val();
+      var isNotSelected = (token == '');
+      $(':button#button-call,:button#button-hang-up,input#check-auto-call').prop('disabled', isNotSelected);
+      if (!isNotSelected) {
+        document.cookie = 'token=' + token + ';max-age=' + (60 * 60 * 24 * 30);
+      }
+    }).triggerHandler('change');
+
+    // 「発信」ボタンクリック時のイベント
+    $(':button#button-call').on('click', function(event) {
+      var token = $('select#token').children(':selected').val();
+      var telephone = $(this).data('number').replace(/-/g, '');
+      $.ajax({
+        type: 'post',
+        url: 'https://fcm.googleapis.com/fcm/send',
+        headers: { Authorization: 'key=AAAAeBZ_DsA:APA91bHFa3RIOMEUyj-lYVOjU6AF60NZRxWkJZXvOSVZw8tUTYq2Rvb7a4CvUOV3XGi_Oc0ZS7HptHhXPeozTnlt1zaunIUXgwEJ6j3bYpVsQ10tHg9SqKUYnZLhVtBkGb1X0tvyxG8S' },
+        contentType: 'application/json',
+        data: JSON.stringify({ "to": token, "priority": "high", "time_to_live": 1, "data": { "telephone": telephone.replace(/-/g, ''), "date": new Date().getTime() } }),
+      })
+      .done((data, textStatus, jqXHR) => {
+        if (data.failure > 0) {
+          alert('発信先の端末が無効です。\n正しい端末が登録されているかご確認ください。\n\nエラー内容：' + data.results[0].error);
+        } else {
+          // nop
+        }
+        console.log('done', jqXHR.status);
+      })
+      .fail((jqXHR, textStatus, errorThrown) => {
+        alert('発信時にエラーが発生しました。\nシステム管理者にお問い合わせください。\n\nエラーコード：' + jqXHR.status);
+        console.log('fail', jqXHR.status);
+      })
+      .always(() => {
+        // nop
+      });
+    });
+
+    // 自動発信を行うかどうか
+    if (<%= @is_auto_call %>) {
+      $(':button#button-call').triggerHandler('click');
+    }
+  });

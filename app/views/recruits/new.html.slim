@@ -1,0 +1,130 @@
+- set_meta_tags noindex: true
+
+.tops-wrapper
+
+  h2.heading  採用依頼ページ
+  = form_for @recruit, html: { multipart: true } do |f|
+   - if @recruit.errors.any?
+    .alert.alert-warning.center
+      ul
+        - @recruit.errors.full_messages.each do |message|
+          li = message
+   table.company
+    colgroup
+     col width="10%"
+     col width="20%"
+     col width="70%"
+     tbody
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | お名前（フルネーム）
+        td = f.text_field :name
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 年齢
+        td
+          = f.number_field :age
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 電話番号
+        td
+          = f.text_field :tel
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | メールアドレス
+        td
+          = f.email_field :email
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 経験則
+        td
+          = f.select(:experience, [\
+          ["テレアポ発信経験","テレアポ発信経験"],\
+          ["テレアポ受信経験","テレアポ受信経験"],\
+          ["営業経験","営業経験"],\
+          ],include_blank: '選択してください')
+          br/
+          small  
+           |（未経験者は今回募集対象外となります。）
+      tr
+          td
+            strong.label 必須
+          td.arrow_box
+            | 経験年数
+          td
+            = f.text_field :year
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 経験商材
+        td
+          = f.text_field :commodity
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 希望勤務日数
+        td
+          = f.select(:hope, [\
+          ["週3・09:00~16:45（75分休憩）","週3・09:00~16:45（75分休憩）"],\
+          ["週4・09:00~16:45（75分休憩）","週4・09:00~16:45（75分休憩）"],\
+          ["週5・09:00~16:45（75分休憩）","週5・09:00~16:45（75分休憩）"],\
+          ["週4・09:00~15:00（60分休憩）","週4・09:00~15:00（60分休憩）"],\
+          ["週5・09:00~15:00（60分休憩）","週5・09:00~15:00（60分休憩）"],\
+          ],include_blank: '選択してください')
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 希望期間
+        td
+          = f.select(:period, [\
+          ["長期希望","長期希望"],\
+          ["短期希望","短期希望"],\
+          ],include_blank: '選択してください')
+          br/
+          small  
+           |（短期希望は募集対象外となります。）
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | パソコンは保有していますか？
+        td
+          = f.select(:pc, [\
+          ["はい","はい"],\
+          ["いいえ","いいえ"],\
+          ],include_blank: '選択してください')
+          br/
+          small  
+           |（いいえは募集対象外となります。）
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 音声データ貼り付け
+        td
+          = f.file_field :voice_data
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 勤務開始希望日
+        td
+          = f.date_field :start
+          br/
+      tr.center
+        td[colspan="3"] = f.submit '送信する'
+
+

@@ -1,45 +1,64 @@
 class ContractsController < ApplicationController
   before_action :authenticate_user!
   before_action :authenticate_admin!, only: [:edit, :new]
-    def index
-      @contracts = Contract.all
-    end
+  before_action :set_customer, only: [:new, :create, :edit, :update, :destroy]
+  before_action :set_contract, only: [:show, :edit, :update, :destroy]
 
-    def show
-      @contract = Contract.find(params[:id])
-    end
+  def index
+    @contracts = Contract.all
+  end
 
-    def new
-      @contract = Contract.new
-    end
+  def show
+  end
 
-    def create
-      @contract = Contract.new(contract_params)
-      if @contract.save
-        redirect_to contracts_path
-      else
-        render 'new'
-      end
-    end
+  def new
+    @contract = Contract.new
+  end
 
-    def edit
-      @contract = Contract.find(params[:id])
+  def create
+    @contract = @customer.contracts.new
+    @contract.search = {
+      keyword1: params[:contract][:search_keyword1],
+      keyword2: params[:contract][:search_keyword2]
+    }
+    @contract.target = {
+      target1: params[:contract][:target_target1],
+      target2: params[:contract][:target_target2]
+    }
+  
+    if @contract.save
+      redirect_to customer_contracts_path(@customer), notice: 'Contract was successfully created.'
+    else
+      render :new
     end
+  end
 
-    def destroy
-      @contract = Contract.find(params[:id])
-      @contract.destroy
-       redirect_to contracts_path
-    end
+  def edit
+  end
 
-    def update
-      @contract = Contract.find(params[:id])
-      if @contract.update(contract_params)
-        redirect_to contracts_path
-      else
-        render 'edit'
-      end
+  def update
+    if @contract.update(contract_params)
+      redirect_to customer_contracts_path(@customer), notice: 'Contract was successfully updated.'
+    else
+      render :edit
     end
+  end
+
+  def destroy
+    @contract.destroy
+    redirect_to customer_contracts_path(@customer), notice: 'Contract was successfully destroyed.'
+  end
+
+  private
+
+  def set_customer
+    @customer = Customer.find(params[:customer_id])
+  end
+
+  def set_contract
+    @contract = Contract.find_by(id: params[:id])
+    redirect_to customer_contracts_path(@customer), alert: 'Contract not found.' unless @contract
+  end
 
     private
     def contract_params
@@ -62,7 +81,9 @@ class ContractsController < ApplicationController
         :price,
         :upper,
         :payment,
-        :statu
+        :statu,
+        search: {},
+        target: {},
         )
     end
 end

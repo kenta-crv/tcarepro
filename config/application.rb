@@ -33,15 +33,16 @@ module Smart
     # Thinreports
     config.autoload_paths += %W(#{config.root}/app/reports)
 
+
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
-      address: ENV['SMTP_ADDRESS'],
-      domain: 'mail@tcare.pro',
-      port: 587,
-      user_name: ENV['SMTP_USER_NAME'],
-      password: ENV['SMTP_PASSWORD'],
-      authentication: 'plain',
-      enable_starttls_auto: true
+    address: 'smtp3.gmoserver.jp',
+    domain: 'ri-plus.jp',
+    port: 587,
+    user_name: 'recruit@ri-plus.jp',
+    password: 'yL4meDV#q',
+    authentication: 'plain',
+    enable_starttls_auto: true
     }
 
     Dotenv::Railtie.load

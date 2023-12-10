@@ -12,7 +12,6 @@ class OkuriteController < ApplicationController
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
 
-
   def show
     @customer = Customer.find(params[:id])
   end
@@ -98,6 +97,7 @@ class OkuriteController < ApplicationController
     Rails.logger.info( "count : " + params[:count].to_s)
     @q = Customer.ransack(params[:q])
     @customers = @q.result.distinct
+    @customers = @customers.where.not("url LIKE ? OR url_2 LIKE ?", "%xn--pckua2a7gp15o89zb.com%", "%indeed.com/%")
     save_cont = 0
     @sender = Sender.find(params[:sender_id])
     Rails.logger.info( "@sender : " + @sender.attributes.inspect)
@@ -130,7 +130,10 @@ class OkuriteController < ApplicationController
   def set_customers
     @q = Customer.ransack(params[:q])
     @customers = @q.result.distinct
-
+  
+    # URLの条件を追加
+    @customers = @customers.where.not("url LIKE ? OR url_2 LIKE ?", "%xn--pckua2a7gp15o89zb.com%", "%indeed.com/%")
+  
     if params[:statuses]&.map(&:presence)&.compact.present?
       @customers = @customers.last_contact_trackings(@sender.id, params[:statuses])
     end

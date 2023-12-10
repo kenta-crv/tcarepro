@@ -1,6 +1,33 @@
 class WorkersController < ApplicationController
   def show
+   #リスト制作
     @worker = Worker.find(params[:id])
+    #リストカウント
+    @lists = @worker.lists
+    # 1日のnumber数
+    @daily_number = @worker.lists.where(created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).sum(:number)
+    # 今週のnumber数
+    @weekly_number = @worker.lists.where(created_at: Time.zone.now.beginning_of_week..Time.zone.now.end_of_week).sum(:number)
+    # 今月のnumber数
+    @monthly_number = @worker.lists.where(created_at: Time.zone.now.beginning_of_month..Time.zone.now.end_of_month).sum(:number)
+    # 先月のnumber数
+    @last_month_number = @worker.lists.where(created_at: Time.zone.now.last_month.beginning_of_month..Time.zone.now.last_month.end_of_month).sum(:number)
+    # トータルのnumber数
+    @total_number = @worker.lists.sum(:number)
+  
+   #ライター制作
+   @worker = Worker.find(params[:id])
+   @writers = @worker.writers
+
+   @assigned_crowdworks = @worker.crowdworks
+
+   # 各期間のtitle_数を設定
+   @daily_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.now.beginning_of_day, Time.zone.now.end_of_day)
+   @weekly_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.now.beginning_of_week, Time.zone.now.end_of_week)
+   @monthly_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.now.beginning_of_month, Time.zone.now.end_of_month)
+   @last_month_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.now.last_month.beginning_of_month, Time.zone.now.last_month.end_of_month)
+   @total_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.at(0), Time.zone.now)
+
     @customers = Customer&.where(worker_id: current_worker.id)
     @count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
     @count_week = @customers.where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?',Time.current.end_of_week).count
@@ -26,5 +53,54 @@ class WorkersController < ApplicationController
     @send_count_day = @contact_trackings_day.count
 
     @send_count_week = @contact_trackings_week.count
+  end
+
+  def upload
+    @worker = Worker.find(params[:id])
+    if params[:file].present?
+      uploaded_file = params[:file]
+      upload_count = process_uploaded_file(uploaded_file)
+      session[:upload_results] = upload_count
+    else
+      session[:upload_results] = nil
+    end
+    redirect_to confirm_worker_path(@worker)
+  end
+
+  def confirm
+    @worker = Worker.find(params[:id])
+    @upload_results = session[:upload_results] || "結果がありません"
+    # セッションをクリアする
+    session.delete(:upload_results)
+  end
+
+  def import_customers
+    cnt = Worker.import_customers(params[:file])
+    redirect_to some_path, notice: "#{cnt}件のデータをCustomerにインポートしました。"
+  end
+
+  private
+
+  def process_uploaded_file(uploaded_file)
+    # ファイルを一時的に保存する
+    file_path = Rails.root.join('tmp', uploaded_file.original_filename)
+    File.open(file_path, 'wb') do |file|
+      file.write(uploaded_file.read)
+    end
+  
+    # CSVファイルを解析して件数をカウント
+    count = 0
+    CSV.foreach(file_path, headers: true) do |row|
+      # ここで各行（各データ）に対する処理を行う
+      # 例: row['カラム名'] でデータにアクセスし、何かしらの処理を行う
+      # ...
+  
+      count += 1  # 行をカウント
+    end
+  
+    # 一時ファイルを削除
+    File.delete(file_path)
+  
+    count  # 処理したデータの件数を返す
   end
 end

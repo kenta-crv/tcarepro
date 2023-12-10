@@ -1,0 +1,93 @@
+.tops-wrapper
+ h2.headline 
+  = @script.company
+  | トークスクリプト
+ .row 
+  .col-7
+    table[width="90%"]
+     tbody
+      tr
+        th.arrow_box フロントトーク
+      tr
+        td.center  = @script.front_talk
+      tr
+        th.arrow_box フロントトーク
+      tr
+        td.center  = @script.first_talk
+      tr
+        th.arrow_box イントロダクション
+      tr
+        td.center  = @script.introduction
+      tr
+        th.arrow_box ヒアリング①
+      tr
+        td.center  = @script.hearing_1
+      tr
+        th.arrow_box ヒアリング②
+      tr
+        td.center  = @script.hearing_2
+      tr
+        th.arrow_box ヒアリング③
+      tr
+        td.center  = @script.hearing_3
+      tr
+        th.arrow_box クロージング
+      tr
+        td.center  = @script.closing
+  .col-5
+    table[width="90%"]
+     tbody
+      tr
+        th.arrow_box 要件
+      tr
+        td.center  = @script.requirement
+      tr
+        th.arrow_box 料金
+      tr
+        td.center  = @script.price
+      tr
+        th.arrow_box 経験則
+      tr
+        td.center  = @script.experience
+      tr
+        th.arrow_box 返金規定
+      tr
+        td.center  = @script.refund
+      tr
+        th.arrow_box 強み
+      tr
+        td.center  = @script.usp
+      tr
+        th.arrow_box その他
+      tr
+        td.center  = @script.other_receive_1
+      tr
+        th.arrow_box その他
+      tr
+        td.center  = @script.other_receive_2
+      tr
+        th.arrow_box その他
+      tr
+        td.center  = @script.other_receive_3
+ h2.headline 
+  | 企業情報
+ table[width="90%"]
+     tbody
+      col[width="20%"]
+      col[width="30%"]
+      col[width="20%"]
+      col[width="30%"]
+      tr
+        th.arrow_box 会社名
+        td.center = @script.company
+        th.arrow_box 担当者名
+        td.center = @script.name
+      tr
+        th.arrow_box 電話番号
+        td.center = @script.tel
+        th.arrow_box 住所
+        td.center = @script.address
+      tr
+        th.arrow_box 備考
+        td[colspan="3"]
+         = @script.remarks

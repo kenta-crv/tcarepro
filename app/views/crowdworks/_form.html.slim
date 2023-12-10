@@ -1,0 +1,11 @@
+= form_for @crowdwork do |f|
+  = f.label :title
+  = f.text_field :title
+
+
+  - Worker.where(select: "リスト制作").each do |worker|
+    = check_box_tag "worker_ids[]", worker.id, @crowdwork.workers.include?(worker)
+    = label_tag "worker_ids_#{worker.id}", worker.user_name
+    br
+
+  = f.submit

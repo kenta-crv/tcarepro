@@ -18,6 +18,6 @@
         td
           = contract.updated_at.strftime("%Y年%m月%d日 %H時%M分")
         td
-          = link_to '編集', edit_contract_path(contract), class: 'command'
-          = link_to '削除',
-          -                        contract_path(contract),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}
+          - if contract.customer
+           = link_to '編集', edit_customer_contract_path(contract.customer, contract), class: 'btn btn-success'
+           = link_to '削除', customer_contract_path(contract.customer, contract), class: 'btn btn-danger'

@@ -10,6 +10,13 @@
     = @customers.page(1).per(100).total_count
     | 件中
     | )
+    button.btn.btn-success.btn-md[data-toggle="modal" data-target="#searchNew"]
+               |  新規検索
+    button.btn.btn-success.btn-md[data-toggle="modal" data-target="#searchOnce"]
+               |  不在検索
+    button.btn.btn-success.btn-md[data-toggle="modal" data-target="#searchRe"]
+               |  再掲載検索
+    = link_to "案件一覧", "/contracts", class:"btn btn-success"
 
 = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
  .scroll
@@ -142,6 +149,7 @@
                   | 最終コール状態
                 td
                   = select_tag "last_call[statu]",options_for_select( [""] + Call.StatuItems, @last_call_params[:statu]), multiple: true, class: "form-control"
+
               tr
                 th
                   | 見込コール日時（最初）
@@ -172,6 +180,7 @@
                 td
                   #created_at_to_datetimepicker.input-group.date
                     = date_field_tag "last_call[created_at_to]", @last_call_params[:created_at_to], class: "form-control"
+
                     span.input-group-addon
                       span.glyphicon.glyphicon-calendar
               tr
@@ -195,6 +204,115 @@
               tr
                 th[colspan="4"]
                   = f.submit '検索'
+
+#searchNew.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = search_form_for @q do |f|
+          table.space[width="90%"]
+            col[width="20%"]
+            col[width="30%"]
+            col[width="20%"]
+            col[width="30%"]
+            tbody
+              tr
+                th[colspan="4"]
+                  | 新規検索
+              tr
+                th
+                  | 検索条件
+                td
+                  = f.search_field :industry_cont, type: "text", placeholder: "入力してください"
+
+                th
+                  | 未コール
+                td
+                  = f.search_field :calls_id_null, type: 'checkbox', value: 'true', checked: 'checked'
+              tr
+                th[colspan="4"]
+                  = f.submit '検索'
+
+#searchOnce.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = search_form_for @q do |f|
+          table.space[width="90%"]
+            col[width="20%"]
+            col[width="30%"]
+            col[width="20%"]
+            col[width="30%"]
+            tbody
+              tr
+                th[colspan="4"]
+                  | 不在・着信留守検索
+              tr
+                th
+                  | 検索条件
+                td
+                  = f.search_field :industry_cont, type: "text", placeholder: "入力してください"
+
+              tr
+                th
+                  | 架電回数
+                td
+                  = f.number_field :ltec_calls_count, value: 2, class: 'form-control'
+                th
+                  | 最終コール状態
+                td
+                  = select_tag "last_call[statu]", options_for_select(Call.StatuItems, ['着信留守', '担当者不在']), multiple: true, class: "form-control"
+              tr
+                th
+                  | 最終インポート日時（最初）
+                td
+                  = f.date_field :created_at_gteq, value: (Date.current - 1.month).to_s, class: 'date-picker form-control'
+                th
+                  | 最終コール日時（最後）
+                td
+                  = date_field_tag "last_call[created_at_to]", @last_call_params[:created_at_to] || Date.current, class: "form-control"
+              tr
+                th[colspan="4"]
+                  = f.submit '検索'
+
+#searchRe.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = search_form_for @q do |f|
+          table.space[width="90%"]
+            col[width="20%"]
+            col[width="30%"]
+            col[width="20%"]
+            col[width="30%"]
+            tbody
+              tr
+                th[colspan="4"]
+                  | 再掲載検索
+              tr
+                th
+                  | 検索条件
+                td
+                  = f.search_field :industry_cont, type: "text", placeholder: "入力してください"
+                th
+                  | 最終コール状態
+                td
+                  = select_tag "last_call[statu]", options_for_select([""] + Call.StatuItems, ['再掲載']), multiple: true, class: "form-control"
+
+              tr
+                th[colspan="4"]
+                  = f.submit '検索'
+
+
         br
 .heading
   h2

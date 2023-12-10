@@ -1,0 +1,22 @@
+  br
+  br
+  table.company
+   tr
+     th 案件名
+     th 割当状況
+     - if admin_signed_in? 
+      th 編集 | 削除
+   - @crowdworks.each do |crowdwork|
+    tr
+     td
+      = link_to crowdwork.title, crowdwork_path(crowdwork)
+     td
+          ul
+            - crowdwork.workers.each do |worker|
+              li = worker.user_name
+     td
+      - if admin_signed_in?
+       = link_to "編集", edit_crowdwork_path(crowdwork) , class:"btn btn-success"
+       = link_to "削除", crowdwork_path(crowdwork) ,method: :delete,  data: { confirm: '本当に削除しますか？'}, class:"btn btn-success"
+      br
+  = paginate(@crowdworks)
