@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'info@tcare.co.jp'
+  default from: 'recruit@ri-plus.jp'
   layout 'mailer'
 end

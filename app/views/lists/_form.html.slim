@@ -1,0 +1,100 @@
+= form_with(model: @list, url: @list.new_record? ? worker_lists_path(@worker) : worker_list_path(@worker, @list), local: true) do |f|
+  - if @list.errors.any?
+    .alert.alert-warning.center
+      ul
+        - @list.errors.full_messages.each do |message|
+          li = message
+  table.company
+   colgroup
+     col width="10%"
+     col width="20%"
+     col width="70%"
+     tbody
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 電話番号抽出件数
+        td
+          = f.number_field :number
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | スプレッドシートURL
+        td
+          = f.url_field :url
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_1
+        td
+          | 抽出エリアは_____○県_____で指定に基づいて行いましたか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_2
+        td
+          | 電話番号は(00-0000-0000)の形式のみ、また0120や携帯番号は抽出していませんか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_3
+        td
+          | 住所は全て都道府県から明記していますか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_4
+        td
+          | 重複して同じ電話番号や会社名を抽出していませんか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_5
+        td
+          | 電話番号を抽出していないのにも関わらず、件数カウントをしていませんか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_6
+        td
+          | 電話番号を抽出していないにも関わらず、会社名を抽出していませんか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_7
+        td
+          | 業種は________を抽出していますか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_8
+        td
+          | 職種の記載は_________を記載していますか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_9
+        td
+          | 業種は________を抽出していますか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = f.check_box :check_10
+        td
+          | 週最低150件に向けて本日は業務を終了して問題ないですか？
+      tr.center
+        td[colspan="3"] = f.submit '報告する', class:"btn btn-success"
+
+

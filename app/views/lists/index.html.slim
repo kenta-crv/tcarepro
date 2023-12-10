@@ -1,0 +1,24 @@
+  br
+  br
+  table.company
+   tr
+     th ワーカー名
+     th 案件名
+     th スプレッドシートURL
+     - if admin_signed_in? 
+      th 編集 | 削除
+   - @lists.each do |list|
+    tr
+     td
+      = list_to list.number, list_path(list)
+      td
+      = list_to list.number, list_path(list)
+      td
+      = list_to "スプレッドシートURL" , list.url, class:"btn btn-suceess"
+     td
+      - if admin_signed_in?
+       = list_to "編集", edit_list_path(list) , class:"btn btn-success"
+       = list_to "削除", list_path(list) ,method: :delete,  data: { confirm: '本当に削除しますか？'}, class:"btn btn-success"
+      br
+  = paginate(@lists)
+

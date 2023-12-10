@@ -1,4 +1,4 @@
-= form_for @contract do |f|
+= form_with model: [@customer, @contract], url: @contract.new_record? ? customer_contracts_path(@customer) : customer_contract_path(@customer, @contract) do |f|
 
   table[width="90%"]
      tbody
@@ -23,19 +23,19 @@
      col[width="35%"]
       tr
         th.arrow_box 検索条件①
-        td.center  = f.text_field :search_1
+        td.center  = f.text_field :search
         th.arrow_box ターゲット①
-        td.center  = f.text_field :target_1
+        td.center  = f.text_field :target
       tr
         th.arrow_box 検索条件②
-        td.center  = f.text_field :search_2
+        td.center = f.text_field :search, name: 'contract[search][keyword1]'
         th.arrow_box ターゲット②
-        td.center  = f.text_field :target_2
+        td.center  = f.text_field :target, name: 'contract[target][target1]'
       tr
         th.arrow_box 検索条件③
-        td.center  = f.text_field :search_3
+        td.center = f.text_field :search, name: 'contract[search][keyword1]'
         th.arrow_box ターゲット③
-        td.center  = f.text_field :target_3
+        td.center  = f.text_field :target, name: 'contract[target][target1]'
   br
   br
   table[width="90%"]

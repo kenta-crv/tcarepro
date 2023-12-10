@@ -1,0 +1,73 @@
+.tops-wrapper
+  h2.heading  案件詳細ページ
+table.company
+   colgroup
+     col width="10%"
+     col width="20%"
+     col width="70%"
+     tbody
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 業務名
+        td = @crowdwork.title
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 割当
+        td 
+          ul
+           - @crowdwork.workers.each do |worker|
+            li = worker.user_name
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | シート名
+        td
+          = @crowdwork.sheet
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | タブ名
+        td
+          = @crowdwork.tab
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | エリア
+        td
+          = @crowdwork.area
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 抽出可能業種
+        td
+          = @crowdwork.business
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 抽出可能職種
+        td
+          = @crowdwork.genre
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 抽出不可
+        td
+          = @crowdwork.business
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 注意点
+        td
+          = @crowdwork.attention
+      

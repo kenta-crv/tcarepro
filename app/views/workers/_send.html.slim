@@ -1,0 +1,72 @@
+.info-wrapper
+ h2.headline
+      | メール実施件数
+ br/
+ br/
+ table[width="90%"  class="header-table space"]
+      colgroup
+      tr
+        th 月間送信完了件数
+        th 月間送信不可件数
+        th 月間営業NG件数
+        th 月間送信成功率
+        th 一日の送信数
+        th 直近一週間の送信数
+        th 先月の月間送信成功率
+      tr
+        td = @send_success_count_month
+        td = @send_error_count_month
+        td = @send_ng_count_month
+        td = number_to_percentage(@send_success_count_month.to_f / @contact_trackings_month.count.to_f * 100, precision: 1)
+        td = @send_success_count_day
+        td = @send_success_count_week
+        td = @send_success_count_before_month
+ h2.headline
+   .red
+    | ※送信フロー【初回業務者必見】
+ br/
+ h3.caption
+  | 1.デスクトップ検索で『ターミナル』を検索し、以下のコマンドを叩く
+ h4.caption【Mac】
+ .box open -na Google\ Chrome --args --user-data-dir=/tmp/okurite --disable-web-security --disable-site-isolation-trials
+   br/
+ h4.caption【Windows】
+ .box start chrome --user-data-dir=D://temp --disable-web-security --disable-site-isolation-trials
+ br
+ p もしくは
+ .box start chrome --user-data-dir=%tmp% --disable-web-security --disable-site-isolation-trials
+ br/
+ .check 当コマンドを叩くことでgoogle chromeが立ち上がります。
+ .check 問い合わせフォーム送信作業の際、AIが自動で文面を入力します。
+ .check 当コマンドを入力しない場合、手動で送信をお願いします。
+ .check WinPCの場合、PowerShellではなく、コマンドプロンプトにてお試しくださいませ。
+ br/
+ br/
+ h3.caption 2.指定された企業と指定されたページに送信を開始してください
+ br/
+ .check
+   | 登録後、3営業日以内に送信作業URLとページ数を登録メールアドレス宛にお送りします。
+ br/
+ br/
+ h3.caption.red  注意点
+ br/
+ .check 情報は自動入力されますが、入力されない情報もあります。その場合、手動で追加し送信作業を行ってください。
+ .check 右メインに画面が表示されない、または問い合わせフォーム以外が表示される場合、Googleで再検索より自動で検索を行ってください。
+ .check 送信可否は必ずステータスの入力をお願いします。確定すると、次のページへ遷移します。
+ .check 次へを使用する場合は、送信対象外が含まれており、送信作業をしない場合のみです。それ以外では絶対使用しないでください。
+ .check 送信状況は、当マイページより確認できます。
+ br/
+ br/
+ h3.caption 支払いができない場合
+ br/
+ .check 指定箇所以外の送信・指定検索以外の送信・送信済を選択しない作業を行った場合
+ .check また、送信できなかった場合に、送信不可を選択されない場合
+ .check ID・PASSが分からなくなったために件数が把握できない場合
+ br/
+ br/
+ h3.caption 支払いができない場合
+ br/
+ .center
+   iframe width="560" height="315" src="https://www.youtube.com/embed/xjUg9nElRmk?si=i5XcgpM1V_aPaIFq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+
+

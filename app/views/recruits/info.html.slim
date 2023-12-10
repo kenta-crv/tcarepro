@@ -1,0 +1,25 @@
+br
+ .tops-wrapper
+    h2.headline
+     | 音声面接についてのご案内
+    p.center この度は当社求人にご応募いただき、誠にありがとうございます。当社では、完全リモート化・自動化を推進している企業となり、面接は非対面で完了します。以下に実施フローをご案内しますので参照下さいませ。（必ずPCより操作をお願いします。）
+    h3.headline 
+     | ❶研修用トークスクリプトを開く
+    p.text 
+     | 以下をクリック頂き、研修用トークスクリプトを開いて下さい。
+     br/
+     .center 
+      = link_to "トークスクリプトをダウンロード", "/uploads/pdf/tranning.pdf", class:"btn btn-success"
+    h3.headline 
+     | ❷録音サイトで録音開始
+    p.text 
+     | 以下のサイトへアクセスお願い致します。録音ボタンをクリックし、❶で開いたトークスクリプトを実際にロールプレイング形式でお話し頂きます。完了しましたら停止頂き、録音をPCにダウンロードします。
+     br/
+     .center 
+      = link_to "録音サイト", "https://online-voice-recorder.com/ja/", class:"btn btn-success"
+    h3.headline 
+     | ❸音声面接ページへ貼り付け
+    p.text 
+     | 以下ボタンをクリックすると、音声面接申し込みページへ遷移します。必要情報を入力頂き、先ほどダウンロードしたmp3形式の音声ファイルを貼り付けし、送信を行なってください。
+    .center 
+     = link_to "開始する", new_recruit_path, class:"btn btn-success"

@@ -1,0 +1,75 @@
+= form_with(model: @writer, url: @writer.new_record? ? worker_writers_path(@worker) : worker_writer_path(@worker, @writer), local: true) do |f|
+  - if @writer.errors.any?
+    .alert.alert-warning.center
+      ul
+        - @writer.errors.full_messages.each do |message|
+          li = message
+  table.company
+   colgroup
+     col width="50%"
+     col width="50%"
+   tbody
+      tr
+        th.arrow_box
+          | 案件タイトル
+        th
+          | 案件URL
+  table.company
+   colgroup
+     col width="30%"
+     col width="70%"
+     tbody
+      tr
+        td
+          = f.text_field :title_1
+        td
+          = f.url_field :url_1
+      tr
+        td
+          = f.text_field :title_2
+        td
+          = f.url_field :url_2
+      tr
+        td
+          = f.text_field :title_3
+        td
+          = f.url_field :url_3
+      tr
+        td
+          = f.text_field :title_4
+        td
+          = f.url_field :url_4
+      tr
+        td
+          = f.text_field :title_5
+        td
+          = f.url_field :url_5
+      tr
+        td
+          = f.text_field :title_6
+        td
+          = f.url_field :url_6
+      tr
+        td
+          = f.text_field :title_7
+        td
+          = f.url_field :url_7
+      tr
+        td
+          = f.text_field :title_8
+        td
+          = f.url_field :url_8
+      tr
+        td
+          = f.text_field :title_9
+        td
+          = f.url_field :url_9
+      tr
+        td
+          = f.text_field :title_10
+        td
+          = f.url_field :url_10
+      tr.center
+        td[colspan="2"] = f.submit '報告する', class:"btn btn-success"
+
+
