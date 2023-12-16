@@ -1,5 +1,5 @@
 def generate_pdf(data)
-  report = Thinreports::Report.new layout: 'path/to/your_template.tlf'
+  #report = Thinreports::Report.new layout: 'path/to/your_template.tlf'
 
   report.start_new_page do |page|
     # テンプレートの各フィールドにデータを埋め込む

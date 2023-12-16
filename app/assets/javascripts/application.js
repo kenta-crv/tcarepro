@@ -110,20 +110,6 @@ $(function() {
   function calculateAnswer(userId) {
     var inputVal = document.getElementById("input-" + userId).value;
   
-    // Ajaxリクエストの送信
-    $.ajax({
-      url: "/path_to_your_controller_action", // コントローラのアクションへのパス
-      type: "GET",
-      data: { user_id: userId, input_val: inputVal },
-      dataType: "json",
-      success: function(data) {
-        // 計算結果を表示
-        document.getElementById("answer-" + userId).textContent = data.answer;
-        // 入力された数字を表示
-        document.getElementById("input-value-" + userId).textContent = inputVal;
-      }
-    });
-  }
 
 
   document.addEventListener("DOMContentLoaded", function() {
@@ -158,14 +144,4 @@ $(function() {
             }
           });
         });
-});
-
-$.ajax({
-  url: '/your_endpoint',
-  type: 'POST',
-  data: {
-    // 他のデータ
-    authenticity_token: $('meta[name="csrf-token"]').attr('content')
-  },
-  // その他のオプション
 });

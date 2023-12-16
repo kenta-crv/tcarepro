@@ -69,7 +69,7 @@ class Call < ApplicationRecord
       lastRecords = self.where(customer_id: call.customer_id).order(created_at: :desc).limit(1)
       if !lastRecords.empty?
         lastRecord = lastRecords.first
-        next if ['APP', '永久NG', '根本的NG'].include?(lastRecord.status)
+        next if ['APP', '永久NG', '根本的NG'].include?(lastRecord.statu)
       else
         next if call.id.nil?
       end
