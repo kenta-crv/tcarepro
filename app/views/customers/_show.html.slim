@@ -2,31 +2,63 @@
 table.header-table.space
   tr
     th rowspan="2"
-      - if @prev_customer&.id
-        = link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: "prev btn btn-success"
-    th 総コール：= Call.call_count_today.count
-    th 平均コール：= Call.active_user_count == 0 ? 0 : Call.call_count_hour.count / Call.active_user_count
-    th 見込数：= Call.protect_count_today.count
-    th アポ数：= Call.app_count_today.count
-    th 見込率：= Call.protect_convertion.ceil(2)
-    th アポ率：= Call.app_convertion.ceil(2)
+     - if @prev_customer&.id
+      = link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: "prev btn btn-success"
+    th 
+     |総コール：
+     = Call.call_count_today.count
+    th 
+     |平均コール：
+     = Call.active_user_count == 0 ? 0 : Call.call_count_hour.count / Call.active_user_count
+    th 
+     |見込数：
+     = Call.protect_count_today.count
+    th 
+     |アポ数：
+     = Call.app_count_today.count
+    th 
+     |見込率：
+     = Call.protect_convertion.ceil(2)
+    th 
+     |アポ率：
+     = Call.app_convertion.ceil(2)
     th rowspan="2"
-      - if @next_customer&.id
-        = link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: "prev btn btn-success"
+     - if @next_customer&.id
+       = link_to "次へ", customer_path(id: @next_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: "prev btn btn-success"
   tr
     - if admin_signed_in?
-      th 自己コール：= current_admin.calls.count
-      th 不足コール：= -35 + current_admin.calls.count
-      th 総コール：= current_admin.calls.call_count_today.count
-      th アポ数：= current_admin.calls.call_count_today.where(statu: "APP").count
-      th アポ率：= number_to_percentage(current_admin.calls.call_count_today.count / current_admin.calls.app_count_today.count.to_f * 100 ,precision: 1 )
+      th 
+       |自己コール：
+       = current_admin.calls.count
+      th 
+       |不足コール：
+       = -35 + current_admin.calls.count
+      th 
+       |総コール：
+       = current_admin.calls.call_count_today.count
+      th 
+       |アポ数：
+       = current_admin.calls.call_count_today.where(statu: "APP").count
+      th 
+       アポ率：
+       = number_to_percentage(current_admin.calls.call_count_today.count / current_admin.calls.app_count_today.count.to_f * 100 ,precision: 1 )
       th
     - elsif user_signed_in?
-      th 自己コール：= current_user.calls.call_count_hour.count
-      th 不足コール：= -35 + current_user.calls.call_count_hour.count
-      th 総コール：= current_user.calls.call_count_today.count
-      th アポ数：= current_user.calls.app_count_today.count
-      th アポ率：= number_to_percentage(current_user.calls.call_count_today.count / current_user.calls.app_count_today.count.to_f * 100 ,precision: 1 )
+      th 
+       |自己コール：
+       = current_user.calls.call_count_hour.count
+      th 
+       |不足コール：
+       = -35 + current_user.calls.call_count_hour.count
+      th 
+       |総コール：
+       = current_user.calls.call_count_today.count
+      th 
+       |アポ数：
+       = current_user.calls.app_count_today.count
+      th 
+       |アポ率：
+       = number_to_percentage(current_user.calls.call_count_today.count / current_user.calls.app_count_today.count.to_f * 100 ,precision: 1 )
       th
 div.show-top
   div.two_column
@@ -37,7 +69,10 @@ div.show-top
       col[width="25%"]
       tbody
         tr
-          th[colspan="4"] 顧客情報（= link_to("編集", edit_customer_path, target: "_blank")）
+          th[colspan="4"] 
+           |顧客情報（
+           = link_to("編集", edit_customer_path, target: "_blank")
+           |）
         tr
           th 会社名
           td = @customer.company
@@ -54,7 +89,7 @@ div.show-top
           th
         tr
           th 住所
-          td[colspan="3"] = @customer.postnumber + @customer.address
+          td[colspan="3"] = @customer.address
         tr
           th タイトル
           td[colspan="3"] = @customer.title
