@@ -73,14 +73,6 @@ Rails.application.routes.draw do
   end
 
   resources :customers do
-  
-    resources :contracts, except: [:index, :show] do
-      resources :images, only: [:create, :destroy, :update, :download, :edit]
-      member do
-        get 'images/view'
-        get 'images/download/:id' => 'images#download' ,as: :images_pdf
-      end
-    end
     resources :calls
     collection do
       get :complete
@@ -95,7 +87,6 @@ Rails.application.routes.draw do
   get '/customers/:id/copy', to: 'customers#copy', as: 'copy_customer' # コピー機能のためのルート
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
   get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
-  resources :contracts, only: [:index, :show]
 
   #get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'
@@ -105,7 +96,6 @@ Rails.application.routes.draw do
     get '' => 'customers#information', as: :information #分析
   end
 
-  get '/path_to_your_controller_action', to: 'customers#calculate'
   get 'closing' => 'customers#closing' #締め
   get 'news' => 'customers#news' #インポート情報
   get 'extraction' => 'customers#extraction' #TCARE
@@ -113,6 +103,13 @@ Rails.application.routes.draw do
   get 'manuals' => 'manuals#index'
   get 'manuals/officework' => 'manuals#officework'
 
+  resources :contracts  do
+    resources :images, only: [:create, :destroy, :update, :download, :edit]
+    member do
+      get 'images/view'
+      get 'images/download/:id' => 'images#download' ,as: :images_pdf
+    end
+  end
 
   # エラー情報
   get 'pybot' => 'pybot_e_notify#index'
