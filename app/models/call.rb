@@ -3,14 +3,12 @@ class Call < ApplicationRecord
   belongs_to :admin, optional: true
   belongs_to :user, optional: true
   belongs_to :client, optional: true
-  belongs_to :contract
   scope :times_last_call, -> {
     last_time = "SELECT sub_call.customer_id, MAX(sub_call.time) as last_time FROM calls as sub_call GROUP BY sub_call.customer_id";
     joins(
       "INNER JOIN (#{last_time}) AS sub ON sub.customer_id = calls.customer_id AND sub.last_time = calls.time"
     ).group(:customer_id)
   }
-  
 
   scope :joins_last_call, -> {
     last_created_at = "SELECT sub_call.customer_id, MAX(sub_call.created_at) as last_created_at FROM calls as sub_call GROUP BY sub_call.customer_id";
@@ -50,36 +48,30 @@ class Call < ApplicationRecord
     where(created_at: from..to)
   }
 
-  scope :contracted, -> { where(statu: '契約') }
-  
-  def self.call_import(call_file)
-    save_cnt = 0
-    CSV.foreach(call_file.path, headers: true) do |row|
-      call = Call.find_by(id: row["id"]) || new
-      customer = Customer.find_by(tel: row["tel"])
-      call.attributes = row.to_hash.slice(*call_attributes)
-  
-      # Customerのindustryがインポートデータと一致するかチェック
-      next unless customer && customer.industry == row["industry"]
-  
-      call.customer_id = customer.id
-      # 直近2ヶ月以内にcallをcreated_atしていない
-      next if self.where(customer_id: call.customer_id).where("created_at > ?", Time.now - 2.month).count > 0
-  
-      lastRecords = self.where(customer_id: call.customer_id).order(created_at: :desc).limit(1)
-      if !lastRecords.empty?
-        lastRecord = lastRecords.first
-        next if ['APP', '永久NG', '根本的NG'].include?(lastRecord.statu)
-      else
-        next if call.id.nil?
+  #call_import
+    def  self.call_import(call_file)
+      save_cnt = 0
+      CSV.foreach(call_file.path, headers: true) do |row|
+        call = Call.find_by(id: row["id"]) || new
+        customer = Customer.find_by(tel: row["tel"])
+        call.attributes = row.to_hash.slice(*call_attributes)
+        call.customer_id = customer&.id
+        #直近１ヶ月以内にcallをcreated_atしていない
+        next if self.where(customer_id: call.customer.id).where("created_at > ?", Time.now - 2.month).count > 0
+        lastRecords = self.where(customer_id: call.customer.id).order(created_at: :desc).limit(1)
+        if !lastRecords.empty?
+            lastRecord = lastRecords.first()
+            next if ['APP', '永久NG', '根本的NG'].include?(lastRecord.statu)
+        else
+          next if call.id.nil?
+        end
+        #Callの最新のものでみる
+        call.save!
+        save_cnt += 1
       end
-      # Callの最新のもので見る
-      call.save!
-      save_cnt += 1
+      save_cnt
     end
-    save_cnt
-  end
-  
+
     def self.call_attributes
       ["customer" ,"statu", "time", "comment", "created_at","updated_at"]
     end
