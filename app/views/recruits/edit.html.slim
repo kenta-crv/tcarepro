@@ -10,7 +10,7 @@ br/
           li = message
    h2.headline  雇用条件内容動画
    .center
-         iframe width="560" height="315" src="https://www.youtube.com/embed/Y55lfbvNVPY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+         iframe width="560" height="315" src="https://www.youtube.com/embed/kr6KGZjPPp0?si=K6dSZ2IU4MNvnhCj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
    h2.headline 約款
    .infobox
     |本契約はテレフォンアポインター（以下、「甲」という。）と、株式会社Ri-Plus（以下、「乙」という。）とは、乙から甲への業務の委託に関し、次のとおり契約（以下、「本契約」という。）を締結する。
@@ -105,8 +105,11 @@ br/
           strong.label 必須
         td.arrow_box
           | 緊急連絡者名
+          br/
+          small 
+           | (携帯貸与のため必須)
         td
-          = f.email_field :emergency_name
+          = f.text_field :emergency_name
       tr
         td
           strong.label 必須
@@ -119,6 +122,9 @@ br/
             strong.label 必須
           td.arrow_box
             | 緊急連絡者電話番号
+            br/
+            small 
+             | (ご本人の連絡先は不可)
           td
             = f.text_field :emergency_tel
       tr
@@ -146,7 +152,7 @@ br/
           td
             strong.label 必須
           td.arrow_box
-            | 口座番号
+            | 口座名義
           td
             = f.text_field :bank_name
       tr

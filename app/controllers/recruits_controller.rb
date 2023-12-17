@@ -29,13 +29,15 @@ class RecruitsController < ApplicationController
     end
 
     def offer_email
-      recruit = Recruit.find(params[:id])
+      recruit = Recruit.find_by(id: params[:id])
+      recruit.update(status: 'accepted')
       RecruitMailer.offer_email(recruit).deliver_now
       redirect_to recruits_path, notice: '採用通知を送信しました'
     end
 
     def reject_email
-      recruit = Recruit.find(params[:recruit_id])
+      recruit = Recruit.find_by(id: params[:id])
+      recruit.update(status: 'rejected')
       RecruitMailer.reject_email(recruit).deliver_now
       redirect_to recruits_path, notice: '不採用通知を送信しました'
     end
@@ -52,12 +54,13 @@ class RecruitsController < ApplicationController
   
     def update
       @recruit = Recruit.find(params[:id])
-      if @recruit.save
+      if @recruit.update(recruit_params) # Strong Parametersを使用
         RecruitMailer.second_received_email(@recruit).deliver
         RecruitMailer.second_send_email(@recruit).deliver
         redirect_to second_thanks_recruits_path
       else
-        render 'new'
+        flash[:error] = @recruit.errors.full_messages.to_sentence
+        render 'edit'
       end
     end
   
@@ -91,6 +94,7 @@ class RecruitsController < ApplicationController
         :branch,
         :bank_number,
         :bank_name,
+        :status
       )
     end
 end
