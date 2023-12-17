@@ -18,6 +18,7 @@ class RecruitMailer < ActionMailer::Base
 
   def offer_email(recruit)
     @recruit = recruit
+    @edit_url = edit_recruit_url(@recruit)
     mail to: recruit.email
     mail(subject: '音声面接結果のご案内') do |format|
       format.text
@@ -26,7 +27,6 @@ class RecruitMailer < ActionMailer::Base
 
   def reject_email(recruit)
     @recruit = recruit
-    @edit_url = edit_recruit_url(@recruit)
     mail to: recruit.email
     mail(subject: '音声面接結果のご案内') do |format|
       format.text
@@ -36,7 +36,7 @@ class RecruitMailer < ActionMailer::Base
   def second_received_email(recruit)
     @recruit = recruit
     mail to: "recruit@ri-plus.jp"
-    mail(subject: '#{recruit.name}さんが契約に同意しました。') do |format|
+    mail(subject: '#{@recruit.name}さんが契約に同意しました。') do |format|
       format.text
     end
   end

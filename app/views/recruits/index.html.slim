@@ -1,6 +1,12 @@
   br
   br
   table.company
+   colgroup
+     col width="10%"
+     col width="10%"
+     col width="20%"
+     col width="20%"
+     col width="40%"
    tr
      th お名前
      th 年齢
@@ -18,9 +24,13 @@
      td
       = link_to recruit.created_at.strftime("%Y年%m月%d日")
      td
-       = link_to '採用', offer_email_recruit_path(recruit), method: :post, class: "btn btn-primary", data: { confirm: '送信を行いますか？' } 
-       = link_to '不採用', reject_email_recruit_path(recruit), method: :post, class: "btn btn-danger" , data: { confirm: '送信を行いますか？' } 
-     /td
+      - if recruit.status.blank?
+       = link_to '採用', offer_email_recruit_path(id: recruit.id), method: :post, class: "btn btn-primary", data: { confirm: '送信を行いますか？' }
+       = link_to '不採用', reject_email_recruit_path(id: recruit.id), method: :post, class: "btn btn-danger", data: { confirm: '送信を行いますか？' }
+      - elsif recruit.status == 'accepted'
+        span 採用済み
+      - else
+        span 不採用済み     /td
       - if admin_signed_in?
        = link_to "編集", edit_recruit_path(recruit) , class:"btn btn-success"
        = link_to "削除", recruit_path(recruit) ,method: :delete,  data: { confirm: '本当に削除しますか？'}, class:"btn btn-success"

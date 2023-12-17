@@ -2,12 +2,21 @@
 
 .tops-wrapper
 
-  h2.heading  採用詳細ページ
+  h2.headline 
+   | 採用詳細ページ 
+   - if @recruit.status.blank?
+    = link_to '採用', offer_email_recruit_path(id: @recruit.id), method: :post, class: "btn btn-primary", data: { confirm: '送信を行いますか？' }
+    = link_to '不採用', reject_email_recruit_path(id: @recruit.id), method: :post, class: "btn btn-danger", data: { confirm: '送信を行いますか？' }
+   - elsif recruit.status == 'accepted'
+    span 採用通知済
+   - else 
+    span 不採用通知済み
+
   table.company
-    colgroup
-     col width="10%"
-     col width="20%"
-     col width="70%"
+     colgroup
+      col width="10%"
+      col width="20%"
+      col width="70%"
      tbody
       tr
         td
@@ -92,3 +101,81 @@
           | 勤務開始希望日
         td
           = @recruit.start
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          = @recruit.agree_1
+        td
+          | 動画を確認頂き、最低勤務日数・時間についてはご理解頂けましたか？
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 雇用約款をご確認頂き同意頂けましたか？
+        td
+          = @recruit.agree_2
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 緊急連絡者名
+        td
+          = @recruit.emergency_name
+
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 続柄
+        td
+          = @recruit.emergency_relationship
+      tr
+        td
+          strong.label 必須
+        td.arrow_box
+          | 緊急連絡者電話番号
+        td
+          = @recruit.emergency_tel
+      tr
+          td
+            strong.label 必須
+          td.arrow_box
+            | 振込先口座
+          td
+            = @recruit.bank
+
+      tr
+          td
+            strong.label 必須
+          td.arrow_box
+            | 振込先支店
+          td
+            = @recruit.branch
+
+      tr
+          td
+            strong.label 必須
+          td.arrow_box
+            | 口座番号
+          td
+            = @recruit.bank_number
+
+      tr
+          td
+            strong.label 必須
+          td.arrow_box
+            | 口座名義
+          td
+            = @recruit.bank_name
+
+      tr
+          td
+            strong.label 必須
+          td.arrow_box
+            | 本人確認書類
+          td
+            - if @recruit.identification?
+             = link_to "View Image", @recruit.identification.url, target: "_blank", class: "btn btn-success"
+
+
