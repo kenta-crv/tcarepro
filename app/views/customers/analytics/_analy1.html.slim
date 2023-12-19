@@ -690,6 +690,29 @@ table.header-table[width="90%"]
       = @fucox1_sales
     td 末日
   tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%フコックス（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%フコックス（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%フコックス（工場）").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%フコックス（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    - @fucox3_sales = @detailAppCount * 30800
+    th
+      | フコックス（工場）
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @fucox3_sales
+    td 10日
+  tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%フコックス（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%フコックス（食品）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%フコックス（食品）").count
     - @detailAppCount = @detailcalls.where("industry LIKE ?", "%フコックス（食品）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -721,4 +744,4 @@ table.header-table.space[width="90%"]
     th
       | 合計
     td
-      = @nihonkai_sales + @nihonkai2_sales + @whita + @nihonkai3_sales + @factoru_sales + @labo_sales + @labo1_sales + @labo2_sales + @sorairo1_sales + @sorairo2_sales + @global_innovation + @takumi + @takumi1 + @takumi2 + @grobal_sales + @grobal1_sales + @sound_sales + @sound2_sales + @concier_sale + @concier_sales + @concier_factory_sales + @work + @bloom + @gg_sales + @gg1_sales + @gg2_sales + @gg3_sales + @fucox_sales + @fucox1_sales + @fucox2_sales
+      = @nihonkai_sales + @nihonkai2_sales + @whita + @nihonkai3_sales + @factoru_sales + @labo_sales + @labo1_sales + @labo2_sales + @sorairo1_sales + @sorairo2_sales + @global_innovation + @takumi + @takumi1 + @takumi2 + @grobal_sales + @grobal1_sales + @sound_sales + @sound2_sales + @concier_sale + @concier_sales + @concier_factory_sales + @work + @bloom + @gg_sales + @gg1_sales + @gg2_sales + @gg3_sales + @fucox_sales + @fucox1_sales + @fucox2_sales + @fucox3_sales
