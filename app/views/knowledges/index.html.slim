@@ -1,0 +1,26 @@
+- noindex
+
+.tops-wrapper
+  h2.headline
+    | ナレッジリスト一覧
+
+  - @knowledges.each do |knowledge|
+   .cp_qa
+    .cp_actab
+     input id=knowledge.id type="checkbox" name="tabs"
+     label for=knowledge.id
+       = knowledge.title
+     .cp_actab-content
+       p
+        = knowledge.body
+       br/
+       .center 
+        - if knowledge.file.present?
+         = image_tag knowledge.file
+       .center
+        = embed_video(knowledge.file_2)
+       br/
+       p
+        = knowledge.updated_at.strftime("%Y年%m月%d日 %H時%M分")
+        = link_to '編集', edit_knowledge_path(knowledge), class: 'btn btn-success'
+        = link_to '削除', knowledge_path(knowledge), class: 'btn btn-danger'

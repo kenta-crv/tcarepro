@@ -1,0 +1,27 @@
+- set_meta_tags noindex: true
+.tops-wrapper
+   h2.headline  ナレッジ詳細
+   table[width="90%"]
+     tbody
+      col[width="20%"]
+      col[width="30%"]
+      col[width="20%"]
+      col[width="30%"]
+      tr
+        th.arrow_box タイトル
+        td[colspan="3"]
+         .center = @knowledge.title
+      tr
+        th.arrow_box カテゴリー
+        td.center = @knowledge.category
+        th.arrow_box ジャンル
+        td.center = @knowledge.genre
+      tr
+        th.arrow_box file1
+        td.center = @knowledge.file
+        th.arrow_box file2
+        td.center = embed_video(@knowledge.file_2)
+      tr
+        th.arrow_box 内容
+        td[colspan="3"]
+          = @knowledge.body

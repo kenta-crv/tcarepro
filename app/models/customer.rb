@@ -16,7 +16,7 @@ class Customer < ApplicationRecord
 
   has_one :last_contact, ->{
     order("created_at desc")
-  }, class_name: ContactTracking
+  }, class_name: 'ContactTracking'
 
   scope :last_contact_trackings, ->(sender_id, status){
     joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id), status: status })

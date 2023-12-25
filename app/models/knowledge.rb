@@ -1,3 +1,3 @@
 class Knowledge < ApplicationRecord
-  belongs_to :contract
+    mount_uploader :file, ImagesUploader
 end
