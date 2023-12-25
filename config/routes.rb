@@ -134,7 +134,8 @@ Rails.application.routes.draw do
   #ユーザー案内
   get 'recruits/info' => 'recruits#info'  #ユーザー研修案内
 
-  resources :scripts 
+  resources :scripts
+  resources :knowledges 
 
   resources :recruits do 
     collection do
