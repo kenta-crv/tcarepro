@@ -122,6 +122,3 @@ gem 'httparty'
 gem 'audiojs-rails'
 
 gem 'thinreports'
-
-gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
