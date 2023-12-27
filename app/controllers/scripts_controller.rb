@@ -5,6 +5,17 @@ class ScriptsController < ApplicationController
   
     def show
       @script = Script.find(params[:id])
+      respond_to do |format|
+        format.html
+        format.pdf do
+          render pdf: "user_profile",   # PDFファイル名
+                 template: "scripts/show",  # PDFテンプレート
+                 formats: [:html],  # テンプレートのフォーマット
+                 orientation: 'Portrait',  # PDFの向き
+                 page_size: 'A4',  # PDFのサイズ
+                 encoding: 'UTF8'  # エンコーディング
+        end
+      end
     end
   
     def new
