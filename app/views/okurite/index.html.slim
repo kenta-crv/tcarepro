@@ -135,7 +135,7 @@
                 th
                   | SFA
                 td
-                  = f.search_field :choice_cont, type: "text"
+                  = f.check_box :choice_blank, { checked: true, disabled: true }, 'true', 'false'
                 th
                   | 検索条件
                 td

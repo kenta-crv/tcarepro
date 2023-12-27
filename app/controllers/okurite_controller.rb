@@ -8,9 +8,12 @@ class OkuriteController < ApplicationController
   before_action :set_customers, only: [:index, :preview]
 
   def index
-    @customers = @customers.includes(:worker).where(choice: nil).page(params[:page]).per(30)
+    @customers = @customers.includes(:worker).page(params[:page]).per(30)
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
+
+
+
 
   def show
     @customer = Customer.find(params[:id])
@@ -125,11 +128,11 @@ class OkuriteController < ApplicationController
     @customers = @q.result.distinct
   
     # URLの条件を追加
-    @customers = @customers.where.not("url LIKE ? OR url_2 LIKE ?", "%xn--pckua2a7gp15o89zb.com%", "%indeed.com/%")
+    #@customers = @customers.where.not("url LIKE ? OR url_2 LIKE ?", "%xn--pckua2a7gp15o89zb.com%", "%indeed.com/%")
   
-    if params[:statuses]&.map(&:presence)&.compact.present?
-      @customers = @customers.last_contact_trackings(@sender.id, params[:statuses])
-    end
+    #if params[:statuses]&.map(&:presence)&.compact.present?
+    ##  @customers = @customers.last_contact_trackings(@sender.id, params[:statuses])
+    #end
   end
 
   def authenticate_worker_or_admin!
