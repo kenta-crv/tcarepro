@@ -288,8 +288,6 @@
       = link_to "商談日程調整テンプレート", "/uploads/pdf/商談日程調整.docx", class:"btn btn-success"
       | 上記のテンプレートより、日にちを入力し先方に日程の提示をしてください。googleカレンダーの『奥山』の予定を確認し、「アポ可能」となっている範囲のみで提示をしてください。
       br/
-      | ※メール送信元アドレスはinfo@ri-plus.jpより必ず実行してください。
-      br/
       | ※商談連絡の確認が社内で行えるため、CCにも必ずinfo@ri-plus.jpをつけてください。
       br/
       | ※時間の確保としては40分程度あれば商談が可能なため、例えば10:40や10:50分に予定が入っている場合も10:00より対応可能です。
@@ -343,7 +341,7 @@
   .cp_actab
     input#cp_tabfour0155[type="checkbox" name="tabs"]
     label[for="cp_tabfour0155"]
-      | 締めの業務フロー（毎月月末）
+      | 締めの業務フロー（毎月月末）①
     .cp_actab-content
       p
         | ①分析結果で出ている合計件数と、システム検索で実際に調べた検索結果で相違がないか確認を行いましょう。相違がある場合、APPのステータスが上書きされている場合がありますので、slackのアポ報告から抜けている会社がないかチェックし、件数の穴を埋めていきます。
@@ -355,16 +353,21 @@
         = link_to "会社名チェック", "https://tcare.pro/contracts", class:"btn btn-success", target:"_blank"
         br
         br/
+      .cp_actab
+    input#cp_tabfour01555[type="checkbox" name="tabs"]
+    label[for="cp_tabfour01555"]
+      | 締めの業務フロー（毎月月末）②
+    .cp_actab-content
+      p
         | ③次に/customersでAPP一覧を企業毎にエクスポートし、獲得日・会社名を一覧化します。
         br/
+        | ④内容が問題ないか確認後、②③を管理者に添付しチェックを受けて完了となります。
         = link_to "企業検索ページ", "https://tcare.pro/customers", class:"btn btn-success", target:"_blank"
         .center
          iframe width="560" height="315" src="https://www.youtube.com/embed/bImL9YonGRs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
         br
-        br/
-        | ④内容が問題ないか確認後、②③を管理者に添付しチェックを受けて完了となります。
-        br
-        br
+
+
   .cp_actab
     input#cp_tabfour015[type="checkbox" name="tabs"]
     label[for="cp_tabfour015"]
