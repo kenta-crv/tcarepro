@@ -1,4 +1,5 @@
-= form_for @contract do |f|
+= form_for @contract, url: contract_path(@contract), method: :patch do |f|
+
   table[width="90%"]
      tbody
       col[width="80%"]
@@ -25,18 +26,7 @@
         td.center  = f.text_field :search
         th.arrow_box ターゲット①
         td.center  = f.text_field :target
-      tr
-        th.arrow_box 検索条件②
-        td.center = f.text_field :search, name: 'contract[search][keyword1]'
-        th.arrow_box ターゲット②
-        td.center  = f.text_field :target, name: 'contract[target][target1]'
-      tr
-        th.arrow_box 検索条件③
-        td.center = f.text_field :search, name: 'contract[search][keyword1]'
-        th.arrow_box ターゲット③
-        td.center  = f.text_field :target, name: 'contract[target][target1]'
-  br
-  br
+
   table[width="90%"]
       tbody
       tr
