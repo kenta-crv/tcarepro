@@ -1,43 +1,48 @@
-  br
-  br
-  table.company
-   colgroup
-     col width="10%"
-     col width="10%"
-     col width="20%"
-     col width="20%"
-     col width="40%"
-   tr
-     th お名前
-     th 年齢
-     th 経験則
-     th 情報送信日
-     th 採用可否
-   - @recruits.each do |recruit|
+br
+br
+table.company
+  colgroup
+    col width="10%"
+    col width="10%"
+    col width="20%"
+    col width="20%"
+    col width="40%"
+  thead
     tr
-     td
-      = link_to recruit.name, recruit_path(recruit)
-     td
-      = recruit.age
-     td
-      = recruit.experience
-     td
-      = link_to recruit.created_at.strftime("%Y年%m月%d日")
-     td
-      - if recruit.status.blank?
-       = link_to '採用', offer_email_recruit_path(id: recruit.id), method: :post, class: "btn btn-primary", data: { confirm: '送信を行いますか？' }
-       = link_to '不採用', reject_email_recruit_path(id: recruit.id), method: :post, class: "btn btn-danger", data: { confirm: '送信を行いますか？' }
-      - elsif recruit.status == 'accepted'
-        span 採用済み
-      - else
-        span 不採用済み     /td
-      - if admin_signed_in?
-       = link_to "編集", edit_recruit_path(recruit) , class:"btn btn-success"
-       = link_to "削除", recruit_path(recruit) ,method: :delete,  data: { confirm: '本当に削除しますか？'}, class:"btn btn-success"
-    tr
-     td[colspan="5"]
-      - if recruit.voice_data?
-       audio[src=recruit.voice_data.url preload="auto"]
-       javascript:audiojs.events.ready(function() {audiojs.createAll(); });
-  = paginate(@recruits)
+      th お名前
+      th 年齢
+      th 経験則
+      th 情報送信日
+      th 採用可否
+  tbody
+    - @recruits.each do |recruit|
+      tr
+        td
+          = link_to recruit.name, recruit_path(recruit)
+        td
+          = recruit.age
+        td
+          = recruit.experience
+        td
+          = recruit.created_at.strftime("%Y年%m月%d日")
+        td
+          - if recruit.status.blank?
+            = link_to '採用', offer_email_recruit_path(id: recruit.id), method: :post, class: "btn btn-primary", data: { confirm: '送信を行いますか？' }
+            = link_to '不採用', reject_email_recruit_path(id: recruit.id), method: :post, class: "btn btn-danger", data: { confirm: '送信を行いますか？' }
+          - elsif recruit.status == 'accepted'
+            span 採用済み
+          - else
+            span 不採用済み
+          - if admin_signed_in?
+            = link_to "編集", edit_recruit_path(recruit), class: "btn btn-success"
+            = link_to "削除", recruit_path(recruit), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
+      tr
+        td[colspan="5"]
+          - if recruit.voice_data?
+            audio[src=recruit.voice_data.url preload="auto"]
+= paginate(@recruits)
 
+javascript:
+  audiojs.events.ready(function() {
+    audiojs.createAll();
+  });

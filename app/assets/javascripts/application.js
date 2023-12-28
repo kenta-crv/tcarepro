@@ -107,3 +107,9 @@ $(function() {
   });
 
   
+  document.addEventListener('DOMContentLoaded', function() {
+    // audiojsを使った初期化や設定
+    audiojs.events.ready(function() {
+      var as = audiojs.createAll();
+    });
+  });
