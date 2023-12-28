@@ -14,10 +14,10 @@
 //= require chartkick
 //= require Chart.bundle
 //= require popper
+//= require audiojs
 //= require rails-ujs
 //= require turbolinks
 //= require jquery
-//= require audiojs
 //= require_tree .
 //
 
