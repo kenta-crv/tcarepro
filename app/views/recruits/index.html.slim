@@ -39,7 +39,7 @@ table.company
       tr
         td[colspan="5"]
           - if recruit.voice_data?
-            audio{ src: recruit.voice_data.url, preload: "auto" }
+            audio src=recruit.voice_data.url preload="auto"
 = paginate(@recruits)
 
 javascript:
