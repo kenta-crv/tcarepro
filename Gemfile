@@ -122,3 +122,5 @@ gem 'httparty'
 gem 'audiojs-rails'
 
 gem 'thinreports'
+
+gem 'rails_autolink'

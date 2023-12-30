@@ -113,3 +113,44 @@ $(function() {
       var as = audiojs.createAll();
     });
   });
+
+
+  $(document).ready(function(){
+    $('.category-select, .genre-select').change(function() {
+      var selectedCategory = $('.category-select').val();
+      var selectedGenre = $('.genre-select').val();
+  
+      // カテゴリに基づいて色を設定
+      switch (selectedCategory) {
+        case '登録':
+          $('.category-select').css('background-color', 'blue');
+          break;
+        case '業務':
+          $('.category-select').css('background-color', 'green');
+          break;
+        case '技術':
+          $('.category-select').css('background-color', 'red');
+          break;
+        default:
+          $('.category-select').css('background-color', 'white');
+      }
+  
+      // ジャンルに基づいて色を設定
+      switch (selectedGenre) {
+        case '管理者':
+          $('.genre-select').css('background-color', 'purple');
+          break;
+        case 'テレアポ研修者':
+          $('.genre-select').css('background-color', 'orange');
+          break;
+        case 'テレアポ':
+          $('.genre-select').css('background-color', 'yellow');
+          break;
+        case '内職ワーカー':
+          $('.genre-select').css('background-color', 'pink');
+          break;
+        default:
+          $('.genre-select').css('background-color', 'white');
+      }
+    });
+  });
