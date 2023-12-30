@@ -16,7 +16,6 @@
 //= require popper
 //= require rails-ujs
 //= require turbolinks
-//= require jquery
 //= require audiojs
 //= require_tree .
 //
