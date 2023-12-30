@@ -77,7 +77,7 @@ gem 'redis'
 gem 'redis-rails'
 gem 'pry-rails'
 
-#gem 'bootstrap-sass'
+gem 'bootstrap-sass'
 
 gem 'carrierwave'
 
