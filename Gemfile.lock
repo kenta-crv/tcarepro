@@ -229,6 +229,10 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.3)
       loofah (~> 2.3)
+    rails_autolink (1.1.8)
+      actionview (> 3.1)
+      activesupport (> 3.1)
+      railties (> 3.1)
     railties (5.1.7)
       actionpack (= 5.1.7)
       activesupport (= 5.1.7)
@@ -367,9 +371,6 @@ GEM
     websocket-extensions (0.1.5)
     whenever (1.0.0)
       chronic (>= 0.6.3)
-    wicked_pdf (2.7.0)
-      activesupport
-    wkhtmltopdf-binary (0.12.6.6)
     xpath (3.2.0)
       nokogiri (~> 1.8)
 
@@ -404,6 +405,7 @@ DEPENDENCIES
   pry-rails
   puma (~> 4.3)
   rails (~> 5.1.6)
+  rails_autolink
   ransack
   redis
   redis-rails
@@ -425,8 +427,6 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)
   whenever
-  wicked_pdf
-  wkhtmltopdf-binary
 
 BUNDLED WITH
    2.3.6

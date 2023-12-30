@@ -13,12 +13,13 @@ class RecruitsController < ApplicationController
   
     def create
       @recruit = Recruit.new(recruit_params)
-      if @recruit.save
-        RecruitMailer.received_email(@recruit).deliver
-        RecruitMailer.send_email(@recruit).deliver
-        redirect_to thanks_recruits_path
+      if @recruit.update(recruit_params)
+        RecruitMailer.second_received_email(@recruit).deliver_later
+        RecruitMailer.second_send_email(@recruit).deliver_later
+        redirect_to second_thanks_recruits_path
       else
-        render 'new'
+        flash[:error] = @recruit.errors.full_messages.to_sentence
+        render 'edit'
       end
     end
   
@@ -30,16 +31,24 @@ class RecruitsController < ApplicationController
 
     def offer_email
       recruit = Recruit.find_by(id: params[:id])
-      recruit.update(status: 'accepted')
-      RecruitMailer.offer_email(recruit).deliver_now
-      redirect_to recruits_path, notice: '採用通知を送信しました'
+      if recruit.present?
+        recruit.update(status: 'accepted')
+        RecruitMailer.offer_email(recruit).deliver_now
+        redirect_to recruits_path, notice: '採用通知を送信しました'
+      else
+        redirect_to recruits_path, alert: '対象の応募者が見つかりませんでした'
+      end
     end
-
+    
     def reject_email
       recruit = Recruit.find_by(id: params[:id])
-      recruit.update(status: 'rejected')
-      RecruitMailer.reject_email(recruit).deliver_now
-      redirect_to recruits_path, notice: '不採用通知を送信しました'
+      if recruit.present?
+        recruit.update(status: 'rejected')
+        RecruitMailer.reject_email(recruit).deliver_now
+        redirect_to recruits_path, notice: '不採用通知を送信しました'
+      else
+        redirect_to recruits_path, alert: '対象の応募者が見つかりませんでした'
+      end
     end
   
     def edit
