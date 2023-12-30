@@ -32,10 +32,10 @@ class KnowledgesController < ApplicationController
       
         def update
           @knowledge = Knowledge.find(params[:id])
-          if @knowledge.save
+          if @knowledge.update(knowledge_params)
             redirect_to knowledges_path
           else
-            render 'new'
+            render 'edit'
           end
         end
       
@@ -47,6 +47,12 @@ class KnowledgesController < ApplicationController
             :genre,
             :file,
             :file_2,
+            :url_1,
+            :url_2,
+            :url_3,
+            :name_1,
+            :name_2,
+            :name_3,
             :priority,
             :body,
           )

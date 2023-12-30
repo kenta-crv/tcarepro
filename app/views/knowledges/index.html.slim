@@ -9,10 +9,27 @@
     .cp_actab
      input id=knowledge.id type="checkbox" name="tabs"
      label for=knowledge.id
+      -if admin_signed_in? 
+       |【
+       = knowledge.category
+       |】
        = knowledge.title
+       |【
+       = knowledge.genre
+       |】
+      -else 
+        = knowledge.title
      .cp_actab-content
+       br/
+       .center  
+        - if knowledge.url_1?
+         = link_to knowledge.name_1, knowledge.url_1, class: "btn btn-success"
+        - if knowledge.url_2?
+         = link_to knowledge.name_2, knowledge.url_2, class: "btn btn-success"
+        - if knowledge.url_3?
+         = link_to knowledge.name_3, knowledge.url_3, class: "btn btn-success"
        p
-        = knowledge.body
+        = simple_format(auto_link(knowledge.body))
        br/
        .center 
         - if knowledge.file.present?

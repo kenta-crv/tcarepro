@@ -13,21 +13,31 @@
         th.arrow_box カテゴリー
         td.center
           = f.select(:category,[\
-              ["登録","登録"],\
-              ["業務","業務"],\
-              ["技術","技術"],\
+              ["登録","Regist"],\
+              ["業務","Usu"],\
+              ["技術","Tech"],\
              ], include_blank: "選択してください")
+        th.arrow_box = f.text_field :name_1, placeholder: "URL名"
+        td.center = f.url_field :url_1
+      tr
         th.arrow_box ジャンル
         td.center
           = f.select(:genre,[\
-              ["管理者","管理者"],\
-              ["テレアポ研修者","テレアポ研修者"],\
-              ["テレアポ","テレアポ"],\
-              ["内職ワーカー","内職ワーカー"],\
+              ["管理者","Admin"],\
+              ["テレアポ研修者","Tran"],\
+              ["テレアポ","App"],\
+              ["内職ワーカー","CW"],\
              ], include_blank: "選択してください")
+        th.arrow_box = f.text_field :name_2, placeholder: "URL名"
+        td.center = f.url_field :url_2
       tr
         th.arrow_box file1
         td.center = f.file_field :file
+        th.arrow_box = f.text_field :name_3, placeholder: "URL名"
+        td.center = f.url_field :url_3
+      tr 
+        th.arrow_box 優先度
+        td.center = f.number_field :priority
         th.arrow_box 動画URL
         td.center = f.text_field :file_2
       tr
