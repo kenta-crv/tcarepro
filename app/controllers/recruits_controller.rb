@@ -30,23 +30,15 @@ class RecruitsController < ApplicationController
     end
 
     def offer_email
-      recruit = Recruit.find_by(id: params[:id])
-      if recruit.present?
-        RecruitMailer.offer_email(recruit).deliver_now
-        redirect_to recruits_path, notice: '採用通知を送信しました'
-      else
-        redirect_to recruits_path, alert: '対象の応募者が見つかりませんでした'
-      end
+      @recruit = Recruit.find(params[:id])
+      RecruitMailer.offer_email(@recruit).deliver_now
+      redirect_to recruits_path, notice: '採用通知を送信しました'
     end
     
     def reject_email
-      recruit = Recruit.find_by(id: params[:id])
-      if recruit.present?
-        RecruitMailer.reject_email(recruit).deliver_now
-        redirect_to recruits_path, notice: '不採用通知を送信しました'
-      else
-        redirect_to recruits_path, alert: '対象の応募者が見つかりませんでした'
-      end
+      @recruit = Recruit.find(params[:id])
+      RecruitMailer.reject_email(@recruit).deliver_now
+      redirect_to recruits_path, notice: '不採用通知を送信しました'
     end
   
     def edit
@@ -56,7 +48,7 @@ class RecruitsController < ApplicationController
     def destroy
       @recruit = Recruit.find(params[:id])
       @recruit.destroy
-       redirect_to recruits_path
+      redirect_to recruits_path
     end
   
     def update
