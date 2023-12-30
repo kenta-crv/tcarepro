@@ -16,7 +16,7 @@
 //= require popper
 //= require rails-ujs
 //= require turbolinks
-//= require audiojs
+//= require jquery
 //= require_tree .
 //
 
@@ -40,3 +40,6 @@ var textarea = document.getElementById('test');
 $(document).ready(function() {
 $('.drawer').drawer();
 });
+
+
+
