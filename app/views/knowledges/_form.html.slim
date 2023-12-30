@@ -13,11 +13,9 @@
         th.arrow_box カテゴリー
         td.center
           = f.select(:category,[\
-              ["登録","Regist"],\
-              ["業務","Usu"],\
-              ["都度業務","Each"],\
-              ["業務","Usu"],\
-              ["技術","Tech"],\
+              ["登録","登録"],\
+              ["業務","業務"],\
+              ["技術","技術"],\
              ], include_blank: "選択してください")
         th.arrow_box = f.text_field :name_1, placeholder: "URL名"
         td.center = f.url_field :url_1
@@ -25,11 +23,12 @@
         th.arrow_box ジャンル
         td.center
           = f.select(:genre,[\
-              ["管理者","Admin"],\
-              ["事務","work"],\
-              ["テレアポ研修者","Tran"],\
-              ["テレアポ","App"],\
-              ["内職ワーカー","CW"],\
+              ["管理者","管理者"],\
+              ["事務（日々）","事務（日々）"],\
+              ["事務（都度）","事務（都度）"],\
+              ["テレアポ研修者","テレアポ研修者"],\
+              ["テレアポ","テレアポ"],\
+              ["内職ワーカー","内職ワーカー"],\
              ], include_blank: "選択してください")
         th.arrow_box = f.text_field :name_2, placeholder: "URL名"
         td.center = f.url_field :url_2
