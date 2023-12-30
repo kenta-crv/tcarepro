@@ -1,3 +1,5 @@
+/ table.company と記載されているため、これを基にSlimテンプレートを作成します。
+
 br
 br
 table.company
@@ -33,16 +35,14 @@ table.company
             span 採用済み
           - else
             span 不採用済み
+
           - if admin_signed_in?
             = link_to "編集", edit_recruit_path(recruit), class: "btn btn-success"
-            = link_to "削除", recruit_path(recruit), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
+            = link_to "削除", recruit_path(recruit), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-success"
+          
       tr
         td[colspan="5"]
-          - if recruit.voice_data?
-            audio src=recruit.voice_data.url preload="auto"
-= paginate(@recruits)
+          - if recruit.voice_data.present?
+            = audio_tag recruit.voice_data.url, controls: true
 
-javascript:
-  audiojs.events.ready(function() {
-    audiojs.createAll();
-  });
+= paginate @recruits

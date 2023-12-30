@@ -14,10 +14,10 @@
 //= require chartkick
 //= require Chart.bundle
 //= require popper
-//= require audiojs
 //= require rails-ujs
 //= require turbolinks
 //= require jquery
+//= require audiojs
 //= require_tree .
 //
 
@@ -106,10 +106,3 @@ $(function() {
   }
 });
 
-
-document.addEventListener('DOMContentLoaded', function() {
-  // audiojsを使った初期化や設定
-  audiojs.events.ready(function() {
-    var as = audiojs.createAll();
-  });å
-});
