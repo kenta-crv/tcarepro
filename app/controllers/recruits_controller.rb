@@ -32,7 +32,6 @@ class RecruitsController < ApplicationController
     def offer_email
       recruit = Recruit.find_by(id: params[:id])
       if recruit.present?
-        recruit.update(status: 'accepted')
         RecruitMailer.offer_email(recruit).deliver_now
         redirect_to recruits_path, notice: '採用通知を送信しました'
       else
@@ -43,7 +42,6 @@ class RecruitsController < ApplicationController
     def reject_email
       recruit = Recruit.find_by(id: params[:id])
       if recruit.present?
-        recruit.update(status: 'rejected')
         RecruitMailer.reject_email(recruit).deliver_now
         redirect_to recruits_path, notice: '不採用通知を送信しました'
       else
