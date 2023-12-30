@@ -28,14 +28,8 @@ table.company
         td
           = recruit.created_at.strftime("%Y年%m月%d日")
         td
-          - if recruit.status.blank?
-            = link_to '採用', offer_email_recruit_path(recruit), method: :post, class: "btn btn-primary", data: { confirm: '送信を行いますか？' }
-            = link_to "不採用", reject_email_recruit_path(recruit), method: :post, class: "btn btn-primary", data: { confirm: "送信を行いますか？" }
-
-          - elsif recruit.status == 'accepted'
-            span 採用済み
-          - else
-            span 不採用済み
+          = link_to '採用', offer_email_recruit_path(recruit), method: :post, class: "btn btn-primary", data: { confirm: '送信を行いますか？' }
+          = link_to "不採用", reject_email_recruit_path(recruit), method: :post, class: "btn btn-primary", data: { confirm: "送信を行いますか？" }
 
           - if admin_signed_in?
             = link_to "編集", edit_recruit_path(recruit), class: "btn btn-success"
