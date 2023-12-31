@@ -5,53 +5,44 @@ class ScriptsController < ApplicationController
   
     def show
       @script = Script.find(params[:id])
-      respond_to do |format|
-        format.html
-        format.pdf do
-          render pdf: "user_profile",   # PDFファイル名
-                 template: "scripts/show",  # PDFテンプレート
-                 formats: [:html],  # テンプレートのフォーマット
-                 orientation: 'Portrait',  # PDFの向き
-                 page_size: 'A4',  # PDFのサイズ
-                 encoding: 'UTF8'  # エンコーディング
-        end
-      end
-    end
-  
-    def new
-      @script = Script.new
-    end
-  
-    def create
-      @script = Script.new(script_params)
-      if @script.save
-        redirect_to scripts_path
-      else
-        render 'new'
-      end
     end
 
-    def edit
-      @script = Script.find(params[:id])
+    
+
+    def new
+      @contract = Contract.find(params[:contract_id])
+      @script = @contract.scripts.new
+      @script.company = @contract.company # ここで Contract の company を設定
+    end
+
+    def create
+      @contract = Contract.find(params[:contract_id])
+      @contract.scripts.create(script_params)
+      redirect_to contract_path(@contract)
     end
   
     def destroy
-      @script = Script.find(params[:id])
+      @contract = Contract.find(params[:contract_id])
+      @script = @contract.scripts.find(params[:id])
       @script.destroy
-       redirect_to scripts_path
+      redirect_to contract_path(@contract)
+    end
+
+    def edit
+      @contract = Contract.find(params[:contract_id])
+      @script = @contract.scripts.find(params[:id])
     end
   
     def update
-      @script = Script.find(params[:id])
-      if @script.save
-        ScriptMailer.second_received_email(@script).deliver
-        ScriptMailer.second_send_email(@script).deliver
-        redirect_to second_thanks_scripts_path
-      else
-        render 'new'
-      end
+        @contract = Contract.find(params[:contract_id])
+        @script = @contract.scripts.find(params[:id])
+       if @script.update(script_params)
+         redirect_to contract_path(@contract)
+       else
+          render 'edit'
+       end
     end
-  
+
     private
     def script_params
       params.require(:script).permit(
@@ -75,7 +66,8 @@ class ScriptsController < ApplicationController
         :other_receive_1,
         :other_receive_2,
         :other_receive_3,
-        :remarks
+        :remarks,
+        :title
       )
     end
 end

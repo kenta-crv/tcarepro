@@ -1,4 +1,5 @@
 class Script < ApplicationRecord
+  belongs_to :contract
   #受付トーク
   def self.front_talk
     "お世話になってます。【会社名】の●●と申しまして、人事採用の確認の件で、ご連絡させて頂いたのですが、採用担当者様お手すきでしょうか？"

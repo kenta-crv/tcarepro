@@ -109,6 +109,7 @@ Rails.application.routes.draw do
       get 'images/view'
       get 'images/download/:id' => 'images#download' ,as: :images_pdf
     end
+    resources :scripts, except: [:index, :show]
   end
 
   # エラー情報
@@ -134,7 +135,7 @@ Rails.application.routes.draw do
   #ユーザー案内
   get 'recruits/info' => 'recruits#info'  #ユーザー研修案内
 
-  resources :scripts
+  resources :scripts, only: [:index, :show]
   resources :knowledges 
 
   resources :recruits do 
