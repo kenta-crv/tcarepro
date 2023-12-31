@@ -11,7 +11,7 @@
       - @scripts.each do |script|
        tr
         td
-          = link_to script.company, script_path(script)
+          = link_to script.title, script_path(script)
         td
           = script.updated_at.strftime("%Y年%m月%d日 %H時%M分")
         td

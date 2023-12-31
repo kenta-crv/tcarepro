@@ -1,4 +1,13 @@
-= form_with model: @script, local: true do |f|
+= form_for([@contract, @script]) do |f| 
+ table[width="90%"]
+     tbody
+      col[width="20%"]
+      col[width="80%"]
+      tr
+        th.arrow_box タイトル
+        td[colspan="3"] = f.text_field :title
+ br/
+ br/
  table[width="90%"]
      tbody
       col[width="20%"]

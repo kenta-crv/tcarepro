@@ -1,11 +1,10 @@
 .tops-wrapper
+ br/
+ br/
  .row 
   .col-lg-7
     h2.headline 
-      = @script.company
-      | トークスクリプト(
-      = link_to 'PDF', script_path(@script, format: :pdf) 
-      |)
+      = @script.title
     table[width="90%"]
      tbody
       tr
