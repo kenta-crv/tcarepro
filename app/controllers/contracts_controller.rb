@@ -7,6 +7,7 @@
   
     def show
       @contract = Contract.find(params[:id])
+      @scripts = @contract.scripts
     end
   
     def new
