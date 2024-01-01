@@ -14,6 +14,3 @@
           = link_to script.title, script_path(script)
         td
           = script.updated_at.strftime("%Y年%m月%d日 %H時%M分")
-        td
-           = link_to '編集', edit_script_path(script), class: 'btn btn-success'
-           = link_to '削除', script_path(script), class: 'btn btn-danger'
