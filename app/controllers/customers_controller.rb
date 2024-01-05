@@ -132,10 +132,10 @@ class CustomersController < ApplicationController
                          .distinct
                          .select(:industry)
                       
-    @industries_data = INDUSTRY_ADDITIONAL_DATA.keys.map do |industry_name|
-      Customer.analytics_for(industry_name)
-    end
-    @total_revenue = @industries_data.sum { |data| data[:unit_price_inc_tax] * data[:appointment_count] }
+    #@industries_data = INDUSTRY_ADDITIONAL_DATA.keys.map do |industry_name|
+     # Customer.analytics_for(industry_name)
+    #end
+    #@total_revenue = @industries_data.sum { |data| data[:unit_price_inc_tax] * data[:appointment_count] }
   end
 
   def closing 

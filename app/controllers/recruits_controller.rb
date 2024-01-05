@@ -14,8 +14,8 @@ class RecruitsController < ApplicationController
     def create
       @recruit = Recruit.new(recruit_params)
       if @recruit.update(recruit_params)
-        RecruitMailer.second_received_email(@recruit).deliver_later
-        RecruitMailer.second_send_email(@recruit).deliver_later
+        RecruitMailer.received_email(@recruit).deliver_later
+        RecruitMailer.send_email(@recruit).deliver_later
         redirect_to second_thanks_recruits_path
       else
         flash[:error] = @recruit.errors.full_messages.to_sentence
