@@ -39,6 +39,9 @@
         th
           | 会社名
         th
+         - if admin_signed_in?
+          | 検索条件
+         - else
           | 電話番号
         th
           | 住所
@@ -64,9 +67,12 @@
           - else
             = link_to customer.id, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
         td
-          = customer.tel
+          - if admin_signed_in?
+            = customer.industry
+          - else
+           = customer.tel
         td
-          = customer.industry 
+          = customer.address
         td
           = customer.last_call.try(:statu)
         td
