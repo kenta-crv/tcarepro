@@ -30,7 +30,7 @@ class CustomersController < ApplicationController
     #これに変えると全抽出
     @csv_customers = @customers.distinct.preload(:calls)
     @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エスクポート総数
-
+    @total_special_number = @customers.map(&:special_number_for_index).sum
     respond_to do |format|
      format.html
      format.csv do
