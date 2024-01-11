@@ -309,19 +309,18 @@ class Customer < ApplicationRecord
     url_arry
   end
 
-  def special_number_for_index
-    if industry == 'ワークリレーション' || industry == 'bloom'
-      20000
-    elsif industry.include?('コンシェルテック') || industry.include?('セールスプロ')
-      15000
-    elsif industry.include?('飲食店') || industry.include?('介護') 
-      25000
-    elsif industry.include?('工場') || industry.include?('食品') 
-      30000
-    else
-      0
-    end
-  end
+  #def special_number_for_index
+   # if industry.to_s.include?('ワークリレーション') || industry.to_s.include?('bloom')
+    #  20000
+    #elsif industry.to_s.include?('コンシェルテック') || industry.to_s.include?('セールスプロ')
+    #  15000
+    #elsif industry.to_s.include?('飲食店') || industry.to_s.include?('介護')
+     # 25000
+    #else
+      # その他の条件に対する処理を追加
+    #end
+  #end
+  
 
   private
 
