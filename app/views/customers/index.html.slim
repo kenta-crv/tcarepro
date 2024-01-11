@@ -67,15 +67,15 @@
           - else
             = link_to customer.id, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
         td
-          - if admin_signed_in?
+          /- if admin_signed_in?
             = customer.industry
-          - else
-           = customer.tel
+          /- else
+          = customer.tel
         td
-          - if admin_signed_in?
+          /- if admin_signed_in?
             = customer.special_number_for_index
-          - else
-            = customer.address
+          /- else
+          = customer.address
         td
           = customer.last_call.try(:statu)
         td
@@ -91,7 +91,7 @@
           = link_to '削除',
           -                        customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}
     - if admin_signed_in? 
-     tr 
+     /tr 
        th[colspan="10"]
          - total_special_number = @customers.reduce(0) do |sum, customer|
           - sum + customer.special_number_for_index
