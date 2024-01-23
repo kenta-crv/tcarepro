@@ -1,6 +1,7 @@
 class KnowledgesController < ApplicationController
         def index
-          @knowledges = Knowledge.order(created_at: "DESC").page(params[:page])
+          @q = Knowledge.ransack(params[:q])
+          @knowledges = @q.result.order(priority: :desc)
         end
       
         def show

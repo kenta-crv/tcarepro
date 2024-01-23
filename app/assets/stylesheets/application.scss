@@ -659,6 +659,9 @@ dd {
 	        transition: transform 0.4s;
 }
 /* 答え */
+.cp_actab .cp_actab-content {
+  max-height: 3000px; /* 適切な高さの値に置き換えてください */
+}
 .cp_qa .cp_actab .cp_actab-content {
 	position: relative;
 	overflow: hidden;

@@ -43,3 +43,25 @@ $('.drawer').drawer();
 
 
 
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    // すべてのチェックボックスを取得
+    var checkboxes = document.querySelectorAll('.cp_qa .cp_actab input[type="checkbox"]');
+
+    // 各チェックボックスに対するイベントリスナーを設定
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var content = this.nextElementSibling.nextElementSibling; // .cp_actab-content要素を取得
+
+            if (this.checked) {
+                // チェックされた場合、.cp_actab-contentの高さを設定
+                var height = content.scrollHeight + "px";
+                content.style.maxHeight = height;
+            } else {
+                // チェックが外れた場合、高さをリセット
+                content.style.maxHeight = null;
+            }
+        });
+    });
+});
