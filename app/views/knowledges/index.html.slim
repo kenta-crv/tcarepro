@@ -1,9 +1,24 @@
 - noindex
-
 .tops-wrapper
   h2.headline
     | ナレッジリスト一覧
+  = search_form_for @q do |f|
+   table.company[width="90%"]
+              tr
+                th
+                  | 閲覧業務
+                td
+                  - genre_status = ["管理者","事務（日々）","事務（都度）","テレアポ研修者","テレアポ","内職ワーカー"]
+                  = f.select :genre_cont, genre_status, { include_blank: '選択してください' }
+                th
+                  | カテゴリー
+                td
+                  - category_status = ["登録","業務","技術"]
+                  = f.select :category_cont, category_status, { include_blank: '選択してください' }
+                td
+                  = f.submit "検索する", class:"btn btn-success"
 
+  br/
   - @knowledges.each do |knowledge|
    .cp_qa
     .cp_actab
