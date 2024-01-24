@@ -40,7 +40,7 @@ module Smart
     domain: 'ri-plus.jp',
     port: 587,
     user_name: 'recruit@ri-plus.jp',
-    password: 'yL4meDV#',
+    password: 'yL4meDV#3',
     authentication: 'plain',
     enable_starttls_auto: true
     }
