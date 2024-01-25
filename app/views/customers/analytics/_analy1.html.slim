@@ -480,7 +480,29 @@ table.header-table[width="90%"]
     td
       = @labo2_sales
     td 10日
-
+  tr
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%ファクトリーラボ（受付）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ファクトリーラボ（受付）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%ファクトリーラボ（受付）").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ファクトリーラボ（受付）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
+    - @labo3_sales = @detailAppCount * 33000
+    th
+      | ファクトリーラボ（受付）
+    td
+      = @ListCount
+    td
+      = number_to_percentage(@ListCount <= 0 ? 0 : @detailAppCount * 100.0 / @ListCount, precision: 1 )
+    td
+      = @detailCount
+    td
+      = number_to_percentage(@detailCount <= 0 ? 0 : @detailAppCount * 100.0 / @detailCount, precision: 1 )
+    td
+      = @detailAppCount
+    td
+      = @detailRemainCount
+    td
+      = @labo3_sales
+    td 10日
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%G&G（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%G&G（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%G&G（介護）").count
@@ -674,4 +696,4 @@ table.header-table.space[width="90%"]
     th
       | 合計
     td
-      = @whita + @factoru_sales + @labo_sales + @labo1_sales + @labo2_sales + @sorairo1_sales + @sorairo2_sales + @global_innovation + @takumi + @takumi1 + @takumi2 + @grobal_sales + @grobal1_sales + @sound_sales + @sound2_sales + @concier_sale + @concier_sales + @concier_factory_sales + @work + @bloom + @gg_sales + @gg1_sales + @gg2_sales + @gg3_sales + @fucox_sales + @fucox1_sales + @fucox2_sales + @fucox3_sales
+      = @whita + @factoru_sales + @labo_sales + @labo1_sales + @labo2_sales + @labo3_sales + @sorairo1_sales + @sorairo2_sales + @global_innovation + @takumi + @takumi1 + @takumi2 + @grobal_sales + @grobal1_sales + @sound_sales + @sound2_sales + @concier_sale + @concier_sales + @concier_factory_sales + @work + @bloom + @gg_sales + @gg1_sales + @gg2_sales + @gg3_sales + @fucox_sales + @fucox1_sales + @fucox2_sales + @fucox3_sales
