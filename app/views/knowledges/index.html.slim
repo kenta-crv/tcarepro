@@ -1,3 +1,5 @@
+- unique_categories = @knowledges.map(&:category).uniq.sort
+
 - noindex
 .tops-wrapper
   h2.headline
@@ -18,43 +20,35 @@
                 td
                   = f.submit "検索する", class:"btn btn-success"
 
-  br/
-  - @knowledges.each do |knowledge|
-   .cp_qa
-    .cp_actab
-     input id=knowledge.id type="checkbox" name="tabs"
-     label for=knowledge.id
-      -if admin_signed_in? 
-       |【
-       = knowledge.category
-       |】
-       = knowledge.title
-       |【
-       = knowledge.genre
-       |】
-      -else 
-        = knowledge.title
-     .cp_actab-content
-       br/
-       .center  
-        - if knowledge.url_1?
-         = link_to knowledge.name_1, knowledge.url_1, class: "btn btn-success"
-        - if knowledge.url_2?
-         = link_to knowledge.name_2, knowledge.url_2, class: "btn btn-success"
-        - if knowledge.url_3?
-         = link_to knowledge.name_3, knowledge.url_3, class: "btn btn-success"
-       p
-        = simple_format(auto_link(knowledge.body))
-       br/
-       .center 
-        - if knowledge.file.present?
-         = image_tag knowledge.file, width:"80%"
-       .center
-        = embed_video(knowledge.file_2)
-       br/
-       p
-        = knowledge.updated_at.strftime("%Y年%m月%d日 %H時%M分")
-        = link_to '編集', edit_knowledge_path(knowledge), class: 'btn btn-success'
-        = link_to '削除', knowledge_path(knowledge), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger'
-
-
+- unique_categories.each do |category|
+  h2.headline = category
+  - @knowledges.select{|k| k.category == category}.each do |knowledge|
+    .cp_qa
+      .cp_actab
+        input id=("checkbox_#{knowledge.id}") type="checkbox" name="tabs"
+        label for=("checkbox_#{knowledge.id}")
+          = knowledge.title
+        .cp_actab-content
+          br/
+          .center  
+            - if knowledge.url_1?
+              = link_to knowledge.name_1, knowledge.url_1, class: "btn btn-success"
+            - if knowledge.url_2?
+              = link_to knowledge.name_2, knowledge.url_2, class: "btn btn-success"
+            - if knowledge.url_3?
+              = link_to knowledge.name_3, knowledge.url_3, class: "btn btn-success"
+          p
+            = simple_format(auto_link(knowledge.body))
+          br/
+          .center 
+            - if knowledge.file.present?
+              = image_tag knowledge.file, width: "80%"
+          .center
+            - if knowledge.file_2.present?
+              = embed_video(knowledge.file_2)
+          br/
+          p
+            = knowledge.updated_at.strftime("%Y年%m月%d日 %H時%M分")
+            - if admin_signed_in?
+              = link_to '編集', edit_knowledge_path(knowledge), class: 'btn btn-success'
+              = link_to '削除', knowledge_path(knowledge), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger'
