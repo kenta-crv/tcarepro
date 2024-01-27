@@ -65,3 +65,34 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+$(document).ready(function(){
+    // アコーディオンをクリックしたときのイベント
+    $('.cp_actab label').click(function(e){
+      var currentAttrValue = $(this).attr('for');
+  
+      if($('#' + currentAttrValue).is(':checked')){
+        // アコーディオンを閉じる
+        close_accordion_section();
+      }else {
+        // アコーディオンを開く
+        close_accordion_section();
+  
+        // クリックしたアコーディオンのセクションを追加
+        $(this).toggleClass('active');
+        $('#' + currentAttrValue).prop('checked', true);
+  
+        // 高さを設定
+        var content = $(this).next('.cp_actab-content');
+        content.css('max-height', content.prop('scrollHeight') + 'px');
+      }
+  
+      e.preventDefault();
+    });
+  
+    function close_accordion_section() {
+      $('.cp_actab input[type="checkbox"]').prop('checked', false);
+      $('.cp_actab-content').css('max-height', '0');
+    }
+  });
+  

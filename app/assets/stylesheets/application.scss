@@ -604,104 +604,71 @@ dd {
   margin:0 auto ;
 }
 
-.cp_qa *, .cp_qa *:after, .cp_qa *:before {
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+
+
+
+
+/* アコーディオンのベーススタイル */
+.cp_qa {
+  font-family: Arial, sans-serif;
 }
+
+/* アコーディオンのセクション */
 .cp_qa .cp_actab {
-	position: relative;
-  padding-left:10%;
-	overflow: hidden;
-	width: 90%;
-	margin: 0 0 1em 0;
-	color: $main_color;
+  margin-bottom: 1em;
+  color: #333;
+  width: 90%;
+  margin:0 auto;
 }
-.cp_qa .cp_actab input {
-	position: absolute;
-	opacity: 0;
-}
-/* 質問 */
+
+/* アコーディオンのラベル（質問部分） */
 .cp_qa .cp_actab label {
-	font-weight: bold;
-	line-height: 1.6em;
-	position: relative;
-	display: block;
-	margin: 0 0 0 0;
-	padding: 1em 2em 1em 2.5em;
-	cursor: pointer;
-	text-indent: 1em;
-	background: #e2e7e3;
+  display: block;
+  padding: 1em;
+  background: #e2e7e3;
+  cursor: pointer;
+  position: relative;
 }
-.cp_qa .cp_actab label::before {
-	font-family: serif;
-	font-size: 1.2em;
-	margin-left: -2em;
-	padding-right: 0.5em;
-	content: 'Q';
+
+/* チェックボックスは見えなくする */
+.cp_qa .cp_actab input {
+  position: absolute;
+  opacity: 0;
 }
-.cp_qa .cp_actab label:hover {
-	transition: all 0.3s;
-	color: #00838f;
-}
-/* --質問の＋アイコン */
-.cp_qa .cp_actab label::after {
-	font-size: 1.7em;
-	font-weight: bold;
-	line-height: 2em;
-	position: absolute;
-	top: 0;
-	right: 0;
-	content: 'A';
-	display: inline-block;
-	width: 2em;
-	height: 2em;
-	-webkit-transition: transform 0.4s;
-	        transition: transform 0.4s;
-}
-/* 答え */
-.cp_actab .cp_actab-content {
-  max-height: 3000px; /* 適切な高さの値に置き換えてください */
-}
+
+/* アコーディオンのコンテンツ部分 */
 .cp_qa .cp_actab .cp_actab-content {
-	position: relative;
-	overflow: hidden;
-  color: black;
-  font-size: 10px;
-  font-weight:normal;
-	max-height: 0;
-	padding: 0 0 0 2.5em;
-	-webkit-transition: max-height 0.2s;
-	        transition: max-height 0.2s;
-	border-radius: 0 0 0.5em 0.5em;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+  background: #f9f9f9;
+  padding-left: 2.5em;
 }
-.cp_qa .cp_actab .cp_actab-content::before {
-	font-family: serif;
-	font-size: 1.2em;
-	position: absolute;
-	margin: 0.4em 0 0 -1em;
-	padding: 0;
-}
-.cp_qa .cp_actab .cp_actab-content p {
-	margin: 1em 1em 1em 0;
-}
-/* 質問を開いた時の仕様 */
-/* --答えの高さ */
+
+/* チェックされたときのアコーディオンのコンテンツの高さ */
 .cp_qa .cp_actab input:checked ~ .cp_actab-content {
-	max-height: 1500px;
-	border: 10px solid rgba(27,37,56,0.1);
+  max-height: 1000px; /* コンテンツの大きさに応じて調整 */
+  transition: max-height 0.4s ease-in-out;
 }
-/* 質問をクリックした時のアイコンの動き */
-.cp_qa .cp_actab input:checked ~ label {
-	color: #00838f;
-	border-radius: 0.5em 0.5em 0 0;
+
+/* アコーディオンのラベルのデザイン */
+.cp_qa .cp_actab label::before {
+  content: 'Q';
+  margin-right: 0.5em;
 }
-/* 質問をクリックした時の+の動き */
-.cp_qa .cp_actab input[type=checkbox]:checked + label::after {
-	-webkit-transform: rotateZ(45deg);
-	transform: rotateZ(45deg);
-	-webkit-transform-origin: 50% 50%;
-	transform-origin: 50% 50%;
+
+.cp_qa .cp_actab label::after {
+  content: '+';
+  position: absolute;
+  right: 1em;
 }
+
+/* チェックされたときのラベルのデザイン変更 */
+.cp_qa .cp_actab input:checked ~ label::after {
+  content: '-';
+}
+
+/* その他のスタイル（フォントサイズ、カラー等）はここに追加 */
 
 
 .app-format {
