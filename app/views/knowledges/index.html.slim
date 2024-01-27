@@ -10,12 +10,12 @@
                 th
                   | 閲覧業務
                 td
-                  - genre_status = ["管理者","事務（日々）","事務（都度）","テレアポ研修者","テレアポ","内職ワーカー"]
+                  - genre_status = ["管理者","事務","テレアポ","内職ワーカー"]
                   = f.select :genre_cont, genre_status, { include_blank: '選択してください' }
                 th
                   | カテゴリー
                 td
-                  - category_status = ["登録","業務","技術"]
+                  - category_status = ["登録業務","通常業務","ノウハウ","都度業務"]
                   = f.select :category_cont, category_status, { include_blank: '選択してください' }
                 td
                   = f.submit "検索する", class:"btn btn-success"
