@@ -29,6 +29,10 @@
         input id=("checkbox_#{knowledge.id}") type="checkbox" name="tabs"
         label for=("checkbox_#{knowledge.id}")
           = knowledge.title
+          - if admin_signed_in?
+              = link_to '編集', edit_knowledge_path(knowledge), class: 'btn btn-success'
+              = link_to '削除', knowledge_path(knowledge), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger'
+
         .cp_actab-content
           br/
           .center  
@@ -50,6 +54,4 @@
           br/
           p
             = knowledge.updated_at.strftime("%Y年%m月%d日 %H時%M分")
-            - if admin_signed_in?
-              = link_to '編集', edit_knowledge_path(knowledge), class: 'btn btn-success'
-              = link_to '削除', knowledge_path(knowledge), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger'
+          
