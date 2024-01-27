@@ -21,6 +21,7 @@
                   = f.submit "検索する", class:"btn btn-success"
 
 - unique_categories.each do |category|
+ .tops-wrapper
   h2.headline = category
   - @knowledges.select{|k| k.category == category}.each do |knowledge|
     .cp_qa
