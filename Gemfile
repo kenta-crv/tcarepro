@@ -124,3 +124,5 @@ gem 'audiojs-rails'
 gem 'thinreports'
 
 gem 'rails_autolink'
+
+gem 'rails-html-sanitizer', '1.4.3'
