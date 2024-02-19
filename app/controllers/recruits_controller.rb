@@ -38,7 +38,7 @@ class RecruitsController < ApplicationController
     
     def reject_email
       recruit = Recruit.find(params[:id])
-      RecruitMailer.reject_email(@recruit).deliver_now
+      RecruitMailer.reject_email(recruit).deliver_now
       redirect_to recruits_path, notice: '不採用通知を送信しました'
     end
   
