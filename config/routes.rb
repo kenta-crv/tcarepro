@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     confirmations: 'workers/confirmations',
     passwords: 'workers/passwords',
   }
-  resources :workers, only: [:show] do 
+  resources :workers, only: [:show, :destroy] do 
     member do
       post 'upload', to: 'workers#upload'
       get 'confirm', to: 'workers#confirm'
