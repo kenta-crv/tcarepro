@@ -94,6 +94,7 @@
         th 月間送信数
         th 合計送信数
         th 登録日
+        th 削除
       - @workers.each do |worker|
        - @contact_trackings_month = worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
        - @contact_trackings_total_month = worker.contact_trackings.all
@@ -126,6 +127,7 @@
         td = @send_success_count_month
         td = @send_success_count_total_month
         td = worker.created_at.strftime("%-m月%-d日")
+        td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
   br
   br
   = link_to "アカウント情報編集", edit_admin_registration_path, class:"btn btn-success"
