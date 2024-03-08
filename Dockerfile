@@ -1,6 +1,13 @@
 FROM ruby:2.6.1
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get update -qq && apt-get install -y nodejs
+ENV HOME /root
+ENV PATH $HOME/.nodenv/bin:$PATH
+
+RUN git clone https://github.com/nodenv/nodenv.git ~/.nodenv
+RUN git clone https://github.com/nodenv/node-build.git "/root/.nodenv/plugins/node-build"
+
+RUN eval "$(nodenv init - bash)"
+RUN nodenv install 10.24.1
 
 WORKDIR /myapp
 
