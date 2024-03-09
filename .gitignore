@@ -33,3 +33,6 @@ doc/
 
 auto_contact/config
 auto_contact/screenshots
+
+node_modules
+/vendor/bundle
