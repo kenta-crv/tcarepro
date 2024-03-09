@@ -1,6 +1,5 @@
   class ContractsController < ApplicationController
-    before_action :authenticate_user!
-    before_action :authenticate_admin!, only: [:edit, :new]
+
     def index
       @contracts = Contract.order(created_at: "DESC").page(params[:page])
     end
