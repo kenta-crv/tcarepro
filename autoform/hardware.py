@@ -15,12 +15,15 @@ import time
 import sys
 import traceback
 
+#Changed
+import chromedriver_binary
+
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 #options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 start = time.perf_counter()
-#serv = Service(ChromeDriverManager().install())
-serv = Service(executable_path='/okuyamakenta/python')
+serv = Service(ChromeDriverManager().install())
+#serv = Service(executable_path='/okuyamakenta/python')
 
 class Place_enter():
     def __init__(self,url,formdata):
@@ -62,7 +65,7 @@ class Place_enter():
         self.formdata = formdata
 
         self.iframe_mode = False
-        
+
         self.radio = []
         self.chk = []
 
@@ -92,7 +95,7 @@ class Place_enter():
                 self.iframe_mode = True
             else:
                 print('false')
-        
+
         def extract_input_data(element):
             data = {}
             input_type = element.get('type')
@@ -105,7 +108,7 @@ class Place_enter():
                 placeholder = element.get('placeholder')
                 if placeholder:
                     data['placeholder'] = placeholder
-            
+
             return data
 
         def extract_textarea_data(element):
@@ -138,7 +141,7 @@ class Place_enter():
                         data_list.append(extract_textarea_data(child))
                     elif element_type == 'select':
                         data_list.extend(extract_select_data(child))
-            
+
             print("extract_elements_from_tags" + data_list)
             return data_list
 
@@ -147,7 +150,7 @@ class Place_enter():
         def extract_elements_from_dtdl(parent_element):
             data_list = []
             dt_text = parent_element.find('dt').get_text(strip=True) if parent_element.find('dt') else None
-            
+
             for child in parent_element.find_all(['input', 'textarea', 'select']):
                 if child.name == 'input':
                     data = extract_input_data(child)
@@ -160,18 +163,18 @@ class Place_enter():
                 if dt_text:
                     data['label'] = dt_text
                 data_list.append(data)
-            
+
             print("extract_elements_from_dtdl" + str(data))
-            
+
             return data_list
-        
+
         def find_and_add_to_namelist(tables):
             data_list = []
 
             for row in tables.find_all('tr'):
                 cols = row.find_all('td')
                 label_texts = ' '.join([col.get_text(strip=True) for col in cols if col.get_text(strip=True)])
-                
+
                 for elem_type in ['input', 'textarea', 'select']:
                     for col in cols:
                         elem = col.find(elem_type)
@@ -189,14 +192,14 @@ class Place_enter():
 
                             print("find" + str(data))
                             print(label_texts)
-            
+
             return data_list
 
 
 
         namelist = []
 
-        if self.target_table() == 0 and self.target_dtdl() == 0:#formだが、dtdlなし
+        if self.target_table() == 0 and self.target_dtdl() == 0:#formだが、dtdl なし
             print('dtdl not found')
 
             for tag in ['span', 'div']:
@@ -213,38 +216,38 @@ class Place_enter():
                 namelist.extend(find_and_add_to_namelist(table))
 
 
-        self.namelist = namelist 
+        self.namelist = namelist
         self.logicer(self.namelist)
         print("namelist" + str(self.namelist))
-        
+
 
     def target_form(self):
         for form in self.pot.find_all('form'):
             class_name = form.get('class', '')
             id_name = form.get('id', '')
-        
+
             if 'search' not in class_name and 'search' not in id_name:
                 return form
         return 0
-    
+
     def target_table(self):
         if self.form.find('table'):
             print('tableを見つけました')
             return self.form.find_all('table')
-        else: 
+        else:
             return 0
 
     def target_dtdl(self):
         if self.form.find('dl'):
             print('dtdlを見つけました')
             return self.form.find_all('dl')
-        else: 
+        else:
             return 0
 
     def logicer(self, lists):
         for list in lists:
             label = list.get('label', '')
-                      
+
             if label:
                 if list["object"] == "input":
                     if "会社" in label:
@@ -283,12 +286,12 @@ class Place_enter():
                         self.pref = list["name"]
                     if "用件" in label or "お問い合わせ" in label or "本文" in label:
                         self.subjects = list["name"]
-                
+
     def go_selenium(self):
         driver = webdriver.Chrome(service=serv,options=options)
         driver.get(self.endpoint)
         time.sleep(3)
-        
+
         def input_text_field(driver, field_name, value):
             """テキストフィールドに値を入力するための関数"""
             print(f"Field Name: {field_name}, Value: {value}")
@@ -307,7 +310,7 @@ class Place_enter():
                         radian[0].click()
             except Exception as e:
                 print(f"Error clicking radio button {radio_name}: {e}")
-                    
+
         def select_checkbox(driver, checkbox_name):
             """チェックボックスを選択するための関数"""
             try:
@@ -336,7 +339,7 @@ class Place_enter():
             input_text_field(driver, self.address, self.formdata['address'])
             input_text_field(driver, self.mail, self.formdata['mail'])
             input_text_field(driver, self.mail_c, self.formdata['mail'])
-            
+
             for radio_info in self.radio:
                 select_radio_button(driver, radio_info['name'])
 
@@ -344,7 +347,7 @@ class Place_enter():
                 select_checkbox(driver, checkbox_info['name'])
 
 
-            #分割用電話番号 
+            #分割用電話番号
             try:
                 if self.phone0 != '' and self.phone1 != '' and self.phone2 != '':
                     phonesplit = self.formdata['phone'].split('-')
@@ -354,8 +357,8 @@ class Place_enter():
             except Exception as e:
                 print("Error: Failed to submit form")
                 print(e)
-                
-        
+
+
             if self.zip != '':
                 r = requests.get("https://api.excelapi.org/post/zipcode?address=" + self.formdata['address'])
                 postman = r.text
@@ -368,17 +371,17 @@ class Place_enter():
             if self.pref != '':
                 pref_data = ''
                 pref = [
-                    "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県",
-                    "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",
-                    "新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県",
-                    "静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県",
-                    "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県",
-                    "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県",
+                    "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島 県",
+                    "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈 川県",
+                    "新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜 県",
+                    "静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫 県",
+                    "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山 口県",
+                    "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎 県",
                     "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
                 ]
 
                 address = self.formdata['address']
-                
+
                 try:
                     element = driver.find_element(By.NAME, self.pref)
                     for p in pref:
@@ -389,8 +392,8 @@ class Place_enter():
                                 pref_data = p
                             else:
                                 pref_data = p
-                
-                
+
+
                     r = requests.get("https://geoapi.heartrails.com/api/json?method=getTowns&prefecture=" + pref_data)
                     cityjs = r.json()
                     city = cityjs["response"]["location"]
@@ -399,7 +402,7 @@ class Place_enter():
                         if c["city"] in address and c["town"] in address:
                             driver.find_element(By.NAME,self.address_city).send_keys(c["city"])
                             driver.find_element(By.NAME,self.address_thin).send_keys(c["town"])
-                            
+
                 except Exception as e:
                     print("Error: Failed to submit form")
                     print(e)
@@ -453,7 +456,7 @@ class Place_enter():
                         except:
                             continue
                 return False
-            
+
             try:
                 before = driver.title
 
@@ -487,7 +490,7 @@ class Place_enter():
                 driver.close()
                 return 'NG'
 
-                
+
             """
             ##　規約 プライバシーポリシーチェック
             try:
@@ -525,10 +528,10 @@ class Place_enter():
                                 driver.execute_script("arguments[0].click();", radio)
             except Exception as e:
                 print(traceback.format_exc())
-                
+
             time.sleep(2)
             """
-            
+
         else:
             input_text_field(driver, self.company, self.formdata['company'])
             print("company"+self.company)
@@ -544,14 +547,14 @@ class Place_enter():
             input_text_field(driver, self.mail, self.formdata['mail'])
             print("mail"+self.mail)
             input_text_field(driver, self.mail_c, self.formdata['mail'])
-            
+
             for radio_info in self.radio:
                 select_radio_button(driver, radio_info['name'])
 
             for checkbox_info in self.chk:
                 select_checkbox(driver, checkbox_info['name'])
 
-            #分割用電話番号 
+            #分割用電話番号
             try:
                 if self.phone0 != '' and self.phone1 != '' and self.phone2 != '':
                     phonesplit = self.formdata['phone'].split('-')
@@ -561,8 +564,8 @@ class Place_enter():
             except Exception as e:
                 print("Error: Failed to submit form")
                 print(e)
-                
-            
+
+
             try:
                 if self.zip != '':
                     r = requests.get("https://api.excelapi.org/post/zipcode?address=" + self.formdata['address'])
@@ -576,17 +579,17 @@ class Place_enter():
                 if self.pref != '':
                     pref_data = ''
                     pref = [
-                        "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県",
-                        "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",
-                        "新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県",
-                        "静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県",
+                        "北海道","青森県","岩手県","宮城県","秋田県","山形県"," 福島県",
+                        "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都"," 神奈川県",
+                        "新潟県","富山県","石川県","福井県","山梨県","長野県"," 岐阜県",
+                        "静岡県","愛知県","三重県","滋賀県","京都府","大阪府"," 兵庫県",
                         "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県",
-                        "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県",
+                        "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県"," 長崎県",
                         "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
                     ]
 
                     address = self.formdata['address']
-                    
+
                     element = driver.find_element(By.NAME, self.pref)
                     for p in pref:
                         if p in address:
@@ -610,7 +613,7 @@ class Place_enter():
             except Exception as e:
                 print("Error: Failed to submit form")
                 print(e)
-            
+
 
             try:
                 if self.subjects != '':
@@ -633,13 +636,13 @@ class Place_enter():
                         if matching == False:
                             select.select_by_index(len(select.options)-1)
 
-                
+
                     else:
                         driver.find_element(By.NAME,self.subjects).send_keys(self.formdata['subjects'])
             except Exception as e:
                 print(f"Error encountered: {e}")
                 # ここに追加のエラー処理を書くことができます。
-            
+
             try:
                 if self.body != '':
                     driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
@@ -698,7 +701,7 @@ class Place_enter():
                 driver.close()
                 return 'NG'
 
-                
+
             """
             ## 規約 プライバシーポリシーチェック
             try:
@@ -740,7 +743,8 @@ class Place_enter():
             time.sleep(2)
             """
 
-switch = 1 #debug mode
+#switch = 1 #debug mode
+switch = 0
 
 if switch == 0:
     print("本番モード")
@@ -758,6 +762,5 @@ elif switch == 1:
         "body":"はじめまして。 たまがわです。この度、Webデザインを始めてみました。"
     }
     url = "https://ri-plus.jp/contact"
-    #url = "https://www.amo-pack.com/contact/index.html" 
-    p = Place_enter(url,form_data)  
-    print(p.go_selenium())
+    #url = "https://www.amo-pack.com/contact/index.html"
+
