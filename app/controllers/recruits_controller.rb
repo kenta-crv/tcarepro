@@ -31,13 +31,13 @@ class RecruitsController < ApplicationController
 
     def offer_email
       recruit = Recruit.find(params[:id])
-      RecruitMailer.offer_email(@recruit).deliver_now
+      RecruitMailer.offer_email(recruit).deliver_now
       redirect_to recruits_path, notice: '採用通知を送信しました'
     end
     
     def reject_email
       recruit = Recruit.find(params[:id])
-      RecruitMailer.reject_email(@recruit).deliver_now
+      RecruitMailer.reject_email(recruit).deliver_now
       redirect_to recruits_path, notice: '不採用通知を送信しました'
     end
   
