@@ -178,7 +178,6 @@ GEM
     method_source (1.0.0)
     mini_magick (4.12.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
     minitest (5.20.0)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -192,6 +191,8 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     nio4r (2.7.0)
+    nokogiri (1.13.10-x86_64-darwin)
+      racc (~> 1.4)
     nokogiri (1.13.10-x86_64-linux)
       racc (~> 1.4)
     open_uri_redirections (0.2.1)
@@ -351,8 +352,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sqlite3 (1.6.9)
-      mini_portile2 (~> 2.8.0)
+    sqlite3 (1.6.9-x86_64-darwin)
+    sqlite3 (1.6.9-x86_64-linux)
     ssrf_filter (1.1.2)
     temple (0.10.3)
     thinreports (0.12.1)
@@ -387,6 +388,7 @@ GEM
       nokogiri (~> 1.8)
 
 PLATFORMS
+  x86_64-darwin-19
   x86_64-linux
 
 DEPENDENCIES
