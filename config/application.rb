@@ -38,7 +38,7 @@ module Smart
     config.action_mailer.smtp_settings = {
     address: 'smtp3.gmoserver.jp',
     domain: 'ri-plus.jp',
-    port: 587,
+    port: 465,
     user_name: 'recruit@ri-plus.jp',
     password: 'yL4mrefef#',
     authentication: 'plain',

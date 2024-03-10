@@ -420,9 +420,6 @@ ActiveRecord::Schema.define(version: 20231231201918) do
     t.string "bank_name"
     t.string "status"
     t.text "history"
-    t.string "url_1"
-    t.string "url_2"
-    t.string "url_3"
   end
 
   create_table "scripts", force: :cascade do |t|
