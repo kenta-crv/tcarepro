@@ -33,7 +33,7 @@ table.company
 
           - if admin_signed_in?
             = link_to "編集", edit_recruit_path(recruit), class: "btn btn-success"
-            = link_to "削除", recruit_path(recruit), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-success"
+            = link_to "削除", recruit_path(recruit), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
           
       tr
         td[colspan="5"]

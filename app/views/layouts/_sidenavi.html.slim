@@ -2,18 +2,8 @@ aside#sidebar
  -if admin_signed_in? || user_signed_in? || worker_signed_in?
  nav#global-nav
   ul
-    li.sub-menu
-      = link_to "#"
-       = image_tag "list.gif", width:"40px"
-       -if admin_signed_in? || worker_signed_in?
-        ul.sub-menu-nav
-         li
-          = link_to "TCARE","/extraction",class:"white"
-
-    li.sub-menu
-      = link_to "#"
-       = image_tag "mail.gif", width:"40px"
-       -if admin_signed_in? || worker_signed_in?
+    -if admin_signed_in? || worker_signed_in?
+     li.sub-menu
         ul.sub-menu-nav
          li
           = link_to "Okurite", senders_path
@@ -29,26 +19,10 @@ aside#sidebar
           = link_to "インポート情報","/news"
          br
          li
-          = link_to "取引先架電情報","/contracts"
-         br
-         li
-          = link_to "URLアクセス情報","/call_history"
-         br
-         li
           = link_to "テレアポマニュアル",manuals_path
          br
          li
            = link_to "事務マニュアル", manuals_officework_path
-         br
-         li
-          = link_to "送信リスト","/sendlist"
-    li.sub-menu
-      = link_to "#"
-       = image_tag "analytics.gif", width:"40px"
-       -if admin_signed_in?
-        ul.sub-menu-nav
-         li
-          = link_to "アナリティクス","/information"
     li.sub-menu
       = link_to "#"
        = image_tag "mypage.gif", width:"40px"
