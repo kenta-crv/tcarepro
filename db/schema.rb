@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240314061326) do
+ActiveRecord::Schema.define(version: 20240314093551) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -216,6 +216,14 @@ ActiveRecord::Schema.define(version: 20240314061326) do
     t.string "genre"
     t.string "forever"
     t.string "customers_code"
+    t.string "requirement_title"
+    t.string "price_title"
+    t.string "experienc_title"
+    t.string "refund_title"
+    t.string "usp_title"
+    t.string "other_receive_1_title"
+    t.string "other_receive_2_title"
+    t.string "other_receive_3_title"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end

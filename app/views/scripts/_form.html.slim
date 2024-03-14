@@ -69,34 +69,34 @@
     table[width="90%"]
      tbody
       tr
-        th.arrow_box 要件
+        th.arrow_box = f.text_area :requirement_title
       tr
         td.center  = f.text_area :requirement, value: Script.requirement
       tr
-        th.arrow_box 料金
+        th.arrow_box = f.text_area :price_title
       tr
         td.center  = f.text_area :price, value: Script.price
       tr
-        th.arrow_box 経験則
+        th.arrow_box = f.text_area :experience_title
       tr
         td.center  = f.text_area :experience, value: Script.experience
       tr
-        th.arrow_box 返金規定
+        th.arrow_box = f.text_area :refund_title
       tr
         td.center  = f.text_area :refund, value: Script.refund
       tr
-        th.arrow_box 強み
+        th.arrow_box = f.text_area :usp_title
       tr
         td.center  = f.text_area :usp, value: Script.usp
       tr
-        th.arrow_box その他
+        th.arrow_box = f.text_area :other_receive_1_title
       tr
         td.center  = f.text_area :other_receive_1, value: Script.other_receive_1
       tr
-        th.arrow_box その他
+        th.arrow_box = f.text_area :other_receive_2_title
       tr
         td.center  = f.text_area :other_receive_2, value: Script.other_receive_2
       tr
-        th.arrow_box その他
+        th.arrow_box = f.text_area :other_receive_3_title
       tr
         td.center  = f.text_area :other_receive_3, value: Script.other_receive_3
