@@ -34,13 +34,12 @@ module Smart
     config.autoload_paths += %W(#{config.root}/app/reports)
 
 
-    config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
     address: 'smtp3.gmoserver.jp',
     domain: 'ri-plus.jp',
-    port: 465,
+    port: 587,
     user_name: 'recruit@ri-plus.jp',
-    password: 'yL4mrefef#',
+    password: 'yL4meV#333',
     authentication: 'plain',
     enable_starttls_auto: true
     }

@@ -32,15 +32,6 @@ $(function() {
 });
 
 
-var textarea = document.getElementById('test');
-
-
-$(document).ready(function() {
-$('.drawer').drawer();
-});
-
-
-
 
 
 document.addEventListener("DOMContentLoaded", function() {
