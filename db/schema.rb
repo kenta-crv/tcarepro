@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20231231201918) do
+ActiveRecord::Schema.define(version: 20240314061326) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -56,7 +56,6 @@ ActiveRecord::Schema.define(version: 20231231201918) do
     t.integer "crm_id"
     t.integer "user_id"
     t.datetime "latest_confirmed_time"
-    t.integer "contract_id"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["crm_id"], name: "index_calls_on_crm_id"
     t.index ["customer_id", "created_at"], name: "index_calls_on_customer_id_and_created_at"
@@ -420,6 +419,9 @@ ActiveRecord::Schema.define(version: 20231231201918) do
     t.string "bank_name"
     t.string "status"
     t.text "history"
+    t.string "url_1"
+    t.string "url_2"
+    t.string "url_3"
   end
 
   create_table "scripts", force: :cascade do |t|
