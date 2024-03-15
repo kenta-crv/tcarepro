@@ -458,6 +458,15 @@ ActiveRecord::Schema.define(version: 20240314093551) do
     t.datetime "updated_at", null: false
     t.integer "contract_id"
     t.string "title"
+    t.string "experienc_title"
+    t.string "requirement_title"
+    t.string "price_title"
+    t.string "experience_title"
+    t.string "refund_title"
+    t.string "usp_title"
+    t.string "other_receive_1_title"
+    t.string "other_receive_2_title"
+    t.string "other_receive_3_title"
     t.index ["contract_id"], name: "index_scripts_on_contract_id"
   end
 
