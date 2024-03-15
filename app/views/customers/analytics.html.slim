@@ -56,8 +56,7 @@ br
 br/
 br/
 br/
-- if admin.id == "1"
- table.header-table[width="90%"]
+table.header-table[width="90%"]
   thead
     tr
       th 企業名
@@ -74,7 +73,7 @@ br/
       th 締め日
       th PDF
       th Mail
-  tbody
+  /tbody
     - @industries_data.each do |data|
       - current_time = Time.now.strftime('%Y年%m月%d日')
       - total = data[:unit_price_ex_tax] * data[:appointment_count]

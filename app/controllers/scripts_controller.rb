@@ -67,7 +67,7 @@ class ScriptsController < ApplicationController
         :other_receive_2,
         :other_receive_3,
         :remarks,
-        :title
+        :title,
         :requirement_title,
         :price_title,
         :experienc_title,
