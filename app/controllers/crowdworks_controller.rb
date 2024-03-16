@@ -61,6 +61,7 @@ class CrowdworksController < ApplicationController
       end
 
       def assign_workers(worker_ids)
+        return if worker_ids.nil?
         worker_ids.each do |worker_id|
           @crowdwork.assignments.create(worker_id: worker_id) unless worker_id.blank?
         end
