@@ -455,7 +455,6 @@ ActiveRecord::Schema.define(version: 20240314093551) do
     t.datetime "updated_at", null: false
     t.integer "contract_id"
     t.string "title"
-    t.string "experienc_title"
     t.string "requirement_title"
     t.string "price_title"
     t.string "experience_title"
