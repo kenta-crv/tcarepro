@@ -1,11 +1,32 @@
 = form_for @crowdwork do |f|
-  = f.label :title
-  = f.text_field :title
 
+  table.company[width="90%"]
+     tbody
+      col[width="40%"]
+      col[width="60%"]
+      tr
+        th.arrow_box 案内タイトル
+        td.center = f.text_field :title
+      tr
+        th.arrow_box シート名
+        td.center = f.text_field :sheet
+      tr
+        th.arrow_box 抽出業種
+        td.center = f.text_field :business
+      tr
+        th.arrow_box 抽出職種
+        td.center = f.text_field :genre
+      tr
+        th.arrow_box 抽出エリア
+        td.center = f.text_field :area
+      tr
+        th.arrow_box ※抽出不可
+        td.center = f.text_field :area
+      tr 
+        td[colspan="2"]
+          = f.submit "登録する", class:"btn btn-success"
 
   - Worker.where(select: "リスト制作").each do |worker|
     = check_box_tag "worker_ids[]", worker.id, @crowdwork.workers.include?(worker)
     = label_tag "worker_ids_#{worker.id}", worker.user_name
     br
-
-  = f.submit
