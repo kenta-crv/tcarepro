@@ -11,17 +11,18 @@
         th.arrow_box シート名
         td.center = f.text_field :sheet
       tr
-        th.arrow_box 抽出業種
+        th.arrow_box 抽出可エリア
+        td.center 
+          = f.collection_select :area, JpPrefecture::Prefecture.all, :name, :name, { include_blank: '選択してください' }, { class: 'form-control', id: 'crowdwork_area', multiple: true } 
+      tr
+        th.arrow_box 抽出可業種
         td.center = f.text_field :business
       tr
-        th.arrow_box 抽出職種
+        th.arrow_box 抽出可職種
         td.center = f.text_field :genre
       tr
-        th.arrow_box 抽出エリア
-        td.center = f.text_field :area
-      tr
         th.arrow_box ※抽出不可
-        td.center = f.text_field :area
+        td.center = f.text_field :bad
       tr 
         td[colspan="2"]
           = f.submit "登録する", class:"btn btn-success"
