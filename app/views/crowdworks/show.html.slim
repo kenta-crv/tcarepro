@@ -1,5 +1,6 @@
+br/
 .tops-wrapper
-  h2.heading  案件詳細ページ
+  h2.headline  案件詳細ページ
 table.company
    colgroup
      col width="10%"
@@ -39,14 +40,14 @@ table.company
         td
           strong.label 必須
         td.arrow_box
-          | エリア
+          | 抽出可能エリア
         td
           = @crowdwork.area
       tr
         td
           strong.label 必須
         td.arrow_box
-          | 抽出可能業種
+          | 抽出可能職種
         td
           = @crowdwork.business
       tr
@@ -62,12 +63,6 @@ table.company
         td.arrow_box
           | 抽出不可
         td
-          = @crowdwork.business
-      tr
-        td
-          strong.label 必須
-        td.arrow_box
-          | 注意点
-        td
-          = @crowdwork.attention
+          = @crowdwork.bad
+
       
