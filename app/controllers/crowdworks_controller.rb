@@ -26,7 +26,6 @@ class CrowdworksController < ApplicationController
     
       def edit
         @crowdwork = Crowdwork.find(params[:id])
-        render :layout => "froala"
       end
     
       def destroy
