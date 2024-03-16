@@ -18,7 +18,7 @@ class CrowdworksController < ApplicationController
           @crowdwork.workers.each do |worker|
             WorkerMailer.assignment_email(worker).deliver_later
           end
-          redirect_to @crowdwork, notice: 'Crowdwork was successfully created.'
+          redirect_to crowdworks_path, notice: 'Crowdwork was successfully created.'
         else
           render :new
         end
