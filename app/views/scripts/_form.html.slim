@@ -37,31 +37,31 @@
       tr
         th.arrow_box フロントトーク
       tr
-        td.center  = f.text_area :front_talk, value: Script.front_talk
+        td.center  = f.text_area :front_talk, value: @script.front_talk
       tr
         th.arrow_box フロントトーク
       tr
-        td.center  = f.text_area :first_talk, value: Script.first_talk
+        td.center  = f.text_area :first_talk, value: @script.first_talk
       tr
         th.arrow_box イントロダクション
       tr
-        td.center  = f.text_area :introduction, value: Script.introduction
+        td.center  = f.text_area :introduction, value: @script.introduction
       tr
         th.arrow_box ヒアリング①
       tr
-        td.center  = f.text_area :hearing_1, value: Script.hearing_1
+        td.center  = f.text_area :hearing_1, value: @script.hearing_1
       tr
         th.arrow_box ヒアリング②
       tr
-        td.center  = f.text_area :hearing_2, value: Script.hearing_2
+        td.center  = f.text_area :hearing_2, value: @script.hearing_2
       tr
         th.arrow_box ヒアリング③
       tr
-        td.center  = f.text_area :hearing_3, value: Script.hearing_3
+        td.center  = f.text_area :hearing_3, value: @script.hearing_3
       tr
         th.arrow_box クロージング
       tr
-        td.center  = f.text_area :closing, value: Script.closing
+        td.center  = f.text_area :closing, value: @script.closing
       tr 
         th.arrow_box
           = f.submit "登録する"
@@ -71,32 +71,32 @@
       tr
         th.arrow_box = f.text_field :requirement_title
       tr
-        td.center  = f.text_area :requirement, value: Script.requirement
+        td.center  = f.text_area :requirement, value: @script.requirement
       tr
         th.arrow_box = f.text_field :price_title
       tr
-        td.center  = f.text_area :price, value: Script.price
+        td.center  = f.text_area :price, value: @script.price
       tr
         th.arrow_box = f.text_field :experience_title
       tr
-        td.center  = f.text_area :experience, value: Script.experience
+        td.center  = f.text_area :experience, value: @script.experience
       tr
         th.arrow_box = f.text_field :refund_title
       tr
-        td.center  = f.text_area :refund, value: Script.refund
+        td.center  = f.text_area :refund, value: @script.refund
       tr
         th.arrow_box = f.text_field :usp_title
       tr
-        td.center  = f.text_area :usp, value: Script.usp
+        td.center  = f.text_area :usp, value: @script.usp
       tr
         th.arrow_box = f.text_field :other_receive_1_title
       tr
-        td.center  = f.text_area :other_receive_1, value: Script.other_receive_1
+        td.center  = f.text_area :other_receive_1, value: @script.other_receive_1
       tr
         th.arrow_box = f.text_field :other_receive_2_title
       tr
-        td.center  = f.text_area :other_receive_2, value: Script.other_receive_2
+        td.center  = f.text_area :other_receive_2, value: @script.other_receive_2
       tr
         th.arrow_box = f.text_field :other_receive_3_title
       tr
-        td.center  = f.text_area :other_receive_3, value: Script.other_receive_3
+        td.center  = f.text_area :other_receive_3, value: @script.other_receive_3
