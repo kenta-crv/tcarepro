@@ -63,11 +63,11 @@
         th
           | フォーム送信NG
         td
-          = f.check_box :forever
+          = check_box :customer, :forever
         th
           | 対象分類
         td
-          = text_field :industry
+          =text_field :customer, :industry
   br
   table.space[width="90%"]
     col[width="20%"]
