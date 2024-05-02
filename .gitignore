@@ -38,3 +38,5 @@ auto_contact/screenshots
 
 node_modules
 /vendor/bundle
+development.sqlite3
+public
