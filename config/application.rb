@@ -36,11 +36,11 @@ module Smart
 
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
-    address: 'smtp3.gmoserver.jp',
+    address: 'smtp.lolipop.jp',
     domain: 'ri-plus.jp',
-    port: 465,
+    port: 587,
     user_name: 'recruit@ri-plus.jp',
-    password: 'yL4mrefef#',
+    password: '6H7j_yq_2024',
     authentication: 'plain',
     enable_starttls_auto: true
     }
