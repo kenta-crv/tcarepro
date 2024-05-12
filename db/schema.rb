@@ -458,7 +458,10 @@ ActiveRecord::Schema.define(version: 20240314093551) do
     t.datetime "updated_at", null: false
     t.integer "contract_id"
     t.string "title"
+<<<<<<< HEAD
     t.string "experienc_title"
+=======
+>>>>>>> 982984d6d30d22275f93799cc4dc03b8d00db151
     t.string "requirement_title"
     t.string "price_title"
     t.string "experience_title"
