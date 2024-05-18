@@ -42,3 +42,4 @@ node_modules
 development.sqlite3
 public
 >>>>>>> 982984d6d30d22275f93799cc4dc03b8d00db151
+.env
