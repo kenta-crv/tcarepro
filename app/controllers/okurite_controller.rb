@@ -12,6 +12,7 @@ class OkuriteController < ApplicationController
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
 
+
   def show
     @customer = Customer.find(params[:id])
   end
