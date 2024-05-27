@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :staffs
   root to: 'customers#index'
 
+  patch '/okuritecallback/:id/update_status', to: 'okuritecallbacks#update_status', as: :update_okuritecallback_status
   #管理者アカウント
   devise_for :admins, controllers: {
     registrations: 'admins/registrations'
@@ -151,7 +152,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get '*path', controller: 'application', action: 'render_404'
+  get 'test', to: 'static_pages#test'
 
+  get '*path', controller: 'application', action: 'render_404'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
