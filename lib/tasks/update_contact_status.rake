@@ -20,9 +20,9 @@ namespace :update_contact_status do
     contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
     if contact_tracking
       if updateMode=="1"
-        contact_tracking.update(status: "送信済", , sended_at: current_time)
+        contact_tracking.update(status: "送信済",  sended_at: current_time)
       else
-        contact_tracking.update(status:"送信不可")
+        contact_tracking.update(status:"送信不可",  sended_at: current_time)
       end
       puts "Contact tracking status updated successfully for ID: #{contact_tracking_id}"
     else

@@ -152,7 +152,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'test', to: 'static_pages#test'
+  post 'restart', to: 'restart#restart'
+  post 'webhook/restart', to: 'webhooks#restart'
 
   get '*path', controller: 'application', action: 'render_404'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
