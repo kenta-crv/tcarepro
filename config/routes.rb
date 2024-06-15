@@ -10,7 +10,10 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
-  resources :users, only: [:show]
+  resources :users, only: [:show, :destroy] do
+    resources :attendances, except: [:index]
+  end
+  resources :attendances, only: [:index]
   #ワーカーアカウント
   devise_for :workers, controllers: {
     registrations: 'workers/registrations',
@@ -75,6 +78,7 @@ Rails.application.routes.draw do
   resources :customers do
     resources :calls
     collection do
+      get :industry_code_total
       get :complete
       post :import
       post :update_import

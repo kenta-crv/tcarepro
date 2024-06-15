@@ -250,24 +250,14 @@ class CustomersController < ApplicationController
 
       @detailcalls = Customer2.joins(:calls).select('calls.id')
       @detailcustomers = Call.joins(:customer).select('customers.id')
-    when "call_import"
-      call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
-      generate_call =
-        CSV.generate(headers:true) do |csv|
-          csv << call_attributes
-          Call.all.each do |task|
-            csv << call_attributes.map{|attr| task.send(attr)}
-          end
-        end
-      respond_to do |format|
-        format.html
-        format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-      end
-    when "update_import"
-      respond_to do |format|
-       format.html
-       format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-      end
+
+      @app_customers_last_month = Call.joins(:customer).where('calls.created_at >= ? AND calls.created_at < ?', Time.current.prev_month.beginning_of_month, Time.current.beginning_of_month).select('customers.id')
+      @app_customers_last_month_total_industry_value = @app_customers_last_month.present? ? @app_customers_last_month.sum(:industry_code) : 0
+
+      @app_customers = Call.joins(:customer).where('calls.created_at > ?', Time.current.beginning_of_month).where('calls.created_at < ?', Time.current.end_of_month).select('customers.id')
+      @app_customers_total_industry_value = @app_customers.present? ? @app_customers.sum(:industry_code) : 0
+
+      @customer_info = display_customer_names
     when "workers" then
       @customers_app = @customers.where(call_id: 1)
       #today
@@ -382,8 +372,39 @@ class CustomersController < ApplicationController
   
     render json: { answer: answer.round(2) }
   end
+  #customerの合計をカウント
+  def industry_code_total
+    @type = params[:type]
+    @calls = Call.where(statu: "APP") # statuが"APP"のcallのみを取得
+    @customers = Customer.includes(:calls).all
+    @admins = Admin.all
+    @users = User.all
+
+    @user_industry_code_totals = @users.map do |user|
+      {
+        user_id: user.id,
+        industry_code_total: user.industry_code_total # 実際の計算ロジックに応じて変更
+      }
+    end
+
+    # 各customerごとの合計業界コードを計算
+    @customer_industry_code_totals = @customers.map do |customer|
+      {
+        customer_id: customer.id,
+        industry_code_total: customer.calls.where(statu: "APP").sum { |call| call.user.industry_code_total }
+      }
+    end
+  end
   
   private
+
+  def display_customer_names
+    customer_info = []
+    INDUSTRY_MAPPING.each do |customer_name, info|
+      customer_info << "#{customer_name}: #{info[:company_name]}"
+    end
+    customer_info
+  end
 
   def create_pdf_page(report, data)
     report.start_new_page do |page|

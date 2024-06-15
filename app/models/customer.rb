@@ -1,6 +1,28 @@
 require 'scraping'
 
 class Customer < ApplicationRecord
+  INDUSTRY_MAPPING = {
+    'コンシェルテック（営業）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "10日"},
+    'コンシェルテック（販売）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "10日"},
+    'コンシェルテック（工場）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "10日"},
+    'SORAIRO（工場）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "10日"},
+    'SORAIRO（食品）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "10日"},
+    'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日"},
+    'ニュートラル（介護）' => {industry_code: 25000, company_name: "ニュートラル協同組合", payment_date: "10日"},
+    'グローバル（食品）' => {industry_code: 27000, company_name: "グローバル協同組合", payment_date: "10日"},
+    'グローバル（介護）' => {industry_code: 27000, company_name: "グローバル協同組合", payment_date: "10日"},
+    'ワークリレーション' => {industry_code: 15000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
+    'データ入力' => {industry_code: 15000, company_name: "株式会社セールスプロ", payment_date: "10日"},
+    '富士（工場）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"},
+    '富士（飲食）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"},
+    'er（介護）' => {industry_code: 30000, company_name: "erプラス協同組合", payment_date: "10日"},
+    'CVC（受付）' => {industry_code: 28500, company_name: "一般監理事業団体・CVC TOKYO事業協同組合", payment_date: "10日"},
+    'CVC（飲食）' => {industry_code: 28500, company_name: "一般監理事業団体・CVC TOKYO事業協同組合", payment_date: "10日"},
+    'CVC（工場）' => {industry_code: 30000, company_name: "一般監理事業団体・CVC TOKYO事業協同組合", payment_date: "10日"},
+    'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
+  }
+
+  before_save :set_industry_code
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
   has_many :estimates
@@ -309,19 +331,30 @@ class Customer < ApplicationRecord
     url_arry
   end
 
-  #def special_number_for_index
-   #if industry&.to_s&.include?('ワークリレーション') || industry&.to_s&.include?('bloom')
-    # 20000
-    #elsif industry&.to_s&.include?('コンシェルテック') || industry&.to_s&.include?('セールスプロ')
-    # 15000
-    #elsif industry&.to_s&.include?('飲食店') || industry&.to_s&.include?('介護')
-    # 25000
-    #else
-    #  0
-    #end
-  #end
+  #APPをカウントカウント
+  def total_industry_code_for_app_calls
+    calls.where(statu: 'APP').joins(:customer).sum('customers.industry_code')
+  end
+
+  def industry_name
+    INDUSTRY_MAPPING.each do |key, value|
+      return key if value[:company_name] == self.company_name
+    end
+    nil
+  end
+
+  def payment_date
+    INDUSTRY_MAPPING.each do |key, value|
+      return value[:payment_date] if value[:company_name] == self.company_name
+    end
+    nil
+  end
 
   private
+
+  def set_industry_code
+    self.industry_code = INDUSTRY_MAPPING[self.industry]
+  end
 
   def scraping
     @scraping ||= Scraping.new

@@ -1,13 +1,4 @@
 br
-br
-.row
- .col-1
- .col-10.center
-  = link_to "Callインポート", information_path(type: "call_import"), class:"btn btn-success both"
-  = link_to "Customerアップデート", information_path(type: "update_import"), class:"btn btn-success both"
-  = link_to "リスト製作者", information_path(type: "workers"), class:"btn btn-success both"
-  = link_to "analytics", information_path(type: "analy1"), class:"btn btn-success both"
- .col-1
 
 #customers-information
    - case @type
