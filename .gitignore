@@ -2,7 +2,7 @@
 !/tmp/.keep
 
 # *.log
-
+/public
 
 # Ignore bundler config.
 /.bundle
