@@ -3,7 +3,6 @@ from typing import List, Tuple, Dict, Set, Union,Optional
 from curses import noecho
 from webdriver_manager.chrome import ChromeDriverManager
 
-from datetime import datetime
 from logging import ERROR
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -136,9 +135,9 @@ form_attr_list:Dict[str,Dict[str,List[str]]] =  {
                         "input_name_list":["company"],
                         "table_label_list":["会社名"]
                     },
-    'kana': {
+    'person_kana': {
                         "input_name_list":["kana"],
-                        "table_label_list":["かな" , "カナ"]
+                        "table_label_list":["ふりがな","フリガナ" ,"かな" , "カナ", "せい", "めい", "セイ", "メイ"]
                     },
     'post': {
                         "input_name_list":["post"],
@@ -162,7 +161,7 @@ form_attr_list:Dict[str,Dict[str,List[str]]] =  {
                     },
     'person':       {
                         "input_name_list": ["name","manager","person","president"],
-                        "table_label_list":["担当者","お名前","名前"]
+                        "table_label_list":["担当者","お名前","名前","性","名"]
                     },
     'from_tel':     {
                         "input_name_list": ["phone" , "tel" , "mobile"],
@@ -186,23 +185,24 @@ data = json.loads(parsed_data)
 def setControlData(form):
     global data
     try:
-        txt = form.find_element(By.XPATH,xpath).get_attribute('outerHTML')
+        txt = form.get_attribute('outerHTML')
     except:
-        return
+        return 
 
     for tag_name in ['input', 'textarea']:
-        elements = selectedForm.find_elements(By.TAG_NAME, tag_name)
+        elements = form.find_elements(By.TAG_NAME, tag_name)
         for element in elements:
             if not element.get_attribute('value'):
                 xpath = driver.execute_script(get_xpath, element)
                 driver.execute_script(get_xpath)
-
+    
                 find_flg=-1
                 for key, value in form_attr_list.items():
                     if key != "submit":
                         for i in value["input_name_list"]:
+                            txt = form.find_element(By.XPATH,xpath).get_attribute('outerHTML')
                             if txt.find(i) > -1 and txt.find(i+"=") == -1 :
-                                print(i, txt, txt.find(i) )
+
                                 try:
                                     form.find_element(By.XPATH,xpath).clear()
                                     form.find_element(By.XPATH,xpath).send_keys(data[key])
@@ -228,7 +228,8 @@ def setControlDataByLabel(form):
                         input_element.clear()
                         input_element.send_keys(data[key])
                 except:
-                    pass            
+                   pass            
+
 
 def setControlDataByPlaceholder(form):
     global data

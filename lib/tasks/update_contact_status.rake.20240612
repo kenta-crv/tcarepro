@@ -2,9 +2,19 @@ namespace :update_contact_status do
   desc "Update contact status to '送信済' for a specific contact_tracking record"
   task update: :environment do
     # コマンドライン引数からIDを取得
-    contact_tracking_id = ENV['contact_tracking_id'].to_i
-    updateMode= ENV['update_mode']
-    puts "Contact Tracking ID: #{contact_tracking_id}"
+    contact_tracking_id = ARGV[0].to_i
+    argument = ARGV[0]
+
+    # 正規表現を使って ID を抽出する
+    match = argument.match(/\[(\d+)\]/)
+    if match
+      contact_tracking_id = match[1].to_i
+      puts "Contact Tracking ID: #{contact_tracking_id}"
+    else
+      puts "Invalid argument format"
+    end
+    puts " Update Parameter: #{ARGV[1]}"
+    updateMode=ARGV[1]
     puts " ### " + updateMode
     #contact_tracking_id=214589
     # IDに対応するcontact_trackingレコードを取得して、statusを更新する

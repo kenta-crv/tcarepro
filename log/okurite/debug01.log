@@ -1,0 +1,274 @@
+20240613 094954 https://www.facebook.com/verisite/?locale=ja_JP 送信開始
+20240613 095002 https://www.facebook.com/verisite/?locale=ja_JP 送信失敗（001）
+20240613 095003 http://y-cuore-inc.com/contact/#:~:text=%E2%80%BB%E5%BD%93%E7%A4%BE%E3%81%AE%E4%BB%A3%E8%A1%A8%E7%95%AA%E5%8F%B7,%E3%81%94%E5%AF%BE%E5%BF%9C%E3%81%8A%E9%A1%98%E3%81%84%E3%81%84%E3%81%9F%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&text=%E5%BD%93%E3%82%B5%E3%82%A4%E3%83%88%E3%81%AE%E9%81%8B%E5%96%B6%E3%81%AB%E9%9A%9B%E3%81%97,%E3%81%AB%E5%8A%AA%E3%82%81%E3%81%A6%E3%81%8A%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82 送信開始
+20240613 095004 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
+20240613 095004 お問い合わせ項目<span>*</span>
+20240613 095004 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095004 <textarea name="お問い合わせ内容" cols="20" rows="8" id="mfp_element_23" class="vw100 mfp_element_textarea mfp_element_all" placeholder="" data-exc="1"></textarea>
+20240613 095004 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
+20240613 095014 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
+20240613 095024 .//*[contains(text(), "団体") and not(self::input or self::textarea)]
+20240613 095034 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
+20240613 095034 メールアドレス<span>*</span>
+20240613 095034 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095034 <input type="email" class="vw100 mfp_element_email mfp_element_all" data-type="email" name="email" size="40" placeholder="(例) aaa@bbb.jp" id="mfp_element_22" data-exc="1">
+20240613 095034 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
+20240613 095044 .//*[contains(text(), "フリガナ") and not(self::input or self::textarea)]
+20240613 095044 フリガナ<span>*</span>
+20240613 095044 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095044 <input type="text" class="vw100 mfp_element_text mfp_element_all mfp_defaultValue" value="" id="mfp_element_7" name="フリガナ" placeholder="フリガナをご入力ください" data-exc="1">
+20240613 095044 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
+20240613 095044 ▼都道府県を選択してください
+20240613 095044 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095044 <input type="text" class="vw100 mfp_element_text mfp_element_all mfp_defaultValue" value="" id="mfp_element_20" name="市区町村" placeholder="" data-exc="1">
+20240613 095045 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
+20240613 095055 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
+20240613 095105 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
+20240613 095115 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
+20240613 095115 お名前<span>*</span>
+20240613 095115 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095115 <input type="text" class="vw100 mfp_element_text mfp_element_all mfp_defaultValue" value="" id="mfp_element_6" name="お名前" placeholder="お名前をご入力ください" data-exc="1">
+20240613 095115 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
+20240613 095115 お電話番号（携帯可）
+20240613 095115 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095115 <input type="tel" class="vw100 mfp_element_tel mfp_element_all" data-type="tel" name="電話番号" size="16" data-min="9" placeholder="(例) 03-1234-5678" id="mfp_element_21" data-exc="1">
+20240613 095115 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
+20240613 095115 年齢
+20240613 095115 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095115 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
+20240613 095125 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
+20240613 095125 〒
+										<input type="text" name="郵便番号" id="mfp_element_18" maxlength="8" value="" class="vw100 mfp_element_text mfp_element_all mfp_defaultValue" placeholder="" data-exc="1">
+									<div class="mfp_err" id="errormsg_郵便番号"></div>
+20240613 095125 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095137 http://y-cuore-inc.com/contact/#:~:text=%E2%80%BB%E5%BD%93%E7%A4%BE%E3%81%AE%E4%BB%A3%E8%A1%A8%E7%95%AA%E5%8F%B7,%E3%81%94%E5%AF%BE%E5%BF%9C%E3%81%8A%E9%A1%98%E3%81%84%E3%81%84%E3%81%9F%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&text=%E5%BD%93%E3%82%B5%E3%82%A4%E3%83%88%E3%81%AE%E9%81%8B%E5%96%B6%E3%81%AB%E9%9A%9B%E3%81%97,%E3%81%AB%E5%8A%AA%E3%82%81%E3%81%A6%E3%81%8A%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82 送信成功
+20240613 095139 https://www.amenity-ss.co.jp/form/index.php 送信開始
+20240613 095140 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
+20240613 095140 お問い合わせの項目<span class="must">*</span>
+20240613 095140 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095140 <textarea name="inquiry" class="inquiry"></textarea>
+20240613 095140 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
+20240613 095150 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
+20240613 095200 .//*[contains(text(), "団体") and not(self::input or self::textarea)]
+20240613 095210 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
+20240613 095210 メールアドレス<span class="must">*</span>
+20240613 095210 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095210 <input type="text" name="email" value="" class="input-large">
+20240613 095210 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
+20240613 095220 .//*[contains(text(), "フリガナ") and not(self::input or self::textarea)]
+20240613 095230 .//*[contains(text(), "かな") and not(self::input or self::textarea)]
+20240613 095240 .//*[contains(text(), "カナ") and not(self::input or self::textarea)]
+20240613 095250 .//*[contains(text(), "せい") and not(self::input or self::textarea)]
+20240613 095300 .//*[contains(text(), "めい") and not(self::input or self::textarea)]
+20240613 095310 .//*[contains(text(), "セイ") and not(self::input or self::textarea)]
+20240613 095320 .//*[contains(text(), "メイ") and not(self::input or self::textarea)]
+20240613 095330 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
+20240613 095340 .//*[contains(text(), "住所") and not(self::input or self::textarea)]
+20240613 095340 住所
+20240613 095340 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095340 <input type="text" name="adress" value="" class="input-large">
+20240613 095340 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
+20240613 095340 お問合わせの件名<span class="must">*</span>
+20240613 095340 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095340 <input type="text" name="subject" value="" class="input-large">
+20240613 095341 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
+20240613 095351 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
+20240613 095401 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
+20240613 095401 お名前<span class="must">*</span>
+20240613 095401 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095401 <input type="text" name="name" value="" class="input-small">
+20240613 095401 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
+20240613 095401 電話番号<span class="must">*</span><br>(ハイフンあり)
+20240613 095401 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095401 <input type="text" placeholder="03-1111-2222" name="telno" value="" class="input-large">
+20240613 095401 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
+20240613 095411 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
+20240613 095421 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
+20240613 095451 https://www.amenity-ss.co.jp/form/index.php 送信成功
+20240613 095452 https://www.nacoo.com/contact/ 送信開始
+20240613 095513 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
+20240613 095513 お問い合わせ
+20240613 095513 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095523 .//*[contains(text(), "問合わせ") and not(self::input or self::textarea)]
+20240613 095533 .//*[contains(text(), "問合せ") and not(self::input or self::textarea)]
+20240613 095543 .//*[contains(text(), "相談内容") and not(self::input or self::textarea)]
+20240613 095553 .//*[contains(text(), "ご質問") and not(self::input or self::textarea)]
+20240613 095553 よくあるご質問
+20240613 095553 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095603 .//*[contains(text(), "ご用件") and not(self::input or self::textarea)]
+20240613 095614 .//*[contains(text(), "コメント") and not(self::input or self::textarea)]
+20240613 095624 .//*[contains(text(), "本文") and not(self::input or self::textarea)]
+20240613 095624 本文へ
+20240613 095624 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095634 .//*[contains(text(), "要望") and not(self::input or self::textarea)]
+20240613 095644 .//*[contains(text(), "内容") and not(self::input or self::textarea)]
+20240613 095654 .//*[contains(text(), "その他") and not(self::input or self::textarea)]
+20240613 095654 その他に関するお問い合わせはこちら
+20240613 095654 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095704 .//*[contains(text(), "メッセージ") and not(self::input or self::textarea)]
+20240613 095704 トップメッセージ
+20240613 095704 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095714 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
+20240613 095724 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
+20240613 095724 企業情報
+20240613 095724 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095724 <input name="dnn$ctr391$SearchInput$txtSearch" type="text" maxlength="200" id="dnn_ctr391_SearchInput_txtSearch" class="NormalTextBox txtSearch" title="入力欄" onkeydown="if(event.keyCode==13){__doPostBack('dnn$ctr391$SearchInput$cmdGo','')}">
+20240613 095740 https://www.nacoo.com/contact/ 送信失敗（001）
+20240613 095741 https://materialpr.jp/contact/ 送信開始
+20240613 095742 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
+20240613 095742  その他お問い合わせ 
+20240613 095742 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095742 <textarea id="satori__custom_field_5fcf010792e2d5da4" class="satori__custom_field_5fcf010792e2d5da4_e9fc69626e49ccfa" name="custom_field[5fcf010792e2d5da4]" placeholder=""></textarea>
+20240613 095742 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
+20240613 095752 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
+20240613 095752  企業・団体名 <span class="satori__require"> 必須 </span> 
+20240613 095752 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095752 <input id="satori__customer_lead_company_name" class="satori__customer_lead_company_name_e9fc69626e49ccfa" name="customer[lead_company_name]" placeholder="株式会社マテリアル" type="text">
+20240613 095752 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
+20240613 095752  メールアドレス <span class="satori__require"> 必須 </span> 
+20240613 095752 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 095752 <input id="satori__customer_email" class="satori__customer_email_e9fc69626e49ccfa" name="customer[email]" placeholder="example@materialpr.jp" type="email">
+20240613 095753 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
+20240613 095803 .//*[contains(text(), "フリガナ") and not(self::input or self::textarea)]
+20240613 095813 .//*[contains(text(), "かな") and not(self::input or self::textarea)]
+20240613 095823 .//*[contains(text(), "カナ") and not(self::input or self::textarea)]
+20240613 095833 .//*[contains(text(), "せい") and not(self::input or self::textarea)]
+20240613 095843 .//*[contains(text(), "めい") and not(self::input or self::textarea)]
+20240613 095853 .//*[contains(text(), "セイ") and not(self::input or self::textarea)]
+20240613 095903 .//*[contains(text(), "メイ") and not(self::input or self::textarea)]
+20240613 095913 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
+20240613 095923 .//*[contains(text(), "住所") and not(self::input or self::textarea)]
+20240613 095933 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
+20240613 095943 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
+20240613 095953 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
+20240613 100003 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
+20240613 100013 .//*[contains(text(), "名前") and not(self::input or self::textarea)]
+20240613 100023 .//*[contains(text(), "性") and not(self::input or self::textarea)]
+20240613 100033 .//*[contains(text(), "名") and not(self::input or self::textarea)]
+20240613 100033  名 <span class="satori__require"> 必須 </span> 
+20240613 100033 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100033 <input id="satori__customer_first_name" class="satori__customer_first_name_e9fc69626e49ccfa" name="customer[first_name]" placeholder="太郎" type="text">
+20240613 100033 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
+20240613 100033  電話番号 <span class="satori__not_require"> 任意 </span> 
+20240613 100033 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100033 <input id="satori__customer_phone_number" class="satori__customer_phone_number_e9fc69626e49ccfa" name="customer[phone_number]" placeholder="03-5459-5490" type="tel">
+20240613 100033 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
+20240613 100043 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
+20240613 100053 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
+20240613 100112 https://materialpr.jp/contact/ 送信成功
+20240613 100114 https://materialpr.jp/contact/ 送信開始
+20240613 100114 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
+20240613 100114  その他お問い合わせ 
+20240613 100114 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100114 <textarea id="satori__custom_field_5fcf010792e2d5da4" class="satori__custom_field_5fcf010792e2d5da4_e9fc69626e49ccfa" name="custom_field[5fcf010792e2d5da4]" placeholder=""></textarea>
+20240613 100114 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
+20240613 100124 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
+20240613 100124  企業・団体名 <span class="satori__require"> 必須 </span> 
+20240613 100124 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100125 <input id="satori__customer_lead_company_name" class="satori__customer_lead_company_name_e9fc69626e49ccfa" name="customer[lead_company_name]" placeholder="株式会社マテリアル" type="text">
+20240613 100125 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
+20240613 100125  メールアドレス <span class="satori__require"> 必須 </span> 
+20240613 100125 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100125 <input id="satori__customer_email" class="satori__customer_email_e9fc69626e49ccfa" name="customer[email]" placeholder="example@materialpr.jp" type="email">
+20240613 100125 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
+20240613 100135 .//*[contains(text(), "フリガナ") and not(self::input or self::textarea)]
+20240613 100145 .//*[contains(text(), "かな") and not(self::input or self::textarea)]
+20240613 100155 .//*[contains(text(), "カナ") and not(self::input or self::textarea)]
+20240613 100205 .//*[contains(text(), "せい") and not(self::input or self::textarea)]
+20240613 100215 .//*[contains(text(), "めい") and not(self::input or self::textarea)]
+20240613 100225 .//*[contains(text(), "セイ") and not(self::input or self::textarea)]
+20240613 100235 .//*[contains(text(), "メイ") and not(self::input or self::textarea)]
+20240613 100245 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
+20240613 100255 .//*[contains(text(), "住所") and not(self::input or self::textarea)]
+20240613 100305 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
+20240613 100315 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
+20240613 100325 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
+20240613 100335 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
+20240613 100345 .//*[contains(text(), "名前") and not(self::input or self::textarea)]
+20240613 100355 .//*[contains(text(), "性") and not(self::input or self::textarea)]
+20240613 100405 .//*[contains(text(), "名") and not(self::input or self::textarea)]
+20240613 100405  名 <span class="satori__require"> 必須 </span> 
+20240613 100405 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100405 <input id="satori__customer_first_name" class="satori__customer_first_name_e9fc69626e49ccfa" name="customer[first_name]" placeholder="太郎" type="text">
+20240613 100405 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
+20240613 100405  電話番号 <span class="satori__not_require"> 任意 </span> 
+20240613 100405 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100405 <input id="satori__customer_phone_number" class="satori__customer_phone_number_e9fc69626e49ccfa" name="customer[phone_number]" placeholder="03-5459-5490" type="tel">
+20240613 100406 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
+20240613 100416 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
+20240613 100426 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
+20240613 100444 https://materialpr.jp/contact/ 送信成功
+20240613 100446 http://www.seigi-mold.co.jp/contact 送信開始
+20240613 100448 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
+20240613 100448 問い合わせ内容<span class="hissu">必須</span>
+20240613 100448 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100448 <textarea name="naiyou" id="naiyou" class="naiyou" cols="50" rows="5" placeholder="問い合わせ内容を入力"></textarea>
+20240613 100448 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
+20240613 100458 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
+20240613 100458 企業名・団体名
+20240613 100458 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100458 <input type="text" name="campany" id="campany" size="60" value="" placeholder="例）精技金型株式会社">
+20240613 100458 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
+20240613 100458 メールアドレス<span class="hissu">必須</span>
+20240613 100458 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100459 <input type="email" name="mail-ad" id="mail-ad" size="60" value="" placeholder="例）sample@sample.co.jp" data-conv-half-alphanumeric="true" autocomplete="email">
+20240613 100459 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
+20240613 100509 .//*[contains(text(), "フリガナ") and not(self::input or self::textarea)]
+20240613 100519 .//*[contains(text(), "かな") and not(self::input or self::textarea)]
+20240613 100529 .//*[contains(text(), "カナ") and not(self::input or self::textarea)]
+20240613 100539 .//*[contains(text(), "せい") and not(self::input or self::textarea)]
+20240613 100549 .//*[contains(text(), "めい") and not(self::input or self::textarea)]
+20240613 100559 .//*[contains(text(), "セイ") and not(self::input or self::textarea)]
+20240613 100609 .//*[contains(text(), "メイ") and not(self::input or self::textarea)]
+20240613 100619 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
+20240613 100629 .//*[contains(text(), "住所") and not(self::input or self::textarea)]
+20240613 100639 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
+20240613 100649 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
+20240613 100659 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
+20240613 100709 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
+20240613 100709 お名前<span class="hissu">必須</span>
+20240613 100709 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100709 <input type="text" name="namae" id="namae" size="60" value="" placeholder="例）山田太郎">
+20240613 100709 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
+20240613 100709 電話番号
+20240613 100709 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100709 <input type="text" name="tel" id="tel" size="60" value="" placeholder="例）000-000-0000" inputmode="tel">
+20240613 100709 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
+20240613 100719 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
+20240613 100729 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
+20240613 100756 http://www.seigi-mold.co.jp/contact 送信失敗（001）
+20240613 100757 http://www.well-b.info/contact.html 送信開始
+20240613 100758 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
+20240613 100758 お問い合わせ内容<span class="formred">必須</span>
+20240613 100758 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100758 <textarea name="お問い合わせ内容" cols="32" rows="10"></textarea>
+20240613 100758 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
+20240613 100808 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
+20240613 100818 .//*[contains(text(), "団体") and not(self::input or self::textarea)]
+20240613 100828 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
+20240613 100828 メールアドレス<span class="formred">必須</span>
+20240613 100828 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 100828 <input size="50" type="text" name="Email" style="width: 100%" placeholder="abcd@yourdomain.co.jp">
+20240613 100828 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
+20240613 100838 .//*[contains(text(), "フリガナ") and not(self::input or self::textarea)]
+20240613 100848 .//*[contains(text(), "かな") and not(self::input or self::textarea)]
+20240613 100858 .//*[contains(text(), "カナ") and not(self::input or self::textarea)]
+20240613 100908 .//*[contains(text(), "せい") and not(self::input or self::textarea)]
+20240613 100918 .//*[contains(text(), "めい") and not(self::input or self::textarea)]
+20240613 100928 .//*[contains(text(), "セイ") and not(self::input or self::textarea)]
+20240613 100938 .//*[contains(text(), "メイ") and not(self::input or self::textarea)]
+20240613 100948 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
+20240613 100958 .//*[contains(text(), "住所") and not(self::input or self::textarea)]
+20240613 101008 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
+20240613 101018 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
+20240613 101028 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
+20240613 101038 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
+20240613 101039 お名前<span class="formred">必須</span>
+20240613 101039 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240613 101039 <input size="20" type="text" name="お名前氏名" style="width: 100%">
+20240613 101039 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
+20240613 101049 .//*[contains(text(), "携帯番号") and not(self::input or self::textarea)]
+20240613 101059 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
+20240613 101109 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
+20240613 101119 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
+20240613 101154 http://www.well-b.info/contact.html 送信成功
