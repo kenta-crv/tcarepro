@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240314093551) do
+ActiveRecord::Schema.define(version: 20240614044853) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -33,6 +33,16 @@ ActiveRecord::Schema.define(version: 20240314093551) do
     t.datetime "updated_at", null: false
     t.index ["crowdwork_id"], name: "index_assignments_on_crowdwork_id"
     t.index ["worker_id"], name: "index_assignments_on_worker_id"
+  end
+
+  create_table "attendances", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "month"
+    t.integer "year"
+    t.float "hours_worked"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
   create_table "autoform_results", force: :cascade do |t|
@@ -224,6 +234,9 @@ ActiveRecord::Schema.define(version: 20240314093551) do
     t.string "other_receive_1_title"
     t.string "other_receive_2_title"
     t.string "other_receive_3_title"
+    t.integer "industry_code"
+    t.string "company_name"
+    t.string "payment_date"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
@@ -458,10 +471,7 @@ ActiveRecord::Schema.define(version: 20240314093551) do
     t.datetime "updated_at", null: false
     t.integer "contract_id"
     t.string "title"
-<<<<<<< HEAD
     t.string "experienc_title"
-=======
->>>>>>> 982984d6d30d22275f93799cc4dc03b8d00db151
     t.string "requirement_title"
     t.string "price_title"
     t.string "experience_title"

@@ -1,20 +1,25 @@
 br/
 br/
-br/
-br/
-table.header-table.space[width="90%"]
-  tr
-    th[colspan="13"]
-      | スタッフ別コール
-  tr
+
+table
+  thead
+   tr
     th
       | スタッフ名
     th
-      | コール数
+      | 架電数
     th
-      | 月間コール数
+      | 月間架電数
     th
-      | 先月コール数
+      | 先月架電数
+    th
+      | 今月売上
+    th
+      | 先月売上
+    th
+      | 先月勤務
+    th
+      | 獲得価値
     th
       | 着信留守
     th
@@ -32,12 +37,13 @@ table.header-table.space[width="90%"]
     th
       | 永久NG
     th
-      | NG率
-  - @users.each do |user|
-    - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
-    tr
+      | 削除
+   tbody
+    - @users.each do |user|
+     - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
+     tr
       td
-        = user.user_name
+        = link_to user.user_name, new_user_attendance_path(user)
       td
         = link_to user.calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
@@ -45,8 +51,33 @@ table.header-table.space[width="90%"]
       td
         = link_to user.calls.where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
+        - app_customers_for_user = @app_customers.where(user_id: user.id)
+        = app_customers_for_user.present? ? app_customers_for_user.sum(:industry_code) : 0 
+      td 
+        - app_customers_for_user_last_month = @app_customers_last_month.where(user_id: user.id)
+        = app_customers_for_user_last_month.present? ? app_customers_for_user_last_month.sum(:industry_code) : 0
+      td
+       - latest_attendance = user.attendances.order(created_at: :desc).first
+       - if latest_attendance.present? && latest_attendance.hours_worked.present?
+        = latest_attendance.hours_worked
+       - else
+        | No attendance record
+      td.red
+       - if latest_attendance.present? && latest_attendance.hours_worked.present?
+        - last_month_customers = user.calls.where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).count
+        - hours_worked = latest_attendance.hours_worked.to_f
+        - if hours_worked > 0
+         = (last_month_customers.to_f / hours_worked)
+        - else
+         | N/A
+       - else
+        | -    
+      td
         = user_calls_month.select { |call| call.statu == "着信留守" }.count
         br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "着信留守" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
       td
         = user_calls_month.select { |call| call.statu == "担当者不在" }.count
         br
@@ -90,7 +121,9 @@ table.header-table.space[width="90%"]
         = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "永久NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
         |)
       td
-        - user_app = user_calls_month.select { |call| call.statu == "APP" }.count
-        - total_calls = user_calls_month.select { |call| call.statu == "NG" }.count + user_calls_month.select { |call| call.statu == "フロントNG" }.count + user_calls_month.select { |call| call.statu == "クロージングNG" }.count + user_calls_month.select { |call| call.statu == "永久NG" }.count
-        - percentage = total_calls > 0 ? (user_app / total_calls.to_f) * 100 : 0
-        = number_to_percentage(percentage, precision: 1)
+        = link_to '削除', user_path(user),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}
+
+
+
+
+
