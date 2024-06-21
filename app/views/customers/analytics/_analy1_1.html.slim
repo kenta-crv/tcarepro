@@ -61,7 +61,7 @@ table
        - if latest_attendance.present? && latest_attendance.hours_worked.present?
         = latest_attendance.hours_worked
        - else
-        | No attendance record
+        | -
       td.red
        - if latest_attendance.present? && latest_attendance.hours_worked.present?
         - last_month_customers = user.calls.where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).count
@@ -122,8 +122,6 @@ table
         |)
       td
         = link_to '削除', user_path(user),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}
-
-
 
 
 

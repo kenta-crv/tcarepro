@@ -257,7 +257,8 @@ class CustomersController < ApplicationController
       @app_customers = Call.joins(:customer).where('calls.created_at > ?', Time.current.beginning_of_month).where('calls.created_at < ?', Time.current.end_of_month).select('customers.id')
       @app_customers_total_industry_value = @app_customers.present? ? @app_customers.sum(:industry_code) : 0
 
-      @customer_info = display_customer_names
+      @industry_mapping = Customer::INDUSTRY_MAPPING
+      @app_calls_counts = calculate_app_calls_counts
     when "workers" then
       @customers_app = @customers.where(call_id: 1)
       #today
@@ -372,29 +373,7 @@ class CustomersController < ApplicationController
   
     render json: { answer: answer.round(2) }
   end
-  #customerの合計をカウント
-  def industry_code_total
-    @type = params[:type]
-    @calls = Call.where(statu: "APP") # statuが"APP"のcallのみを取得
-    @customers = Customer.includes(:calls).all
-    @admins = Admin.all
-    @users = User.all
 
-    @user_industry_code_totals = @users.map do |user|
-      {
-        user_id: user.id,
-        industry_code_total: user.industry_code_total # 実際の計算ロジックに応じて変更
-      }
-    end
-
-    # 各customerごとの合計業界コードを計算
-    @customer_industry_code_totals = @customers.map do |customer|
-      {
-        customer_id: customer.id,
-        industry_code_total: customer.calls.where(statu: "APP").sum { |call| call.user.industry_code_total }
-      }
-    end
-  end
   
   private
 
@@ -447,7 +426,17 @@ class CustomersController < ApplicationController
       )
     end
   end
-  
+
+  def calculate_app_calls_counts
+    counts = {}
+    @industry_mapping.each do |key, value|
+      calls = Customer.joins(:calls).where(industry: value[:industry], calls: { statu: 'APP' }).count
+      puts "Key: #{key}, Value: #{value}, Calls Count: #{calls}"
+      counts[key] = calls
+    end
+    counts
+  end
+
     def customer_params
       params.require(:customer).permit(
         :company, #会社名
