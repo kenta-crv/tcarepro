@@ -140,7 +140,13 @@
                   | 検索条件
                 td
                   = f.search_field :industry_cont, type: "text"
-
+              tr
+                th
+                  | SFA
+                td
+                  = f.check_box :forever, { checked: true, disabled: true }, 'true', 'false'
+                th
+                td
               tr
                 th
                   | 最終インポート日時（最初）

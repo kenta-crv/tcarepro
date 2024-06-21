@@ -22,7 +22,7 @@ class Customer < ApplicationRecord
     'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
   }
 
-  before_save :set_industry_code
+  before_save :create_entry_if_conditions_met
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
   has_many :estimates
