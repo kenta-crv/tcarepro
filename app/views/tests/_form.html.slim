@@ -1,0 +1,115 @@
+= form_with(model: @test, url: @test.new_record? ? worker_tests_path(@worker) : worker_test_path(@worker, @test), local: true) do |f|
+ 
+ - if session[:worker_registration_count] == 1
+  // 初めての登録時に表示するコンテンツ
+  h2 正解しました。第二問。
+  p まずは抽出条件を確認してください。
+  = link_to '（テスト用）抽出条件を確認', "#", target: :_blank, class: "btn btn-success"
+  = link_to '（テスト用）企業情報へアクセス', "#", target: :_blank, class: "btn btn-success"
+ - elsif session[:worker_registration_count] == 2
+  // 2回目の登録時に表示するコンテンツ
+  h2 正解しました。第二問。
+  p まずは抽出条件を確認してください。
+  = link_to '（テスト用）抽出条件を確認', "#", target: :_blank, class: "btn btn-success"
+  = link_to '（テスト用）企業情報へアクセス', "#", target: :_blank, class: "btn btn-success"
+ - else 
+  h2 正解しました。次が最後のテストです。
+  p まずは抽出条件を確認してください。
+  = link_to '（テスト用）抽出条件を確認', "#", target: :_blank, class: "btn btn-success"
+  = link_to '（テスト用）企業情報へアクセス', "#", target: :_blank, class: "btn btn-success"
+ br/
+ br/
+ 
+ table.space[width="90%"]
+       col[width="15%"]
+       col[width="25%"]
+       col[width="60%"]
+       tr
+         td.label-cell
+           strong.label 必須
+         th.arrow-box-cell
+           | 会社名
+         td.responsive-cell
+          .input-container
+           = f.text_field :company, placeholder:"（例）株式会社Ri-Plus  ※法人名のみ可能"
+           - if @test.errors[:company].any?
+             error-message= @test.errors[:company].first
+       tr
+         td.label-cell
+           strong.label 
+         th.arrow-box-cell
+           | 参考情報
+         td.responsive-cell
+          .input-container
+           | リプラス渋谷支店 
+       tr
+         td.label-cell
+           strong.label 必須
+         th.arrow-box-cell
+           | 電話番号
+         td.responsive-cell
+          .input-container
+           = f.text_field :tel, placeholder:"（例）000-0000-0000 ※【半角のみ・形式指定】【0120/0088/携帯不可】"
+           - if @test.errors[:tel].any?
+             error-message= @test.errors[:tel].first
+       tr
+         td.label-cell
+           strong.label 必須
+         th.arrow-box-cell
+           | 住所
+         td.responsive-cell
+          .input-container
+           = f.text_field :address, placeholder:"（例）東京都東京市東京町1-1-1 ※【都道府県から記載/住所と電話番号の地域は必ず一致】", value: "銀座1-1-1 2F"
+           - if @test.errors[:address].any?
+             error-message= @test.errors[:address].first
+       tr
+         td.label-cell
+           strong.label 
+         th.arrow-box-cell
+           | 参考情報
+         td.responsive-cell
+          .input-container
+           = @test.title
+       tr
+         td.label-cell
+           strong.label 必須
+         th.arrow-box-cell
+           | 業種
+         td.responsive-cell
+          .input-container
+           = f.text_field :business, placeholder:"（例）工場 【指定キーワードのみ登録可能】"
+           - if @test.errors[:business].any?
+             error-message= @test.errors[:business].first
+       tr
+         td.label-cell
+           strong.label 必須
+         th.arrow-box-cell
+           | 職種
+         td.responsive-cell
+          .input-container
+           = f.text_field :genre, placeholder:"（例）金属加工 ※【指定のワード記載が絶対条件】"
+           - if @test.errors[:genre].any?
+             error-message= @test.errors[:genre].first
+       tr
+         td.label-cell
+           strong.label.label-blue あれば必須
+         th.arrow-box-cell
+           | ホームページ
+         td.responsive-cell
+          .input-container
+           = f.text_field :url, placeholder:"（例）https://aaa.com/ ※【トップページのみ可能】"
+       tr
+         td.label-cell
+           strong.label.label-blue あれば必須
+         th.arrow-box-cell
+           | 問い合わせURL
+         td.responsive-cell
+          .input-container
+           = f.text_field :contact_url, placeholder:"（例）https://aaa.com/contacts ※【フォーム画面のページのみ】"
+ br
+ br/
+ table 
+       tr
+         /td = link_to '登録せずに前へ戻る', @test,class:"btn btn-dafault"
+         td = f.submit '登録して次へ',class:"btn btn-success"
+         td = link_to '対象外リスト',class:"btn btn-danger"

@@ -29,11 +29,13 @@ Rails.application.routes.draw do
     collection do
       post :import_customers
     end
+    resources :tests
     resources :lists, except: [:show]
     resources :sends
-    resources :writers
+    resources :contacts, except: [:index, :edit, :update, :destroy]
   end
   resources :crowdworks
+  resources :contacts, only: [:index, :edit, :update, :destroy]
 
   resource :sender, only: [:show]
   post 'senders/import' => 'senders#import'
@@ -78,6 +80,7 @@ Rails.application.routes.draw do
   resources :customers do
     resources :calls
     collection do
+      get 'search', to: 'customers#search', as: 'search'
       get :industry_code_total
       get :complete
       post :import
@@ -85,6 +88,7 @@ Rails.application.routes.draw do
       post :call_import
       post :tcare_import
       get :message
+      put 'update_all_status'
     end
     get 'analytics', on: :collection
   end
@@ -101,6 +105,7 @@ Rails.application.routes.draw do
   end
 
   get 'closing' => 'customers#closing' #締め
+  get 'draft' => 'customers#draft' #締め
   get 'news' => 'customers#news' #インポート情報
   get 'extraction' => 'customers#extraction' #TCARE
   delete :customers, to: 'customers#destroy_all' #Mailer

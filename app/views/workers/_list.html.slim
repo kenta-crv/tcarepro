@@ -1,4 +1,4 @@
-= form_with(url: import_customers_workers_path, method: :post, local: true, multipart: true) do |f|
+/= form_with(url: import_customers_workers_path, method: :post, local: true, multipart: true) do |f|
   = f.file_field :file
   = f.submit "インポート"
   
@@ -33,19 +33,17 @@
         th 今週の件数
         th 今週の不足件数
         th 今月の件数
-        th 先月の件数
         th トータル件数
       tr
-        td = @daily_number
-        td = @weekly_number
-        - if @weekly_number.to_i < 150
+        td = @count_day
+        td = @count_week
+        - if @count_week.to_i < 150
          td.red
-          = 150 - @weekly_number.to_i
+          = 150 - @count_week.to_i
         - else
          td.red
           | CLEAR
-        td = @monthly_number
-        td = @last_month_number
+        td = @count_month
         td = @total_number
   br/
   h2.headline

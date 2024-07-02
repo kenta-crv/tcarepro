@@ -2,11 +2,12 @@ require 'scraping'
 
 class Customer < ApplicationRecord
   INDUSTRY_MAPPING = {
-    'コンシェルテック（営業）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "10日"},
-    'コンシェルテック（販売）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "10日"},
-    'コンシェルテック（工場）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "10日"},
-    'SORAIRO（工場）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "10日"},
-    'SORAIRO（食品）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "10日"},
+    'コンシェルテック（営業）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
+    'コンシェルテック（販売）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
+    'コンシェルテック（工場）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
+    'SORAIRO（工場）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "末日"},
+    'SORAIRO（食品）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "末日"},
+    'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
     'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日"},
     'ニュートラル（介護）' => {industry_code: 25000, company_name: "ニュートラル協同組合", payment_date: "10日"},
     'グローバル（食品）' => {industry_code: 27000, company_name: "グローバル協同組合", payment_date: "10日"},
@@ -22,7 +23,7 @@ class Customer < ApplicationRecord
     'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
   }
 
-  before_save :create_entry_if_conditions_met
+  #before_save :create_entry_if_conditions_met
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
   has_many :estimates
@@ -105,11 +106,11 @@ class Customer < ApplicationRecord
     end
   }
 
-  scope :with_status, -> (statuses) {
-  if statuses.present?
-    where(status: statuses)
-  end
-}
+  scope :with_status, ->(statuses) {
+    if statuses.present?
+      where(status: statuses)
+    end
+  }
 
   scope :with_is_contact_tracking, -> is_contact_tracking {
     if is_contact_tracking == "true"
@@ -158,8 +159,12 @@ class Customer < ApplicationRecord
     where(contact_tracking_sended_at: (from.beginning_of_day..to.end_of_day))
   }
 
+  validate :validate_company_format, if: -> { !new_record? }
+  validate :validate_tel_format, if: -> { !new_record? }
+  validate :validate_address_format, if: -> { !new_record? }
+  validate :validate_crowdwork_business, if: -> { crowdwork_match_needed? && !new_record? }
+  validate :validate_crowdwork_genre, if: -> { crowdwork_match_needed? && !new_record? }
 
-  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
 
   def self.import(file)
     save_cont = 0
@@ -305,7 +310,7 @@ class Customer < ApplicationRecord
     @@send_status
   end
 
-  enum status: {draft: 0, published: 1}
+  enum status: {draft: 0}
 
   def get_search_url
     unless @contact_url
@@ -358,5 +363,45 @@ class Customer < ApplicationRecord
 
   def scraping
     @scraping ||= Scraping.new
+  end
+
+  def validate_crowdwork_business
+    crowdwork = Crowdwork.find_by(title: title)
+    if crowdwork.present? && crowdwork.business == business
+      errors.add(:business, "指定業種以外は抽出できません。")
+    end
+  end
+
+  def validate_crowdwork_genre
+    crowdwork = Crowdwork.find_by(title: title)
+    if crowdwork.present? && crowdwork.genre == genre
+      errors.add(:genre, "指定職種が含まれていません。")
+    end
+  end
+
+  def crowdwork_match_needed?
+    crowdwork = Crowdwork.find_by(title: title)
+    crowdwork.present? && (crowdwork.business == business || crowdwork.genre == genre)
+  end
+
+  def validate_company_format
+    unless company =~ /株式会社|有限会社|社会福祉|合同会社|医療法人/
+      errors.add(:company, "会社名には「株式会社」、「有限会社」、「社会福祉」、「合同会社」、「医療法人」のいずれかを含める必要があります。")
+    end
+
+    if company =~ /支店|営業所/
+      errors.add(:company, "会社名には「支店」と「営業所」を含むことはできません。")
+    end
+  end
+
+  def validate_tel_format
+    errors.add(:tel, "電話番号には「半角数字」と「-」以外の文字を含めることはできません") if tel !~ /\A[0-9\-]+\z/
+    errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません") if tel !~ /\A[0-9\-]+\z/ || tel =~ /0120|0088/
+  end
+
+  def validate_address_format
+    unless address =~ /都|道|府|県/
+      errors.add(:address, "住所には都・道・府・県のいずれかを含める必要があります")
+    end
   end
 end

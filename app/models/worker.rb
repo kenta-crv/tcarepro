@@ -6,8 +6,9 @@ class Worker < ApplicationRecord
   has_many :customers
   has_many :contact_trackings
   has_many :lists
-  has_many :writers
   has_many :assignments
+  has_many :contacts
+  has_many :tests
   has_many :crowdworks, through: :assignments
 
     def self.import_customers(file)
