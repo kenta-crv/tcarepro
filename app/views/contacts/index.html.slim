@@ -1,0 +1,22 @@
+- noindex
+
+.tops-wrapper
+  h2.headline
+    | 案件一覧
+  table[width="90%"]
+      tr
+       th 質問内容
+       th 担当者
+       th 最終更新日
+       th
+      - @contacts.each do |contact|
+       tr
+        td
+          = link_to contact.question, contact_path(contact)
+        td 
+          = contact.worker.user_name
+        td
+          = contact.updated_at.strftime("%Y年%m月%d日 %H時%M分")
+        td
+           = link_to '編集', edit_contact_path(contact), class: 'btn btn-success'
+           = link_to '削除', contact_path(contact), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger'

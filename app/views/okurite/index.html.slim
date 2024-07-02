@@ -85,7 +85,7 @@
         button.close[type="button" data-dismiss="modal" aria-hidden="true"]
           | ×
       .modal-body
-        = search_form_for(@q, url: sender_okurite_index_path(sender_id: params[:sender_id])) do |f|
+        = search_form_for @q, url: sender_okurite_index_path(sender_id: params[:sender_id]) do |f|
           table.space
             tbody
               tr
@@ -109,7 +109,7 @@
                 th
                   | 状態
                 td
-                  = select_tag "statuses", options_for_select([['選択してください', ''], '自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可','自動送信予定','自動送信エラー'], params['statuses']), multiple: true, class: "form-control"
+                  = f.select :status, options_for_select(['自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可', '自動送信予定', '自動送信エラー'], params.dig(:q, :status)), {include_blank: '選択してください'}, class: 'form-control'
               tr
                 th
                   | 未送信
@@ -131,20 +131,10 @@
                   | 事業内容
                 td
                   = f.search_field :genre_cont, type: "text"
-              tr
-                th
-                  | SFA
-                td
-                  = f.check_box :choice_blank, { checked: true, disabled: true }, 'true', 'false'
                 th
                   | 検索条件
                 td
                   = f.search_field :industry_cont, type: "text"
-              tr
-                th
-                  | SFA
-                td
-                  = f.check_box :forever, { checked: true, disabled: true }, 'true', 'false'
                 th
                 td
               tr

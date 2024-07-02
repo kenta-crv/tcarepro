@@ -2,8 +2,9 @@ class WorkersController < ApplicationController
   def show
    #リスト制作
     @worker = Worker.find(params[:id])
+    @contact = @worker.contacts.new
     #リストカウント
-    @lists = @worker.lists
+    @lists = @worker.customers
     # 1日のnumber数
     @daily_number = @worker.lists.where(created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).sum(:number)
     # 今週のnumber数
@@ -14,24 +15,14 @@ class WorkersController < ApplicationController
     @last_month_number = @worker.lists.where(created_at: Time.zone.now.last_month.beginning_of_month..Time.zone.now.last_month.end_of_month).sum(:number)
     # トータルのnumber数
     @total_number = @worker.lists.sum(:number)
-  
-   #ライター制作
-   @worker = Worker.find(params[:id])
-   @writers = @worker.writers
+    @assigned_crowdworks = @worker.crowdworks
 
-   @assigned_crowdworks = @worker.crowdworks
-
-   # 各期間のtitle_数を設定
-   @daily_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.now.beginning_of_day, Time.zone.now.end_of_day)
-   @weekly_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.now.beginning_of_week, Time.zone.now.end_of_week)
-   @monthly_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.now.beginning_of_month, Time.zone.now.end_of_month)
-   @last_month_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.now.last_month.beginning_of_month, Time.zone.now.last_month.end_of_month)
-   @total_titles = @worker.writers.count_non_empty_titles_for_period(Time.zone.at(0), Time.zone.now)
-
+   #リスト制作
     @customers = Customer&.where(worker_id: current_worker.id)
     @count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
     @count_week = @customers.where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?',Time.current.end_of_week).count
     @count_month = @customers.where('updated_at > ?', Time.current.beginning_of_month).where('updated_at < ?',Time.current.end_of_month).count
+    @count_month = @customers.count
 
     @contact_trackings_month = @worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
     @contact_trackings_before_month = @worker.contact_trackings.where(created_at: 1.month.ago.beginning_of_month..1.month.ago.end_of_month)
@@ -53,6 +44,7 @@ class WorkersController < ApplicationController
     @send_count_day = @contact_trackings_day.count
 
     @send_count_week = @contact_trackings_week.count
+    set_worker_registration_count
   end
 
   def upload
@@ -110,6 +102,11 @@ class WorkersController < ApplicationController
   end
 
   private
+
+  def set_worker_registration_count
+    session[:worker_registration_count] ||= 0
+    session[:worker_registration_count] += 1
+  end
 
   def process_uploaded_file(uploaded_file)
     # ファイルを一時的に保存する

@@ -6,6 +6,7 @@ class CustomersController < ApplicationController
   before_action :authenticate_worker_or_user, only: [:new, :edit]
   before_action :authenticate_user_or_admin, only: [:index, :show]
   #before_action :authenticate_worker_or_admin, only: [:extraction]
+  before_action :set_customers, only: [:update_all_status]
 
   def index
     last_call_customer_ids = nil
@@ -68,6 +69,12 @@ class CustomersController < ApplicationController
     @customer = Customer.new
   end
 
+  def search
+    branch = params[:branch]
+    address = params[:address]
+    @customers = Customer.where(branch: branch, address: address)
+  end
+
   def create
     @customer = Customer.new(customer_params)
      if @customer.save
@@ -88,7 +95,11 @@ class CustomersController < ApplicationController
   def update
     @customer = Customer.find(params[:id])
     if @customer.update(customer_params)
-      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      if worker_signed_in?
+        redirect_to draft_path
+      else
+        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      end
     else
       render 'edit'
     end
@@ -258,7 +269,7 @@ class CustomersController < ApplicationController
       @app_customers_total_industry_value = @app_customers.present? ? @app_customers.sum(:industry_code) : 0
 
       @industry_mapping = Customer::INDUSTRY_MAPPING
-      @app_calls_counts = calculate_app_calls_counts
+      @app_calls_counts = calculate_app_calls_countsz
     when "workers" then
       @customers_app = @customers.where(call_id: 1)
       #today
@@ -296,7 +307,6 @@ class CustomersController < ApplicationController
   def news
     @customers =  Customer.all
   end
-
 
   def copy
     @customer = Customer.find(params[:id])
@@ -374,8 +384,24 @@ class CustomersController < ApplicationController
     render json: { answer: answer.round(2) }
   end
 
+  def draft
+    @q = Customer.where(status:"draft").ransack(params[:q])
+    @customers = @q.result.page(params[:page]).per(100)
+  end
   
+  def update_all_status
+    checked_data = params[:updates].keys
+    checked_data.each do |id|
+      customer = Customer.find(id)
+      customer.update(status: :published)
+    end
+    redirect_to draft_path
+  end
+
   private
+  def set_customers
+    @customers = Customer.where(id: params[:updates].keys)
+  end
 
   def display_customer_names
     customer_info = []
