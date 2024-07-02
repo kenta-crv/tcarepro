@@ -11,4 +11,10 @@ class WorkerMailer < ApplicationMailer
     @worker = worker
     mail(to: @worker.email, subject: '至急作業を実施してください。')
   end  
+
+  def warning_email
+    @worker = params[:worker]
+    @body = params[:body]
+    mail(to: @worker.email, subject: params[:subject])
+  end
 end

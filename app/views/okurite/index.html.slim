@@ -38,7 +38,7 @@
         td
           = customer.url_2&.truncate(30)
         td 
-          z
+          = contact_tracking&.worker.user_name if contact_tracking&.worker.present?
         td
           - begin 
             = contact_tracking&.status 

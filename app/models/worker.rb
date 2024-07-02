@@ -32,4 +32,9 @@ class Worker < ApplicationRecord
     # 更新可能な属性のリスト
     # 例: ["name", "email", "phone", ...]
   end
+
+   # ここにメール送信ロジックを追加します
+  def send_warning_email(subject, body)
+    WorkerMailer.with(worker: self, subject: subject, body: body).warning_email.deliver_now
+  end
 end

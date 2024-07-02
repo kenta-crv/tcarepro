@@ -28,6 +28,12 @@ Rails.application.routes.draw do
     end
     collection do
       post :import_customers
+      get 'practices/question1', to: 'workers#question1'
+      get 'practices/question2', to: 'workers#question2'
+      get 'practices/question3', to: 'workers#question3'
+      get 'practices/reference1', to: 'workers#reference1'
+      get 'practices/reference2', to: 'workers#reference2'
+      get 'practices/reference3', to: 'workers#reference3'
     end
     resources :lists, except: [:show]
     resources :sends

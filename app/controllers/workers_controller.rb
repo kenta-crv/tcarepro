@@ -84,7 +84,30 @@ class WorkersController < ApplicationController
     cnt = Worker.import_customers(params[:file])
     redirect_to some_path, notice: "#{cnt}件のデータをCustomerにインポートしました。"
   end
+  
+  def question1
+    render 'workers/practices/question1'
+  end
 
+  def question2
+    render 'workers/practices/question2'
+  end
+
+  def question3
+    render 'workers/practices/question3'
+  end
+
+  def reference1
+    render 'workers/practices/reference1'
+  end
+
+  def reference2
+    render 'workers/practices/reference2'
+  end
+
+  def reference3
+    render 'workers/practices/reference3'
+  end
   private
 
   def process_uploaded_file(uploaded_file)
