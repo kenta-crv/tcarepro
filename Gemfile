@@ -127,3 +127,7 @@ gem 'rails_autolink'
 
 gem 'rails-html-sanitizer', '1.4.3'
 gem 'dotenv-rails', groups: [:development, :test]
+
+# 5xx Error 対策
+# https://github.com/ruby/net-imap/issues/16#issuecomment-803086765
+gem "net-http" 
