@@ -7,11 +7,6 @@ class WorkerMailer < ApplicationMailer
     mail(to: @worker.email, subject: '新しいタスクが割り当てられました')
   end
 
-  def reminder_email(worker)
-    @worker = worker
-    mail(to: @worker.email, subject: '至急作業を実施してください。')
-  end  
-
   def warning_email
     @worker = params[:worker]
     @body = params[:body]

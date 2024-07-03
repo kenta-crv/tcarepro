@@ -2,7 +2,9 @@
 #
 # It's helpful, but not entirely necessary to understand cron before proceeding.
 # http://en.wikipedia.org/wiki/Cron
-
+every 1.day, at: '6:00 am' do
+  rake 'worker:send_warning_emails'
+end
 # Example:
 #
 # set :output, "/path/to/my/cron_log.log"

@@ -1,7 +1,4 @@
-= form_with(url: import_customers_workers_path, method: :post, local: true, multipart: true) do |f|
-  = f.file_field :file
-  = f.submit "インポート"
-  
+
 .info-wrapper
   h2.headline
     | #{@worker.user_name}さんは現在以下の業務内容を依頼されています。

@@ -108,6 +108,7 @@ class WorkersController < ApplicationController
   def reference3
     render 'workers/practices/reference3'
   end
+
   private
 
   def process_uploaded_file(uploaded_file)
