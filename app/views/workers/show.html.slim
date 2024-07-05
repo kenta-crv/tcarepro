@@ -1,9 +1,9 @@
-- if @worker.select == "リスト制作"
+- if @worker.tests.count < 4
+  = render "beginner"
+- elsif @worker.select == "リスト制作"
  = render "list"
 - elsif @worker.select == "メール送信"
  = render "send"
-- elsif @worker.select == "AIライター"
- = render "writer"
 
 .tops-wrapper
  h2.headline
