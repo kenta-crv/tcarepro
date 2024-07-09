@@ -1,23 +1,39 @@
 class TestsController < ApplicationController 
-    def index
-      @tests = Test.all
-    end
+  def index
+    @tests = Test.all
+  end
 
-    def new
-      @worker = Worker.find(params[:worker_id])
-      @test = Test.new
-    end
+  def new
+    @worker = Worker.find(params[:worker_id])
+    @question_number = params[:question].to_i
+    @test = @worker.tests.new
+  end
 
-    def create
-      @worker = Worker.find(params[:worker_id])
-      @test = @worker.tests.new(test_params)
-      if @test.save
-        redirect_to "/workers/#{current_worker.id}"
-       else
-        render 'new'
-      end
-    end
+  def create
+    @worker = Worker.find(params[:worker_id])
+    @test = @worker.tests.new(test_params)
   
+    if @test.save
+      case params[:question].to_i
+      when 1
+        @question1_saved = true
+      when 2
+        @question2_saved = true
+      when 3
+        @question3_saved = true
+      when 4
+        @question4_saved = true
+      end
+  
+      redirect_to worker_path(@worker)
+    else
+      render :new
+    end
+  end
+  
+  
+  
+
     def edit
       @worker = Worker.find(params[:worker_id])
       @test = Test.find(params[:id])
@@ -39,6 +55,15 @@ class TestsController < ApplicationController
     end
   
     private
+    def reset_registration_count_if_needed
+      if session[:worker_registration_count] >= 4
+        session[:worker_registration_count] = 0
+        redirect_to worker_path(@worker) and return
+      else
+        redirect_to new_worker_test_path(@worker) and return
+      end
+    end
+
     def test_params
       params.require(:test).permit(
         :company,

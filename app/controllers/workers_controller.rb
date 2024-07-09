@@ -101,6 +101,10 @@ class WorkersController < ApplicationController
     render 'workers/practices/reference3'
   end
 
+  def next 
+    @worker = Worker.find_by(id: params[:id])
+  end
+
   private
 
   def set_worker_registration_count

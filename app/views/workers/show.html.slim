@@ -1,10 +1,11 @@
-- if @worker.select == "リスト制作" && @worker.lists.blank?
- = render "test"
-- elsif @worker.select == "リスト制作"
- = render "list"
+- if @worker.select == "リスト制作"
+  - if @question1_saved && @question2_saved && @question3_saved && @question4_saved 
+    = render "test"
+  - else
+    = render "list"
 - elsif @worker.select == "メール送信"
- = render "send"
-
+  = render "send"
+  
 .tops-wrapper
  h2.headline
     | アカウント情報

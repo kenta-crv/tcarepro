@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   }
   resources :workers, only: [:show, :destroy] do 
     member do
+      get 'next', to: 'workers#next'
       post 'upload', to: 'workers#upload'
       get 'confirm', to: 'workers#confirm'
     end
@@ -84,6 +85,7 @@ Rails.application.routes.draw do
   end
 
   resources :customers do
+    post 'exclude', on: :member
     resources :calls
     collection do
       get 'search', to: 'customers#search', as: 'search'

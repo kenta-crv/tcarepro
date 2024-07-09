@@ -55,13 +55,6 @@ class Customer < ApplicationRecord
     eager_load(:direct_mail_contact_trackings).order(sended_at: :desc)
   }
 
-  #has_one :last_mail_contact, ->{
-  #  order("created_at desc")
-  #}, class_name: DirectMailContactTracking
-
-  #scope :last_mail_contact_trackings, ->(status){
-  #  joins(:direct_mail_contact_trackings).where(direct_mail_contact_trackings: { status: status })
-  #}
   scope :between_created_at, ->(from, to){
     where(created_at: from..to)
   }
@@ -158,13 +151,6 @@ class Customer < ApplicationRecord
   scope :with_contact_tracking_sended_at, ->(from, to) {
     where(contact_tracking_sended_at: (from.beginning_of_day..to.end_of_day))
   }
-
-  validate :validate_company_format, if: -> { !new_record? }
-  validate :validate_tel_format, if: -> { !new_record? }
-  validate :validate_address_format, if: -> { !new_record? }
-  validate :validate_crowdwork_business, if: -> { crowdwork_match_needed? && !new_record? }
-  validate :validate_crowdwork_genre, if: -> { crowdwork_match_needed? && !new_record? }
-
 
   def self.import(file)
     save_cont = 0
@@ -310,7 +296,7 @@ class Customer < ApplicationRecord
     @@send_status
   end
 
-  enum status: {draft: 0}
+  #enum status: {draft: 0, hidden: 1, publish: 2}
 
   def get_search_url
     unless @contact_url
@@ -355,33 +341,27 @@ class Customer < ApplicationRecord
     nil
   end
 
+  attr_accessor :skip_validation
+
+  validate :validate_company_format, if: -> { !new_record? && !skip_validation }
+  validate :validate_tel_format, if: -> { !new_record? && !skip_validation }
+  validate :validate_address_format, if: -> { !new_record? && !skip_validation }
+  validate :validate_crowdwork_business, if: -> { crowdwork_match_needed? && !new_record? && !skip_validation }
+  validate :validate_crowdwork_genre, if: -> { crowdwork_match_needed? && !new_record? && !skip_validation }
+  validate :unique_industry_and_tel_or_company_for_same_worker
+
+  # その他のコード
+
   private
 
-  def set_industry_code
-    self.industry_code = INDUSTRY_MAPPING[self.industry]
-  end
+  def unique_industry_and_tel_or_company_for_same_worker
+    existing_customer = Customer.where(worker_id: worker_id)
+                                .where(industry: industry)
+                                .where("tel = ? OR company = ?", tel, company)
 
-  def scraping
-    @scraping ||= Scraping.new
-  end
-
-  def validate_crowdwork_business
-    crowdwork = Crowdwork.find_by(title: title)
-    if crowdwork.present? && crowdwork.business == business
-      errors.add(:business, "指定業種以外は抽出できません。")
+    if existing_customer.exists?
+      errors.add(:base, "過去に同一電話番号または会社名を登録しています。同一ワーカーでの重複登録はできません。")
     end
-  end
-
-  def validate_crowdwork_genre
-    crowdwork = Crowdwork.find_by(title: title)
-    if crowdwork.present? && crowdwork.genre == genre
-      errors.add(:genre, "指定職種が含まれていません。")
-    end
-  end
-
-  def crowdwork_match_needed?
-    crowdwork = Crowdwork.find_by(title: title)
-    crowdwork.present? && (crowdwork.business == business || crowdwork.genre == genre)
   end
 
   def validate_company_format
@@ -402,6 +382,29 @@ class Customer < ApplicationRecord
   def validate_address_format
     unless address =~ /都|道|府|県/
       errors.add(:address, "住所には都・道・府・県のいずれかを含める必要があります")
+    end
+  end
+
+  def set_industry_code
+    self.industry_code = INDUSTRY_MAPPING[self.industry]
+  end
+
+  def crowdwork_match_needed?
+    crowdwork = Crowdwork.find_by(title: title)
+    crowdwork.present? && (crowdwork.business == business || crowdwork.genre == genre)
+  end
+
+  def validate_crowdwork_business
+    crowdwork = Crowdwork.find_by(title: title)
+    if crowdwork.present? && crowdwork.business == business
+      errors.add(:business, "指定業種以外は抽出できません。")
+    end
+  end
+
+  def validate_crowdwork_genre
+    crowdwork = Crowdwork.find_by(title: title)
+    if crowdwork.present? && crowdwork.genre == genre
+      errors.add(:genre, "指定職種が含まれていません。")
     end
   end
 end

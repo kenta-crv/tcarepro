@@ -7,7 +7,8 @@ class CustomersController < ApplicationController
   before_action :authenticate_user_or_admin, only: [:index, :show]
   #before_action :authenticate_worker_or_admin, only: [:extraction]
   before_action :set_customers, only: [:update_all_status]
-
+  protect_from_forgery with: :exception, prepend: true
+  
   def index
     last_call_customer_ids = nil
     Rails.logger.debug("params :" + params.to_s)
@@ -94,6 +95,12 @@ class CustomersController < ApplicationController
 
   def update
     @customer = Customer.find(params[:id])
+    
+    if params[:commit] == '対象外リストとして登録'
+      @customer.skip_validation = true
+      @customer.status = "hidden"
+    end
+  
     if @customer.update(customer_params)
       if worker_signed_in?
         redirect_to draft_path
@@ -269,7 +276,7 @@ class CustomersController < ApplicationController
       @app_customers_total_industry_value = @app_customers.present? ? @app_customers.sum(:industry_code) : 0
 
       @industry_mapping = Customer::INDUSTRY_MAPPING
-      @app_calls_counts = calculate_app_calls_countsz
+      @app_calls_counts = calculate_app_calls_counts
     when "workers" then
       @customers_app = @customers.where(call_id: 1)
       #today
@@ -504,8 +511,7 @@ class CustomersController < ApplicationController
         :business, #業種
         :extraction_count,
         :send_count,
-        :forever,
-        :status
+        :forever
        )&.merge(worker: current_worker)
     end
 

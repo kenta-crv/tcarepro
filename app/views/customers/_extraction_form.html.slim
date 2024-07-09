@@ -1,114 +1,102 @@
-- set_meta_tags noindex: true
-
-- if @customer.contact_url.present?
-    = link_to '別タブで表示1', @customer.contact_url, target: :_blank, class: "btn btn-success"
-    br
-- if @customer.url_2.present?
-    = link_to '別タブで表示2', @customer.url_2, target: :_blank, class: "btn btn-success"
-    br
-- if @customer.company.present?
-    = link_to 'Google で検索', "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component([@customer.company, @customer.address, @customer.tel].join(' '))}", target: :_blank, class: "btn btn-success"
-br/
-br/
 = form_for @customer do |f|
+  - if @customer.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@customer.errors.count, "error")
+        | prevented this customer from being saved:
+      ul
+        - @customer.errors.full_messages.each do |message|
+          li = message
 
   table.space[width="90%"]
-      col[width="15%"]
-      col[width="25%"]
-      col[width="60%"]
-      tr
-        td.label-cell
-          strong.label 必須
-        th.arrow-box-cell
-          | 会社名
-        td.responsive-cell
-         .input-container
+    col[width="15%"]
+    col[width="25%"]
+    col[width="60%"]
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 会社名
+      td.responsive-cell
+        .input-container
           = f.text_field :company, placeholder:"（例）株式会社Ri-Plus  ※法人名のみ可能"
           - if @customer.errors[:company].any?
-            error-message= @customer.errors[:company].first
-      tr
-        td.label-cell
-          strong.label 
-        th.arrow-box-cell
-          | 参考情報
-        td.responsive-cell
-         .input-container
+            .error-message= @customer.errors[:company].first
+    tr
+      td.label-cell
+        strong.label 
+      th.arrow-box-cell
+        | 参考情報
+      td.responsive-cell
+        .input-container
           = @customer.store
-      tr
-        td.label-cell
-          strong.label 必須
-        th.arrow-box-cell
-          | 電話番号
-        td.responsive-cell
-         .input-container
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 電話番号
+      td.responsive-cell
+        .input-container
           = f.text_field :tel, placeholder:"（例）000-0000-0000 ※【半角のみ・形式指定】【0120/0088/携帯不可】"
           - if @customer.errors[:tel].any?
-            error-message= @customer.errors[:tel].first
-      tr
-        td.label-cell
-          strong.label 必須
-        th.arrow-box-cell
-          | 住所
-        td.responsive-cell
-         .input-container
+            .error-message= @customer.errors[:tel].first
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 住所
+      td.responsive-cell
+        .input-container
           = f.text_field :address, placeholder:"（例）東京都東京市東京町1-1-1 ※【都道府県から記載/住所と電話番号の地域は必ず一致】"
           - if @customer.errors[:address].any?
-            error-message= @customer.errors[:address].first
-      tr
-        td.label-cell
-          strong.label 
-        th.arrow-box-cell
-          | 参考情報
-        td.responsive-cell
-         .input-container
+            .error-message= @customer.errors[:address].first
+    tr
+      td.label-cell
+        strong.label 
+      th.arrow-box-cell
+        | 参考情報
+      td.responsive-cell
+        .input-container
           = @customer.title
-      tr
-        td.label-cell
-          strong.label 必須
-        th.arrow-box-cell
-          | 業種
-        td.responsive-cell
-         .input-container
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 業種
+      td.responsive-cell
+        .input-container
           = f.text_field :business, placeholder:"（例）工場 【指定キーワードのみ登録可能】"
           - if @customer.errors[:business].any?
-            error-message= @customer.errors[:business].first
-      tr
-        td.label-cell
-          strong.label 必須
-        th.arrow-box-cell
-          | 職種
-        td.responsive-cell
-         .input-container
+            .error-message= @customer.errors[:business].first
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 職種
+      td.responsive-cell
+        .input-container
           = f.text_field :genre, placeholder:"（例）金属加工 ※【指定のワード記載が絶対条件】"
           - if @customer.errors[:genre].any?
-            error-message= @customer.errors[:genre].first
-      tr
-        td.label-cell
-          strong.label.label-blue あれば必須
-        th.arrow-box-cell
-          | ホームページ
-        td.responsive-cell
-         .input-container
+            .error-message= @customer.errors[:genre].first
+    tr
+      td.label-cell
+        strong.label.label-blue あれば必須
+      th.arrow-box-cell
+        | ホームページ
+      td.responsive-cell
+        .input-container
           = f.text_field :url, placeholder:"（例）https://aaa.com/ ※【トップページのみ可能】"
-      tr
-        td.label-cell
-          strong.label.label-blue あれば必須
-        th.arrow-box-cell
-          | 問い合わせURL
-        td.responsive-cell
-         .input-container
+    tr
+      td.label-cell
+        strong.label.label-blue あれば必須
+      th.arrow-box-cell
+        | 問い合わせURL
+      td.responsive-cell
+        .input-container
           = f.text_field :contact_url, placeholder:"（例）https://aaa.com/contacts ※【フォーム画面のページのみ】"
-      tr
-        td.label-cell
-        th.arrow-box-cell
-          | 公開設定
-        td.responsive-cell
-         .input-container
-          = f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
   br
-  br/
+  br
   table 
-      tr
-        td = link_to '登録せずに前へ戻る', @customer,class:"btn btn-dafault"
-        td = f.submit '登録して次へ',class:"btn btn-success"
-        td = link_to '対象外リスト', @customer,class:"btn btn-danger"
+    tr
+      td = f.submit '登録して次へ', class: "btn btn-success"
+      td = f.submit '対象外リストとして登録', name: 'commit', value: '対象外リストとして登録', class: "btn btn-warning"
