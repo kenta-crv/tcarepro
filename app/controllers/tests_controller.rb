@@ -12,28 +12,13 @@ class TestsController < ApplicationController
   def create
     @worker = Worker.find(params[:worker_id])
     @test = @worker.tests.new(test_params)
-  
     if @test.save
-      case params[:question].to_i
-      when 1
-        @question1_saved = true
-      when 2
-        @question2_saved = true
-      when 3
-        @question3_saved = true
-      when 4
-        @question4_saved = true
-      end
-  
       redirect_to worker_path(@worker)
     else
       render :new
     end
   end
   
-  
-  
-
     def edit
       @worker = Worker.find(params[:worker_id])
       @test = Test.find(params[:id])

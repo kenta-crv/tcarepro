@@ -1,11 +1,11 @@
 class Test < ApplicationRecord
-  belongs_to :test
+  belongs_to :worker
 
   validate :validate_company_format, if: -> { !new_record? }
   validate :validate_tel_format, if: -> { !new_record? }
   validate :validate_address_format, if: -> { !new_record? }
-  validate :validate_crowdwork_business, if: -> { crowdwork_match_needed? && !new_record? }
-  validate :validate_crowdwork_genre, if: -> { crowdwork_match_needed? && !new_record? }
+  validate :validate_crowdwork_business, if: -> { !new_record? }
+  validate :validate_crowdwork_genre, if: -> { !new_record? }
 
   def validate_crowdwork_business
     allowed_business = ["介護", "工場", "販売"]

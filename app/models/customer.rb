@@ -77,9 +77,9 @@ class Customer < ApplicationRecord
     where(id: filter_ids)
   }
 
-  scope :before_sended_at, ->(sended_at){
-    eager_load(:contact_trackings).marge(ContactTracking.before_sended_at(sended_at))
-  }
+scope :before_sended_at, ->(sended_at){
+  eager_load(:contact_trackings).merge(ContactTracking.before_sended_at(sended_at))
+}
 
   scope :with_company, -> company {
     if company.present?

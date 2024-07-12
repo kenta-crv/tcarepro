@@ -1,5 +1,5 @@
 - if @worker.select == "リスト制作"
-  - if @question1_saved && @question2_saved && @question3_saved && @question4_saved 
+  - if @worker.tests.count <= 4
     = render "test"
   - else
     = render "list"

@@ -44,7 +44,7 @@ class WorkersController < ApplicationController
     @send_count_day = @contact_trackings_day.count
 
     @send_count_week = @contact_trackings_week.count
-    set_worker_registration_count
+
   end
 
   def upload

@@ -392,8 +392,14 @@ class CustomersController < ApplicationController
   end
 
   def draft
-    @q = Customer.where(status:"draft").ransack(params[:q])
-    @customers = @q.result.page(params[:page]).per(100)
+    if admin_signed_in?
+      @q = Customer.where(status:"draft").where.not(tel: nil).ransack(params[:q])
+      @customers = @q.result.page(params[:page]).per(100)
+    else
+      @q = Customer.where(status:"draft").where(tel: nil).ransack(params[:q])
+      @customers = @q.result.page(params[:page]).per(100)
+    end
+     
   end
   
   def update_all_status
