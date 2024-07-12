@@ -230,12 +230,9 @@ def setControlData(selectedForm):
     select_elements = selectedForm.find_elements(By.TAG_NAME, "select")
     if len(select_elements) > 0:
         for select_element in select_elements:
-            try:
-                driver.execute_script("arguments[0].scrollIntoView();", select_element)    
-                select = Select(select_element)
-                select.select_by_index(1)  # 一番目の<option>を選択    
-            except:
-                pass            
+            select = Select(select_element)
+            select.select_by_index(1)  # 一番目の<option>を選択    
+            
     for tag_name in ['input', 'textarea']:
         try:
             elements = selectedForm.find_elements(By.TAG_NAME, tag_name)
@@ -243,10 +240,6 @@ def setControlData(selectedForm):
             continue
         
         for element in elements:
-            try:
-                print('####', element.get_attribute('name'))
-            except:
-                continue
             if  element.get_attribute('type')=='hidden':
                 continue
             elif element.get_attribute('type')=='checkbox':
@@ -267,26 +260,23 @@ def setControlData(selectedForm):
                     labels=None
                     if key != "submit":
                         for i in value["input_name_list"]:
-                            try:
-                                if element.get_attribute('name') !=None and len(element.get_attribute('name')) > 0 and  i in element.get_attribute('name'):
+                            if element.get_attribute('name') !=None and len(element.get_attribute('name')) > 0 and  i in element.get_attribute('name'):
+                                labels=element
+                            if not labels:
+                                if element.get_attribute('id') !=None and len(element.get_attribute('id')) > 0 and i in element.get_attribute('id'):
                                     labels=element
-                                if not labels:
-                                    if element.get_attribute('id') !=None and len(element.get_attribute('id')) > 0 and i in element.get_attribute('id'):
-                                        labels=element
-                                if  labels :
-                                    if len(labels.get_attribute('value') ) < 1  and (key in data and data[key] != "post"):
-                                        print(i, element.get_attribute('id'), element.get_attribute('name'),  labels.get_attribute('value')   )
-                                        try:
+                            if  labels :
+                                if len(labels.get_attribute('value') ) < 1  and (key in data and data[key] != "post"):
+                                    print(i, element.get_attribute('id'), element.get_attribute('name'),  labels.get_attribute('value')   )
+                                    try:
                                     #print(labels.get_attribute('outerHTML'))
-                                            labels.clear()
-                                            labels.send_keys(data[key])
-                                            pcnt=pcnt+1
-                                        except:
-                                            pass
-                                        break
-                            except:
-                                pass
-                if  emptyFlg==True  and len(element.get_attribute('value') ) < 1::
+                                        labels.clear()
+                                        labels.send_keys(data[key])
+                                        pcnt=pcnt+1
+                                    except:
+                                        pass
+                                    break
+                if len(element.get_attribute('name')) > 0 and emptyFlg==True:
                     try:
                         if element.get_attribute('name').find("post") > -1 or element.get_attribute('name').find("番") > -1:
                             element.clear()
@@ -303,6 +293,7 @@ def setControlDataByLabel(form):
     if tcnt == 0 : return
     pcnt = 0
     for key, value in form_attr_list.items():
+        if tcnt <= pcnt : break        
         if key != "submit":
             for i in value["table_label_list"]:
                 #xpathtxt=".//*[contains(text(), '" + i + "') ]"
@@ -463,6 +454,7 @@ def debugWrite(logstr):
 def exhibitURLCheck(url):
     rt=url
     if rt==None:return ''
+    if not isinstance(url, str):return ''
     exhibitList = ['facebook.com','townwork.net','jbplt.jp','tsukulink.net','recyclehub.jp','https://xn','reform-master.net','doda.jp','kenzai-navi.com','itp.ne.jp','a6l.jp','baitoru.com','goo-net.com','homemate-research-drugstore.com','navitime.co.jp','mynavi.jp','twitter.com','twitter','tabelog.com','yahoo.co.jp','el.e-shops.jp','mtke-job.jp','paypay','biz.ne.jp','ats.joboplite.jp','mapion.co','.pdf','youtube','rakuten','epark.jp','en-gage.net','work-canvas.com','biz-maps','newscast.jp','kotobank.jp','wikipedia.org','1cs.jp','baseconnect.in','s-agent.jp','pcareer.m3.com','www.w3.org','salesnow.jp','en-hyouban.com','airjobtour.net','prtimes.jp','shizumatch.jp','jp.stanby.com','recruit','job.rikunabi.com','github.com','nstagram.com','job-gear.net','senken.co.jp','nikkei.com','arc-navi','doda.co.jp','indeed.com','koyou.pref.shizuoka.jp','sumo.jp','homes.co.jp','google.co','next.rikunabi','townwork.net','doraever.jp','sharefull.com','hatalike.jp','jobtalk.jp','nucoxd9y6','b-mall.ne','info.gbiz','grffer','careerindex','irbank','job.goo','job-net','houjin.jp','cnavi.g-search','e-aidem']
     for i in exhibitList:
         if url.find(i) > -1 :
@@ -494,10 +486,7 @@ def companyInfo(curl):
     if not isinstance(curl, str): return ''
     if curl.find('http') == -1 : return ''
     url=""
-    try :
-        driver.get(curl)
-    except:
-        return ""
+    driver.get(curl)
     flg=-1
     cnt=0
     for i in driver.find_elements(By.TAG_NAME,'a'):
@@ -521,7 +510,7 @@ for key, item in df.iterrows():
         companyName = item["companyname"].replace('&',' AND ')        
     else:
         companyName = item["companyname"].replace('&',' AND ')
-        if  pd.notna(item['URL1']):
+        if  pd.notna(item['companyname']):
             try:
                 sourceUrl=companyInfoGoogle( companyName )
             except:
@@ -537,9 +526,8 @@ for key, item in df.iterrows():
     print( str(item["track_id"]) + " " + companyName + " " + sourceUrl+ " 送信開始")
     if sourceUrl!="" and sourceUrl.find("mailto:")== -1 and sourceUrl.find("javascript")== -1:
         try:
-        #if 1==1:
+#        if 1==1:
             driver.get(sourceUrl)
-            time.sleep(1)
             com.driver=driver
             getTemplate(str(int(item['inquiry_id'])))
             selectedForm = getAskForm()

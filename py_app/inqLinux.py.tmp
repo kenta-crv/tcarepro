@@ -286,7 +286,7 @@ def setControlData(selectedForm):
                                         break
                             except:
                                 pass
-                if  emptyFlg==True  and len(element.get_attribute('value') ) < 1::
+                if  emptyFlg==True:
                     try:
                         if element.get_attribute('name').find("post") > -1 or element.get_attribute('name').find("番") > -1:
                             element.clear()
@@ -494,10 +494,7 @@ def companyInfo(curl):
     if not isinstance(curl, str): return ''
     if curl.find('http') == -1 : return ''
     url=""
-    try :
-        driver.get(curl)
-    except:
-        return ""
+    driver.get(curl)
     flg=-1
     cnt=0
     for i in driver.find_elements(By.TAG_NAME,'a'):
@@ -537,9 +534,8 @@ for key, item in df.iterrows():
     print( str(item["track_id"]) + " " + companyName + " " + sourceUrl+ " 送信開始")
     if sourceUrl!="" and sourceUrl.find("mailto:")== -1 and sourceUrl.find("javascript")== -1:
         try:
-        #if 1==1:
+#        if 1==1:
             driver.get(sourceUrl)
-            time.sleep(1)
             com.driver=driver
             getTemplate(str(int(item['inquiry_id'])))
             selectedForm = getAskForm()
@@ -551,7 +547,7 @@ for key, item in df.iterrows():
             setControlDataByPlaceholder(selectedForm)
             setControlDataByLabel(selectedForm)
             setControlData(selectedForm)
-            prcSubmit(selectedForm)
+#            prcSubmit(selectedForm)
             time.sleep(1)
             try:
                 driver.switch_to.alert.accept()

@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   devise_for :staffs
   root to: 'customers#index'
 
-  patch '/okuritecallback/:id/update_status', to: 'okuritecallbacks#update_status', as: :update_okuritecallback_status
   #管理者アカウント
   devise_for :admins, controllers: {
     registrations: 'admins/registrations'

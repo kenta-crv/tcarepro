@@ -204,38 +204,13 @@ form_attr_list:Dict[str,Dict[str,List[str]]] =  {
 parsed_data = json.dumps(json_data)
 data = json.loads(parsed_data)
 
-
-
-
-def nullValueCount(selectedForm):
-    nullvalueCnt=0
-    elements = selectedForm.find_elements(By.XPATH, '//input[not(@type="hidden") and not(@type="button") and not(@type="search")] | //textarea | //select')
-    #filtered_elements = [el for el in elements if not el.get_attribute('value') and not el.get_attribute('innerHTML')]
-    filtered_elements = [
-        el for el in elements
-        if not el.get_attribute('value') and not el.get_attribute('innerHTML') and el.is_displayed()
-    ]    
-    
-    for el in filtered_elements:
-        print(el.get_attribute('outerHTML'))
-        nullvalueCnt+=1
-    return nullvalueCnt
-
-
-
 def setControlData(selectedForm):
-    #tcnt = nullValueCount(selectedForm)
-    #if tcnt == 0 : return
-    pcnt = 0    
     select_elements = selectedForm.find_elements(By.TAG_NAME, "select")
     if len(select_elements) > 0:
         for select_element in select_elements:
-            try:
-                driver.execute_script("arguments[0].scrollIntoView();", select_element)    
-                select = Select(select_element)
-                select.select_by_index(1)  # 一番目の<option>を選択    
-            except:
-                pass            
+            select = Select(select_element)
+            select.select_by_index(1)  # 一番目の<option>を選択    
+            
     for tag_name in ['input', 'textarea']:
         try:
             elements = selectedForm.find_elements(By.TAG_NAME, tag_name)
@@ -243,10 +218,6 @@ def setControlData(selectedForm):
             continue
         
         for element in elements:
-            try:
-                print('####', element.get_attribute('name'))
-            except:
-                continue
             if  element.get_attribute('type')=='hidden':
                 continue
             elif element.get_attribute('type')=='checkbox':
@@ -262,46 +233,34 @@ def setControlData(selectedForm):
                     driver.execute_script("arguments[0].click();", element)                              
             elif len(element.get_attribute('value')) < 1 and  element.get_attribute('type')!='hidden':
                 emptyFlg=True 
-                #if tcnt <= pcnt : break
                 for key, value in form_attr_list.items():
                     labels=None
                     if key != "submit":
                         for i in value["input_name_list"]:
-                            try:
-                                if element.get_attribute('name') !=None and len(element.get_attribute('name')) > 0 and  i in element.get_attribute('name'):
+                            if element.get_attribute('name') !=None and len(element.get_attribute('name')) > 0 and  i in element.get_attribute('name'):
+                                labels=element
+                            if not labels:
+                                if element.get_attribute('id') !=None and len(element.get_attribute('id')) > 0 and i in element.get_attribute('id'):
                                     labels=element
-                                if not labels:
-                                    if element.get_attribute('id') !=None and len(element.get_attribute('id')) > 0 and i in element.get_attribute('id'):
-                                        labels=element
-                                if  labels :
-                                    if len(labels.get_attribute('value') ) < 1  and (key in data and data[key] != "post"):
-                                        print(i, element.get_attribute('id'), element.get_attribute('name'),  labels.get_attribute('value')   )
-                                        try:
+                            if  labels :
+                                if len(labels.get_attribute('value') ) < 1 :
+                                    print(i, element.get_attribute('id'), element.get_attribute('name'),  labels.get_attribute('value')   )
                                     #print(labels.get_attribute('outerHTML'))
-                                            labels.clear()
-                                            labels.send_keys(data[key])
-                                            pcnt=pcnt+1
-                                        except:
-                                            pass
-                                        break
-                            except:
-                                pass
-                if  emptyFlg==True  and len(element.get_attribute('value') ) < 1::
-                    try:
-                        if element.get_attribute('name').find("post") > -1 or element.get_attribute('name').find("番") > -1:
-                            element.clear()
-                            element.send_keys("000")
-                        else:
-                            element.clear()
-                            element.send_keys("　")     
-                    except:
-                        pass
+                                    labels.clear()
+                                    labels.send_keys(data[key])
+                                    break
+                if len(element.get_attribute('name')) > 0 and emptyFlg==True:
+                    if element.get_attribute('name').find("post") > -1 or element.get_attribute('name').find("番") > -1:
+                        element.clear()
+                        element.send_keys("000")
+                    else:
+                        element.clear()
+                        element.send_keys("　")     
+  
 
 def setControlDataByLabel(form):
     global data
-    tcnt = nullValueCount(selectedForm)
-    if tcnt == 0 : return
-    pcnt = 0
+
     for key, value in form_attr_list.items():
         if key != "submit":
             for i in value["table_label_list"]:
@@ -324,44 +283,33 @@ def setControlDataByLabel(form):
                             input_element.clear()
                             input_element.send_keys(data[key])    
                             endFlg=True
-                            pcnt = pcnt + 1                            
                             break
                 except NoSuchElementException:
                     pass       
                 except StaleElementReferenceException:
                     pass
-                except:
-                    pass                
 
 
 def setControlDataByPlaceholder(form):
     global data
-    placeholderStr=[]
-    for j in selectedForm.find_elements(By.XPATH, '//input[@placeholder] | //textarea[@placeholder]'):
-        placeholderStr.append(j.get_attribute('placeholder'))
-    if len(placeholderStr) > 0:
-        for key, value in form_attr_list.items():
-            if key != "submit":
-                for i in value["table_label_list"]:
-                    xpathtxt='.//input[contains(@placeholder, "' + i + '")] | .//textarea[contains(@placeholder, "' + i + '") and not(@type="hidden")]'
-                    result = [s for s in placeholderStr if i in s]
-                    if len(result) > 0 :
-                        debugWrite(result[0] + " " + i)
-                        try:
-                            j = form.find_element(By.XPATH, xpathtxt)
-                            #print(j.get_attribute('outerHTML'))
-                            if j.get_attribute('value') == "":
-                                try:
+    for j in form.find_elements(By.XPATH, '//input[@placeholder]'):
+        placeholderStr = j.get_attribute('placeholder')
+    if len(form.find_elements(By.XPATH, '//input[@placeholder]')) > 0:
+            for key, value in form_attr_list.items():
+                if key != "submit":
+                    for i in value["table_label_list"]:
+                        xpathtxt='.//input[contains(@placeholder, "' + i + '")] | .//textarea[contains(@placeholder, "' + i + '") and not(@type="hidden")]'
+                        if i in placeholderStr:
+                            debugWrite(placeholderStr + " " + i)
+                            try:
+                                j = form.find_element(By.XPATH, xpathtxt)
+                                if j.get_attribute('value') == "":
                                     j.clear()
                                     j.send_keys(data[key])
-                                    loopFlg=False            
-                                except:
-                                    pass
-                                break
-                        except NoSuchElementException:
-                            pass
-
-
+                          
+                                    break
+                            except NoSuchElementException:
+                                pass   
 
 def getAskForm():
     global driver
@@ -463,41 +411,32 @@ def debugWrite(logstr):
 def exhibitURLCheck(url):
     rt=url
     if rt==None:return ''
+    if not isinstance(url, str):return ''
     exhibitList = ['facebook.com','townwork.net','jbplt.jp','tsukulink.net','recyclehub.jp','https://xn','reform-master.net','doda.jp','kenzai-navi.com','itp.ne.jp','a6l.jp','baitoru.com','goo-net.com','homemate-research-drugstore.com','navitime.co.jp','mynavi.jp','twitter.com','twitter','tabelog.com','yahoo.co.jp','el.e-shops.jp','mtke-job.jp','paypay','biz.ne.jp','ats.joboplite.jp','mapion.co','.pdf','youtube','rakuten','epark.jp','en-gage.net','work-canvas.com','biz-maps','newscast.jp','kotobank.jp','wikipedia.org','1cs.jp','baseconnect.in','s-agent.jp','pcareer.m3.com','www.w3.org','salesnow.jp','en-hyouban.com','airjobtour.net','prtimes.jp','shizumatch.jp','jp.stanby.com','recruit','job.rikunabi.com','github.com','nstagram.com','job-gear.net','senken.co.jp','nikkei.com','arc-navi','doda.co.jp','indeed.com','koyou.pref.shizuoka.jp','sumo.jp','homes.co.jp','google.co','next.rikunabi','townwork.net','doraever.jp','sharefull.com','hatalike.jp','jobtalk.jp','nucoxd9y6','b-mall.ne','info.gbiz','grffer','careerindex','irbank','job.goo','job-net','houjin.jp','cnavi.g-search','e-aidem']
     for i in exhibitList:
         if url.find(i) > -1 :
             rt= ''
             break
     return rt
-
 def prcSubmit(selectedForm):
-    global DEBUGMODE    
-    
-    input_elements = selectedForm.find_elements(By.TAG_NAME, "input")
-    button_elements = selectedForm.find_elements(By.TAG_NAME, "button")
-    elements = input_elements + button_elements
-    for element in elements:
+    for element in  selectedForm.find_elements(By.TAG_NAME, "input"):
         if  element.get_attribute('type')=='submit':
-            if element.get_attribute('value').find('確')>-1 or  element.get_attribute('value').find('認')>-1or element.get_attribute('value').find('次')>-1:
+            if element.get_attribute('value').find('確')>-1 or  element.get_attribute('value').find('認')>-1:
                 print(element.get_attribute('value'))
                 element.click()
                 time.sleep(3)
                 debugWrite(  driver.find_elements(By.TAG_NAME, 'form')[0].get_attribute('outerHTML')   )
                 driver.find_elements(By.TAG_NAME, 'form')[0].submit()
                 break
-                
-            else:
-                selectedForm.submit()
-                break
+        else:
+            selectedForm.submit()
+            break
+            #print('')
 
 def companyInfo(curl):
     if not isinstance(curl, str): return ''
     if curl.find('http') == -1 : return ''
-    url=""
-    try :
-        driver.get(curl)
-    except:
-        return ""
+    driver.get(curl)
     flg=-1
     cnt=0
     for i in driver.find_elements(By.TAG_NAME,'a'):
@@ -513,7 +452,7 @@ start_time = time.time()
 time_limit = 28800  # 8 hours in seconds
 df = pd.read_csv(okFile)
 cur=""
-#DEBUGMODE=True
+DEBUGMODE=True
 for key, item in df.iterrows():
     sourceUrl=""
     if item['contact_url'] is not None and isinstance(item['contact_url'], str) and item['contact_url'].find('http') > -1:        
@@ -521,7 +460,7 @@ for key, item in df.iterrows():
         companyName = item["companyname"].replace('&',' AND ')        
     else:
         companyName = item["companyname"].replace('&',' AND ')
-        if  pd.notna(item['URL1']):
+        if  pd.notna(item['companyname']):
             try:
                 sourceUrl=companyInfoGoogle( companyName )
             except:
@@ -535,19 +474,13 @@ for key, item in df.iterrows():
             sourceUrl= companyInfo(curl)    
     logWrite( str(item["track_id"]) + " " + companyName + " " + sourceUrl+ " 送信開始")
     print( str(item["track_id"]) + " " + companyName + " " + sourceUrl+ " 送信開始")
-    if sourceUrl!="" and sourceUrl.find("mailto:")== -1 and sourceUrl.find("javascript")== -1:
+    if sourceUrl!="" and sourceUrl.find("mailto:")== -1:
         try:
-        #if 1==1:
+#        if 1==1:
             driver.get(sourceUrl)
-            time.sleep(1)
             com.driver=driver
             getTemplate(str(int(item['inquiry_id'])))
             selectedForm = getAskForm()
-            if selectedForm == None:
-                debugWrite('bundle exec rails update_contact_status:update  contact_tracking_id='+str(item["track_id"])+' update_mode=2')
-                os.system('bundle exec rails update_contact_status:update  contact_tracking_id='+str(item["track_id"])+' update_mode=2')                
-                logWrite( sourceUrl+ " 送信失敗（003）")                  
-                continue            
             setControlDataByPlaceholder(selectedForm)
             setControlDataByLabel(selectedForm)
             setControlData(selectedForm)

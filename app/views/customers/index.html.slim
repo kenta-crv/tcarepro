@@ -157,6 +157,15 @@
                   = f.search_field :choice_cont, type: "text"
               tr
                 th
+                  | 業種
+                td
+                  = f.search_field :business_cont, type: "text"
+                th
+                  | 職種
+                td
+                  = f.search_field :genre_cont, type: "text"
+              tr
+                th
                   | 未コール
                 td
                   = f.search_field :calls_id_null, type: 'checkbox', value: 'true'

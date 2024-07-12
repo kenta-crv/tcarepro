@@ -83,7 +83,7 @@ class Customer < ApplicationRecord
     end
   }
 
-  scope :with_status, -> (statuses) {
+  scope :with_status, ->(statuses) {
   if statuses.present?
     where(status: statuses)
   end
