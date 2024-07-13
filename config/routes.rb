@@ -104,6 +104,9 @@ Rails.application.routes.draw do
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
   get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
 
+  #showからのメール送信
+  get 'customers/:id/send_email', to: 'customers#send_email', as: 'send_email_customer'
+  post 'customers/:id/send_email', to: 'customers#send_email_send'
   #get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'direct_mail_send/:id' => 'customers#direct_mail_send' #SFA

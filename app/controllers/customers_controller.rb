@@ -370,6 +370,21 @@ class CustomersController < ApplicationController
 
     send_data report.generate, filename: "#{industry_name}.pdf", type: 'application/pdf', disposition: 'attachment'
   end
+
+  def send_email
+    @customer = Customer.find(params[:id])
+    @user = current_user
+  end
+
+  def send_email_send
+    @customer = Customer.find(params[:id])
+    @user = current_user
+    Rails.logger.debug(params.inspect)  # パラメータをログに出力
+  
+    email_params = params.require(:mail).permit(:company, :first_name, :mail, :body, :company_name, :user_name)
+    CustomerMailer.teleapo_send_email(@customer, email_params).deliver_now
+    redirect_to customers_path(@customer), notice: 'Email sent successfully!'
+  end
   
 
   def extraction

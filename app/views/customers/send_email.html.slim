@@ -1,0 +1,26 @@
+.tops-wrapper
+ h2.headline
+    | メール送信フォーム
+ .small 以下の情報はシステムに登録された情報です。適切な内容に切り替え、日時入力の上で送信を行なってください。
+ .small 
+  .red 会社名が既存システムでは登録されておりませんので、必ず名乗り・署名を編集してください。
+ br/
+ = form_with model: @customer, url: send_email_customer_path(@customer), method: :post, local: true, scope: :mail do |f|
+  .field
+    = f.label :company
+    = f.text_field :company, value: @customer.company
+
+  .field
+    = f.label :name
+    = f.text_field :first_name, value: @customer.first_name
+
+  .field
+    = f.label :email
+    = f.text_field :mail, value: @customer.mail
+
+  .field
+    = f.label :body
+    = f.text_area :body, rows: 25, value: "#{@customer.company} #{@customer.first_name}様\n\nお世話になります。\n\n#{@customer.industry_name}の#{@user.user_name}で御座います。\n\n先ほどはご丁寧にお電話対応ありがとうございました。\n\n当メールにて、日程調整を行わせて頂ければと存じますが、以下の日程において、ご都合はいかがでしょうか？\n\n 月 日 :00〜 :00\n\n 月 日 :00〜 :00\n\n 月 日 :00〜 :00\n\n以上、お忙しい中恐縮では御座いますが、お返事の程お待ちしております。\n\n引き続きでは御座いますが、何卒よろしくお願い致します。\n\n会社名：#{@customer.company_name}\n担当：#{@user.user_name}"
+
+  .actions
+    = f.submit 'Send Email'
