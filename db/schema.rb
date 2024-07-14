@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240514101336) do
+ActiveRecord::Schema.define(version: 20240626055016) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -33,6 +33,16 @@ ActiveRecord::Schema.define(version: 20240514101336) do
     t.datetime "updated_at", null: false
     t.index ["crowdwork_id"], name: "index_assignments_on_crowdwork_id"
     t.index ["worker_id"], name: "index_assignments_on_worker_id"
+  end
+
+  create_table "attendances", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "month"
+    t.integer "year"
+    t.float "hours_worked"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
   create_table "autoform_results", force: :cascade do |t|
@@ -98,15 +108,12 @@ ActiveRecord::Schema.define(version: 20240514101336) do
   end
 
   create_table "contacts", force: :cascade do |t|
-    t.string "company"
-    t.string "name"
-    t.string "tel"
-    t.string "address"
-    t.string "email"
-    t.string "subject"
-    t.string "message"
+    t.integer "worker_id"
+    t.string "question"
+    t.string "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["worker_id"], name: "index_contacts_on_worker_id"
   end
 
 # Could not dump table "contracts" because of following StandardError
@@ -224,6 +231,9 @@ ActiveRecord::Schema.define(version: 20240514101336) do
     t.string "other_receive_1_title"
     t.string "other_receive_2_title"
     t.string "other_receive_3_title"
+    t.integer "industry_code"
+    t.string "company_name"
+    t.string "payment_date"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
@@ -522,6 +532,23 @@ ActiveRecord::Schema.define(version: 20240514101336) do
     t.index ["reset_password_token"], name: "index_staffs_on_reset_password_token", unique: true
   end
 
+  create_table "tests", force: :cascade do |t|
+    t.integer "worker_id"
+    t.string "company"
+    t.string "tel"
+    t.string "address"
+    t.string "title"
+    t.string "business"
+    t.string "genre"
+    t.string "url"
+    t.string "contact_url"
+    t.string "url_2"
+    t.string "store"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["worker_id"], name: "index_tests_on_worker_id"
+  end
+
   create_table "upload_data", force: :cascade do |t|
     t.string "name"
     t.string "file"
@@ -565,6 +592,7 @@ ActiveRecord::Schema.define(version: 20240514101336) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "select"
+    t.integer "number_code"
     t.index ["email"], name: "index_workers_on_email", unique: true
     t.index ["reset_password_token"], name: "index_workers_on_reset_password_token", unique: true
   end

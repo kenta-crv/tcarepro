@@ -154,13 +154,6 @@
           | 備考
         td[colspan="3"]
           = text_area :customer, :remarks
-      tr
-        th
-          | 公開設定
-          strong.label ※
-        td
-         /= f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
-
 
         td
           = f.select(:send_count, Customer.SendStatus,include_blank:true)

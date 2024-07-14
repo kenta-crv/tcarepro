@@ -1,6 +1,29 @@
 require 'scraping'
 
 class Customer < ApplicationRecord
+  INDUSTRY_MAPPING = {
+    'コンシェルテック（営業）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
+    'コンシェルテック（販売）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
+    'コンシェルテック（工場）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
+    'SORAIRO（工場）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "末日"},
+    'SORAIRO（食品）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "末日"},
+    'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
+    'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日"},
+    'ニュートラル（介護）' => {industry_code: 25000, company_name: "ニュートラル協同組合", payment_date: "10日"},
+    'グローバル（食品）' => {industry_code: 27000, company_name: "グローバル協同組合", payment_date: "10日"},
+    'グローバル（介護）' => {industry_code: 27000, company_name: "グローバル協同組合", payment_date: "10日"},
+    'ワークリレーション' => {industry_code: 15000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
+    'データ入力' => {industry_code: 15000, company_name: "株式会社セールスプロ", payment_date: "10日"},
+    '富士（工場）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"},
+    '富士（飲食）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"},
+    'er（介護）' => {industry_code: 30000, company_name: "erプラス協同組合", payment_date: "10日"},
+    'CVC（受付）' => {industry_code: 28500, company_name: "一般監理事業団体・CVC TOKYO事業協同組合", payment_date: "10日"},
+    'CVC（飲食）' => {industry_code: 28500, company_name: "一般監理事業団体・CVC TOKYO事業協同組合", payment_date: "10日"},
+    'CVC（工場）' => {industry_code: 30000, company_name: "一般監理事業団体・CVC TOKYO事業協同組合", payment_date: "10日"},
+    'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
+  }
+
+  #before_save :create_entry_if_conditions_met
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
   has_many :estimates
@@ -32,13 +55,6 @@ class Customer < ApplicationRecord
     eager_load(:direct_mail_contact_trackings).order(sended_at: :desc)
   }
 
-  #has_one :last_mail_contact, ->{
-  #  order("created_at desc")
-  #}, class_name: DirectMailContactTracking
-
-  #scope :last_mail_contact_trackings, ->(status){
-  #  joins(:direct_mail_contact_trackings).where(direct_mail_contact_trackings: { status: status })
-  #}
   scope :between_created_at, ->(from, to){
     where(created_at: from..to)
   }
@@ -61,9 +77,9 @@ class Customer < ApplicationRecord
     where(id: filter_ids)
   }
 
-  scope :before_sended_at, ->(sended_at){
-    eager_load(:contact_trackings).marge(ContactTracking.before_sended_at(sended_at))
-  }
+scope :before_sended_at, ->(sended_at){
+  eager_load(:contact_trackings).merge(ContactTracking.before_sended_at(sended_at))
+}
 
   scope :with_company, -> company {
     if company.present?
@@ -84,10 +100,10 @@ class Customer < ApplicationRecord
   }
 
   scope :with_status, ->(statuses) {
-  if statuses.present?
-    where(status: statuses)
-  end
-}
+    if statuses.present?
+      where(status: statuses)
+    end
+  }
 
   scope :with_is_contact_tracking, -> is_contact_tracking {
     if is_contact_tracking == "true"
@@ -135,9 +151,6 @@ class Customer < ApplicationRecord
   scope :with_contact_tracking_sended_at, ->(from, to) {
     where(contact_tracking_sended_at: (from.beginning_of_day..to.end_of_day))
   }
-
-
-  validates :tel, :exclusion => ["%080", "%090", "%0120", "%0088", "%070"]
 
   def self.import(file)
     save_cont = 0
@@ -283,7 +296,7 @@ class Customer < ApplicationRecord
     @@send_status
   end
 
-  enum status: {draft: 0, published: 1}
+  #enum status: {draft: 0, hidden: 1, publish: 2}
 
   def get_search_url
     unless @contact_url
@@ -309,21 +322,89 @@ class Customer < ApplicationRecord
     url_arry
   end
 
-  #def special_number_for_index
-   #if industry&.to_s&.include?('ワークリレーション') || industry&.to_s&.include?('bloom')
-    # 20000
-    #elsif industry&.to_s&.include?('コンシェルテック') || industry&.to_s&.include?('セールスプロ')
-    # 15000
-    #elsif industry&.to_s&.include?('飲食店') || industry&.to_s&.include?('介護')
-    # 25000
-    #else
-    #  0
-    #end
-  #end
+  #APPをカウントカウント
+  def total_industry_code_for_app_calls
+    calls.where(statu: 'APP').joins(:customer).sum('customers.industry_code')
+  end
+
+  def industry_name
+    INDUSTRY_MAPPING.each do |key, value|
+      return key if value[:company_name] == self.company_name
+    end
+    nil
+  end
+
+  def payment_date
+    INDUSTRY_MAPPING.each do |key, value|
+      return value[:payment_date] if value[:company_name] == self.company_name
+    end
+    nil
+  end
+
+  attr_accessor :skip_validation
+
+  validate :validate_company_format, if: -> { !new_record? && !skip_validation }
+  validate :validate_tel_format, if: -> { !new_record? && !skip_validation }
+  validate :validate_address_format, if: -> { !new_record? && !skip_validation }
+  validate :validate_crowdwork_business, if: -> { crowdwork_match_needed? && !new_record? && !skip_validation }
+  validate :validate_crowdwork_genre, if: -> { crowdwork_match_needed? && !new_record? && !skip_validation }
+  validate :unique_industry_and_tel_or_company_for_same_worker
+
+  # その他のコード
 
   private
 
-  def scraping
-    @scraping ||= Scraping.new
+  def unique_industry_and_tel_or_company_for_same_worker
+    existing_customer = Customer.where(worker_id: worker_id)
+                                .where(industry: industry)
+                                .where("tel = ? OR company = ?", tel, company)
+
+    if existing_customer.exists?
+      errors.add(:base, "過去に同一電話番号または会社名を登録しています。同一ワーカーでの重複登録はできません。")
+    end
+  end
+
+  def validate_company_format
+    unless company =~ /株式会社|有限会社|社会福祉|合同会社|医療法人/
+      errors.add(:company, "会社名には「株式会社」、「有限会社」、「社会福祉」、「合同会社」、「医療法人」のいずれかを含める必要があります。")
+    end
+
+    if company =~ /支店|営業所/
+      errors.add(:company, "会社名には「支店」と「営業所」を含むことはできません。")
+    end
+  end
+
+  def validate_tel_format
+    errors.add(:tel, "電話番号には「半角数字」と「-」以外の文字を含めることはできません") if tel !~ /\A[0-9\-]+\z/
+    errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません") if tel !~ /\A[0-9\-]+\z/ || tel =~ /0120|0088/
+  end
+
+  def validate_address_format
+    unless address =~ /都|道|府|県/
+      errors.add(:address, "住所には都・道・府・県のいずれかを含める必要があります")
+    end
+  end
+
+  def set_industry_code
+    self.industry_code = INDUSTRY_MAPPING[self.industry]
+  end
+
+  def crowdwork_match_needed?
+    crowdwork = Crowdwork.find_by(title: title)
+    crowdwork.present? && (crowdwork.business == business || crowdwork.genre == genre)
+  end
+
+  def validate_crowdwork_business
+    crowdwork = Crowdwork.find_by(title: title)
+    if crowdwork.present? && crowdwork.business == business
+      errors.add(:business, "指定業種以外は抽出できません。")
+    end
+  end
+
+  def validate_crowdwork_genre
+    crowdwork = Crowdwork.find_by(title: title)
+    if crowdwork.present? && crowdwork.genre == genre
+      errors.add(:genre, "指定職種が含まれていません。")
+    end
   end
 end

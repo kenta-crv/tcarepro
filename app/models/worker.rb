@@ -6,8 +6,9 @@ class Worker < ApplicationRecord
   has_many :customers
   has_many :contact_trackings
   has_many :lists
-  has_many :writers
   has_many :assignments
+  has_many :contacts
+  has_many :tests
   has_many :crowdworks, through: :assignments
 
     def self.import_customers(file)
@@ -31,5 +32,10 @@ class Worker < ApplicationRecord
   def self.updatable_attributes
     # 更新可能な属性のリスト
     # 例: ["name", "email", "phone", ...]
+  end
+
+   # ここにメール送信ロジックを追加します
+  def send_warning_email(subject, body)
+    WorkerMailer.with(worker: self, subject: subject, body: body).warning_email.deliver_now
   end
 end

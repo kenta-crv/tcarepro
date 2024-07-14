@@ -1,0 +1,11 @@
+
+table
+  thead
+    tr
+      th User
+      th Total Industry Code
+  tbody
+    - @user_industry_code_totals.each do |entry|
+      tr
+        td = entry[:user].name
+        td = entry[:total_industry_code]

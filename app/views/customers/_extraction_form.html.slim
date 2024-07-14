@@ -1,103 +1,102 @@
-- set_meta_tags noindex: true
 = form_for @customer do |f|
+  - if @customer.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@customer.errors.count, "error")
+        | prevented this customer from being saved:
+      ul
+        - @customer.errors.full_messages.each do |message|
+          li = message
 
   table.space[width="90%"]
-    col[width="40%"]
+    col[width="15%"]
+    col[width="25%"]
     col[width="60%"]
-    tbody
-      tr
-        th
-          | 会社名
-          strong.label.label-blue ※社名が異なる場合修正
-        td
-          =text_field :customer, :company
-      tr
-        th
-          | メールアドレス
-          strong.label.label-blue ※あれば必須
-        td
-          =text_field :customer, :mail
-      tr
-        th
-          | 担当者名
-          strong.label.label-blue ※あれば必須
-        td
-          =text_field :customer, :first_name
-      tr
-        th
-          | 電話番号
-          strong.label ※必須
-          strong.label ※【半角のみ】【0120/0088/携帯不可】）
-        td
-          =telephone_field :customer, :tel
-      tr
-        th
-          | 住所
-          strong.label ※必須
-          strong.label ※【住所と電話番号の市外局番は必ず一致】）
-        td
-          =telephone_field :customer, :address
-      tr
-        th
-          | 業種
-          strong.label ※必須（あるもの全て記入）
-        td
-          =text_field :customer, :business
-          /= f.select(:business, Customer.BusinessStatus)
-      tr
-        th
-          | 会社ホームページ
-          strong.label.label-blue ※あれば必須
-        td
-          =text_field :customer, :url_2
-      tr
-        th
-          | 資本金
-          strong.label.label-blue ※あれば必須
-          strong.label.label-blue ※案件によって条件が異なります。
-        td
-          =number_field :customer, :caption
-          |円
-      tr
-        th
-          | 従業員数
-          strong.label.label-blue ※あれば必須
-          strong.label.label-blue ※案件によって条件が異なります。
-        td
-          =number_field :customer, :people
-          |人
-      tr
-        th
-          | 問い合わせフォームURL
-          strong.label.label-blue ※あれば必須
-          strong.label.label-blue ※案件によって条件が異なります。
-        td
-          =text_field :customer, :contact_url
-          |円
-      tr
-        th
-          | リスト製作者向けカウント
-          strong.label ※
-        td
-          = f.select(:extraction_count, Customer.ExtractionStatus,include_blank: true)
-      tr
-        td.attend[colspan="2"]
-          |※支店の抽出は不可な案件があります。
-          br
-          |※重複は類似案件を抽出していませんか？
-          br
-          |※抽出担当者にチェックは付けましたか？チェックがない場合、支払対象外となります。
-          br
-          |※抽出外リストは絶対に作業自体行わないで下さい。
-          br
-          |※電話番号が抽出不可の場合は抽出対象外となります。
-      tr
-      tr
-        th
-          | 公開設定
-        td
-          = f.select :status, Customer.statuses.keys.map { |k| [t("enums.customer.status.#{k}"),k]}
-
-      tr
-        td = link_to '登録せずに戻る', @customer,class:"btn btn-dafault"
-        td = f.submit '登録する',class:"btn btn-success", data: { confirm: '初回業務の方で、抽出条件を把握せずに登録する方が非常に増えております。抽出エリア・抽出業種一致していますか？また、NG条件を登録しようとしていませんか？ミスして作業を進めると修正に多大な時間を要するため必ず確認して下さい。'}
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 会社名
+      td.responsive-cell
+        .input-container
+          = f.text_field :company, placeholder:"（例）株式会社Ri-Plus  ※法人名のみ可能"
+          - if @customer.errors[:company].any?
+            .error-message= @customer.errors[:company].first
+    tr
+      td.label-cell
+        strong.label 
+      th.arrow-box-cell
+        | 参考情報
+      td.responsive-cell
+        .input-container
+          = @customer.store
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 電話番号
+      td.responsive-cell
+        .input-container
+          = f.text_field :tel, placeholder:"（例）000-0000-0000 ※【半角のみ・形式指定】【0120/0088/携帯不可】"
+          - if @customer.errors[:tel].any?
+            .error-message= @customer.errors[:tel].first
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 住所
+      td.responsive-cell
+        .input-container
+          = f.text_field :address, placeholder:"（例）東京都東京市東京町1-1-1 ※【都道府県から記載/住所と電話番号の地域は必ず一致】"
+          - if @customer.errors[:address].any?
+            .error-message= @customer.errors[:address].first
+    tr
+      td.label-cell
+        strong.label 
+      th.arrow-box-cell
+        | 参考情報
+      td.responsive-cell
+        .input-container
+          = @customer.title
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 業種
+      td.responsive-cell
+        .input-container
+          = f.text_field :business, placeholder:"（例）工場 【指定キーワードのみ登録可能】"
+          - if @customer.errors[:business].any?
+            .error-message= @customer.errors[:business].first
+    tr
+      td.label-cell
+        strong.label 必須
+      th.arrow-box-cell
+        | 職種
+      td.responsive-cell
+        .input-container
+          = f.text_field :genre, placeholder:"（例）金属加工 ※【指定のワード記載が絶対条件】"
+          - if @customer.errors[:genre].any?
+            .error-message= @customer.errors[:genre].first
+    tr
+      td.label-cell
+        strong.label.label-blue あれば必須
+      th.arrow-box-cell
+        | ホームページ
+      td.responsive-cell
+        .input-container
+          = f.text_field :url, placeholder:"（例）https://aaa.com/ ※【トップページのみ可能】"
+    tr
+      td.label-cell
+        strong.label.label-blue あれば必須
+      th.arrow-box-cell
+        | 問い合わせURL
+      td.responsive-cell
+        .input-container
+          = f.text_field :contact_url, placeholder:"（例）https://aaa.com/contacts ※【フォーム画面のページのみ】"
+  br
+  br
+  table 
+    tr
+      td = f.submit '登録して次へ', class: "btn btn-success"
+      td = f.submit '対象外リストとして登録', name: 'commit', value: '対象外リストとして登録', class: "btn btn-warning"

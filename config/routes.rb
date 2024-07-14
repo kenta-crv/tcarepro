@@ -11,7 +11,10 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
-  resources :users, only: [:show]
+  resources :users, only: [:show, :destroy] do
+    resources :attendances, except: [:index]
+  end
+  resources :attendances, only: [:index]
   #ワーカーアカウント
   devise_for :workers, controllers: {
     registrations: 'workers/registrations',
@@ -21,17 +24,26 @@ Rails.application.routes.draw do
   }
   resources :workers, only: [:show, :destroy] do 
     member do
+      get 'next', to: 'workers#next'
       post 'upload', to: 'workers#upload'
       get 'confirm', to: 'workers#confirm'
     end
     collection do
       post :import_customers
+      get 'practices/question1', to: 'workers#question1'
+      get 'practices/question2', to: 'workers#question2'
+      get 'practices/question3', to: 'workers#question3'
+      get 'practices/reference1', to: 'workers#reference1'
+      get 'practices/reference2', to: 'workers#reference2'
+      get 'practices/reference3', to: 'workers#reference3'
     end
+    resources :tests
     resources :lists, except: [:show]
     resources :sends
-    resources :writers
+    resources :contacts, except: [:index, :edit, :update, :destroy]
   end
   resources :crowdworks
+  resources :contacts, only: [:index, :edit, :update, :destroy]
 
   resource :sender, only: [:show]
   post 'senders/import' => 'senders#import'
@@ -75,14 +87,18 @@ Rails.application.routes.draw do
   end
 
   resources :customers do
+    post 'exclude', on: :member
     resources :calls
     collection do
+      get 'search', to: 'customers#search', as: 'search'
+      get :industry_code_total
       get :complete
       post :import
       post :update_import
       post :call_import
       post :tcare_import
       get :message
+      put 'update_all_status'
     end
     get 'analytics', on: :collection
   end
@@ -90,6 +106,9 @@ Rails.application.routes.draw do
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
   get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
 
+  #showからのメール送信
+  get 'customers/:id/send_email', to: 'customers#send_email', as: 'send_email_customer'
+  post 'customers/:id/send_email', to: 'customers#send_email_send'
   #get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'direct_mail_send/:id' => 'customers#direct_mail_send' #SFA
@@ -99,6 +118,7 @@ Rails.application.routes.draw do
   end
 
   get 'closing' => 'customers#closing' #締め
+  get 'draft' => 'customers#draft' #締め
   get 'news' => 'customers#news' #インポート情報
   get 'extraction' => 'customers#extraction' #TCARE
   delete :customers, to: 'customers#destroy_all' #Mailer

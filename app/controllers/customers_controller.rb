@@ -6,7 +6,9 @@ class CustomersController < ApplicationController
   before_action :authenticate_worker_or_user, only: [:new, :edit]
   before_action :authenticate_user_or_admin, only: [:index, :show]
   #before_action :authenticate_worker_or_admin, only: [:extraction]
-
+  before_action :set_customers, only: [:update_all_status]
+  protect_from_forgery with: :exception, prepend: true
+  
   def index
     last_call_customer_ids = nil
     Rails.logger.debug("params :" + params.to_s)
@@ -68,6 +70,12 @@ class CustomersController < ApplicationController
     @customer = Customer.new
   end
 
+  def search
+    branch = params[:branch]
+    address = params[:address]
+    @customers = Customer.where(branch: branch, address: address)
+  end
+
   def create
     @customer = Customer.new(customer_params)
      if @customer.save
@@ -87,8 +95,18 @@ class CustomersController < ApplicationController
 
   def update
     @customer = Customer.find(params[:id])
+    
+    if params[:commit] == '対象外リストとして登録'
+      @customer.skip_validation = true
+      @customer.status = "hidden"
+    end
+  
     if @customer.update(customer_params)
-      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      if worker_signed_in?
+        redirect_to draft_path
+      else
+        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      end
     else
       render 'edit'
     end
@@ -250,24 +268,15 @@ class CustomersController < ApplicationController
 
       @detailcalls = Customer2.joins(:calls).select('calls.id')
       @detailcustomers = Call.joins(:customer).select('customers.id')
-    when "call_import"
-      call_attributes = ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
-      generate_call =
-        CSV.generate(headers:true) do |csv|
-          csv << call_attributes
-          Call.all.each do |task|
-            csv << call_attributes.map{|attr| task.send(attr)}
-          end
-        end
-      respond_to do |format|
-        format.html
-        format.csv{ send_data generate_call, filename: "calls-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-      end
-    when "update_import"
-      respond_to do |format|
-       format.html
-       format.csv{ send_data @customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv" }
-      end
+
+      @app_customers_last_month = Call.joins(:customer).where('calls.created_at >= ? AND calls.created_at < ?', Time.current.prev_month.beginning_of_month, Time.current.beginning_of_month).select('customers.id')
+      @app_customers_last_month_total_industry_value = @app_customers_last_month.present? ? @app_customers_last_month.sum(:industry_code) : 0
+
+      @app_customers = Call.joins(:customer).where('calls.created_at > ?', Time.current.beginning_of_month).where('calls.created_at < ?', Time.current.end_of_month).select('customers.id')
+      @app_customers_total_industry_value = @app_customers.present? ? @app_customers.sum(:industry_code) : 0
+
+      @industry_mapping = Customer::INDUSTRY_MAPPING
+      @app_calls_counts = calculate_app_calls_counts
     when "workers" then
       @customers_app = @customers.where(call_id: 1)
       #today
@@ -305,7 +314,6 @@ class CustomersController < ApplicationController
   def news
     @customers =  Customer.all
   end
-
 
   def copy
     @customer = Customer.find(params[:id])
@@ -362,6 +370,21 @@ class CustomersController < ApplicationController
 
     send_data report.generate, filename: "#{industry_name}.pdf", type: 'application/pdf', disposition: 'attachment'
   end
+
+  def send_email
+    @customer = Customer.find(params[:id])
+    @user = current_user
+  end
+
+  def send_email_send
+    @customer = Customer.find(params[:id])
+    @user = current_user
+    Rails.logger.debug(params.inspect)  # パラメータをログに出力
+  
+    email_params = params.require(:mail).permit(:company, :first_name, :mail, :body, :company_name, :user_name)
+    CustomerMailer.teleapo_send_email(@customer, email_params).deliver_now
+    redirect_to customers_path(@customer), notice: 'Email sent successfully!'
+  end
   
 
   def extraction
@@ -382,8 +405,39 @@ class CustomersController < ApplicationController
   
     render json: { answer: answer.round(2) }
   end
+
+  def draft
+    if admin_signed_in?
+      @q = Customer.where(status:"draft").where.not(tel: nil).ransack(params[:q])
+      @customers = @q.result.page(params[:page]).per(100)
+    else
+      @q = Customer.where(status:"draft").where(tel: nil).ransack(params[:q])
+      @customers = @q.result.page(params[:page]).per(100)
+    end
+     
+  end
   
+  def update_all_status
+    checked_data = params[:updates].keys
+    checked_data.each do |id|
+      customer = Customer.find(id)
+      customer.update(status: :published)
+    end
+    redirect_to draft_path
+  end
+
   private
+  def set_customers
+    @customers = Customer.where(id: params[:updates].keys)
+  end
+
+  def display_customer_names
+    customer_info = []
+    INDUSTRY_MAPPING.each do |customer_name, info|
+      customer_info << "#{customer_name}: #{info[:company_name]}"
+    end
+    customer_info
+  end
 
   def create_pdf_page(report, data)
     report.start_new_page do |page|
@@ -426,7 +480,17 @@ class CustomersController < ApplicationController
       )
     end
   end
-  
+
+  def calculate_app_calls_counts
+    counts = {}
+    @industry_mapping.each do |key, value|
+      calls = Customer.joins(:calls).where(industry: value[:industry], calls: { statu: 'APP' }).count
+      puts "Key: #{key}, Value: #{value}, Calls Count: #{calls}"
+      counts[key] = calls
+    end
+    counts
+  end
+
     def customer_params
       params.require(:customer).permit(
         :company, #会社名
@@ -468,8 +532,7 @@ class CustomersController < ApplicationController
         :business, #業種
         :extraction_count,
         :send_count,
-        :forever,
-        :status
+        :forever
        )&.merge(worker: current_worker)
     end
 

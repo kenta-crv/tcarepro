@@ -1,7 +1,3 @@
-= form_with(url: import_customers_workers_path, method: :post, local: true, multipart: true) do |f|
-  = f.file_field :file
-  = f.submit "インポート"
-  
 .info-wrapper
   h2.headline
     | #{@worker.user_name}さんは現在以下の業務内容を依頼されています。
@@ -33,43 +29,16 @@
         th 今週の件数
         th 今週の不足件数
         th 今月の件数
-        th 先月の件数
         th トータル件数
       tr
-        td = @daily_number
-        td = @weekly_number
-        - if @weekly_number.to_i < 150
+        td = @count_day
+        td = @count_week
+        - if @count_week.to_i < 150
          td.red
-          = 150 - @weekly_number.to_i
+          = 150 - @count_week.to_i
         - else
          td.red
           | CLEAR
-        td = @monthly_number
-        td = @last_month_number
+        td = @count_month
         td = @total_number
   br/
-  h2.headline
-   .red
-    | ※初回業務者は必ず閲覧してください。
-  br/
-  br/
-  h3.caption 業務内容を動画で確認
-  br/
-  .center
-    iframe width="560" height="315" src="https://www.youtube.com/embed/joztoO_vvZw?si=TuGsQqEKwM0PwL2l" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
-  br/
-  .center
-    iframe width="560" height="315" src="https://www.youtube.com/embed/GWmuYiRnMQY?si=7cQNNtwbABmFL2Yl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
-  h2.headline
-   .red
-    | ※業務配置先について
-  br/
-  h3.caption ①配置先について
-  br/
-  p 業務箇所の案内と業務を行うスプレッドシートへの招待は担当者より３営業日以内に行います。
-  br/
-  h3.caption ②業務実施
-  br/
-  p 業務実施の際必ず以下の注意点を閲覧の上実施をお願いします。最低週150件の抽出を行なって頂きます。
-  br/
-  .check ※ページ指定はありません。他のワーカーを配慮し、一定件数を前の方と空けて作業をお願いします。

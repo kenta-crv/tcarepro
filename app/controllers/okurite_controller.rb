@@ -8,9 +8,15 @@ class OkuriteController < ApplicationController
   before_action :set_customers, only: [:index, :preview]
 
   def index
-    @customers = @customers.includes(:worker).page(params[:page]).per(30)
+    #@customers = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠')).includes(:worker).page(params[:page]).per(30)
+    #@contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
+    @q = Customer.ransack(params[:q])
+        ransack_results = @q.result.includes(:worker)
+    conditional_results = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠'))
+    @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)    
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
+  
 
   def show
     @customer = Customer.find(params[:id])

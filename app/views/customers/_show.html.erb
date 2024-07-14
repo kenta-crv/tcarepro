@@ -59,16 +59,8 @@
 			<th>検索対象</th>
 			<td><%= @customer.industry %></td>
       <th>
-        <% if @customer.mail.present? %>
-         <%= mail_to @customer.mail, "商談URL送信",
-              cc: 'info@ri-plus.jp',
-              from: 'info@ri-plus.jp',
-              subject: "オンラインURL発行のご案内",
-              body: "#{@customer.company} #{@customer.first_name}様\n\nお世話になっております。株式会社Ri-Plus#{@user&.user_name}でございます。\n\n先ほどは突然のご連絡ながら対応頂き、誠にありがとうございました。\n\n以下、商談に使用するオンラインURLのリンクをお送りさせて頂きます。\n\n 【https://meet.google.com/yzv-gkyn-kvi】 \n\n日程変更等ございましたら、info@ri-plus.jp迄ご連絡くださいませ。\n\nご確認の程、よろしくお願い致します。\n\n株式会社Ri-Plus\n電話番号：050-5480-1131\nMail：info@ri-plus.jp\nURL：https://ri-plus.jp\n所在地：〒104-0061 東京都中央区銀座6-13-16 ヒューリック銀座ウォールビル7階\n問い合わせ時間：09:00-16:45",
-              target:"_blank", class:"btn btn-success"  %>
-        <%else%>
-          メールアドレス無
-        <%end%>
+        <%= link_to 'メール日程調整', send_email_customer_path(@customer), target: '_blank'  %>
+
      </th>
 			<th>
      </th>

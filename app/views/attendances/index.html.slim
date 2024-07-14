@@ -1,0 +1,24 @@
+  br
+  br/
+  table
+   tr
+     th ユーザー名
+     th 年月
+     th 時間
+     - if admin_signed_in? 
+      th 編集 | 削除
+   - @attendances.each do |attendance|
+    tr
+     td 
+      = attendance.user.user_name
+     td
+      = attendance.year
+      = attendance.month
+     td
+      = attendance.hours_worked
+     td
+      - if admin_signed_in?
+       = link_to "編集", edit_attendance_path(attendance) , class:"btn btn-success"
+       = link_to "削除", attendance_path(attendance) ,method: :delete,  data: { confirm: '本当に削除しますか？'}, class:"btn btn-success"
+      br
+
