@@ -88,6 +88,7 @@ Rails.application.routes.draw do
     post 'exclude', on: :member
     resources :calls
     collection do
+      get 'filter_by_type', to: 'customers#filter_by_type', as: 'filter_by_type'
       get 'search', to: 'customers#search', as: 'search'
       get :industry_code_total
       get :complete

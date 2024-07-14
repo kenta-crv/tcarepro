@@ -329,7 +329,7 @@ class CustomersController < ApplicationController
     cnt = Customer.update_import(params[:update_file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
   end
-
+  #上書きインポート
   def tcare_import
     cnt = Customer.tcare_import(params[:tcare_file])
     redirect_to extraction_url, notice:"#{cnt}件登録されました。"
@@ -383,7 +383,7 @@ class CustomersController < ApplicationController
   
     email_params = params.require(:mail).permit(:company, :first_name, :mail, :body, :company_name, :user_name)
     CustomerMailer.teleapo_send_email(@customer, email_params).deliver_now
-    redirect_to customers_path(@customer), notice: 'Email sent successfully!'
+    redirect_to customers_path, notice: 'Email sent successfully!'
   end
   
 
@@ -414,7 +414,6 @@ class CustomersController < ApplicationController
       @q = Customer.where(status:"draft").where(tel: nil).ransack(params[:q])
       @customers = @q.result.page(params[:page]).per(100)
     end
-     
   end
   
   def update_all_status
