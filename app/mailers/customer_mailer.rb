@@ -11,7 +11,7 @@ class CustomerMailer < ActionMailer::Base
   def teleapo_send_email(customer, email_params)
     @customer = customer
     @body = email_params[:body]
-    mail(to: email_params[:mail], from: "h6135197@gmail.com", cc: "reply@ri-plus.jp", subject: '日程調整のご案内')
+    mail(to: email_params[:mail], from: "h6135197@gmail.com", bcc: "reply@ri-plus.jp", subject: '日程調整のご案内')
   end
 
   def send_email(customer)

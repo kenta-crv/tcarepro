@@ -408,13 +408,14 @@ class CustomersController < ApplicationController
 
   def draft
     if admin_signed_in?
-      @q = Customer.where(status:"draft").where.not(tel: nil).ransack(params[:q])
+      @q = Customer.where(status: "draft").where.not("TRIM(tel) = ''").ransack(params[:q])
       @customers = @q.result.page(params[:page]).per(100)
     else
-      @q = Customer.where(status:"draft").where(tel: nil).ransack(params[:q])
+      @q = Customer.where(status: "draft").where("TRIM(tel) = ''").ransack(params[:q])
       @customers = @q.result.page(params[:page]).per(100)
     end
   end
+  
   
   def update_all_status
     checked_data = params[:updates].keys

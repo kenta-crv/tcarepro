@@ -1,5 +1,5 @@
 - if @worker.select == "リスト制作"
-  - if @worker.tests.count <= 4
+  - if @worker.tests.count <= 3
     = render "test"
   - else
     = render "list"

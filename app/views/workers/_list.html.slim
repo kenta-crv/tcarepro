@@ -15,7 +15,7 @@
            - @assigned_crowdworks.each do |crowdwork|
             = crowdwork.title
         td  
-          = link_to "本日の業務報告を行う", new_worker_list_path(@worker), class: "btn btn-success"
+          = link_to "本日の業務を行う", draft_path(@customer), class: "btn btn-success"
 
   h2.headline
       | リスト制作実施件数
