@@ -17,11 +17,11 @@
     iframe width="560" height="315" src="https://www.youtube.com/embed/GWmuYiRnMQY?si=7cQNNtwbABmFL2Yl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
     br/
     br/
-    - if @worker.tests.count <= 1
+    - if @worker.tests.count <= 0
        = link_to "問題①", new_worker_test_path(@worker, question: 1), class: "btn btn-success"
-    - elsif @worker.tests.count <= 2
+    - elsif @worker.tests.count <= 1
        = link_to "問題②", new_worker_test_path(@worker, question: 2), class: "btn btn-success"
-    - elsif @worker.tests.count <= 3
+    - elsif @worker.tests.count <= 2
        = link_to "問題③", new_worker_test_path(@worker, question: 3), class: "btn btn-success"
-    - elsif @worker.tests.count <= 4
+    - elsif @worker.tests.count <= 3
        = link_to "問題④", new_worker_test_path(@worker, question: 4), class: "btn btn-success"

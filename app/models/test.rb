@@ -1,24 +1,22 @@
 class Test < ApplicationRecord
+  attr_accessor :skip_validation
   belongs_to :worker
 
-  validate :validate_company_format, if: -> { !new_record? }
-  validate :validate_tel_format, if: -> { !new_record? }
-  validate :validate_address_format, if: -> { !new_record? }
-  validate :validate_crowdwork_business, if: -> { !new_record? }
-  validate :validate_crowdwork_genre, if: -> { !new_record? }
+  validate :validate_company_format, unless: :skip_validation?
+  validate :validate_tel_format, unless: :skip_validation?
+  validate :validate_address_format, unless: :skip_validation?
+  validate :validate_crowdwork_business, unless: :skip_validation?
+  validate :validate_crowdwork_genre, unless: :skip_validation?
 
   def validate_crowdwork_business
-    allowed_business = ["介護", "工場", "販売"]
-    if genre.present? && !allowed_business.include?(business)
-      errors.add(:business, "指定職種が含まれていません。")
+    unless business =~ /介護|工場|販売/
+      errors.add(:business, "指定された業種が記載されていません。また空白では登録できません。")
     end
   end
 
   def validate_crowdwork_genre
-    allowed_genres = ["老人ホーム", "金属加工", "レディースファッション"]
-    matching_genre = allowed_genres.find { |g| genre.to_s.include?(g) }
-    if genre.present? && !matching_genre
-      errors.add(:genre, "指定された職種が含まれていません。許可されている職種は #{allowed_genres.join(', ')} です。")
+    unless genre =~ /老人ホーム|金属加工|レディースファッション/
+      errors.add(:genre, "指定された職種が記載されていません。また空白では登録できません。")
     end
   end
 
@@ -41,5 +39,10 @@ class Test < ApplicationRecord
     unless address =~ /都|道|府|県/
       errors.add(:address, "住所には都・道・府・県のいずれかを含める必要があります")
     end
+  end
+  private
+
+  def skip_validation?
+    skip_validation == true
   end
 end
