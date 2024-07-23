@@ -55,6 +55,7 @@ chrome_options.binary_location = chrome_binary_path
 service = Service(webdriver_path)
 driver = webdriver.Chrome(service=service, options=chrome_options)
 DEBUGMODE=False
+lastElement=None
 inqMd = os.environ.get('INQUIRY_MODE')
 if inqMd and (inqMd.startswith('D') or inqMd.startswith('d')):
     DEBUGMODE=True
@@ -226,6 +227,8 @@ def nullValueCount(selectedForm):
 def setControlData(selectedForm):
     #tcnt = nullValueCount(selectedForm)
     #if tcnt == 0 : return
+    global DEBUGMODE
+    global lastElement    
     pcnt = 0    
     select_elements = selectedForm.find_elements(By.TAG_NAME, "select")
     if len(select_elements) > 0:
@@ -286,7 +289,7 @@ def setControlData(selectedForm):
                                         break
                             except:
                                 pass
-                if  emptyFlg==True  and len(element.get_attribute('value') ) < 1::
+                if  emptyFlg==True  and len(element.get_attribute('value') ) < 1:
                     try:
                         if element.get_attribute('name').find("post") > -1 or element.get_attribute('name').find("番") > -1:
                             element.clear()
@@ -294,11 +297,19 @@ def setControlData(selectedForm):
                         else:
                             element.clear()
                             element.send_keys("　")     
+                    except ElementNotInteractableException:
+                        driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", element)
+                        time.sleep(1)
+                        element.clear()
+                        element.send_keys("　")  
+                        lastElement=element                            
                     except:
                         pass
 
 def setControlDataByLabel(form):
     global data
+    global DEBUGMODE
+    global lastElement    
     tcnt = nullValueCount(selectedForm)
     if tcnt == 0 : return
     pcnt = 0
@@ -321,11 +332,22 @@ def setControlDataByLabel(form):
                             input_element=labelElement.find_element(By.XPATH,'following::textarea[not(@type="hidden")][1]')
                         if input_element.get_attribute('value') == "" and  key in data:
                             debugWrite(input_element.get_attribute('outerHTML'))
-                            input_element.clear()
-                            input_element.send_keys(data[key])    
-                            endFlg=True
-                            pcnt = pcnt + 1                            
-                            break
+                            try:                            
+                                input_element.clear()
+                                input_element.send_keys(data[key])    
+                                endFlg=True
+                                pcnt = pcnt + 1
+                                if key == "content": lastElement=input_element
+                                break
+                            except ElementNotInteractableException:    
+                                driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", input_element)
+                                time.sleep(1)                                
+                                input_element.clear()
+                                input_element.send_keys(data[key])    
+                                lastElement=input_element
+                                endFlg=True
+                                pcnt = pcnt + 1
+                                if key == "content": lastElement=input_element
                 except NoSuchElementException:
                     pass       
                 except StaleElementReferenceException:
@@ -336,6 +358,8 @@ def setControlDataByLabel(form):
 
 def setControlDataByPlaceholder(form):
     global data
+    global DEBUGMODE
+    global lastElement    
     placeholderStr=[]
     for j in selectedForm.find_elements(By.XPATH, '//input[@placeholder] | //textarea[@placeholder]'):
         placeholderStr.append(j.get_attribute('placeholder'))
@@ -355,6 +379,14 @@ def setControlDataByPlaceholder(form):
                                     j.clear()
                                     j.send_keys(data[key])
                                     loopFlg=False            
+                                    if key == "content": lastElement=j
+                                except ElementNotInteractableException:        
+                                    driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", j)
+                                    time.sleep(1)
+                                    j.clear()
+                                    j.send_keys(data[key])
+                                    loopFlg=False 
+                                    if key == "content": lastElement=j                                    
                                 except:
                                     pass
                                 break
@@ -478,17 +510,32 @@ def prcSubmit(selectedForm):
     elements = input_elements + button_elements
     for element in elements:
         if  element.get_attribute('type')=='submit':
-            if element.get_attribute('value').find('確')>-1 or  element.get_attribute('value').find('認')>-1or element.get_attribute('value').find('次')>-1:
+            if element.get_attribute('value').find('確')>-1 or  element.get_attribute('value').find('認')>-1 or element.get_attribute('value').find('次')>-1  or element.get_attribute('innerHTML').find('確')>-1 or  element.get_attribute('innerHTML').find('認')>-1 or element.get_attribute('innerHTML').find('次')>-1:
                 print(element.get_attribute('value'))
                 element.click()
                 time.sleep(3)
                 debugWrite(  driver.find_elements(By.TAG_NAME, 'form')[0].get_attribute('outerHTML')   )
+                checkStr = driver.find_elements(By.TAG_NAME, 'form')[0].get_attribute('innerHTML')
                 driver.find_elements(By.TAG_NAME, 'form')[0].submit()
+                time.sleep(2)
+                try:
+                    checkStrNew = driver.find_elements(By.TAG_NAME, 'form')[0].get_attribute('innerHTML')
+                    if checkStr==checkStrNew:
+                        rt=-1
+                    else:
+                        rt=1
+                except:
+                    rt=1
                 break
-                
             else:
                 selectedForm.submit()
+                try:
+                    if len(lastElement.get_attribute('value')) > 0 : rt=-1
+                except:
+                    rt=1
                 break
+    return rt
+
 
 def companyInfo(curl):
     if not isinstance(curl, str): return ''
@@ -551,7 +598,12 @@ for key, item in df.iterrows():
             setControlDataByPlaceholder(selectedForm)
             setControlDataByLabel(selectedForm)
             setControlData(selectedForm)
-            prcSubmit(selectedForm)
+            if prcSubmit(selectedForm) == -1 :
+                debugWrite('bundle exec rails update_contact_status:update  contact_tracking_id='+str(item["track_id"])+' update_mode=2')
+                os.system('bundle exec rails update_contact_status:update  contact_tracking_id='+str(item["track_id"])+' update_mode=2')                
+                logWrite( sourceUrl+ " 送信失敗（004）")    
+                continue   
+
             time.sleep(1)
             try:
                 driver.switch_to.alert.accept()
