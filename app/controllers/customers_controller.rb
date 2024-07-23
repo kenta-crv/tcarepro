@@ -407,6 +407,7 @@ class CustomersController < ApplicationController
   end
 
   def draft
+    @industries = Customer::INDUSTRY_MAPPING.keys
     if admin_signed_in?
       @q = Customer.where(status: "draft").where.not("TRIM(tel) = ''").ransack(params[:q])
       @customers = @q.result.page(params[:page]).per(100)
@@ -415,14 +416,40 @@ class CustomersController < ApplicationController
       @customers = @q.result.page(params[:page]).per(100)
     end
   end
+
+  def filter_by_industry
+    industry_name = params[:industry_name]
+    @industries = Customer::INDUSTRY_MAPPING.keys
+    if admin_signed_in?
+      @q = Customer.where(status: "draft").where.not("TRIM(tel) = ''").where(industry: industry_name).ransack(params[:q])
+    else
+      @q = Customer.where(status: "draft").where("TRIM(tel) = ''").where(industry: industry_name).ransack(params[:q])
+    end
+    @customers = @q.result.page(params[:page]).per(100)
+    render :draft
+  end
   
   
   def update_all_status
-    checked_data = params[:updates].keys
-    checked_data.each do |id|
+    updates = params[:updates]
+    failed_companies = []
+
+    updates.each do |id, attributes|
       customer = Customer.find(id)
-      customer.update(status: :published)
+      if customer.update(attributes.permit(:status))
+        Rails.logger.info "Successfully updated customer with id #{id}"
+      else
+        Rails.logger.error "Failed to update customer with id #{id}"
+        failed_companies << customer.company
+      end
     end
+
+    if failed_companies.any?
+      flash[:error] = "次の会社のステータス更新に失敗しました: #{failed_companies.join(', ')}"
+    else
+      flash[:notice] = "全ての顧客のステータスを正常に更新しました。"
+    end
+
     redirect_to draft_path
   end
 

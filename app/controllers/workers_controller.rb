@@ -1,51 +1,56 @@
 class WorkersController < ApplicationController
   def show
-   #リスト制作
+    # Retrieve worker and initialize a new contact
     @worker = Worker.find(params[:id])
     @contact = @worker.contacts.new
-    #リストカウント
-    @lists = @worker.customers
-    # 1日のnumber数
-    @daily_number = @worker.lists.where(created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).sum(:number)
-    # 今週のnumber数
-    @weekly_number = @worker.lists.where(created_at: Time.zone.now.beginning_of_week..Time.zone.now.end_of_week).sum(:number)
-    # 今月のnumber数
-    @monthly_number = @worker.lists.where(created_at: Time.zone.now.beginning_of_month..Time.zone.now.end_of_month).sum(:number)
-    # 先月のnumber数
-    @last_month_number = @worker.lists.where(created_at: Time.zone.now.last_month.beginning_of_month..Time.zone.now.last_month.end_of_month).sum(:number)
-    # トータルのnumber数
-    @total_number = @worker.lists.sum(:number)
+    
+    # Retrieve customers related to the worker
+    @customers = @worker.customers
+  
+    # Calculate daily, weekly, monthly, and total customer counts
+    @daily_number = @customers.where(created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).count
+    @weekly_number = @customers.where(created_at: Time.zone.now.beginning_of_week..Time.zone.now.end_of_week).count
+    @monthly_number = @customers.where(created_at: Time.zone.now.beginning_of_month..Time.zone.now.end_of_month).count
+    @last_month_number = @customers.where(created_at: Time.zone.now.last_month.beginning_of_month..Time.zone.now.last_month.end_of_month).count
+    @total_number = @customers.count
+    
+    # Retrieve assigned crowdworks for the worker
     @assigned_crowdworks = @worker.crowdworks
-
-   #リスト制作
-    @customers = Customer&.where(worker_id: current_worker.id)
-    @count_day = @customers.where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?',Time.current.end_of_day).count
-    @count_week = @customers.where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?',Time.current.end_of_week).count
-    @count_month = @customers.where('updated_at > ?', Time.current.beginning_of_month).where('updated_at < ?',Time.current.end_of_month).count
-    @count_month = @customers.count
-
+  
+    # Calculate counts of customers updated today, this week, and this month
+    @count_day = @customers.where('updated_at >= ?', Time.current.beginning_of_day).where('updated_at <= ?', Time.current.end_of_day).count
+    @count_week = @customers.where('updated_at >= ?', Time.current.beginning_of_week).where('updated_at <= ?', Time.current.end_of_week).count
+    @count_month = @customers.where('updated_at >= ?', Time.current.beginning_of_month).where('updated_at <= ?', Time.current.end_of_month).count
+    @total_count = @customers.count
+    
+    # Retrieve contact trackings for the current and previous month, day, and week
     @contact_trackings_month = @worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
     @contact_trackings_before_month = @worker.contact_trackings.where(created_at: 1.month.ago.beginning_of_month..1.month.ago.end_of_month)
     @contact_trackings_day = @worker.contact_trackings.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
     @contact_trackings_week = @worker.contact_trackings.where(created_at: Time.current.beginning_of_week..Time.current.end_of_week)
-
-    @send_success_count_day = @contact_trackings_day.where(status: '送信済').count.to_i
-    @send_success_count_week = @contact_trackings_week.where(status: '送信済').count.to_i
-    @send_success_count_month = @contact_trackings_month.where(status: '送信済').count.to_i
-    @send_success_count_before_month = @contact_trackings_before_month.where(status: '送信済').count.to_i
-
-    @send_error_count_month = @contact_trackings_month.where(status: '送信不可').count.to_i
-    @send_ng_count_month = @contact_trackings_month.where(status: '営業NG').count.to_i
+    
+    # Calculate counts of successful, error, and NG contact trackings for the current month
+    @send_success_count_day = @contact_trackings_day.where(status: '送信済').count
+    @send_success_count_week = @contact_trackings_week.where(status: '送信済').count
+    @send_success_count_month = @contact_trackings_month.where(status: '送信済').count
+    @send_success_count_before_month = @contact_trackings_before_month.where(status: '送信済').count
+    
+    @send_error_count_month = @contact_trackings_month.where(status: '送信不可').count
+    @send_ng_count_month = @contact_trackings_month.where(status: '営業NG').count
     @send_count_month = @send_success_count_month + @send_error_count_month + @send_ng_count_month
-    if @send_count_month > 0
-      @send_rate = @send_success_count_month / @send_count_month.to_f * 100
-    end
-
+  
+    # Calculate send success rate for the current month
+    @send_rate = if @send_count_month > 0
+                   (@send_success_count_month / @send_count_month.to_f) * 100
+                 else
+                   0
+                 end
+    
+    # Calculate total send counts for the day and week
     @send_count_day = @contact_trackings_day.count
-
     @send_count_week = @contact_trackings_week.count
-
   end
+  
 
   def upload
     @worker = Worker.find(params[:id])

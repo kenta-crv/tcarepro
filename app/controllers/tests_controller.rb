@@ -11,14 +11,18 @@ class TestsController < ApplicationController
 
   def create
     @worker = Worker.find(params[:worker_id])
+    @question_number = params[:question].to_i
     @test = @worker.tests.new(test_params)
-  
     if params[:commit] == '対象外リスト'
       @test.skip_validation = true
     end
-  
+
     if @test.save
-      redirect_to worker_path(@worker)
+      if @question_number < 4
+        redirect_to new_worker_test_path(@worker, question: @question_number + 1)
+      else
+        redirect_to worker_path(@worker)
+      end
     else
       render :new
     end

@@ -38,7 +38,6 @@ Rails.application.routes.draw do
       get 'practices/reference3', to: 'workers#reference3'
     end
     resources :tests
-    resources :lists, except: [:show]
     resources :sends
     resources :contacts, except: [:index, :edit, :update, :destroy]
   end
@@ -90,7 +89,7 @@ Rails.application.routes.draw do
     post 'exclude', on: :member
     resources :calls
     collection do
-      get 'filter_by_type', to: 'customers#filter_by_type', as: 'filter_by_type'
+      get :filter_by_industry
       get 'search', to: 'customers#search', as: 'search'
       get :industry_code_total
       get :complete
@@ -110,7 +109,6 @@ Rails.application.routes.draw do
   #showからのメール送信
   get 'customers/:id/send_email', to: 'customers#send_email', as: 'send_email_customer'
   post 'customers/:id/send_email', to: 'customers#send_email_send'
-  #get 'list' => 'customers#list'
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'direct_mail_send/:id' => 'customers#direct_mail_send' #SFA
   #get 'sender/:id/' => 'sender#show'
@@ -123,8 +121,6 @@ Rails.application.routes.draw do
   get 'news' => 'customers#news' #インポート情報
   get 'extraction' => 'customers#extraction' #TCARE
   delete :customers, to: 'customers#destroy_all' #Mailer
-  get 'manuals' => 'manuals#index'
-  get 'manuals/officework' => 'manuals#officework'
 
   resources :contracts  do
     resources :images, only: [:create, :destroy, :update, :download, :edit]
@@ -171,9 +167,6 @@ Rails.application.routes.draw do
       post 'reject_email', to: 'recruits#reject_email', as: 'reject_email'
     end
   end
-
-  post 'restart', to: 'restart#restart'
-  post 'webhook/restart', to: 'webhooks#restart'
 
   get '*path', controller: 'application', action: 'render_404'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
