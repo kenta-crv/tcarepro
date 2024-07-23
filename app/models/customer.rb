@@ -49,11 +49,25 @@ class Customer < ApplicationRecord
     joins(:contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id) })
   }
 
-  # Direct Mail Contact Trackings
-  has_many :direct_mail_contact_trackings
-  has_one :direct_mail_contact_tracking, ->{
-    eager_load(:direct_mail_contact_trackings).order(sended_at: :desc)
+  has_one :latest_contact_tracking, -> { order(sended_at: :desc) }, class_name: 'ContactTracking'
+
+  scope :with_latest_contact_tracking, -> {
+    joins(:latest_contact_tracking).where('contact_trackings.id IS NOT NULL')
   }
+
+  # Direct Mail Contact Trackings
+  #has_many :direct_mail_contact_trackings
+  #has_one :direct_mail_contact_tracking, ->{
+  #  eager_load(:direct_mail_contact_trackings).order(sended_at: :desc)
+  #}
+
+
+  scope :with_is_contact_tracking, -> is_contact_tracking {
+    if is_contact_tracking == "true"
+      contact_trackings.exists?
+    end
+  }
+
 
   scope :between_created_at, ->(from, to){
     where(created_at: from..to)
@@ -102,12 +116,6 @@ scope :before_sended_at, ->(sended_at){
   scope :with_status, ->(statuses) {
     if statuses.present?
       where(status: statuses)
-    end
-  }
-
-  scope :with_is_contact_tracking, -> is_contact_tracking {
-    if is_contact_tracking == "true"
-      contact_trackings.exists?
     end
   }
 
@@ -186,7 +194,7 @@ scope :before_sended_at, ->(sended_at){
     save_cnt
   end
  
-#tcare_import
+# tcare_import
 def self.tcare_import(tcare_file)
   save_cont = 0
   CSV.foreach(tcare_file.path, headers: true) do |row|
@@ -194,6 +202,7 @@ def self.tcare_import(tcare_file)
     customer.attributes = row.to_hash.slice(*updatable_attributes)
     next if customer.industry.nil?
 
+    customer.status = "draft" # statusを"draft"に設定
     customer.skip_validation = true # バリデーションをスキップ
 
     if customer.save
@@ -302,7 +311,6 @@ end
     @@send_status
   end
 
-  #enum status: {draft: 0, hidden: 1, publish: 2}
 
   def get_search_url
     unless @contact_url
@@ -352,65 +360,87 @@ end
   validate :validate_company_format, if: -> { !new_record? && !skip_validation }
   validate :validate_tel_format, if: -> { !new_record? && !skip_validation }
   validate :validate_address_format, if: -> { !new_record? && !skip_validation }
-  validate :validate_crowdwork_business, if: -> { crowdwork_match_needed? && !new_record? && !skip_validation }
-  validate :validate_crowdwork_genre, if: -> { crowdwork_match_needed? && !new_record? && !skip_validation }
+  validate :industry_matches_crowdwork_title_and_validate_business_and_genre, if: -> { !new_record? && !skip_validation }
   validate :unique_industry_and_tel_or_company_for_same_worker, if: -> { !new_record? && !skip_validation }
-
+  
   # その他のコード
-
+  
   private
-
+  
   def unique_industry_and_tel_or_company_for_same_worker
     existing_customer = Customer.where(worker_id: worker_id)
                                 .where(industry: industry)
                                 .where("tel = ? OR company = ?", tel, company)
-
+  
     if existing_customer.exists?
       errors.add(:base, "過去に同一電話番号または会社名を登録しています。同一ワーカーでの重複登録はできません。")
     end
   end
-
+  
   def validate_company_format
     unless company =~ /株式会社|有限会社|社会福祉|合同会社|医療法人/
       errors.add(:company, "会社名には「株式会社」、「有限会社」、「社会福祉」、「合同会社」、「医療法人」のいずれかを含める必要があります。")
     end
-
+  
     if company =~ /支店|営業所/
       errors.add(:company, "会社名には「支店」と「営業所」を含むことはできません。")
     end
   end
-
+  
   def validate_tel_format
     errors.add(:tel, "電話番号には「半角数字」と「-」以外の文字を含めることはできません") if tel !~ /\A[0-9\-]+\z/
     errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません") if tel !~ /\A[0-9\-]+\z/ || tel =~ /0120|0088/
   end
-
+  
   def validate_address_format
     unless address =~ /都|道|府|県/
       errors.add(:address, "住所には都・道・府・県のいずれかを含める必要があります")
     end
   end
-
+  
   def set_industry_code
     self.industry_code = INDUSTRY_MAPPING[self.industry]
   end
-
-  def crowdwork_match_needed?
-    crowdwork = Crowdwork.find_by(title: title)
-    crowdwork.present? && (crowdwork.business == business || crowdwork.genre == genre)
-  end
-
-  def validate_crowdwork_business
-    crowdwork = Crowdwork.find_by(title: title)
-    if crowdwork.present? && crowdwork.business == business
-      errors.add(:business, "指定業種以外は抽出できません。")
+  
+  def industry_matches_crowdwork_title_and_validate_business_and_genre
+    # CustomerのindustryがCrowdworkのtitleと一致するかをチェック
+    matching_crowdwork = Crowdwork.find_by(title: industry)
+    if matching_crowdwork
+      # businessのバリデーションを行う
+      unless valid_business?(matching_crowdwork.business, business)
+        errors.add(:business, '指定された業種以外は登録できません。')
+      end 
+      # genreのバリデーションを行う
+      unless valid_genre?(matching_crowdwork.genre, genre)
+        errors.add(:genre, '指定された職種が含まれていないため登録できません。')
+      end
+      # areaのバリデーションを行う
+      unless valid_area?(matching_crowdwork.area, address)
+        errors.add(:address, '指定されたエリアが含まれていないため登録できません。')
+      end
     end
   end
-
-  def validate_crowdwork_genre
-    crowdwork = Crowdwork.find_by(title: title)
-    if crowdwork.present? && crowdwork.genre == genre
-      errors.add(:genre, "指定職種が含まれていません。")
-    end
+  
+  def valid_business?(required_business, customer_business)
+    # 完全一致を求めるbusinessのバリデーションロジック
+    customer_business == required_business
   end
+  
+  def valid_genre?(required_genre, customer_genre)
+    # 部分一致を求めるgenreのバリデーションロジック
+    customer_genre.include?(required_genre)
+  end
+  
+  def valid_area?(required_area, customer_address)
+    # 部分一致を求めるareaのバリデーションロジック
+    customer_address.include?(required_area)
+  end
+
+  #draftでworkerの履歴を残す
+  def add_worker_update_history(worker, status)
+    self.update_history = {} if self.update_history.nil?
+    self.update_history[worker.id] = { status: status, updated_at: Time.current }
+    save
+  end
+  
 end

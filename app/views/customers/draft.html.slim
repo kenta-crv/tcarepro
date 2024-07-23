@@ -11,19 +11,25 @@
      = @customers.page(1).per(100).total_count
      | 件中
      | )
- 
+ .tops-wrapper
+  - if @industries.present?
+   - @industries.each do |industry|
+    = link_to industry, filter_by_industry_customers_path(industry_name: industry), method: :get, class:"btn btn-default"
+
  = form_tag({ controller: :customers, action: :update_all_status}, method: 'put') do
   .scroll
     = submit_tag '一括更新', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;'
     table[width="90%" cellpadding="0" cellspacing="0"]
      col[width="3%"]
-     col[width="10%"]
-     col[width="10%"]
+     col[width="7%"]
+     col[width="7%"]
      col[width="15%"]
-     col[width="10%"]
+     col[width="7%"]
      col[width="7%"]
      col[width="10%"]
-     col[width="10%"]
+     col[width="12%"]
+     col[width="12%"]
+     col[width="7%"]
      col[width="12%"]
      thead
        tr
@@ -74,10 +80,11 @@
          td
            = customer&.created_at.strftime("%Y年%m月%d日 %H時%M分%S秒")
      tr
-       th[colspan="9"]
+       th[colspan="11"]
          = paginate @customers
  
 -else
+
  .tops-wrapper
    h2.headline
      | コールリスト
@@ -90,19 +97,24 @@
      | 件中
      | )
  
+ .tops-wrapper
+  - if @industries.present?
+   - @industries.each do |industry|
+    = link_to industry, filter_by_industry_customers_path(industry_name: industry), method: :get, class:"btn btn-default"
+
  = form_tag({ controller: :customers, action: :update_all_status}, method: 'put') do
   .scroll
     = submit_tag '一括更新', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;'
     table[width="90%" cellpadding="0" cellspacing="0"]
      col[width="3%"]
-     col[width="10%"]
-     col[width="10%"]
+     col[width="7%"]
+     col[width="7%"]
      col[width="15%"]
-     col[width="10%"]
+     col[width="7%"]
      col[width="7%"]
      col[width="10%"]
-     col[width="10%"]
-     col[width="12%"]
+     col[width="7%"]
+     col[width="110%"]
      thead
        tr
          th

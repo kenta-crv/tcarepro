@@ -1,4 +1,6 @@
 = form_for [@worker, @test] do |f|
+  = hidden_field_tag :question, @question_number
+  
   - if @question_number == 1
     h2 全部で四問あります。第一問。
     p まずは抽出条件を確認してください。
