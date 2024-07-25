@@ -15,6 +15,10 @@ class OkuriteController < ApplicationController
     conditional_results = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠'))
     @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)    
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
+    respond_to do |format|
+      format.html
+      format.csv { send_data generate_csv(@customers), filename: "customers-#{Date.today}.csv" }
+    end
   end
   
 
