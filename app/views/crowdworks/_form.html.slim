@@ -1,7 +1,6 @@
 = form_for @crowdwork do |f|
-
   table.company[width="90%"]
-     tbody
+    tbody
       col[width="40%"]
       col[width="60%"]
       tr
@@ -13,7 +12,8 @@
       tr
         th.arrow_box 抽出可エリア
         td.center 
-          = f.collection_select :area, JpPrefecture::Prefecture.all, :name, :name, { include_blank: '選択してください' }, { class: 'form-control', id: 'crowdwork_area', multiple: true } 
+          - selected_areas = @crowdwork.area.present? ? @crowdwork.area.split(',') : []
+          = f.collection_select :area, JpPrefecture::Prefecture.all, :name, :name, { include_blank: '選択してください' }, { class: 'form-control', id: 'crowdwork_area', multiple: true, selected: selected_areas }
       tr
         th.arrow_box 抽出可業種
         td.center = f.text_field :business
@@ -25,7 +25,7 @@
         td.center = f.text_field :bad
       tr 
         td[colspan="2"]
-          = f.submit "登録する", class:"btn btn-success"
+          = f.submit "登録する", class: "btn btn-success"
 
   - Worker.where(select: "リスト制作").each do |worker|
     = check_box_tag "worker_ids[]", worker.id, @crowdwork.workers.include?(worker)
