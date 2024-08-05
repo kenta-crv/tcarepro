@@ -35,11 +35,11 @@ html
 
   body
     p.notice
-       = notice
+      = notice
     p.alert
-       = alert
+      = alert
 
-    = render template: 'layouts/_sidenavi.html.slim'
+    = render 'layouts/sidenavi'
     main
       = yield
       / = debug(params) if Rails.env.development?

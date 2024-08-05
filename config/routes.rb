@@ -6,7 +6,9 @@ Rails.application.routes.draw do
   devise_for :admins, controllers: {
     registrations: 'admins/registrations'
   }
-  resources :admins, only: [:show]
+  resources :admins, only: [:show] do
+    post 'assign_workers', on: :member
+  end
   #ユーザーアカウント
   devise_for :users, controllers: {
     registrations: 'users/registrations'
@@ -168,6 +170,7 @@ Rails.application.routes.draw do
     end
   end
 
+  
   get '*path', controller: 'application', action: 'render_404'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

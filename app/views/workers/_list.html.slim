@@ -2,20 +2,21 @@
   h2.headline
     | #{@worker.user_name}さんは現在以下の業務内容を依頼されています。
   br/
-  .center 
-   br/
-   table[width="90%"  class="header-table space"]
-      colgroup
-        |  　
-      tr
-        th 
-          - if @assigned_crowdworks.empty?
-           | 現在割り当てられている業務はありません。
-          - else
-           - @assigned_crowdworks.each do |crowdwork|
-            = crowdwork.title
-        td  
-          = link_to "本日の業務を行う", draft_path(@customer), class: "btn btn-success"
+  br/
+  br/
+  table[width="90%" class="header-table space"]
+   colgroup
+    |  
+   tr
+     - if @assigned_crowdworks.empty?
+      th colspan="2"
+        | 現在割り当てられている業務はありません。
+     - else
+      - @assigned_crowdworks.each do |crowdwork|
+        tr
+          th = crowdwork.title
+          td  
+            = link_to "本日の業務を行う", "/customers/filter_by_industry?industry_name=#{crowdwork.title}", class: "btn btn-success"
 
   h2.headline
       | リスト制作実施件数
