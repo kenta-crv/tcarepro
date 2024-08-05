@@ -311,6 +311,7 @@ end
     @@send_status
   end
 
+  
 
   def get_search_url
     unless @contact_url
@@ -327,6 +328,7 @@ end
   def google_search_url
     scraping.google_search([company, address, tel].compact.join(' '))
   end
+
 
   def get_url_arry
     url_arry = []
@@ -432,15 +434,25 @@ end
   end
   
   def valid_area?(required_area, customer_address)
-    # 部分一致を求めるareaのバリデーションロジック
-    customer_address.include?(required_area)
+    # required_area が配列の場合
+    if required_area.is_a?(Array)
+      # 配列内のいずれかのエリアが customer_address に含まれているかをチェック
+      required_area.any? { |area| customer_address.include?(area.to_s) }
+    else
+      # required_area が文字列の場合
+      customer_address.include?(required_area.to_s)
+    end
   end
-
+  
   #draftでworkerの履歴を残す
   def add_worker_update_history(worker, status)
     self.update_history = {} if self.update_history.nil?
     self.update_history[worker.id] = { status: status, updated_at: Time.current }
     save
+  end
+
+  def scraping
+    @scraping ||= Scraping.new
   end
   
 end

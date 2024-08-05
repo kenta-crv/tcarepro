@@ -91,19 +91,28 @@ class CustomersController < ApplicationController
 
   def edit
     @customer = Customer.find(params[:id])
+    if worker_signed_in?
+      # 電話番号がない顧客のみを表示
+      @q = Customer.where(status: "draft").where("TRIM(tel) = ''")
+      # 他の人が既に作業を完了していない顧客をフィルター
+      @q = @q.where.not(id: Call.select(:customer_id))
+      # 管理者を除外
+      unless current_user.admin?
+        @q = @q.where.not(user_id: User.admins.pluck(:id))
+      end
+      @customers = @q.ransack(params[:q]).result.page(params[:page]).per(100)
+    end
   end
 
   def update
     @customer = Customer.find(params[:id])
-    
     if params[:commit] == '対象外リストとして登録'
       @customer.skip_validation = true
       @customer.status = "hidden"
     end
-  
     if @customer.update(customer_params)
       if worker_signed_in?
-        redirect_to draft_path
+        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
       else
         redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
       end
@@ -433,23 +442,24 @@ class CustomersController < ApplicationController
   def update_all_status
     updates = params[:updates]
     failed_companies = []
-
+    successful_companies = []
+  
     updates.each do |id, attributes|
       customer = Customer.find(id)
-      if customer.update(attributes.permit(:status))
-        Rails.logger.info "Successfully updated customer with id #{id}"
+      if customer.update(status: attributes[:status])
+        successful_companies << customer.company if customer.status == 'public'
+        failed_companies << customer.company if customer.status == 'return'
       else
-        Rails.logger.error "Failed to update customer with id #{id}"
         failed_companies << customer.company
       end
     end
-
+  
     if failed_companies.any?
-      flash[:error] = "次の会社のステータス更新に失敗しました: #{failed_companies.join(', ')}"
+      redirect_to draft_path, flash[:error] = "次の会社のステータス更新に失敗しました: #{failed_companies.join(', ')}"
     else
-      flash[:notice] = "全ての顧客のステータスを正常に更新しました。"
+      redirect_to draft_path, flash[:notice] = "全ての顧客のステータスを正常に更新しました。"
     end
-
+  
     redirect_to draft_path
   end
 
