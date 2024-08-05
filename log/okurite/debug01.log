@@ -1,36 +1,3 @@
-20240726 220015 214663 株式会社フレンドパーク https://friendpark.co.jp/contact_p.php 送信開始
-20240726 220027 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
-20240726 220037 .//*[contains(text(), "問合わせ") and not(self::input or self::textarea)]
-20240726 220047 .//*[contains(text(), "問合せ") and not(self::input or self::textarea)]
-20240726 220047  - お問合せ
-20240726 220047 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
-20240726 220047 <textarea name="p_ask" rows="7" style="ime-mode: active"></textarea>
-20240726 220047 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
-20240726 220058 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
-20240726 220108 .//*[contains(text(), "団体") and not(self::input or self::textarea)]
-20240726 220118 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
-20240726 220128 .//*[contains(text(), "メール") and not(self::input or self::textarea)]
-20240726 220138 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
-20240726 220148 .//*[contains(text(), "フリガナ") and not(self::input or self::textarea)]
-20240726 220158 .//*[contains(text(), "かな") and not(self::input or self::textarea)]
-20240726 220208 .//*[contains(text(), "カナ") and not(self::input or self::textarea)]
-20240726 220218 .//*[contains(text(), "せい") and not(self::input or self::textarea)]
-20240726 220228 .//*[contains(text(), "めい") and not(self::input or self::textarea)]
-20240726 220238 .//*[contains(text(), "セイ") and not(self::input or self::textarea)]
-20240726 220248 .//*[contains(text(), "メイ") and not(self::input or self::textarea)]
-20240726 220258 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
-20240726 220308 .//*[contains(text(), "住所") and not(self::input or self::textarea)]
-20240726 220318 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
-20240726 220328 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
-20240726 220338 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
-20240726 220348 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
-20240726 220358 .//*[contains(text(), "名前") and not(self::input or self::textarea)]
-20240726 220408 .//*[contains(text(), "性") and not(self::input or self::textarea)]
-20240726 220418 .//*[contains(text(), "名") and not(self::input or self::textarea)]
-20240726 220428 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
-20240726 220438 .//*[contains(text(), "携帯番号") and not(self::input or self::textarea)]
-20240726 220448 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
-20240726 220458 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
-20240726 220508 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
-20240726 220559 bundle exec rails update_contact_status:update  contact_tracking_id=214663 update_mode=2
-20240726 220605 https://friendpark.co.jp/contact_p.php 送信失敗（001）
+20240730 220019 213502 株式会社潤恒縁 https://www.buffett-code.com/company/cy8tiy9mem/ 送信開始
+20240730 220030 bundle exec rails update_contact_status:update  contact_tracking_id=213502 update_mode=2
+20240730 220038 https://www.buffett-code.com/company/cy8tiy9mem/ 送信失敗（003）
