@@ -20,7 +20,6 @@ class OkuriteController < ApplicationController
       format.csv { send_data generate_csv(@customers), filename: "customers-#{Date.today}.csv" }
     end
   end
-  
 
   def show
     @customer = Customer.find(params[:id])

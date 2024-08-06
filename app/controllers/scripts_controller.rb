@@ -70,7 +70,7 @@ class ScriptsController < ApplicationController
         :title,
         :requirement_title,
         :price_title,
-        :experienc_title,
+        :experience_title,
         :refund_title,
         :usp_title,
         :other_receive_1_title,
