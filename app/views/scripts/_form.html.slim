@@ -1,22 +1,30 @@
 = form_for([@contract, @script]) do |f| 
- table[width="90%"]
-     tbody
+  table[width="90%"]
+    tbody
       col[width="20%"]
       col[width="80%"]
       tr
         th.arrow_box タイトル
-        td[colspan="3"] = f.text_field :title, value: "#{@contract.company}トークスクリプト"
- br/
- br/
- table[width="90%"]
-     tbody
+        td[colspan="3"]
+          - if @script.persisted?
+            = f.text_field :title
+          - else
+            = f.text_field :title, value: "#{@contract.company}トークスクリプト"
+  br/
+  br/
+  table[width="90%"]
+    tbody
       col[width="20%"]
       col[width="30%"]
       col[width="20%"]
       col[width="30%"]
       tr
         th.arrow_box 会社名
-        td.center = f.text_field :company, value: @contract.company
+        td.center
+          - if @script.persisted?
+            = f.text_field :company
+          - else
+            = f.text_field :company, value: @contract.company
         th.arrow_box 担当者名
         td.center = f.text_field :name
       tr
@@ -28,75 +36,158 @@
         th.arrow_box 備考
         td[colspan="3"]
           = f.text_area :remarks
- br/
- br/
- .row 
-  .col-sm-7
-    table[width="90%"]
-     tbody
-      tr
-        th.arrow_box フロントトーク
-      tr
-        td.center  = f.text_area :front_talk, value: "お世話になってます。私、#{@contract.company}の●●と申しまして、本日人事採用の確認の件で、ご連絡させて頂いたのですが、採用担当者様お手すきでしょうか？"
-      tr
-        th.arrow_box フロントトーク
-      tr
-        td.center  = f.text_area :first_talk, value: "お世話になってます。#{@contract.company}の●●と申しまして、御社の求人情報を拝見してお電話させて頂いたのですが、現在#{@contract.area}エリアで（#{@contract.sales}）で稼働を希望する外国人人材を、是非ともご紹介させて頂きたいと思ってのご連絡となりますが、現在御社で現在も人材は募集されておりますか？"
-      tr
-        th.arrow_box イントロダクション
-      tr
-        td.center  = f.text_area :introduction, value: "ありがとう御座います。改めて弊社は#{@contract.area}エリアで（#{@contract.sales}）に特化している登録支援機関となります。 \n___USP___。であれば、是非ともお力添えできる人材をご案内させていただきたく、数点お伺いしたいのですが、"
-      tr
-        th.arrow_box ヒアリング①
-      tr
-        td.center  = f.text_area :hearing_1, value: "❶弊社は外国人人材の紹介となりますが、良い人材であれば外国人でも検討しても良いかなっていう思いはあられますか？"
-      tr
-        th.arrow_box ヒアリング②
-      tr
-        td.center  = f.text_area :hearing_2, value: "❷何名ほど採用出来れば良いとお考えでしょうか？"
-      tr
-        th.arrow_box ヒアリング③
-      tr
-        td.center  = f.text_area :hearing_3, value: "❸最後に当社は有料職業紹介となりますが、問題ございませんか？"
-      tr
-        th.arrow_box クロージング
-      tr
-        td.center  = f.text_area :closing, value: "ありがとう御座います。であれば、是非ご紹介の機会を頂ければと思いますので、一度オンラインにて商談させて頂ければと存じますが、ご担当者様の方で●月●日と●月●日であればどちらがお手すきでしょうか？\n（両方空いていない場合は別の日程調整）ありがとう御座います。ちなみに●月●日であれば、午前と午後はどちらがお手すきでしょうか？\nであれば、●時はいかがでしょうか？ありがとう御座います。であれば、●月●日●時よりお伺いさせて頂ければと思いますが、私●●と申しますが、お電話口の方のお名前をお伺い出来ますでしょうか？\n（オンラインの場合）ありがとう御座います。後、オンラインURLをお送りさせて頂きたいので、メールアドレスをお伺い出来ますでしょうか？ありがとう御座います。それでは当日よろしくお願い致します。失礼します。"
-      tr 
-        th.arrow_box
-          = f.submit "登録する"
-  .col-sm-5
-    table[width="90%"]
-     tbody
-      tr
-        th.arrow_box = f.text_field :requirement_title, value: "どのような外国人人材ですか？"
-      tr
-        td.center  = f.text_area :requirement, value: "当社では_________人材特徴_________のご案内を行っております。"
-      tr
-        th.arrow_box = f.text_field :price_title, value: "経験者・即戦力人材はいますか？"
-      tr
-        td.center  = f.text_area :price, value: "_____answer______"
-      tr
-        th.arrow_box = f.text_field :experienc_title, value: "紹介費用を教えてください。"
-      tr
-        td.center  = f.text_area :experience, value: "ありがとう御座います。弊社では費用は人材の質によって変動いたしますので、御社がどんな人材を探していて、弊社であればいくらくらいでご案内できるかも含めて、一度営業の担当者よりご案内の機会を頂きたいのでお時間いただきたいのですが、（日程調整）それでも聞かれる場合、ご紹介は_____price_______となります。"
-      tr
-        th.arrow_box = f.text_field :refund_title, value: "ビザは？住居等は？"
-      tr
-        td.center  = f.text_area :refund, value: "_____________"
-      tr
-        th.arrow_box = f.text_field :usp_title, value: "提供可能な国籍は？"
-      tr
-        td.center  = f.text_area :usp, value: "当社では、__________の人材が提供可能となっております。人材の特徴として_________となります。"
-      tr
-        th.arrow_box = f.text_field :other_receive_1_title, value: "企業の特徴（アピールポイント）"
-      tr
-        td.center  = f.text_area :other_receive_1, value: @script.other_receive_1
-      tr
-        th.arrow_box = f.text_field :other_receive_2_title, value: "企業の特徴（アピールポイント）"
-      tr
-        td.center  = f.text_area :other_receive_2, value: @script.other_receive_2
-      tr
-        th.arrow_box = f.text_field :other_receive_3_title, value: "決まったところがあるからと言われたとき"
-      tr
-        td.center  = f.text_area :other_receive_3, value: "1社のみの活用ですと、金額や管理体制の基準がわからないかと思います。また特定技能の紹介であればより優秀な人材を確保するという意味でも皆様複数の登録支援機期間を活用されており、皆様複数社と取引し、人材を選定しやすくしているのが現在一般的とはなっております。"
+  br/
+  br/
+  .row 
+    .col-sm-7
+      table[width="90%"]
+        tbody
+          tr
+            th.arrow_box フロントトーク
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :front_talk
+              - else
+                = f.text_area :front_talk, value: "お世話になってます。私、#{@contract.company}の●●と申しまして、本日人事採用の確認の件で、ご連絡させて頂いたのですが、採用担当者様お手すきでしょうか？"
+          tr
+            th.arrow_box フロントトーク
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :first_talk
+              - else
+                = f.text_area :first_talk, value: "お世話になってます。#{@contract.company}の●●と申しまして、御社の求人情報を拝見してお電話させて頂いたのですが、現在#{@contract.area}エリアで（#{@contract.sales}）で稼働を希望する外国人人材を、是非ともご紹介させて頂きたいと思ってのご連絡となりますが、現在御社で現在も人材は募集されておりますか？"
+          tr
+            th.arrow_box イントロダクション
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :introduction
+              - else
+                = f.text_area :introduction, value: "ありがとう御座います。改めて弊社は#{@contract.area}エリアで（#{@contract.sales}）に特化している登録支援機関となります。 \n___USP___。であれば、是非ともお力添えできる人材をご案内させていただきたく、数点お伺いしたいのですが、"
+          tr
+            th.arrow_box ヒアリング①
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :hearing_1
+              - else
+                = f.text_area :hearing_1, value: "❶弊社は外国人人材の紹介となりますが、良い人材であれば外国人でも検討しても良いかなっていう思いはあられますか？"
+          tr
+            th.arrow_box ヒアリング②
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :hearing_2
+              - else
+                = f.text_area :hearing_2, value: "❷何名ほど採用出来れば良いとお考えでしょうか？"
+          tr
+            th.arrow_box ヒアリング③
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :hearing_3
+              - else
+                = f.text_area :hearing_3, value: "❸最後に当社は有料職業紹介となりますが、問題ございませんか？"
+          tr
+            th.arrow_box クロージング
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :closing
+              - else
+                = f.text_area :closing, value: "ありがとう御座います。であれば、是非ご紹介の機会を頂ければと思いますので、一度オンラインにて商談させて頂ければと存じますが、ご担当者様の方で●月●日と●月●日であればどちらがお手すきでしょうか？\n（両方空いていない場合は別の日程調整）ありがとう御座います。ちなみに●月●日であれば、午前と午後はどちらがお手すきでしょうか？\nであれば、●時はいかがでしょうか？ありがとう御座います。であれば、●月●日●時よりお伺いさせて頂ければと思いますが、私●●と申しますが、お電話口の方のお名前をお伺い出来ますでしょうか？\n（オンラインの場合）ありがとう御座います。後、オンラインURLをお送りさせて頂きたいので、メールアドレスをお伺い出来ますでしょうか？ありがとう御座います。それでは当日よろしくお願い致します。失礼します。"
+          tr 
+            th.arrow_box
+              = f.submit "登録する"
+    .col-sm-5
+      table[width="90%"]
+        tbody
+          tr
+            th.arrow_box
+              - if @script.persisted?
+                = f.text_field :requirement_title
+              - else
+                = f.text_field :requirement_title, value: "どのような外国人人材ですか？"
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :requirement
+              - else
+                = f.text_area :requirement, value: "当社では_________人材特徴_________のご案内を行っております。"
+          tr
+            th.arrow_box
+              - if @script.persisted?
+                = f.text_field :price_title
+              - else
+                = f.text_field :price_title, value: "経験者・即戦力人材はいますか？"
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :price
+              - else
+                = f.text_area :price, value: "_____answer______"
+          tr
+            th.arrow_box
+              - if @script.persisted?
+                = f.text_field :experience_title
+              - else
+                = f.text_field :experience_title, value: "紹介費用を教えてください。"
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :experience
+              - else
+                = f.text_area :experience, value: "ありがとう御座います。弊社では費用は人材の質によって変動いたしますので、御社がどんな人材を探していて、弊社であればいくらくらいでご案内できるかも含めて、一度営業の担当者よりご案内の機会を頂きたいのでお時間いただきたいのですが、（日程調整）それでも聞かれる場合、ご紹介は_____price_______となります。"
+          tr
+            th.arrow_box
+              - if @script.persisted?
+                = f.text_field :refund_title
+              - else
+                = f.text_field :refund_title, value: "ビザは？住居等は？"
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :refund
+              - else
+                = f.text_area :refund, value: "_____________"
+          tr
+            th.arrow_box
+              - if @script.persisted?
+                = f.text_field :usp_title
+              - else
+                = f.text_field :usp_title, value: "提供可能な国籍は？"
+          tr
+            td.center
+              - if @script.persisted?
+                = f.text_area :usp
+              - else
+                = f.text_area :usp, value: "当社では、__________の人材が提供可能となっております。人材の特徴として_________となります。"
+          tr
+            th.arrow_box
+              - if @script.persisted?
+                = f.text_field :other_receive_1_title
+              - else
+                = f.text_field :other_receive_1_title, value: "企業の特徴（アピールポイント）"
+          tr
+            td.center
+              = f.text_area :other_receive_1, value: @script.other_receive_1
+          tr
+            th.arrow_box
+              - if @script.persisted?
+                = f.text_field :other_receive_2_title
+              - else
+                = f.text_field :other_receive_2_title, value: "企業の特徴（アピールポイント）"
+          tr
+            td.center
+              = f.text_area :other_receive_2, value: @script.other_receive_2
+          tr
+            th.arrow_box
+              - if @script.persisted?
+                = f.text_field :other_receive_3_title
+              - else
+                = f.text_field :other_receive_3_title, value: "決まったところがあるからと言われたとき"
+          tr
+            td.center
+              = f.text_area :other_receive_3, value: @script.other_receive_3

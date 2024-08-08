@@ -7,7 +7,10 @@ Rails.application.routes.draw do
     registrations: 'admins/registrations'
   }
   resources :admins, only: [:show] do
-    post 'assign_workers', on: :member
+    member do
+      post 'assign_workers_to_crowdwork'
+      post 'assign_workers_to_sender'
+    end
   end
   #ユーザーアカウント
   devise_for :users, controllers: {

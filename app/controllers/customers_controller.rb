@@ -24,22 +24,29 @@ class CustomersController < ApplicationController
     end
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
     @customers = @q.result || @q.result.includes(:last_call)
-  #  3コール以内プログラム
+  
+    # 3コール以内プログラム
     if params[:search] && params[:search][:ltec_calls_count].present?
-     @customers = @customers.ltec_calls_count(params[:search][:ltec_calls_count].to_i)
+      @customers = @customers.ltec_calls_count(params[:search][:ltec_calls_count].to_i)
     end
-    @customers = @customers.where( id: last_call ) if last_call
-    #これに変えると全抽出
+  
+    # 最後の呼び出しの条件に一致する顧客をフィルタリング
+    @customers = @customers.where(id: last_call) if last_call
+  
+    # 電話番号が存在する顧客のみをフィルタリング
+    @customers = @customers.where.not(tel: [nil, ""])
+  
     @csv_customers = @customers.distinct.preload(:calls)
-    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エスクポート総数
-    #@total_special_number = @customers.map(&:special_number_for_index).sum
+    @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エクスポート総数
+  
     respond_to do |format|
-     format.html
-     format.csv do
+      format.html
+      format.csv do
         send_data @csv_customers.generate_csv, filename: "customers-#{Time.zone.now.strftime('%Y%m%d%S')}.csv"
-     end
+      end
     end
   end
+  
 
   def show
     last_call_customer_ids = nil
