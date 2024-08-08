@@ -10,6 +10,8 @@ class Sender < ApplicationRecord
   belongs_to :default_inquiry, foreign_key: :default_inquiry_id, class_name: 'Inquiry', optional: true
 
   has_many :counts
+  has_many :sender_assignments
+  has_many :workers, through: :sender_assignments
   has_many :contact_trackings
   has_many :customers
   has_many :inquiries

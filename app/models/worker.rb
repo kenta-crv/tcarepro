@@ -10,7 +10,9 @@ class Worker < ApplicationRecord
   has_many :contacts
   has_many :tests
   has_many :crowdworks, through: :assignments
-
+  has_many :sender_assignments
+  has_many :senders, through: :sender_assignments
+  
     def self.import_customers(file)
       save_count = 0
       CSV.foreach(file.path, headers: true) do |row|
