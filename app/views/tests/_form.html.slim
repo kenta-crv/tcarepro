@@ -107,4 +107,7 @@
   table
     tr
       td = f.submit '登録して次へ', class:"btn btn-success"
-      td = f.submit '対象外リスト', name: 'commit', class:"btn btn-danger"
+      - if @question_number == 4
+        td = f.submit '対象外リスト', name: 'commit', class:"btn btn-danger"
+      - else
+        td = f.submit '対象外リスト', name: 'commit', class:"btn btn-danger", disabled: true
