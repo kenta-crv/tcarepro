@@ -449,33 +449,26 @@ class CustomersController < ApplicationController
     status = params[:status] || 'hidden'
     published_count = 0
     hidden_count = 0
-    not_updated_count = 0
 
-    @customers = Customer.where(id: params[:customer_ids])
-    
     @customers.each do |customer|
-      customer.skip_validation = (status == 'hidden')
-      
+      customer.skip_validation = true
       if status == 'hidden'
         if customer.update(status: 'hidden')
           hidden_count += 1
-        else
-          not_updated_count += 1
         end
       else
         if customer.update(status: nil)
           published_count += 1
-        else
-          not_updated_count += 1
         end
       end
     end
 
-    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{not_updated_count}件が更新されませんでした。"
+    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされました。"
     redirect_to customers_path
   end
 
   private
+
   def set_customers
     customer_ids = params[:deletes]&.keys
     if customer_ids.present?
