@@ -97,7 +97,7 @@ Rails.application.routes.draw do
       get :industry_code_total
       get :complete
       post :import
-      post :report_import
+      post :repost_import
       post :update_import
       post :call_import
       post :tcare_import
