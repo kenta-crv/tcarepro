@@ -136,7 +136,7 @@
      - @customers.includes(:last_call).each_with_index do |customer, index|
        tr
          td
-           = link_to customer&.company, edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'
+           = link_to customer&.company, edit_customer_path(customer, industry_name: params[:industry_name]), class: 'command'
          td
            = customer&.tel
          td

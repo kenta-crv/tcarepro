@@ -179,6 +179,30 @@ scope :before_sended_at, ->(sended_at){
      "number","start","remarks","extraction_count","send_count"]
   end
 
+  def self.repost_import(file)
+    new_import_count = 0
+    repost_count = 0
+    CSV.foreach(file.path, headers: true) do |row|
+      # companyとindustryが一致するcustomerを探す
+      existing_customer = Customer.find_by(company: row['company'], industry: row['industry'])
+      if existing_customer
+        # 既存のcustomerがあり、2ヶ月以上前に最後のcallが作成された場合、新しいcallを再掲載として作成
+        latest_call = existing_customer.calls.order(created_at: :desc).first
+        if latest_call.nil? || latest_call.created_at <= 2.months.ago
+          existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
+          repost_count += 1
+        end
+      else
+        # companyが一致しindustryが異なる場合、新しいcustomerを作成
+        customer = Customer.new(row.to_hash.except("id", "industry"))
+        customer.industry = row['industry']
+        customer.save!
+        new_import_count += 1
+      end
+    end
+    { new_import_count: new_import_count, repost_count: repost_count }
+  end
+
   #update_import
   def self.update_import(update_file)
     save_cnt = 0
@@ -390,8 +414,8 @@ end
   end
   
   def validate_tel_format
-    errors.add(:tel, "電話番号には「半角数字」と「-」以外の文字を含めることはできません") if tel !~ /\A[0-9\-]+\z/
-    errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません") if tel !~ /\A[0-9\-]+\z/ || tel =~ /0120|0088/
+    errors.add(:tel, "電話番号には「半角数字」と「-」以外の文字を含めることはできません。いずれも該当しない場合、半角空白や全角空白が含まれている場合があります。") if tel !~ /\A[0-9\-]+\z/
+    errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません。いずれも該当しない場合、半角空白や全角空白が含まれている場合があります。") if tel !~ /\A[0-9\-]+\z/ || tel =~ /0120|0088/
   end
   
   def validate_address_format

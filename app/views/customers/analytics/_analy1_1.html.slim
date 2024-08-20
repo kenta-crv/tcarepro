@@ -125,3 +125,18 @@ table
 
 
 
+
+.heading
+  h2
+    | 新規＋再掲載リストインポート
+= form_with(url: report_import_customers_path, method: :post, local: true, multipart: true) do |f|
+  table.space[width="90%"]
+    tbody
+      tr
+        th[colspan="3"]
+          | CUSTOMER_CSVファイルインポート
+      tr
+        td
+          = f.file_field :file
+        th
+          = submit_tag "再掲載登録",  class: 'btn btn-success'
