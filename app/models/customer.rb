@@ -186,9 +186,11 @@ scope :before_sended_at, ->(sended_at){
       # companyとindustryが一致するcustomerを探す
       existing_customer = Customer.find_by(company: row['company'], industry: row['industry'])
       if existing_customer
-        # 既存のcustomerがあり、2ヶ月以上前に最後のcallが作成された場合、新しいcallを再掲載として作成
+        # 直前のcallを取得
         latest_call = existing_customer.calls.order(created_at: :desc).first
-        if latest_call.nil? || latest_call.created_at <= 2.months.ago
+        
+        # 最新のcallが存在し、そのstatuが"APP"または"永久NG"でない、かつ2ヶ月以上経過している場合のみ再掲載
+        if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
           existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
           repost_count += 1
         end
