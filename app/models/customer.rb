@@ -184,28 +184,50 @@ scope :before_sended_at, ->(sended_at){
     repost_count = 0
   
     CSV.foreach(file.path, headers: true) do |row|
-      # companyとindustryが一致するcustomerを探す
-      existing_customer = Customer.find_by(company: row['company'], industry: row['industry'])
+      # companyが一致する既存のCustomerを探す
+      existing_customer = Customer.find_by(company: row['company'])
   
       if existing_customer
-        # 直前のcallを取得
-        latest_call = existing_customer.calls.order(created_at: :desc).first
+        # 既存のCustomerにtelがない場合はスキップ
+        next if existing_customer.tel.blank?
   
-        # 最新のcallが存在し、そのstatuが"APP"または"永久NG"でない、かつ2ヶ月以上経過している場合のみ再掲載
-        if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
-          existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
-          repost_count += 1
+        # 既存のCustomerのindustryがCSVのindustryと異なる場合、新しいCustomerを作成
+        if existing_customer.industry != row['industry']
+          customer = existing_customer.dup  # 既存のCustomerを複製
+          customer.industry = row['industry']  # industryのみCSVから設定
+          customer.save!
+          new_import_count += 1
+        else
+          # industryが一致する場合、再掲載処理を行う
+          latest_call = existing_customer.calls.order(created_at: :desc).first
+  
+          # 最新のcallが存在し、2ヶ月以上経過していて、かつstatuが"APP"または"永久NG"でない場合のみ再掲載
+          if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
+            existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
+            repost_count += 1
+          end
         end
       else
-        # companyが一致しindustryが異なる場合、新しいcustomerを作成
+        # 既存のCustomerが存在しない場合、新しいCustomerを作成
         customer = Customer.new(row.to_hash.slice(*(updatable_attributes - ["industry"])))
         customer.industry = row['industry']
+  
+        # 新規Customerにtelがない場合は登録をスキップ
+        next if customer.tel.blank?
+  
         customer.save!
         new_import_count += 1
       end
     end
+  
     { new_import_count: new_import_count, repost_count: repost_count }
   end
+  
+  def self.updatable_attributes
+    ["id", "company", "tel", "address", "url", "url_2", "title", "industry", "mail", "first_name", "postnumber", "people",
+     "caption", "business", "genre", "mobile", "choice", "inflow", "other", "history", "area", "target", "meeting", "experience", "price",
+     "number", "start", "remarks", "extraction_count", "send_count"]
+  end  
   
   #update_import
   def self.update_import(update_file)
