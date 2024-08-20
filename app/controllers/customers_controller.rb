@@ -1,11 +1,9 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  before_action :authenticate_admin!, only: [:destroy, :destroy_all, :anayltics, :import, :call_import, :sfa, :mail, :call_history]
-  before_action :authenticate_worker!, only: [:extraction,:direct_mail_send]
-  # before_action :authenticate_user!, only: [:index]
-  before_action :authenticate_worker_or_user, only: [:new, :edit]
+  before_action :authenticate_admin!, only: [:destroy, :destroy_all, :analytics, :import, :call_import, :sfa, :mail, :call_history]
+  before_action :authenticate_worker!, only: [:extraction, :direct_mail_send]
+  before_action :authenticate_worker_or_user, only: [:new, :edit, :create, :update]
   before_action :authenticate_user_or_admin, only: [:index, :show]
-  #before_action :authenticate_worker_or_admin, only: [:extraction]
   before_action :set_customers, only: [:update_all_status]
   protect_from_forgery with: :exception, prepend: true
   
@@ -104,7 +102,7 @@ class CustomersController < ApplicationController
       # 他の人が既に作業を完了していない顧客をフィルター
       @q = @q.where.not(id: Call.select(:customer_id))
       # 管理者を除外
-      unless current_user.admin?
+      if current_user && current_user.admin?
         @q = @q.where.not(user_id: User.admins.pluck(:id))
       end
       @customers = @q.ransack(params[:q]).result.page(params[:page]).per(100)
@@ -117,9 +115,20 @@ class CustomersController < ApplicationController
       @customer.skip_validation = true
       @customer.status = "hidden"
     end
+    
+    # @next_draft を次の編集対象顧客として定義
+    @next_draft = Customer.where(status: 'draft').where('id > ?', @customer.id).order(:id).first
+  
     if @customer.update(customer_params)
       if worker_signed_in?
-        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+        if @next_draft
+          redirect_to edit_customer_path(
+            id: @next_draft.id,
+            industry_name: params[:industry_name]
+          )
+        else
+          redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
+        end
       else
         redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
       end
@@ -331,14 +340,19 @@ class CustomersController < ApplicationController
     @customers =  Customer.all
   end
 
-  def copy
-    @customer = Customer.find(params[:id])
-    @user = current_user
-  end
+  #def copy
+   # @customer = Customer.find(params[:id])
+    #@user = current_user
+  #end
 
   def import
     cnt = Customer.import(params[:file])
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
+  end
+
+  def repost_import
+    result = Customer.repost_import(params[:file])
+    redirect_to customers_url, notice: "#{result[:new_import_count]}件新規インポート、#{result[:repost_count]}件再掲載登録されました。"
   end
 
   def update_import
@@ -356,47 +370,40 @@ class CustomersController < ApplicationController
     redirect_to customers_url, notice:"#{cnt}件登録されました。"
   end
 
-  def list
-    @q = Customer.ransack(params[:q])
-    @customers = @q.result
-    @customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(20)
-  end
+  #def list
+   # @q = Customer.ransack(params[:q])
+    #@customers = @q.result
+    #@customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(20)
+  #end
 
- def print
+  def print
     report = Thinreports::Report.new layout: "app/reports/layouts/invoice.tlf"
-    
     @industries_data.each do |data|
       create_pdf_page(report, data)
     end
-
     send_data(report.generate, filename: "industries_report_#{Time.zone.now.to_formatted_s(:number)}.pdf", type: "application/pdf")
   end
 
   def generate_pdf
     industry_name = params[:industry_name]
     data = INDUSTRY_ADDITIONAL_DATA[industry_name]
-
     if data.nil?
       redirect_to some_path, alert: "#{industry_name}のデータが見つかりません。"
       return
     end
-
     report = Thinreports::Report.new layout: 'app/reports/layouts/invoice.tlf'
     create_pdf_page(report, data)
-
     send_data report.generate, filename: "#{industry_name}.pdf", type: 'application/pdf', disposition: 'attachment'
   end
 
-  def send_email
-    @customer = Customer.find(params[:id])
-    @user = current_user
-  end
+  #def send_email
+   # @customer = Customer.find(params[:id])
+   # @user = current_user
+  #end
 
   def send_email_send
     @customer = Customer.find(params[:id])
-    @user = current_user
-    Rails.logger.debug(params.inspect)  # パラメータをログに出力
-  
+    @user = current_user  
     email_params = params.require(:mail).permit(:company, :first_name, :mail, :body, :company_name, :user_name)
     CustomerMailer.teleapo_send_email(@customer, email_params).deliver_now
     redirect_to customers_path, notice: 'Email sent successfully!'
@@ -407,18 +414,14 @@ class CustomersController < ApplicationController
     @q = Customer.ransack(params[:q])
     @customers = @q.result
     @customers = @customers.order("created_at DESC").where(extraction_count: nil).where(tel: nil).page(params[:page]).per(20)
-    #電話番号nilから作業ステータスがないものの一覧へ変更する
-    #@customers = @customers.order("created_at DESC").where("created_at > ?", Time.current.beginning_of_day).where("created_at < ?", (Time.current.beginning_of_day + 6.day).at_end_of_day).page(params[:page]).per(20)
   end
 
   def calculate
     user = User.find(params[:user_id])
     input_val = params[:input_val].to_i
     user_calls_count = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count
-  
     answer = user_calls_count / input_val.to_f
     answer = answer.nan? ? 0 : answer
-  
     render json: { answer: answer.round(2) }
   end
 
@@ -449,7 +452,6 @@ class CustomersController < ApplicationController
     status = params[:status] || 'hidden'
     published_count = 0
     hidden_count = 0
-
     @customers.each do |customer|
       customer.skip_validation = true
       if status == 'hidden'
@@ -462,7 +464,6 @@ class CustomersController < ApplicationController
         end
       end
     end
-
     flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされました。"
     redirect_to customers_path
   end
@@ -585,20 +586,19 @@ class CustomersController < ApplicationController
 
     def authenticate_user_or_admin
       unless user_signed_in? || admin_signed_in?
-         redirect_to new_user_session_path, alert: 'error'
+        redirect_to new_user_session_path, alert: 'error'
       end
     end
-
+  
     def authenticate_worker_or_admin
       unless worker_signed_in? || admin_signed_in?
-         redirect_to new_worker_session_path, alert: 'error'
+        redirect_to new_worker_session_path, alert: 'error'
       end
     end
-
+  
     def authenticate_worker_or_user
-      unless user_signed_in? ||  worker_signed_in?
-         redirect_to new_worker_session_path, alert: 'error'
+      unless user_signed_in? || worker_signed_in?
+        redirect_to new_worker_session_path, alert: 'error'
       end
     end
-
 end
