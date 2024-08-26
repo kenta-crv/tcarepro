@@ -8,18 +8,14 @@ class OkuriteController < ApplicationController
   before_action :set_customers, only: [:index, :preview]
 
   def index
+    @customers = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠')).includes(:worker).page(params[:page]).per(30)
     #@customers = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠')).includes(:worker).page(params[:page]).per(30)
     #@contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
-    customers = Customer.joins(:contact_trackings).where(contact_trackings: {sender_id: params[:sender_id]})
-    @q = customers.ransack(params[:q])
-    ransack_results = @q.result.includes(:worker)
-    conditional_results = customers.where(forever: nil).or(customers.where(choice: 'アポ匠'))
+    @q = Customer.ransack(params[:q])
+        ransack_results = @q.result.includes(:worker)
+    conditional_results = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠'))
     @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)    
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
-    respond_to do |format|
-      format.html
-      format.csv { send_data generate_csv(@customers), filename: "customers-#{Date.today}.csv" }
-    end
   end
 
   def show

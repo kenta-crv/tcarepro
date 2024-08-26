@@ -1,100 +1,45 @@
-20240809 220030 309442 株式会社フィールド https://www.kk-field.info/contact.php 送信開始
-20240809 220042 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
-20240809 220042 お問い合わせ詳細<span class="hissu">※</span>
-20240809 220042 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
-20240809 220042 <textarea name="お問い合わせ詳細" cols="30" rows="10" class="wl"></textarea>
-20240809 220042 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
-20240809 220052 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
-20240809 220102 .//*[contains(text(), "団体") and not(self::input or self::textarea)]
-20240809 220112 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
-20240809 220112 メールアドレス<span class="hissu">※</span>
-20240809 220112 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
-20240809 220112 <input type="text" name="Email" size="30" class="ws">
-20240809 220112 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
-20240809 220122 .//*[contains(text(), "フリガナ") and not(self::input or self::textarea)]
-20240809 220132 .//*[contains(text(), "かな") and not(self::input or self::textarea)]
-20240809 220143 .//*[contains(text(), "カナ") and not(self::input or self::textarea)]
-20240809 220153 .//*[contains(text(), "せい") and not(self::input or self::textarea)]
-20240809 220203 .//*[contains(text(), "めい") and not(self::input or self::textarea)]
-20240809 220213 .//*[contains(text(), "セイ") and not(self::input or self::textarea)]
-20240809 220223 .//*[contains(text(), "メイ") and not(self::input or self::textarea)]
-20240809 220233 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
-20240809 220243 .//*[contains(text(), "住所") and not(self::input or self::textarea)]
-20240809 220253 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
-20240809 220303 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
-20240809 220313 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
-20240809 220323 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
-20240809 220323 お名前<span class="hissu">※</span>
-20240809 220323 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
-20240809 220323 <input type="text" name="お名前" size="30" class="ws">
-20240809 220323 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
-20240809 220323 電話番号
-20240809 220323 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
-20240809 220323 <input type="text" name="電話番号" size="15" class="ws">
-20240809 220323 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
-20240809 220333 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
-20240809 220343 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
-20240809 220417 <form action="/mail.php" method="POST">
-<table class="formTable">
-<tbody><tr><th>お名前</th><td>山田　優斗<input type="hidden" name="お名前" value="山田　優斗"></td></tr>
-<tr><th>Email</th><td>exterior@factoru.jp<input type="hidden" name="Email" value="exterior@factoru.jp"></td></tr>
-<tr><th>電話番号</th><td>050-5374-9319<input type="hidden" name="電話番号" value="050-5374-9319"></td></tr>
-<tr><th>物件査定</th><td>希望する<input type="hidden" name="物件査定" value="希望する"></td></tr>
-<tr><th>家賃査定</th><td>希望する<input type="hidden" name="家賃査定" value="希望する"></td></tr>
-<tr><th>お問い合わせ詳細</th><td>突然のご連絡失礼致します。<br>
-<br>
-私、エクステリアガーデンの山田と申します。<br>
-<br>
-弊社は外構・エクステリア領域で一括見積サイトを運営している企業となり、今回御社エリアでお問い合わせ企業様が増加しており、外構・エスクテリア案件を定期的にご紹介させて頂けないかと思い、ご連絡させて頂きました。<br>
-<br>
-当社でご紹介させて頂くユーザー様においては、既に弊社担当者とお電話でやり取りも進めており、意思確認も済んでおります優良顧客となり、成約も非常に見込みやすいユーザー様となっております。<br>
-<br>
-これまでご利用頂いている企業様からも、以下のようなお声を頂いております。<br>
-<br>
-◉成約率40%を達成（平均成約率は25~30%）<br>
-◉一括見積サイト利用後売上が300%上昇<br>
-◉新規案件獲得における余分コストがなくなった<br>
-<br>
-尚、当社は完全成果報酬で運営しており、紹介料や登録料等は【0円】となっておりますので、ご安心下さいませ。<br>
-<br>
-【提案資料】https://exterior-garden.jp/download<br>
-<br>
-少しでもご興味をお持ち頂けましたら、以下フォームより申請頂けましたら案件を実際に共有させて頂くことが可能となります。<br>
-<br>
-https://exterior-garden.jp/contracts/new<br>
-<br>
-もしくは、担当者よりご不明点があればご連絡させて頂きますので、『商談希望』の旨をお返事くださいませ。<br>
-<br>
-貴重なお時間いただきありがとうございました。<input type="hidden" name="お問い合わせ詳細" value="突然のご連絡失礼致します。
-
-私、エクステリアガーデンの山田と申します。
-
-弊社は外構・エクステリア領域で一括見積サイトを運営している企業となり、今回御社エリアでお問い合わせ企業様が増加しており、外構・エスクテリア案件を定期的にご紹介させて頂けないかと思い、ご連絡させて頂きました。
-
-当社でご紹介させて頂くユーザー様においては、既に弊社担当者とお電話でやり取りも進めており、意思確認も済んでおります優良顧客となり、成約も非常に見込みやすいユーザー様となっております。
-
-これまでご利用頂いている企業様からも、以下のようなお声を頂いております。
-
-◉成約率40%を達成（平均成約率は25~30%）
-◉一括見積サイト利用後売上が300%上昇
-◉新規案件獲得における余分コストがなくなった
-
-尚、当社は完全成果報酬で運営しており、紹介料や登録料等は【0円】となっておりますので、ご安心下さいませ。
-
-【提案資料】https://exterior-garden.jp/download
-
-少しでもご興味をお持ち頂けましたら、以下フォームより申請頂けましたら案件を実際に共有させて頂くことが可能となります。
-
-https://exterior-garden.jp/contracts/new
-
-もしくは、担当者よりご不明点があればご連絡させて頂きますので、『商談希望』の旨をお返事くださいませ。
-
-貴重なお時間いただきありがとうございました。"></td></tr>
-</tbody></table>
-<p align="center" style="margin-top:30px;"><input type="hidden" name="mail_set" value="confirm_submit">
-<input type="hidden" name="httpReferer" value="https://www.kk-field.info/contact.php">
-<input type="submit" value="　送信する　" class="btn">
-<input type="button" value="前画面に戻る" onclick="history.back()" class="btn"></p>
-</form>
-20240809 220430 bundle exec rails update_contact_status:update  contact_tracking_id=309442 update_mode=1
-20240809 220436 https://www.kk-field.info/contact.php 送信成功
+20240825 220031 310769 株式会社Connect https://connect-inc.com/contact/ 送信開始
+20240825 220034 .//*[contains(text(), "問い合わせ") and not(self::input or self::textarea)]
+20240825 220034 当社が管理する保有個人データについて、ご本人またはその代理人から利用目的の通知のご請求または開示、訂正・追加・削除、利用停止・消去、第三者提供の停止のご請求、個人データの第三者提供記録の開示請求（以下、「開示等のご請求」と言います。）をされる場合は、第１４条のお問い合わせ窓口に以下の情報をご提供ください。
+20240825 220034 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240825 220044 .//*[contains(text(), "問合わせ") and not(self::input or self::textarea)]
+20240825 220054 .//*[contains(text(), "問合せ") and not(self::input or self::textarea)]
+20240825 220104 .//*[contains(text(), "相談内容") and not(self::input or self::textarea)]
+20240825 220114 .//*[contains(text(), "ご質問") and not(self::input or self::textarea)]
+20240825 220124 .//*[contains(text(), "ご用件") and not(self::input or self::textarea)]
+20240825 220134 .//*[contains(text(), "コメント") and not(self::input or self::textarea)]
+20240825 220144 .//*[contains(text(), "本文") and not(self::input or self::textarea)]
+20240825 220154 .//*[contains(text(), "要望") and not(self::input or self::textarea)]
+20240825 220204 .//*[contains(text(), "内容") and not(self::input or self::textarea)]
+20240825 220204 内容
+20240825 220204 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240825 220204 <textarea name="message" id="message" class="form_text" cols="40" rows="5"></textarea>
+20240825 220204 .//*[contains(text(), "会社名") and not(self::input or self::textarea)]
+20240825 220214 .//*[contains(text(), "企業") and not(self::input or self::textarea)]
+20240825 220225 .//*[contains(text(), "団体") and not(self::input or self::textarea)]
+20240825 220235 .//*[contains(text(), "メールアドレス") and not(self::input or self::textarea)]
+20240825 220235 メールアドレス
+20240825 220235 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240825 220235 <input type="email" name="entry_mail" id="entry_mail" class="form_mail" size="40" value="" data-conv-half-alphanumeric="true">
+20240825 220235 .//*[contains(text(), "ふりがな") and not(self::input or self::textarea)]
+20240825 220235 ふりがな
+20240825 220235 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240825 220235 <input type="text" name="entry_kana" id="entry_kana" class="form_name" size="40" value="" placeholder="">
+20240825 220235 .//*[contains(text(), "都道府県") and not(self::input or self::textarea)]
+20240825 220245 .//*[contains(text(), "住所") and not(self::input or self::textarea)]
+20240825 220255 .//*[contains(text(), "件名") and not(self::input or self::textarea)]
+20240825 220305 .//*[contains(text(), "ホームページURL") and not(self::input or self::textarea)]
+20240825 220315 .//*[contains(text(), "担当者") and not(self::input or self::textarea)]
+20240825 220325 .//*[contains(text(), "お名前") and not(self::input or self::textarea)]
+20240825 220325 お名前
+20240825 220325 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240825 220325 <input type="text" name="entry_name" id="entry_name" class="form_name" size="40" value="" placeholder="">
+20240825 220325 .//*[contains(text(), "電話番号") and not(self::input or self::textarea)]
+20240825 220325 電話番号
+20240825 220325 following::input[not(@type="hidden")][1] | following::textarea[not(@type="hidden")][1]
+20240825 220325 <input type="text" name="entry_tel" id="entry_tel" class="form_tel" size="40" value="" placeholder="" data-conv-half-alphanumeric="true">
+20240825 220325 .//*[contains(text(), "年齢") and not(self::input or self::textarea)]
+20240825 220335 .//*[contains(text(), "郵便番号") and not(self::input or self::textarea)]
+20240825 220345 .//*[contains(text(), "〒") and not(self::input or self::textarea)]
+20240825 220418 bundle exec rails update_contact_status:update  contact_tracking_id=310769 update_mode=2
+20240825 220425 https://connect-inc.com/contact/ 送信失敗（001）
