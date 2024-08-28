@@ -13,7 +13,7 @@ html
         .col-xs-4
           = render template: 'layouts/_flash.html.erb'
         .col-xs-4.right
-          - if controller.controller_name == 'okurite' && controller.action_name == 'index'
+          - if controller.controller_name == 'okurite' && controller.action_name == 'index' || controller.action_name == 'resend'
             li
               button.btn.btn-success.btn-md[data-toggle="modal" data-target="#searchModal"]
                |  検索する

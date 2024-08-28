@@ -21,14 +21,19 @@ class OkuriteController < ApplicationController
                         .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
                         .where('contact_trackings.created_at < ?', 1.month.ago)
                         .distinct
+    
     # フィルタリング条件を適用して、対象の顧客を絞り込む
     filtered_customers = customers.where(forever: nil).or(customers.where(choice: 'アポ匠'))
+    
     # ページネーションを適用して顧客リストを取得
     @customers = filtered_customers.page(params[:page]).per(30)
+    
     # 抽出した顧客のIDを基に連絡履歴を取得
     @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
-  end
   
+    # Ransack オブジェクトを初期化
+    @q = Customer.ransack(params[:q])
+  end
   
 
   def show

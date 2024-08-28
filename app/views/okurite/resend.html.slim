@@ -70,3 +70,109 @@
         th
           = link_to '自動送信予定の一括削除', sender_bulk_delete_path, class: 'btn btn-danger', data: { method: :delete, confirm: '本当に削除しますか？'}
 
+
+
+#searchModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-header
+        button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+          | ×
+      .modal-body
+        = search_form_for @q, url: sender_resend_path(sender_id: params[:sender_id]) do |f|
+          table.space
+            tbody
+              tr
+                th[colspan="4"]
+                  | 検索
+              tr
+                th
+                  | 会社名
+                td
+                  = f.search_field :company_cont, type: "text"
+                th
+                  | 電話番号
+                td
+                  = f.search_field :tel_cont, type: "text"
+              tr
+                th
+                  | 住所
+                td
+                  =  f.collection_select :address_cont_any, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'},
+                  {class: 'form-control', id: 'search_prefecture', multiple: true}
+                th
+                  | 状態
+                td
+                  = f.select :status, options_for_select(['自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可', '自動送信予定', '自動送信エラー'], params.dig(:q, :status)), {include_blank: '選択してください'}, class: 'form-control'
+              tr
+                th
+                  | 未送信
+                td
+                  = f.check_box :contact_tracking_id_null, {}, 'true', ''
+                th
+                  | url有りのみ
+                td
+                  = f.check_box :url
+              tr
+                th
+                  | 業種
+                td
+                  = f.select :contact_tracking_status_eq, options_for_select(['自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可', '自動送信予定', '自動送信エラー'], params.dig(:q, :status)), {include_blank: '選択してください'}, class: 'form-control'
+                th
+                  | 事業内容
+                td
+                  = f.search_field :genre_cont, type: "text"
+              tr
+                th
+                  | 検索条件
+                td
+                  = f.search_field :industry_cont, type: "text"
+                th
+                td
+              tr
+                th
+                  | 最終インポート日時（最初）
+                td
+                  = f.date_field :created_at_gteq, class: 'date-picker form-control'
+                th
+                  | 最終インポート日時（最後）
+                td
+                  = f.date_field :created_at_lteq, class: 'date-picker form-control'
+              tr
+                th
+                  | 最終送信日時（最初）
+                td
+                  = f.date_field :contact_tracking_sended_at_gteq, class: 'date-picker form-control'
+                th
+                  | 最終送信日時（最後）
+                td
+                  = f.date_field :contact_tracking_sended_at_lteq, class: 'date-picker form-control'
+              tr
+                td[colspan="4"]
+                  = f.submit '検索'
+
+-if admin_signed_in?
+ .heading
+  h2
+    | エクスポート
+ = form_with(url: import_customers_path, method: :post, local: true, multipart: true) do |f|
+  table.space[width="90%"]
+    tbody
+      tr
+        th[colspan="2"]
+      tr
+        td
+          = f.file_field :file
+        td 
+          = f.label :overwrite, "上書き"
+          = f.check_box :overweite
+        th
+          = submit_tag "インポート",  class: 'btn btn-success'
+        th
+          = link_to 'エクスポート', customers_path(format: :csv, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!, search: params[:search]&.permit!, page: params[:page]), class: 'btn btn-success'
+
+
+javascript:
+  $(function() {
+     $('#datetimepicker1').datetimepicker(format: 'YYYY-MM-DD HH:mm');
+  });
