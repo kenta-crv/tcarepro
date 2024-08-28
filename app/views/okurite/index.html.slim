@@ -126,7 +126,10 @@
                 th
                   | 業種
                 td
-                  = f.select :contact_tracking_status_eq, options_for_select(['自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可', '自動送信予定', '自動送信エラー'], params.dig(:q, :status)), {include_blank: '選択してください'}, class: 'form-control'
+                  - business_status2 = ["人材関連業","協同組合","登録支援機関","IT・エンジニア","ホームページ制作","Webデザイナー","食品加工業",
+                  "製造業","広告業","営業","販売","介護","マーケティング業","コンサルティング業","不動産","商社","ドライバー","運送業","タクシー",
+                  "建設土木業","自動車整備工場","教育業","飲食業","美容院","看護・病院","弁護士","社会保険労務士","保育士","旅行業","警備業","その他"]
+                  = f.select :business_cont, business_status2, { include_blank: '選択してください' }
                 th
                   | 事業内容
                 td
