@@ -21,8 +21,8 @@ DISC_CANNOT_ENTER_FORM = 2
 class AutoInquery(Browser):
     def __init__(self):
         super().__init__();
-    def __del__(self):
-        super().__del__();
+    #def __del__(self):
+    #    super().__del__();
     # 自動問い合わせの実施
     def auto_inquery(self,contact_info:ContactInfo) -> Tuple[bool, int,str]:
         inquery_page_url,result = self.identify_inquery_page(contact_info=contact_info)

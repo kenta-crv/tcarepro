@@ -67,7 +67,6 @@ $(function () {
           <td><%= @sender.contact_trackings.count %> / <%= @sender.rate_limit %></td>
         </tr>
       </table>
-
       <h4>
         <%= link_to '企業情報', sender_okurite_path(id: @customer.id, sender_id: @sender.id), target: :_blank %>
       </h4>
@@ -108,7 +107,6 @@ $(function () {
           </td>
         </tr>
       </table>
-
       <h4><%= link_to '送信履歴', sender_path(@sender), target: :_blank %></h4>
 
       <table class="table table-striped">

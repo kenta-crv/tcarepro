@@ -1,0 +1,2 @@
+class DirectMailContactTracking < ApplicationRecord
+end

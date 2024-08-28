@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :staffs
   root to: 'customers#index'
 
   #管理者アカウント
@@ -69,6 +70,7 @@ Rails.application.routes.draw do
     get 'download_callbacked', to: 'senders_history#download_callbacked'
     get 'callbacked', to: 'senders_history#callbacked'
     get 'users_callbacked', to: 'senders_history#users_callbacked'
+    get 'okurite/index01', to: 'okurite#index01'
     post 'okurite/autosettings', to: 'okurite#autosettings'
     delete 'bulk_delete', to: 'okurite#bulk_delete'
     get 'resend', to: 'okurite#resend'
@@ -176,6 +178,5 @@ Rails.application.routes.draw do
 
   
   get '*path', controller: 'application', action: 'render_404'
-
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
