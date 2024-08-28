@@ -8,15 +8,28 @@ class OkuriteController < ApplicationController
   before_action :set_customers, only: [:index, :preview]
 
   def index
-    @customers = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠')).includes(:worker).page(params[:page]).per(30)
-    #@customers = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠')).includes(:worker).page(params[:page]).per(30)
-    #@contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
     @q = Customer.ransack(params[:q])
         ransack_results = @q.result.includes(:worker)
     conditional_results = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠'))
     @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)    
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
+
+  def resend
+    # 1ヶ月より前に送信された履歴がある顧客を抽出
+    customers = Customer.joins(:contact_trackings)
+                        .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
+                        .where('contact_trackings.created_at < ?', 1.month.ago)
+                        .distinct
+    # フィルタリング条件を適用して、対象の顧客を絞り込む
+    filtered_customers = customers.where(forever: nil).or(customers.where(choice: 'アポ匠'))
+    # ページネーションを適用して顧客リストを取得
+    @customers = filtered_customers.page(params[:page]).per(30)
+    # 抽出した顧客のIDを基に連絡履歴を取得
+    @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
+  end
+  
+  
 
   def show
     @customer = Customer.find(params[:id])
@@ -45,23 +58,20 @@ class OkuriteController < ApplicationController
   end
 
   def preview
+    Rails.logger.debug "Received params[:q]: #{params[:q].inspect}"
+    Rails.logger.debug "Received params[:okurite_id]: #{params[:okurite_id].inspect}"
+    
     @customer = Customer.find(params[:okurite_id])
-
     @inquiry = @sender.default_inquiry
-
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @contact_tracking = @sender.contact_trackings.where(customer: @customer).order(created_at: :desc).first
-
     contactor = Contactor.new(@inquiry, @sender)
-
     @contact_url = @customer.contact_url
-
     @callback_code = @sender.generate_code
-
     gon.typings = contactor.try_typings(@contact_url, @customer.id)
-  end
-
+  end  
+  
   def callback
     @contact_tracking = ContactTracking.find_by!(code: params[:t])
 

@@ -37,19 +37,19 @@ $(function () {
     <span class="entries__title">↑</span>
 
     <div class="entries__detail">
-       <div class="row">
+      <div class="row">
         <div class="col-sm-3">
-         <% if @prev_customer %>
-           <%= link_to '前へ ←', sender_okurite_preview_path(okurite_id: @prev_customer.id, q: params[:q]&.permit!), class:"btn btn-success" %>
-         <% end %>
+          <% if @prev_customer && !params[:from_resend] %>
+            <%= link_to '前へ ←', sender_okurite_preview_path(okurite_id: @prev_customer.id, q: params[:q]&.permit!), class:"btn btn-success" %>
+          <% end %>
         </div>
         <div class="col-sm-6"></div>
         <div class="col-sm-3">
-         <% if @next_customer %>
-           <%= link_to '→ 次へ', sender_okurite_preview_path(okurite_id: @next_customer.id, q: params[:q]&.permit!), class:"btn btn-success" %>
-         <% end %>
+          <% if @next_customer && !params[:from_resend] %>
+            <%= link_to '→ 次へ', sender_okurite_preview_path(okurite_id: @next_customer.id, q: params[:q]&.permit!), class:"btn btn-success" %>
+          <% end %>
         </div>
-       </div>
+      </div>
 
       <h4>
         <%= link_to '送信情報', sender_path(@sender), target: :_blank %>
@@ -67,6 +67,7 @@ $(function () {
           <td><%= @sender.contact_trackings.count %> / <%= @sender.rate_limit %></td>
         </tr>
       </table>
+
       <h4>
         <%= link_to '企業情報', sender_okurite_path(id: @customer.id, sender_id: @sender.id), target: :_blank %>
       </h4>
@@ -107,6 +108,7 @@ $(function () {
           </td>
         </tr>
       </table>
+
       <h4><%= link_to '送信履歴', sender_path(@sender), target: :_blank %></h4>
 
       <table class="table table-striped">

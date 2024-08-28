@@ -1,0 +1,72 @@
+- set_meta_tags noindex: true
+.tops-wrapper
+ .headline
+    | Okuriteリスト
+    | (
+    = @customers.current_page * 30 - 29
+    | ~
+    = [@customers.page(1).per(30).total_count, @customers.current_page * 30].min
+    | 件/
+    = @customers.page(1).per(30).total_count
+    | 件中
+    | )
+ = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
+  table[style="margin: 0 30px;"]
+    thead
+      tr
+        th
+          | 企業名
+        th
+          | URL1
+        th
+          | URL2
+        th
+          | ワーカー名
+        th
+          | ステータス
+        th
+          | 最終送信日時
+        th
+          | URLアクセス日時
+    - @customers.each do |customer|
+      - contact_tracking = customer.contact_trackings.find_by(sender_id: params[:sender_id])
+      - if contact_tracking.present?
+      tr
+        td
+          = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, from_resend: true), target: :_blank
+        td
+          = customer.url&.truncate(30)
+        td
+          = customer.url_2&.truncate(30)
+        td 
+          = contact_tracking&.worker.user_name if contact_tracking&.worker.present?
+        td
+            = contact_tracking&.status 
+        td
+            = contact_tracking&.sended_at
+        td
+            = contact_tracking&.sended_at
+    tr
+      th[colspan="8"]
+        = paginate @customers
+
+
+= form_tag sender_okurite_autosettings_path(sender_id: params[:sender_id],q: params[:q]&.permit!, date: params[:date]&.permit!, page: params[:page]) do
+  table.space[width="90%"]
+    tbody
+    tr
+        th[colspan="4"]
+          | 自動送信設定
+    tr
+        td
+          #created_at_from_datetimepicker.input-group.date
+                    = datetime_field_tag 'date','',max: Time.now.strftime("%m/%d/%Y %H:%M %p"), required:true,class: "form-control"
+                    span.input-group-addon
+                      span.glyphicon.glyphicon-calendar
+        td
+          = number_field_tag 'count', 1, min: 1, required:true
+        th
+          = submit_tag "自動送信設定",  class: 'btn btn-success'
+        th
+          = link_to '自動送信予定の一括削除', sender_bulk_delete_path, class: 'btn btn-danger', data: { method: :delete, confirm: '本当に削除しますか？'}
+

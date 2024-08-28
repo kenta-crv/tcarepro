@@ -106,15 +106,15 @@
       "type": "text",
       "display": true,
       "description": "",
-      "x": 107.1,
-      "y": 119,
-      "width": 200,
-      "height": 100,
+      "x": 204.1,
+      "y": 116.6,
+      "width": 96,
+      "height": 22,
       "style": {
         "font-family": [
           "Helvetica"
         ],
-        "font-size": 14,
+        "font-size": 12,
         "color": "#000000",
         "text-align": "center",
         "vertical-align": "top",
@@ -148,7 +148,7 @@
       "display": true,
       "description": "",
       "x": 434,
-      "y": 98,
+      "y": 99.5,
       "width": 124.2,
       "height": 12.9,
       "style": {
@@ -175,22 +175,22 @@
       }
     },
     {
-      "id": "company",
+      "id": "company_name",
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 38.3,
+      "x": 31.1,
       "y": 117.1,
-      "width": 143,
-      "height": 16.1,
+      "width": 206.1,
+      "height": 14,
       "style": {
         "font-family": [
           "Helvetica"
         ],
-        "font-size": 14,
+        "font-size": 12,
         "color": "#000000",
         "text-align": "center",
-        "vertical-align": "top",
+        "vertical-align": "bottom",
         "line-height": "",
         "line-height-ratio": "",
         "letter-spacing": "",
@@ -200,7 +200,7 @@
       },
       "reference-id": "",
       "value": "",
-      "multiple-line": false,
+      "multiple-line": true,
       "format": {
         "base": "",
         "type": ""
@@ -211,9 +211,9 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 100.9,
-      "y": 259.9,
-      "width": 146,
+      "x": 113.1,
+      "y": 261.4,
+      "width": 119,
       "height": 16.1,
       "style": {
         "font-family": [
@@ -221,7 +221,7 @@
         ],
         "font-size": 14,
         "color": "#000000",
-        "text-align": "right",
+        "text-align": "center",
         "vertical-align": "top",
         "line-height": "",
         "line-height-ratio": "",
@@ -299,7 +299,7 @@
       "description": "",
       "x": 40.2,
       "y": 262.2,
-      "width": 64,
+      "width": 67.7,
       "height": 20,
       "style": {
         "font-family": [
@@ -921,11 +921,11 @@
       "y2": 498.9
     },
     {
-      "id": "unit_price_ex_tax",
+      "id": "industry_code",
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 338.3,
+      "x": 335,
       "y": 326.8,
       "width": 60,
       "height": 11.6,
@@ -953,12 +953,12 @@
       }
     },
     {
-      "id": "unit_price_inc_tax_total",
+      "id": "total_2",
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 468.3,
-      "y": 324.5,
+      "x": 463,
+      "y": 326.5,
       "width": 86.4,
       "height": 11.6,
       "style": {
@@ -985,12 +985,12 @@
       }
     },
     {
-      "id": "total_1",
+      "id": "total",
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 394.5,
-      "y": 616.3,
+      "x": 390,
+      "y": 617.8,
       "width": 158.2,
       "height": 14,
       "style": {
@@ -1021,8 +1021,8 @@
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 395.2,
-      "y": 656.3,
+      "x": 390,
+      "y": 657.9,
       "width": 157.6,
       "height": 14,
       "style": {
@@ -1101,12 +1101,12 @@
       ]
     },
     {
-      "id": "text_2",
+      "id": "total_1",
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 477.2,
-      "y": 674,
+      "x": 471.6,
+      "y": 676.7,
       "width": 76,
       "height": 11.6,
       "style": {
@@ -1133,44 +1133,12 @@
       }
     },
     {
-      "id": "tax",
-      "type": "text-block",
-      "display": true,
-      "description": "",
-      "x": 478,
-      "y": 688.7,
-      "width": 75.2,
-      "height": 9.2,
-      "style": {
-        "font-family": [
-          "Helvetica"
-        ],
-        "font-size": 8,
-        "color": "#000000",
-        "text-align": "right",
-        "vertical-align": "top",
-        "line-height": "",
-        "line-height-ratio": "",
-        "letter-spacing": "",
-        "font-style": [],
-        "overflow": "truncate",
-        "word-wrap": "none"
-      },
-      "reference-id": "",
-      "value": "",
-      "multiple-line": false,
-      "format": {
-        "base": "",
-        "type": ""
-      }
-    },
-    {
       "id": "payment",
       "type": "text-block",
       "display": true,
       "description": "",
       "x": 117.6,
-      "y": 637.7,
+      "y": 638.2,
       "width": 150.8,
       "height": 14,
       "style": {
@@ -1197,11 +1165,11 @@
       }
     },
     {
-      "id": "text",
+      "id": "app_count",
       "type": "text-block",
       "display": true,
       "description": "",
-      "x": 398.4,
+      "x": 395,
       "y": 326.9,
       "width": 68.4,
       "height": 11.6,
@@ -1229,19 +1197,71 @@
       }
     },
     {
-      "id": "tax2",
-      "type": "text-block",
+      "id": "",
+      "type": "text",
       "display": true,
       "description": "",
-      "x": 395.3,
-      "y": 636.9,
-      "width": 157.7,
-      "height": 20.5,
+      "x": 130,
+      "y": 325,
+      "width": 200,
+      "height": 100,
       "style": {
         "font-family": [
           "Helvetica"
         ],
-        "font-size": 18,
+        "font-size": 10,
+        "color": "#000000",
+        "text-align": "left",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": []
+      },
+      "texts": [
+        "テレマーケティング代行費"
+      ]
+    },
+    {
+      "id": "",
+      "type": "text",
+      "display": true,
+      "description": "",
+      "x": 506.6,
+      "y": 638,
+      "width": 41.6,
+      "height": 25,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 12,
+        "color": "#000000",
+        "text-align": "right",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": []
+      },
+      "texts": [
+        "10%"
+      ]
+    },
+    {
+      "id": "tax_price",
+      "type": "text-block",
+      "display": true,
+      "description": "",
+      "x": 473.8,
+      "y": 691.1,
+      "width": 74,
+      "height": 11.5,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 10,
         "color": "#000000",
         "text-align": "right",
         "vertical-align": "top",
@@ -1250,7 +1270,7 @@
         "letter-spacing": "",
         "font-style": [],
         "overflow": "truncate",
-        "word-wrap": "none"
+        "word-wrap": "break-word"
       },
       "reference-id": "",
       "value": "",
@@ -1259,6 +1279,32 @@
         "base": "",
         "type": ""
       }
+    },
+    {
+      "id": "",
+      "type": "text",
+      "display": true,
+      "description": "",
+      "x": 236,
+      "y": 262,
+      "width": 200,
+      "height": 100,
+      "style": {
+        "font-family": [
+          "Helvetica"
+        ],
+        "font-size": 14,
+        "color": "#000000",
+        "text-align": "left",
+        "vertical-align": "top",
+        "line-height": "",
+        "line-height-ratio": "",
+        "letter-spacing": "",
+        "font-style": []
+      },
+      "texts": [
+        "円"
+      ]
     }
   ],
   "state": {
