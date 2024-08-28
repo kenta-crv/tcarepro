@@ -156,23 +156,6 @@
          = paginate @customers
  
  
- 
-
- .tops-wrapper
-   h2.headline ドラフト専用インポート
-   = form_with(url: tcare_import_customers_path, method: :post, local: true, multipart: true) do |f|
-    table.space[width="90%"]
-     tbody
-      tr
-        th[colspan="4"]
-          | CUSTOMER_CSVファイルインポート
-      tr
-        td
-          = f.file_field :tcare_file
-        th
-          = submit_tag "インポート", class: 'btn btn-success'
-        th
-          = link_to 'エクスポート', customers_path(format: :csv, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!, search: params[:search]&.permit!, page: params[:page]), class: 'btn btn-success'
 
 javascript:
   $(function() {

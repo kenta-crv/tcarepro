@@ -1,7 +1,7 @@
 require 'rubygems'
 class CustomersController < ApplicationController
   before_action :authenticate_admin!, only: [:destroy, :destroy_all, :analytics, :import, :call_import, :sfa, :mail, :call_history]
-  before_action :authenticate_worker!, only: [:extraction, :direct_mail_send]
+  #before_action :authenticate_worker!, only: [:extraction, :direct_mail_send]
   before_action :authenticate_worker_or_user, only: [:new, :edit, :create, :update]
   before_action :authenticate_user_or_admin, only: [:index, :show]
   before_action :set_customers, only: [:update_all_status]
@@ -152,100 +152,12 @@ class CustomersController < ApplicationController
     end
   end
 
-
-  def analytics
-    @users = User.all
-    # call_count（永久NGとuser.id == 1を除外）
-    @call_day = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ?", Time.zone.now.beginning_of_day, Time.zone.now.end_of_day).count
-    @call_week = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ?", Time.zone.now.beginning_of_week, Time.zone.now.end_of_week).count
-    @call_month = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ?", Time.zone.now.beginning_of_month, Time.zone.now.end_of_month).count
-    # call_app（同様に永久NGとuser.id == 1を除外）
-    @call_app_day = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ? AND statu = ?", Time.zone.now.beginning_of_day, Time.zone.now.end_of_day, "APP").count
-    @call_app_week = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ? AND statu = ?", Time.zone.now.beginning_of_week, Time.zone.now.end_of_week, "APP").count
-    @call_app_month = Call.joins(:user).where.not(statu: "永久NG").where.not(users: { id: 1 }).where("calls.created_at >= ? AND calls.created_at <= ? AND statu = ?", Time.zone.now.beginning_of_month, Time.zone.now.end_of_month, "APP").count
-    # APP percentage（同様に永久NGとuser.id == 1を除外）
-    @app_day_percentage = @call_day.zero? ? 0 : (@call_app_day.to_f / @call_day.to_f) * 100
-    @app_week_percentage = @call_week.zero? ? 0 : (@call_app_week.to_f / @call_week.to_f) * 100
-    @app_month_percentage = @call_month.zero? ? 0 : (@call_app_month.to_i / @call_month.to_i) * 100
-
-    @customers = Customer.joins(calls: :contract)
-                         .where(calls: { statu: '契約' })
-                         .where(contracts: { id: Contract.select(:id) })
-                         .where(contracts: { search_1: Customer.select(:industry) })
-                         .distinct
-                         .select(:industry)
-                      
-    #@industries_data = INDUSTRY_ADDITIONAL_DATA.keys.map do |industry_name|
-     # Customer.analytics_for(industry_name)
-    #end
-    #@total_revenue = @industries_data.sum { |data| data[:unit_price_inc_tax] * data[:appointment_count] }
-  end
-
-  def closing 
-    @type = params[:type]
+  def information
     @calls = Call.all
     @customers =  Customer.all
     @admins = Admin.all
     @users = User.all
     @customers_app = @customers.where(call_id: 1)
-    #today
-    @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
-    @call_count_today = @call_today_basic.count
-    @protect_count_today = @call_today_basic.select { |call| call.statu == "見込" }.count
-    @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
-    @app_count_today = @call_today_basic.select { |call| call.statu == "APP" }.count
-    @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
-
-    #week
-    @call_week_basic = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).to_a
-    @call_count_week = @call_week_basic.count
-    @protect_count_week = @call_week_basic.select { |call| call.statu == "見込" }.count
-    @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
-    @app_count_week = @call_week_basic.select { |call| call.statu == "APP" }.count
-    @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
-
-    #month
-    @call_month_basic = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
-    @call_count_month = @call_month_basic.count
-    @protect_count_month = @call_month_basic.select { |call| call.statu == "見込" }.count
-    @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
-    @app_count_month = @call_month_basic.select { |call| call.statu == "APP" }.count
-    @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
-
-    #  ステータス別結果
-    @call_count_called = @call_month_basic.select { |call| call.statu == "着信留守" }
-    @call_count_absence = @call_month_basic.select { |call| call.statu == "担当者不在" }
-    @call_count_prospect = @call_month_basic.select { |call| call.statu == "見込" }
-    @call_count_app = @call_month_basic.select { |call| call.statu == "APP" }
-    @call_count_cancel = @call_month_basic.select { |call| call.statu == "キャンセル" }
-    @call_count_ng = @call_month_basic.select { |call| call.statu == "NG" }
-
-    # 企業別アポ状況
-    @customer2_sorairo = Customer2.where("industry LIKE ?", "%SORAIRO%")
-    @customer2_takumi = Customer2.where("industry LIKE ?", "%アポ匠%")
-    @customer2_omg = Customer2.where("industry LIKE ?", "%OMG%")
-    @customer2_kousaido = Customer2.where("industry LIKE ?", "%廣済堂%")
-    @detail_sorairo = @customer2_sorairo.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_sorairo.present?
-    @detail_takumi = @customer2_takumi.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_takumi.present?
-    @detail_omg = @customer2_omg.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_omg.present?
-    @detail_kousaido = @customer2_kousaido.calls.where("created_at > ?", Time.current.beginning_of_month).where("created_at < ?", Time.current.end_of_month).to_a if @detail_kousaido.present?
-
-    @admins = Admin.all
-    @users = User.all
-
-    @detailcalls = Customer2.joins(:calls).select('calls.id')
-    @detailcustomers = Call.joins(:customer).select('customers.id')
-  end
-
-  def information
-    @type = params[:type]
-    @calls = Call.all
-    @customers =  Customer.all
-    @admins = Admin.all
-    @users = User.all
-    case @type
-    when "analy1" then
-      @customers_app = @customers.where(call_id: 1)
       #today
       @call_today_basic = @calls.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG"]).where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).to_a
       @call_count_today = @call_today_basic.count
@@ -302,38 +214,10 @@ class CustomersController < ApplicationController
 
       @industry_mapping = Customer::INDUSTRY_MAPPING
       @app_calls_counts = calculate_app_calls_counts
-    when "workers" then
-      @customers_app = @customers.where(call_id: 1)
-      #today
-      @call_today_basic = @calls.where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).where.not(statu:"永久NG").to_a
-      @call_count_today = @call_today_basic.count
-      @protect_count_today = @call_today_basic.select { |call| call.statu == "見込" }.count
-      @protect_convertion_today = (@protect_count_today.to_f / @call_count_today.to_f) * 100
-      @app_count_today = @call_today_basic.select { |call| call.statu == "APP" }.count
-      @app_convertion_today = (@app_count_today.to_f / @call_count_today.to_f) * 100
 
-      #week
-      @call_week_basic = @calls.where('created_at > ?', Time.current.beginning_of_week).where('created_at < ?', Time.current.end_of_week).where.not(statu:"永久NG").to_a
-      @call_count_week = @call_week_basic.count
-      @protect_count_week = @call_week_basic.select { |call| call.statu == "見込" }.count
-      @protect_convertion_week = (@protect_count_week.to_f / @call_count_week.to_f) * 100
-      @app_count_week = @call_week_basic.select { |call| call.statu == "APP" }.count
-      @app_convertion_week = (@app_count_week.to_f / @call_count_week.to_f) * 100
-
-      #month
-      @call_month_basic = @calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).to_a
-      @call_count_month = @call_month_basic.count
-      @protect_count_month = @call_month_basic.select { |call| call.statu == "見込" }.count
-      @protect_convertion_month = (@protect_count_month.to_f / @call_count_month.to_f) * 100
-      @app_count_month = @call_month_basic.select { |call| call.statu == "APP" }.count
-      @app_convertion_month = (@app_count_month.to_f / @call_count_month.to_f) * 100
-
-      @workers = Worker.all
-
-      @detailcalls = Customer2.joins(:calls).select('calls.id')
-      @detailcustomers = Call.joins(:customer).select('customers.id')
-    else
-   end
+      @industries_data = INDUSTRY_ADDITIONAL_DATA.keys.map do |industry_name|
+        Customer.analytics_for(industry_name)
+      end
   end
 
   def news
@@ -346,60 +230,86 @@ class CustomersController < ApplicationController
   #end
 
   def import
-    cnt = Customer.import(params[:file])
-    redirect_to customers_url, notice:"#{cnt}件登録されました。"
-  end
+    if params[:file].present?
+      result = Customer.combined_import(params[:file])
 
-  def repost_import
-    result = Customer.repost_import(params[:file])
-    redirect_to customers_url, notice: "#{result[:new_import_count]}件新規インポート、#{result[:repost_count]}件再掲載登録されました。"
+      notice_message = "#{result[:total_imported]}件新規インポート、" \
+                       "#{result[:new_import_count]}件新規再投稿、" \
+                       "#{result[:repost_count]}件再掲載、" \
+                       "#{result[:draft_count]}件ドラフト登録が行われました。"
+      
+      redirect_to customers_url, notice: notice_message
+    else
+      redirect_to customers_url, alert: "ファイルが選択されていません。"
+    end
   end
-
-  def update_import
-    cnt = Customer.update_import(params[:update_file])
-    redirect_to customers_url, notice:"#{cnt}件登録されました。"
-  end
-  #上書きインポート
-  def tcare_import
-    cnt = Customer.tcare_import(params[:tcare_file])
-    redirect_to extraction_url, notice:"#{cnt}件登録されました。"
-  end
-
-  def call_import
-    cnt = Call.call_import(params[:call_file])
-    redirect_to customers_url, notice:"#{cnt}件登録されました。"
-  end
-
-  #def list
-   # @q = Customer.ransack(params[:q])
-    #@customers = @q.result
-    #@customers = @customers.preload(:calls).order(created_at: 'desc').page(params[:page]).per(20)
-  #end
 
   def print
     report = Thinreports::Report.new layout: "app/reports/layouts/invoice.tlf"
+    @industries_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |data|
+      Customer.analytics_for(data)
+    end
+    
     @industries_data.each do |data|
       create_pdf_page(report, data)
     end
+    
     send_data(report.generate, filename: "industries_report_#{Time.zone.now.to_formatted_s(:number)}.pdf", type: "application/pdf")
   end
 
   def generate_pdf
     industry_name = params[:industry_name]
-    data = INDUSTRY_ADDITIONAL_DATA[industry_name]
+    
+    # `@industries_data` からデータを取得するために、情報が必要です。
+    @industries_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |name|
+      Customer.analytics_for(name)
+    end
+    
+    # `@industries_data` を利用して、`data` を設定します
+    data = @industries_data.find { |d| d[:industry_name] == industry_name }
+    
     if data.nil?
-      redirect_to some_path, alert: "#{industry_name}のデータが見つかりません。"
+      Rails.logger.error("No data found for industry name: #{industry_name}")
       return
     end
+    
     report = Thinreports::Report.new layout: 'app/reports/layouts/invoice.tlf'
     create_pdf_page(report, data)
+    
     send_data report.generate, filename: "#{industry_name}.pdf", type: 'application/pdf', disposition: 'attachment'
   end
 
-  #def send_email
-   # @customer = Customer.find(params[:id])
-   # @user = current_user
-  #end
+  def thinreports_email
+    industry_name = params[:industry_name]
+
+    # `@industries_data`から該当するデータを取得
+    @industries_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |name|
+      Customer.analytics_for(name)
+    end
+
+    data = @industries_data.find { |d| d[:industry_name] == industry_name }
+
+    if data.nil?
+      Rails.logger.error("No data found for industry name: #{industry_name}")
+      redirect_to customers_path, alert: "指定された業界のデータが見つかりませんでした。"
+      return
+    end
+
+    # PDFを生成
+    report = Thinreports::Report.new layout: 'app/reports/layouts/invoice.tlf'
+    create_pdf_page(report, data)
+    pdf_content = report.generate
+
+    # メールを送信
+    CustomerMailer.send_thinreports_data(data, pdf_content).deliver_now
+
+    redirect_to customers_path, notice: "メールが送信されました"
+  end
+  
+  def send_email
+    @customer = Customer.find(params[:id])
+    @user = current_user
+  end
 
   def send_email_send
     @customer = Customer.find(params[:id])
@@ -488,43 +398,39 @@ class CustomersController < ApplicationController
   end
 
   def create_pdf_page(report, data)
+    customer = @customer
     report.start_new_page do |page|
 
-      industry_name = data[:name]
+      company_name = data[:company_name]
       start_of_month = Time.current.beginning_of_month
       end_of_month = Time.current.end_of_month
-  
-      appointment_count = Call.joins(:customer)
-                              .where("customers.industry LIKE ? AND calls.created_at >= ? AND calls.created_at <= ?", "%#{industry_name}%", start_of_month, end_of_month)
-                              .where(calls: { statu: "APP" })
-                              .count
+      app_count = data[:app_count]
       # 現在の日時を取得し、指定の形式にフォーマット
       current_time = Time.now.strftime('%Y年%m月%d日')  
       # 合計値の計算
-      unit_price_ex_tax = data[:unit_price_ex_tax] || 0
-      appointment_count = data[:appointment_count] || 0
-      total = unit_price_ex_tax * appointment_count
+      industry_code = data[:industry_code]
+      total = (data[:industry_code] * data[:app_count])
       # 税金の計算（合計値の10%とする）
-      tax = total * 0.10
+      tax = (total * 0.10).to_i
       # 税込み合計値の計算
-      all = total + tax
-      # 支払い月の計算（翌月の年月 + data[:closing_date]）
+      all = (total + tax).to_i
+      formatted_all = all.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')
+      # 支払い月の計算（翌月の年月
       next_month = Time.now.next_month.strftime('%Y年%m月')
-      payment_month = "#{next_month}#{data[:closing_date]}"
+      payment_month = "#{next_month}#{data[:payment_date]}"
   
       page.values(
-        company: data[:name], # 会社名
+        company_name: company_name, # 会社名
         created_at: current_time, # 発行日
-        text: data[:appointment_count], # アポカウント
-        unit_price_ex_tax: data[:unit_price_ex_tax], # 単価
-        tax: tax, # 税金
-        tax2: tax, # 税金
-        all: all, # 税込み合計
+        app_count: app_count, # アポカウント
+        industry_code: industry_code, # 単価
+        total: total, # 税抜合計
+        total_1: total, # 税抜合計
+        total_2: total, # 税抜合計
+        all: formatted_all, # 税込み合計
         all_1: all, # 税込み合計
-        payment: payment_month, # 支払い月
-        #total: total, # 合計
-        total_1: total, # 合計
-        text_2: total, # 合計
+        tax_price: tax, # 税抜合計
+        payment: payment_month, # 支払い月        
       )
     end
   end
@@ -580,7 +486,10 @@ class CustomersController < ApplicationController
         :business, #業種
         :extraction_count,
         :send_count,
-        :forever
+        :forever,
+        :industry_code,
+        :company_name,
+        :payment_date,
        )&.merge(worker: current_worker)
     end
 

@@ -23,56 +23,7 @@ class Customer < ApplicationRecord
     'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
   }
 
-  before_save :set_industry_defaults
-
-  def set_industry_defaults
-    Rails.logger.debug("Setting industry defaults for #{industry}")
-    defaults = INDUSTRY_MAPPING[industry]
-    
-    if defaults
-      self.industry_code = defaults[:industry_code]
-      self.company_name = defaults[:company_name]
-      self.payment_date = defaults[:payment_date]
-    else
-      Rails.logger.debug("No defaults found for industry: #{industry}")
-    end
-
-    Rails.logger.debug("Defaults set: #{defaults.inspect}")
-  end
-  
-  def set_industry_defaults
-    return unless INDUSTRY_MAPPING.key?(industry)
-
-    defaults = INDUSTRY_MAPPING[industry]
-    self.industry_code = defaults[:industry_code]
-    self.company_name = defaults[:company_name]
-    self.payment_date = defaults[:payment_date]
-  end
-
-  def self.analytics_for(industry_name)
-    customers = where(industry: industry_name)
-    appointment_count = customers.count
-    #unit_price_inc_tax = customers.average(:unit_price_inc_tax) || 1000 # 仮の値
-    list_count = customers.where.not(created_at: nil).count
-    call_count = customers.joins(:calls).where.not(calls: { created_at: nil }).count
-    app_count = customers.joins(:calls).where(calls: {statu: "APP"}).count
-
-    # 業界情報を取得
-    industry_data = INDUSTRY_MAPPING[industry_name] || { industry_code: nil, company_name: nil, payment_date: nil }
-
-    {
-      industry_name: industry_name,
-      industry_code: industry_data[:industry_code],
-      company_name: industry_data[:company_name],
-      payment_date: industry_data[:payment_date],
-      list_count: list_count,
-      call_count: call_count,
-      app_count: app_count,
-    }
-  end
-
-
-  before_save :set_industry_defaults
+  #before_save :create_entry_if_conditions_met
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
   has_many :estimates
@@ -209,50 +160,68 @@ scope :before_sended_at, ->(sended_at){
     where(contact_tracking_sended_at: (from.beginning_of_day..to.end_of_day))
   }
 
-def self.combined_import(file)
-  new_import_count = 0
-  repost_count = 0
-  draft_count = 0
+  def self.import(file)
+    save_cont = 0
+    CSV.foreach(file.path, headers:true) do |row|
+     customer = find_by(id: row["id"]) || new
+     customer.attributes = row.to_hash.slice(*updatable_attributes)
+     next if customer.industry == nil
+     next if self.where(tel: customer.tel).where(industry: nil).count > 0
+     next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
+     customer.save!
+     save_cont += 1
+    end
+    save_cont
+  end
+  def self.updatable_attributes
+    ["id","company","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
+     "caption","business","genre","mobile","choice","inflow","other","history","area","target","meeting","experience","price",
+     "number","start","remarks","extraction_count","send_count"]
+  end
 
-  CSV.foreach(file.path, headers: true) do |row|
-    customer = find_by(id: row["id"]) || new
-    customer.attributes = row.to_hash.slice(*updatable_attributes)
-
-    if customer.industry.nil?
-      next
-    elsif self.where(tel: customer.tel).where(industry: nil).count > 0
-      next
-    elsif self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-      # `repost_import`の処理: 再掲載するか、新しい顧客として複製する
+  def self.repost_import(file)
+    new_import_count = 0
+    repost_count = 0
+  
+    CSV.foreach(file.path, headers: true) do |row|
+      # companyが一致する既存のCustomerを探す
       existing_customer = Customer.find_by(company: row['company'])
+  
       if existing_customer
+        # 既存のCustomerにtelがない場合はスキップ
+        next if existing_customer.tel.blank?
+  
+        # 既存のCustomerのindustryがCSVのindustryと異なる場合、新しいCustomerを作成
         if existing_customer.industry != row['industry']
-          customer = existing_customer.dup
-          customer.industry = row['industry']
+          customer = existing_customer.dup  # 既存のCustomerを複製
+          customer.industry = row['industry']  # industryのみCSVから設定
           customer.save!
           new_import_count += 1
         else
+          # industryが一致する場合、再掲載処理を行う
           latest_call = existing_customer.calls.order(created_at: :desc).first
+  
+          # 最新のcallが存在し、2ヶ月以上経過していて、かつstatuが"APP"または"永久NG"でない場合のみ再掲載
           if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
             existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
             repost_count += 1
           end
         end
-      end
-    else
-      # `tcare_import`の処理: ドラフトとして登録する
-      customer.status = "draft"
-      customer.skip_validation = true
-      if customer.save
-        draft_count += 1
       else
-        puts "Error saving customer: #{customer.errors.full_messages.join(', ')}"
+        # 既存のCustomerが存在しない場合、新しいCustomerを作成
+        customer = Customer.new(row.to_hash.slice(*(updatable_attributes - ["industry"])))
+        customer.industry = row['industry']
+  
+        # 新規Customerにtelがない場合は登録をスキップ
+        next if customer.tel.blank?
+  
+        customer.save!
+        new_import_count += 1
       end
     end
+  
+    { new_import_count: new_import_count, repost_count: repost_count }
   end
-
-  { new_import_count: new_import_count, repost_count: repost_count, draft_count: draft_count }
-end
   
   def self.updatable_attributes
     ["id", "company", "tel", "address", "url", "url_2", "title", "industry", "mail", "first_name", "postnumber", "people",
@@ -275,6 +244,26 @@ end
     save_cnt
   end
  
+# tcare_import
+def self.tcare_import(tcare_file)
+  save_cont = 0
+  CSV.foreach(tcare_file.path, headers: true) do |row|
+    customer = find_by(id: row["id"]) || new
+    customer.attributes = row.to_hash.slice(*updatable_attributes)
+    next if customer.industry.nil?
+
+    customer.status = "draft" # statusを"draft"に設定
+    customer.skip_validation = true # バリデーションをスキップ
+
+    if customer.save
+      save_cont += 1
+    else
+      puts "Error saving customer: #{customer.errors.full_messages.join(', ')}"
+    end
+  end
+  save_cont
+end
+
 #customer_export
   def self.generate_csv
     CSV.generate(headers:true) do |csv|
@@ -358,6 +347,13 @@ end
     @@business_status
   end
 
+  @@extraction_status = [
+    ["リスト抽出不可","リスト抽出不可"]
+  ]
+  def self.ExtractionStatus
+    @@extraction_status
+  end
+
   @@send_status = [
     ["メール送信済","メール送信済"]
   ]
@@ -383,6 +379,7 @@ end
     scraping.google_search([company, address, tel].compact.join(' '))
   end
 
+
   def get_url_arry
     url_arry = []
     url_arry.push(url) if url.present?
@@ -390,7 +387,6 @@ end
 
     url_arry
   end
-
 
   #APPをカウントカウント
   def total_industry_code_for_app_calls
