@@ -71,6 +71,7 @@ Rails.application.routes.draw do
     get 'users_callbacked', to: 'senders_history#users_callbacked'
     post 'okurite/autosettings', to: 'okurite#autosettings'
     delete 'bulk_delete', to: 'okurite#bulk_delete'
+    get 'resend', to: 'okurite#resend'
     # okurite
     resources :okurite, only: [:index, :show] do
       get :preview, to: 'okurite#preview'
@@ -93,6 +94,7 @@ Rails.application.routes.draw do
     resources :calls
     collection do
       get :filter_by_industry
+      put 'update_all_status'
       get 'search', to: 'customers#search', as: 'search'
       get :industry_code_total
       get :complete
@@ -109,7 +111,7 @@ Rails.application.routes.draw do
   get '/customers/:id/copy', to: 'customers#copy', as: 'copy_customer' # コピー機能のためのルート
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
   get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
-
+  get '/customers/analytics/thinreports_email', to: 'customers#thinreports_email', as: 'customers_thinreports_email'
   #showからのメール送信
   get 'customers/:id/send_email', to: 'customers#send_email', as: 'send_email_customer'
   post 'customers/:id/send_email', to: 'customers#send_email_send'
