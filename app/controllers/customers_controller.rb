@@ -230,18 +230,28 @@ class CustomersController < ApplicationController
   #end
 
   def import
-    if params[:file].present?
-      result = Customer.combined_import(params[:file])
+    cnt = Customer.import(params[:file])
+    redirect_to customers_url, notice:"#{cnt}件登録されました。"
+  end
 
-      notice_message = "#{result[:total_imported]}件新規インポート、" \
-                       "#{result[:new_import_count]}件新規再投稿、" \
-                       "#{result[:repost_count]}件再掲載、" \
-                       "#{result[:draft_count]}件ドラフト登録が行われました。"
-      
-      redirect_to customers_url, notice: notice_message
-    else
-      redirect_to customers_url, alert: "ファイルが選択されていません。"
-    end
+  def repost_import
+    result = Customer.repost_import(params[:file])
+    redirect_to customers_url, notice: "#{result[:new_import_count]}件新規インポート、#{result[:repost_count]}件再掲載登録されました。"
+  end
+
+  def update_import
+    cnt = Customer.update_import(params[:update_file])
+    redirect_to customers_url, notice:"#{cnt}件登録されました。"
+  end
+  #上書きインポート
+  def tcare_import
+    cnt = Customer.tcare_import(params[:tcare_file])
+    redirect_to extraction_url, notice:"#{cnt}件登録されました。"
+  end
+
+  def call_import
+    cnt = Call.call_import(params[:call_file])
+    redirect_to customers_url, notice:"#{cnt}件登録されました。"
   end
 
   def print
