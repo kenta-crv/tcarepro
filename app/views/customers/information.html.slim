@@ -607,14 +607,10 @@ table
         | 削除
   tbody
    - @users.each do |user|
-    - user_calls_month = user.calls
-                            .where('created_at >= ?', Time.current.beginning_of_month)
-                            .where('created_at <= ?', Time.current.end_of_month)
-                            .where(statu: 'APP')
-                            .to_a
-    - app_customers_for_user = @app_customers
-                              .joins(:calls)
-                              .where(calls: { id: user_calls_month.map(&:id) })
+    - user_calls_month = user.calls.where('created_at >= ?', Time.current.beginning_of_month).where('created_at <= ?', Time.current.end_of_month) .where(statu: 'APP').to_a
+    - # 呼び出しから関連する顧客を抽出
+    - customer_ids = user_calls_month.map { |call| call.customer_id }
+    - app_customers_for_user = Customer.where(id: customer_ids)
     - total_industry_code = app_customers_for_user.present? ? app_customers_for_user.sum(:industry_code) : 0
     - adjusted_total_industry_code = total_industry_code * 1.10
     tr
