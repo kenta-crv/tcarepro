@@ -53,10 +53,22 @@ class Customer < ApplicationRecord
     customers = where(industry: industry_name)
     appointment_count = customers.count
     #unit_price_inc_tax = customers.average(:unit_price_inc_tax) || 1000 # 仮の値
-    list_count = customers.where.not(created_at: nil).count
-    call_count = customers.joins(:calls).where.not(calls: { created_at: nil }).count
-    app_count = customers.joins(:calls).where(calls: {statu: "APP"}).count
+    list_count = customers.where.not(created_at: nil)
+    .where('customers.created_at > ?', Time.current.beginning_of_day)
+    .where('customers.created_at < ?', Time.current.end_of_day)
+    .to_a.count
 
+call_count = customers.joins(:calls)
+    .where.not(calls: { created_at: nil })
+    .where('calls.created_at > ?', Time.current.beginning_of_day)
+    .where('calls.created_at < ?', Time.current.end_of_day)
+    .count
+
+app_count = customers.joins(:calls)
+   .where(calls: { statu: "APP" })
+   .where('calls.created_at > ?', Time.current.beginning_of_day)
+   .where('calls.created_at < ?', Time.current.end_of_day)
+   .to_a.count
     # 業界情報を取得
     industry_data = INDUSTRY_MAPPING[industry_name] || { industry_code: nil, company_name: nil, payment_date: nil }
 
