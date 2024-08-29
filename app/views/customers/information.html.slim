@@ -618,7 +618,8 @@ table
       td
           = link_to user.calls.where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
-          = user_calls_month.sum { |call| call.customer.industry_code }
+          - app_customers_for_user_last_month = @app_customers_last_month.where(user_id: user.id)
+          = app_customers_for_user_last_month.present? ? app_customers_for_user_last_month.sum(:industry_code) : 0
       td
           - app_customers_for_user_last_month = @app_customers_last_month.where(user_id: user.id)
           = app_customers_for_user_last_month.present? ? app_customers_for_user_last_month.sum(:industry_code) : 0
