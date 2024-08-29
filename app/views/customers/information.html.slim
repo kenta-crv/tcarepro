@@ -607,12 +607,10 @@ table
         | 削除
   tbody
    - @users.each do |user|
+    - user_calls_month = user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).where(statu:"APP").to_a
     - app_customers_for_user = @app_customers.where(user_id: user.id)
-                      .joins(:calls)
-                      .where(calls: { statu: 'APP' })
-                      .where('calls.created_at >= ?', Time.current.beginning_of_month)
-                      .where('calls.created_at <= ?', Time.current.end_of_month)
-    - total_industry_code = app_customers_for_user.sum(:industry_code)
+    - total_industry_code = app_customers_for_user.present? ? app_customers_for_user.sum(:industry_code) : 0
+    - adjusted_total_industry_code = total_industry_code * 1.10
     tr
       td
           = link_to user.user_name, new_user_attendance_path(user)
@@ -623,7 +621,7 @@ table
       td
           = link_to user.calls.where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
-          = total_industry_code * 1.10
+          = adjusted_total_industry_code
       td
           - app_customers_for_user_last_month = @app_customers_last_month.where(user_id: user.id)
           = app_customers_for_user_last_month.present? ? app_customers_for_user_last_month.sum(:industry_code) : 0
