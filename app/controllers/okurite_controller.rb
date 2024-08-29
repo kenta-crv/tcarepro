@@ -33,8 +33,7 @@ class OkuriteController < ApplicationController
     
     # 抽出した顧客のIDを基に連絡履歴を取得
     @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
-  end
-  
+  end  
 
   def show
     @customer = Customer.find(params[:id])
