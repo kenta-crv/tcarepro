@@ -8,8 +8,7 @@ Rails.application.routes.draw do
   }
   resources :admins, only: [:show] do
     member do
-      post 'assign_workers_to_crowdwork'
-      post 'assign_workers_to_sender'
+      post 'assign_workers'  # 'assign_workers_to_crowdwork' ではなく 'assign_workers' に変更
     end
   end
   #ユーザーアカウント
