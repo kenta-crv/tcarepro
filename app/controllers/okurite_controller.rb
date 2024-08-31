@@ -36,7 +36,6 @@ class OkuriteController < ApplicationController
     @q = @customers.ransack(params[:q])
   end
 
-
   def show
     @customer = Customer.find(params[:id])
   end

@@ -16,7 +16,7 @@ class Customer < ApplicationRecord
     'ワークリレーション' => {industry_code: 15000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
     'ワーク（工場）' => {industry_code: 15000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
     'データ入力' => {industry_code: 15000, company_name: "株式会社セールスプロ", payment_date: "10日"},
-    '富士（工場）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"},
+    '富士（工場）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"}, 
     '富士（飲食）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"},
     'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
     'VIETA（介護）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日"},
@@ -60,17 +60,17 @@ class Customer < ApplicationRecord
     .where('customers.created_at < ?', Time.current.end_of_day)
     .to_a.count
 
-call_count = customers.joins(:calls)
+    call_count = customers.joins(:calls)
     .where.not(calls: { created_at: nil })
     .where('calls.created_at > ?', Time.current.beginning_of_day)
     .where('calls.created_at < ?', Time.current.end_of_day)
     .count
 
-app_count = customers.joins(:calls)
-   .where(calls: { statu: "APP" })
-   .where('calls.created_at > ?', Time.current.beginning_of_day)
-   .where('calls.created_at < ?', Time.current.end_of_day)
-   .to_a.count
+    app_count = customers.joins(:calls)
+    .where(calls: { statu: "APP" })
+    .where('calls.created_at > ?', Time.current.beginning_of_day)
+    .where('calls.created_at < ?', Time.current.end_of_day)
+    .to_a.count
     # 業界情報を取得
     industry_data = INDUSTRY_MAPPING[industry_name] || { industry_code: nil, company_name: nil, payment_date: nil }
 
@@ -224,68 +224,64 @@ scope :before_sended_at, ->(sended_at){
   }
 
   def self.import(file)
-    save_cont = 0
-    CSV.foreach(file.path, headers:true) do |row|
-     customer = find_by(id: row["id"]) || new
-     customer.attributes = row.to_hash.slice(*updatable_attributes)
-     next if customer.industry == nil
-     next if self.where(tel: customer.tel).where(industry: nil).count > 0
-     next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-     customer.save!
-     save_cont += 1
-    end
-    save_cont
-  end
-  def self.updatable_attributes
-    ["id","company","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
-     "caption","business","genre","mobile","choice","inflow","other","history","area","target","meeting","experience","price",
-     "number","start","remarks","extraction_count","send_count"]
-  end
-
-  def self.repost_import(file)
-    new_import_count = 0
-    repost_count = 0
-  
+    import_counts = { new: 0, reimport: 0, transfer: 0, draft: 0 }
     CSV.foreach(file.path, headers: true) do |row|
-      # companyが一致する既存のCustomerを探す
-      existing_customer = Customer.find_by(company: row['company'])
+      industry = row['industry']
+      company = row['company']
+      tel = row['tel']
   
-      if existing_customer
-        # 既存のCustomerにtelがない場合はスキップ
-        next if existing_customer.tel.blank?
+      # 新規顧客としてインポート
+      if industry.present? && tel.present?
+        existing_customer = Customer.find_by(industry: industry, tel: tel)
+        if existing_customer.nil?
+          Customer.create!(industry: industry, tel: tel, company: company)
+          import_counts[:new] += 1
+        end
+      end
   
-        # 既存のCustomerのindustryがCSVのindustryと異なる場合、新しいCustomerを作成
-        if existing_customer.industry != row['industry']
-          customer = existing_customer.dup  # 既存のCustomerを複製
-          customer.industry = row['industry']  # industryのみCSVから設定
-          customer.save!
-          new_import_count += 1
-        else
-          # industryが一致する場合、再掲載処理を行う
-          latest_call = existing_customer.calls.order(created_at: :desc).first
-  
-          # 最新のcallが存在し、2ヶ月以上経過していて、かつstatuが"APP"または"永久NG"でない場合のみ再掲載
-          if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
-            existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
-            repost_count += 1
+      # 再掲載として登録
+      if industry.present? && (company.present? || tel.present?)
+        customer = Customer.find_by(industry: industry, company: company, tel: tel)
+        if customer
+          last_call = customer.calls.order(created_at: :desc).first
+          if last_call.nil? || last_call.created_at < 1.month.ago
+            invalid_statuses = ["APP", "根本的NG", "永久NG"]
+            if !invalid_statuses.include?(last_call&.statu) && customer.calls.where(statu: "再掲載").count < 7
+              customer.calls.create!(statu: "再掲載", created_at: Time.current)
+              import_counts[:reimport] += 1
+            end
           end
         end
-      else
-        # 既存のCustomerが存在しない場合、新しいCustomerを作成
-        customer = Customer.new(row.to_hash.slice(*(updatable_attributes - ["industry"])))
-        customer.industry = row['industry']
+      end
   
-        # 新規Customerにtelがない場合は登録をスキップ
-        next if customer.tel.blank?
+      # 転用登録
+      if tel.blank?
+        existing_customer = Customer.find_by(company: company, industry: industry)
+        if existing_customer.nil?
+          industry_copy = Customer.where(company: company).where.not(industry: industry).first
+          if industry_copy && industry_copy.tel.present?
+            Customer.create!(industry: industry, tel: industry_copy.tel, company: company)
+            import_counts[:transfer] += 1
+          end
+        end
+      end
   
-        customer.save!
-        new_import_count += 1
+    # ドラフトとして登録
+    if tel.blank?
+      existing_draft = Customer.find_by(industry: industry, company: company, status: "draft")
+      if existing_draft.nil?
+        # 存在する顧客情報に対してドラフトとして登録しない
+        existing_customer = Customer.find_by(industry: industry, company: company)
+        if existing_customer.nil?
+          Customer.create!(industry: industry, status: "draft", company: company)
+          import_counts[:draft] += 1
+        end
       end
     end
-  
-    { new_import_count: new_import_count, repost_count: repost_count }
   end
-  
+    import_counts
+  end
+
   def self.updatable_attributes
     ["id", "company", "tel", "address", "url", "url_2", "title", "industry", "mail", "first_name", "postnumber", "people",
      "caption", "business", "genre", "mobile", "choice", "inflow", "other", "history", "area", "target", "meeting", "experience", "price",
