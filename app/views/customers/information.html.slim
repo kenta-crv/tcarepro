@@ -618,10 +618,10 @@ table
       td
           = link_to user.calls.where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
-          - app_customers_for_user_last_month = @app_customers_last_month.where(user_id: user.id)
+          - app_customers_for_user_last_month = Call.joins(:customer).where('calls.created_at > ?', Time.current.beginning_of_month).where('calls.created_at < ?', Time.current.end_of_month).select('customers.id').where(statu:"APP").where(user_id: user.id)
           = app_customers_for_user_last_month.present? ? app_customers_for_user_last_month.sum(:industry_code) : 0
       td
-          - app_customers_for_user_last_month = @app_customers_last_month.where(user_id: user.id)
+          - app_customers_for_user_last_month = Call.joins(:customer).where('calls.created_at >= ? AND calls.created_at < ?', Time.current.prev_month.beginning_of_month, Time.current.beginning_of_month).select('customers.id').where(statu:"APP").where(user_id: user.id)
           = app_customers_for_user_last_month.present? ? app_customers_for_user_last_month.sum(:industry_code) : 0
       td
           - latest_attendance = user.attendances.order(created_at: :desc).first

@@ -14,26 +14,28 @@ class OkuriteController < ApplicationController
     @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)    
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
-
+  
   def resend
-    # 1ヶ月より前に送信された履歴がある顧客を抽出
+    # 1ヶ月より前に送信済の履歴がある顧客を抽出
     customers = Customer.joins(:contact_trackings)
                         .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
                         .where('contact_trackings.created_at < ?', 1.month.ago)
                         .distinct
-  
+    # 最新のContactTrackingを取得
+    latest_contact_tracking_subquery = ContactTracking
+                                        .select('DISTINCT ON (customer_id) *')
+                                        .where(sender_id: params[:sender_id])
+                                        .order(:customer_id, created_at: :desc)
+    # 最新の連絡履歴に基づく顧客を抽出
+    @customers = customers.joins("INNER JOIN (#{latest_contact_tracking_subquery.to_sql}) AS latest_trackings ON latest_trackings.customer_id = customers.id")
+                          .page(params[:page])
+                          .per(30)
+    # 最新の連絡履歴のみを表示
+    @contact_trackings = ContactTracking.where(id: latest_contact_tracking_subquery.select(:id))
     # Ransack オブジェクトを初期化
-    @q = customers.ransack(params[:q])
-    
-    # フィルタリング条件を適用して、対象の顧客を絞り込み
-    filtered_customers = @q.result.where(forever: nil).or(@q.result.where(choice: 'アポ匠'))
-    
-    # ページネーションを適用して顧客リストを取得
-    @customers = filtered_customers.page(params[:page]).per(30)
-    
-    # 抽出した顧客のIDを基に連絡履歴を取得
-    @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
-  end  
+    @q = @customers.ransack(params[:q])
+  end
+
 
   def show
     @customer = Customer.find(params[:id])
