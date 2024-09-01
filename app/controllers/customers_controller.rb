@@ -225,11 +225,30 @@ class CustomersController < ApplicationController
   end
 
   def import
-    import_results = Customer.import(params[:file])
-    notice_message = "新規インポートを #{import_results[:customer]} 件・再掲載を #{import_results[:call_statu]} 件・転用登録を #{import_results[:industry_transfer]} 件・ドラフト登録を #{import_results[:draft]} 件行いました。"
-    redirect_to customers_url, notice: notice_message
+    cnt = Customer.import(params[:file])
+    redirect_to customers_url, notice:"#{cnt}件登録されました。"
   end
 
+  def repost_import
+    result = Customer.repost_import(params[:file])
+    redirect_to customers_url, notice: "#{result[:new_import_count]}件新規インポート、#{result[:repost_count]}件再掲載登録されました。"
+  end
+
+  def update_import
+    cnt = Customer.update_import(params[:update_file])
+    redirect_to customers_url, notice:"#{cnt}件登録されました。"
+  end
+  #上書きインポート
+  def tcare_import
+    cnt = Customer.tcare_import(params[:tcare_file])
+    redirect_to extraction_url, notice:"#{cnt}件登録されました。"
+  end
+
+  def call_import
+    cnt = Call.call_import(params[:call_file])
+    redirect_to customers_url, notice:"#{cnt}件登録されました。"
+  end
+  
   def print
     report = Thinreports::Report.new layout: "app/reports/layouts/invoice.tlf"
     @industries_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |data|
