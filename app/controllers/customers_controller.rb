@@ -353,13 +353,19 @@ class CustomersController < ApplicationController
 
   def filter_by_industry
     industry_name = params[:industry_name]
+    tel_filter = params[:tel_filter] # 新しいパラメータ
+
     @industries = Customer::INDUSTRY_MAPPING.keys
-    if admin_signed_in?
-      @q = Customer.where(status: "draft").where.not("TRIM(tel) = ''").where(industry: industry_name).ransack(params[:q])
-    else
-      @q = Customer.where(status: "draft").where("TRIM(tel) = ''").where(industry: industry_name).ransack(params[:q])
+    @q = Customer.where(status: "draft").ransack(params[:q])
+    @q = @q.result.where(industry: industry_name)
+
+    if tel_filter == "with_tel"
+      @q = @q.where.not("TRIM(tel) = ''")
+    elsif tel_filter == "without_tel"
+      @q = @q.where("TRIM(tel) = ''")
     end
-    @customers = @q.result.page(params[:page]).per(100)
+
+    @customers = @q.page(params[:page]).per(100)
     render :draft
   end
   
