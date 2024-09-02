@@ -14,7 +14,7 @@
  .tops-wrapper
   - if @industries.present?
    - @industries.each do |industry|
-    = link_to industry, filter_by_industry_customers_path(industry_name: industry), method: :get, class:"btn btn-default"
+    = link_to industry, filter_by_industry_path(industry_name: industry), method: :get, class:"btn btn-default"
 
  = form_tag({ controller: :customers, action: :update_all_status }, method: 'put') do
   .scroll
@@ -39,7 +39,9 @@
          th
            | 会社名
          th
-           | 電話番号
+           = link_to 'tel_within', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel')
+           br/
+           = link_to 'tel_without', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel')
          th
            | 住所
          th

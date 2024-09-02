@@ -94,7 +94,6 @@ Rails.application.routes.draw do
     post 'exclude', on: :member
     resources :calls
     collection do
-      get :filter_by_industry
       put 'update_all_status'
       get 'search', to: 'customers#search', as: 'search'
       get :industry_code_total
@@ -113,6 +112,8 @@ Rails.application.routes.draw do
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
   get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
   get '/customers/analytics/thinreports_email', to: 'customers#thinreports_email', as: 'customers_thinreports_email'
+  get 'draft' => 'customers#draft' #締め
+  get 'draft/filter_by_industry', to: 'customers#filter_by_industry', as: 'filter_by_industry'
   #showからのメール送信
   get 'customers/:id/send_email', to: 'customers#send_email', as: 'send_email_customer'
   post 'customers/:id/send_email', to: 'customers#send_email_send'
@@ -124,7 +125,6 @@ Rails.application.routes.draw do
   end
 
   get 'closing' => 'customers#closing' #締め
-  get 'draft' => 'customers#draft' #締め
   get 'news' => 'customers#news' #インポート情報
   get 'extraction' => 'customers#extraction' #TCARE
   delete :customers, to: 'customers#destroy_all' #Mailer
