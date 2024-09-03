@@ -99,10 +99,10 @@ Rails.application.routes.draw do
       get :industry_code_total
       get :complete
       post :import
-      post :repost_import
-      post :update_import
-      post :call_import
-      post :tcare_import
+      #post :repost_import
+      #post :update_import
+      #post :call_import
+      #post :tcare_import
       get :message
       put 'update_all_status'
     end
