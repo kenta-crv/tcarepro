@@ -176,7 +176,7 @@
           td = worker.user_name
           td
             - if assigned_crowdwork
-              = link_to assigned_crowdwork.title, "/customers/filter_by_industry?industry_name=#{assigned_crowdwork.title}", target: "_blank", class:"btn btn-success"
+              = link_to assigned_crowdwork.title, "/draft/filter_by_industry?industry_name=#{assigned_crowdwork.title}", target: "_blank", class:"btn btn-success"
             - else
               | なし
           td = count_day

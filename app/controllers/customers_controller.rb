@@ -99,32 +99,46 @@ class CustomersController < ApplicationController
     if worker_signed_in?
       # 電話番号がない顧客のみを表示
       @q = Customer.where(status: "draft").where("TRIM(tel) = ''")
-      # 他の人が既に作業を完了していない顧客をフィルター
-      @q = @q.where.not(id: Call.select(:customer_id))
+      ## 他の人が既に作業を完了していない顧客をフィルター
+      #@q = @q.where.not(id: Call.select(:customer_id))
       # 管理者を除外
-      if current_user && current_user.admin?
-        @q = @q.where.not(user_id: User.admins.pluck(:id))
-      end
+      #if current_user && current_admin?
+      #  @q = @q.where.not(user_id: User.admins.pluck(:id))
+      #end
       @customers = @q.ransack(params[:q]).result.page(params[:page]).per(100)
     end
   end
 
   def update
     @customer = Customer.find(params[:id])
+  
     if params[:commit] == '対象外リストとして登録'
       @customer.skip_validation = true
       @customer.status = "hidden"
     end
     
-    # @next_draft を次の編集対象顧客として定義
-    @next_draft = Customer.where(status: 'draft').where('id > ?', @customer.id).order(:id).first
+    # 現在のフィルタ条件を考慮して次のdraft顧客を取得
+    @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
+  
+    if params[:industry_name].present?
+      @q = @q.where(industry: params[:industry_name])
+    end
+  
+    if params[:tel_filter] == "with_tel"
+      @q = @q.where.not("TRIM(tel) = ''")
+    elsif params[:tel_filter] == "without_tel"
+      @q = @q.where("TRIM(tel) = ''")
+    end
+  
+    @next_draft = @q.order(:id).first
   
     if @customer.update(customer_params)
       if worker_signed_in?
         if @next_draft
           redirect_to edit_customer_path(
             id: @next_draft.id,
-            industry_name: params[:industry_name]
+            industry_name: params[:industry_name],
+            tel_filter: params[:tel_filter]
           )
         else
           redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
@@ -136,7 +150,7 @@ class CustomersController < ApplicationController
       render 'edit'
     end
   end
-
+  
   def destroy
     @customer = Customer.find(params[:id])
     @customer.destroy
@@ -337,7 +351,7 @@ class CustomersController < ApplicationController
     tel_filter = params[:tel_filter] # 新しいパラメータ
 
     @industries = Customer::INDUSTRY_MAPPING.keys
-    @q = Customer.where(status: "draft").ransack(params[:q])
+    @q = Customer.where(status: "draft").where("TRIM(tel) = ''").ransack(params[:q])
     @q = @q.result.where(industry: industry_name)
 
     if tel_filter == "with_tel"

@@ -243,26 +243,6 @@ scope :before_sended_at, ->(sended_at){
     end
     save_cnt
   end
- 
-# tcare_import
-def self.tcare_import(tcare_file)
-  save_cont = 0
-  CSV.foreach(tcare_file.path, headers: true) do |row|
-    customer = find_by(id: row["id"]) || new
-    customer.attributes = row.to_hash.slice(*updatable_attributes)
-    next if customer.industry.nil?
-
-    customer.status = "draft" # statusを"draft"に設定
-    customer.skip_validation = true # バリデーションをスキップ
-
-    if customer.save
-      save_cont += 1
-    else
-      puts "Error saving customer: #{customer.errors.full_messages.join(', ')}"
-    end
-  end
-  save_cont
-end
 
 #customer_export
   def self.generate_csv
