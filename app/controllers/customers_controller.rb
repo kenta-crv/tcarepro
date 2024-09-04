@@ -338,52 +338,31 @@ class CustomersController < ApplicationController
   def draft
     @industries = Customer::INDUSTRY_MAPPING.keys
     if admin_signed_in?
-      @q = Customer.where(status: "draft").where.not("TRIM(tel) = ''").ransack(params[:q])
+      @q = Customer.where(status: "draft").where.not(tel: [nil, '']).ransack(params[:q])
       @customers = @q.result.page(params[:page]).per(100)
     else
-      @q = Customer.where(status: "draft").where("TRIM(tel) = ''").ransack(params[:q])
+      @q = Customer.where(status: "draft").where(tel: [nil, '']).ransack(params[:q])
       @customers = @q.result.page(params[:page]).per(100)
     end
   end
-
+  
   def filter_by_industry
     industry_name = params[:industry_name]
     tel_filter = params[:tel_filter] # 新しいパラメータ
-
+  
     @industries = Customer::INDUSTRY_MAPPING.keys
-    @q = Customer.where(status: "draft").where("TRIM(tel) = ''").ransack(params[:q])
-    @q = @q.result.where(industry: industry_name)
-
+    @q = Customer.where(status: "draft").where(industry: industry_name)
+  
     if tel_filter == "with_tel"
-      @q = @q.where.not("TRIM(tel) = ''")
+      @q = @q.where.not(tel: [nil, ''])
     elsif tel_filter == "without_tel"
-      @q = @q.where("TRIM(tel) = ''")
+      @q = @q.where(tel: [nil, ''])
     end
-
+  
     @customers = @q.page(params[:page]).per(100)
     render :draft
   end
   
-  def update_all_status
-    status = params[:status] || 'hidden'
-    published_count = 0
-    hidden_count = 0
-    @customers.each do |customer|
-      customer.skip_validation = true
-      if status == 'hidden'
-        if customer.update(status: 'hidden')
-          hidden_count += 1
-        end
-      else
-        if customer.update(status: nil)
-          published_count += 1
-        end
-      end
-    end
-    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされました。"
-    redirect_to customers_path
-  end
-
   private
 
   def set_customers
