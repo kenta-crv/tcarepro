@@ -232,10 +232,6 @@ $(function() {
       }
       console.log('done', jqXHR.status);
     })
-    .fail((jqXHR, textStatus, errorThrown) => {
-      alert('発信時にエラーが発生しました。\nシステム管理者にお問い合わせください。\n\nエラーコード：' + jqXHR.status);
-      console.log('fail', jqXHR.status);
-    })
     .always(() => {
       // nop
     });
