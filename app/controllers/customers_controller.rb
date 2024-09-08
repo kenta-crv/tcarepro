@@ -32,7 +32,7 @@ class CustomersController < ApplicationController
     @customers = @customers.where(id: last_call) if last_call
   
     # 電話番号が存在する顧客のみをフィルタリング
-    @customers = @customers.where.not(tel: [nil, ""])
+    @customers = @customers.where.not(tel: [nil, "", " "])
   
     @csv_customers = @customers.distinct.preload(:calls)
     @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エクスポート総数

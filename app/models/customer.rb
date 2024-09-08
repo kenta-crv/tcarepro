@@ -227,96 +227,105 @@ scope :before_sended_at, ->(sended_at){
     import_counts = { new: 0, reimport: 0, transfer: 0, draft: 0 }
   
     CSV.foreach(file.path, headers: true) do |row|
-      industry = row['industry']
-      company = row['company']
-      tel = row['tel']
-      store = row['store'] # storeフィールドを取得
+      attributes = self.updatable_attributes.each_with_object({}) do |attr, hash|
+        hash[attr] = row[attr] if row[attr].present?
+      end
   
       # 新規顧客としてインポート
-      if industry.present? && tel.present?
-        existing_customer = Customer.find_by(industry: industry, tel: tel)
+      if attributes['industry'].present? && attributes['tel'].present?
+        existing_customer = Customer.find_by(industry: attributes['industry'], tel: attributes['tel'])
         if existing_customer.nil?
-          Customer.create!(industry: industry, tel: tel, company: company, store: store)
+          Customer.create!(attributes)
           import_counts[:new] += 1
         end
       end
   
       # 再掲載として登録
-      if industry.present? && (company.present? || tel.present?)
-        customer = Customer.find_by(industry: industry, company: company, tel: tel)
+      if attributes['industry'].present? && (attributes['company'].present? || attributes['tel'].present?)
+        customer = Customer.find_by(industry: attributes['industry'], company: attributes['company'], tel: attributes['tel'])
         if customer
           last_call = customer.calls.order(created_at: :desc).first
-          if last_call
-            if last_call.created_at < 1.month.ago
-              invalid_statuses = ["APP", "根本的NG", "永久NG"]
-              if !invalid_statuses.include?(last_call.statu) && customer.calls.where(statu: "再掲載").count < 7
-                customer.calls.create!(statu: "再掲載", created_at: Time.current)
-                import_counts[:reimport] += 1
-              end
+          if last_call && last_call.created_at < 1.month.ago
+            invalid_statuses = ["APP", "根本的NG", "永久NG"]
+            if !invalid_statuses.include?(last_call.statu) && customer.calls.where(statu: "再掲載").count < 7
+              customer.calls.create!(statu: "再掲載", created_at: Time.current)
+              import_counts[:reimport] += 1
             end
           end
         end
       end
   
-      # 転用登録
-      if tel.blank?
-        if company.present?
-          # company がある場合の転用登録
-          existing_customer = Customer.find_by(company: company, industry: industry)
-          if existing_customer.nil?
-            industry_copy = Customer.where(company: company).where.not(industry: industry).first
-            if industry_copy && industry_copy.tel.present?
-              # 重複チェックを追加
-              if Customer.find_by(company: company, industry: industry).nil?
-                Customer.create!(industry: industry, tel: industry_copy.tel, company: company, store: store)
-                import_counts[:transfer] += 1
-              end
-            end
-          end
-        else
-          # company が空の場合、store を参照して転用登録
-          if store.present?
-            matching_customer = Customer.find_by(store: store)
-            if matching_customer
-              if matching_customer.company.present? && matching_customer.company != company
-                # 重複チェックを追加
-                if Customer.find_by(company: matching_customer.company, industry: industry).nil?
-                  Customer.create!(industry: industry, tel: matching_customer.tel, company: matching_customer.company, store: store)
-                  import_counts[:transfer] += 1
-                end
-              end
-            end
+# 転用登録（crowdwork条件を適用）
+if attributes['tel'].blank? && attributes['industry'].present? && attributes['company'].present?
+  existing_customer = Customer.find_by(company: attributes['company'], industry: attributes['industry'])
+
+  # 既存の顧客が存在しない場合に処理
+  if existing_customer.nil?
+
+    # industryに基づいてcrowdworkデータを取得
+    crowdwork = Crowdwork.find_by(title: attributes['industry'])
+
+    # crowdwork.titleと一致する場合
+    if crowdwork && attributes['industry'] == crowdwork.title
+      # crowdwork.areaに部分一致するcustomer.addressのみをインポート対象にする
+      if crowdwork.area.any? { |area| attributes['address'].include?(area) }
+        industry_copy = Customer.where(company: attributes['company']).where.not(industry: attributes['industry']).first
+
+        # industry_copyが存在し、電話番号が設定されている場合
+        if industry_copy && industry_copy.tel.present?
+          # 新規転用登録の確認と登録処理
+          if Customer.find_by(company: attributes['company'], industry: attributes['industry']).nil?
+            attributes['tel'] = industry_copy.tel
+            Customer.create!(attributes)
+            import_counts[:transfer] += 1
           end
         end
       end
-  
-    # ドラフトとして登録
-    if tel.blank?
-      if company.present?
-        existing_draft = Customer.find_by(industry: industry, company: company, status: "draft")
-        if existing_draft.nil?
-          existing_customer = Customer.find_by(industry: industry, company: company)
-          if existing_customer.nil?
-            Customer.create!(industry: industry, status: "draft", company: company, store: store)
-            import_counts[:draft] += 1
-          end
-        end
-      else
-        # company が空の場合のドラフト登録
-        existing_draft = Customer.find_by(industry: industry, status: "draft", store: store)
-        if existing_draft.nil?
-          existing_customer = Customer.find_by(industry: industry, store: store)
-          if existing_customer.nil?
-            Customer.create!(industry: industry, status: "draft", store: store)
-            import_counts[:draft] += 1
-          end
+
+    # crowdwork.titleと一致しない場合は全てを転用対象とする
+    else
+      industry_copy = Customer.where(company: attributes['company']).where.not(industry: attributes['industry']).first
+
+      # industry_copyが存在し、電話番号が設定されている場合
+      if industry_copy && industry_copy.tel.present?
+        # 新規転用登録の確認と登録処理
+        if Customer.find_by(company: attributes['company'], industry: attributes['industry']).nil?
+          attributes['tel'] = industry_copy.tel
+          Customer.create!(attributes)
+          import_counts[:transfer] += 1
         end
       end
     end
   end
-
-  import_counts
 end
+
+  
+      # ドラフトとして登録
+      if attributes['tel'].blank?
+        if attributes['company'].present?
+          existing_draft = Customer.find_by(industry: attributes['industry'], company: attributes['company'], status: "draft")
+          if existing_draft.nil?
+            existing_customer = Customer.find_by(industry: attributes['industry'], company: attributes['company'])
+            if existing_customer.nil?
+              Customer.create!(attributes.merge('status' => 'draft'))
+              import_counts[:draft] += 1
+            end
+          end
+        else
+          existing_draft = Customer.find_by(industry: attributes['industry'], status: "draft", store: attributes['store'])
+          if existing_draft.nil?
+            existing_customer = Customer.find_by(industry: attributes['industry'], store: attributes['store'])
+            if existing_customer.nil?
+              Customer.create!(attributes.merge('status' => 'draft'))
+              import_counts[:draft] += 1
+            end
+          end
+        end
+      end
+    end
+  
+    import_counts
+  end
   
   def self.updatable_attributes
     ["id", "company", "store", "tel", "address", "url", "url_2", "title", "industry", "mail", "first_name", "postnumber", "people",
