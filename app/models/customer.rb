@@ -240,20 +240,28 @@ scope :before_sended_at, ->(sended_at){
         end
       end
   
-      # 再掲載として登録
-      if attributes['industry'].present? && (attributes['company'].present? || attributes['tel'].present?)
-        customer = Customer.find_by(industry: attributes['industry'], company: attributes['company'], tel: attributes['tel'])
-        if customer
-          last_call = customer.calls.order(created_at: :desc).first
-          if last_call && last_call.created_at < 1.month.ago
-            invalid_statuses = ["APP", "根本的NG", "永久NG"]
-            if !invalid_statuses.include?(last_call.statu) && customer.calls.where(statu: "再掲載").count < 7
-              customer.calls.create!(statu: "再掲載", created_at: Time.current)
-              import_counts[:reimport] += 1
-            end
-          end
-        end
+# 再掲載として登録
+if attributes['industry'].present?
+  # company が存在する場合
+  if attributes['company'].present?
+    customer = Customer.find_by(industry: attributes['industry'], company: attributes['company'])
+  
+  # company がない場合、store と industry で検索
+  elsif attributes['store'].present?
+    customer = Customer.find_by(industry: attributes['industry'], store: attributes['store'])
+  end
+
+  if customer
+    last_call = customer.calls.order(created_at: :desc).first
+    if last_call && last_call.created_at < 1.month.ago
+      invalid_statuses = ["APP", "根本的NG", "永久NG"]
+      if !invalid_statuses.include?(last_call.statu) && customer.calls.where(statu: "再掲載").count < 7
+        customer.calls.create!(statu: "再掲載", created_at: Time.current)
+        import_counts[:reimport] += 1
       end
+    end
+  end
+end
   
 # 転用登録（crowdwork条件を適用）
 if attributes['tel'].blank? && attributes['industry'].present? && attributes['company'].present?
