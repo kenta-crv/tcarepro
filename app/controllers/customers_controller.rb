@@ -239,9 +239,25 @@ class CustomersController < ApplicationController
   end
 
   def import
-    import_results = Customer.import(params[:file])
-    notice_message = "新規インポートを #{import_results[:new]} 件・再掲載を #{import_results[:reimport]} 件・転用登録を #{import_results[:transfer]} 件・ドラフト登録を #{import_results[:draft]} 件行いました。"
+    # CSVファイルをインポートし、件数を取得
+    cnt = Customer.import(params[:file])
+    # `repost_import` を呼び出して再掲載件数と新規インポート件数を取得
+    repost_result = Customer.repost_import(params[:file])
+    # `tcare_import` を呼び出して、追加の顧客データをインポート
+    tcare_count = Customer.tcare_import(params[:tcare_file]) if params[:tcare_file]
+    # noticeメッセージを作成
+    notice_message = "新規インポート：#{cnt}件登録されました。再掲載件数: #{repost_result[:repost_count]}件、転用登録件数: #{repost_result[:new_import_count]}件、ドラフト件数: #{tcare_count || 0}件"
     redirect_to customers_url, notice: notice_message
+  end
+
+  def tcare_import
+    cnt = Customer.tcare_import(params[:tcare_file])
+    redirect_to extraction_url, notice:"#{cnt}件登録されました。"
+  end
+
+  def call_import
+    cnt = Call.call_import(params[:call_file])
+    redirect_to customers_url, notice:"#{cnt}件登録されました。"
   end
   
   def print

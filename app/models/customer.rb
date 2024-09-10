@@ -223,7 +223,72 @@ scope :before_sended_at, ->(sended_at){
     where(contact_tracking_sended_at: (from.beginning_of_day..to.end_of_day))
   }
 
-#customer_export
+  def self.updatable_attributes
+    ["id", "company", "store", "tel", "address", "url", "url_2", "title", "industry", "mail", "first_name", "postnumber", "people",
+     "caption", "business", "genre", "mobile", "choice", "inflow", "other", "history", "area", "target", "meeting", "experience", "price",
+     "number", "start", "remarks", "extraction_count", "send_count"]
+  end
+
+  def self.import(file)
+    save_cont = 0
+    CSV.foreach(file.path, headers:true) do |row|
+     customer = find_by(id: row["id"]) || new
+     customer.attributes = row.to_hash.slice(*updatable_attributes)
+     next if customer.industry == nil
+     next if self.where(tel: customer.tel).where(industry: nil).count > 0
+     next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
+     customer.save!
+     save_cont += 1
+    end
+    save_cont
+  end
+
+  def self.repost_import(file)
+    new_import_count = 0
+    repost_count = 0
+    CSV.foreach(file.path, headers: true) do |row|
+      # companyとindustryが一致する既存のCustomerを探す
+      existing_customer = Customer.find_by(company: row['company'], industry: row['industry'])
+      if existing_customer
+        # industryが一致する場合、再掲載処理を行う
+        latest_call = existing_customer.calls.order(created_at: :desc).first
+        # 最新のcallが存在し、2ヶ月以上経過していて、かつstatuが"APP"または"永久NG"でない場合のみ再掲載
+        if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
+          existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
+          repost_count += 1
+        end
+      else
+        # 既存のCustomerが存在しない場合、新しいCustomerを作成
+        customer = Customer.new(row.to_hash.slice(*(updatable_attributes - ["industry"])))
+        customer.industry = row['industry']
+        customer.save!
+        new_import_count += 1
+      end
+    end
+  
+    { new_import_count: new_import_count, repost_count: repost_count }
+  end
+
+  def self.tcare_import(tcare_file)
+    save_cont = 0
+    CSV.foreach(tcare_file.path, headers: true) do |row|
+      customer = find_by(id: row["id"]) || new
+      customer.attributes = row.to_hash.slice(*updatable_attributes)
+      next if customer.industry.nil?
+  
+      customer.status = "draft" # statusを"draft"に設定
+      customer.skip_validation = true # バリデーションをスキップ
+  
+      if customer.save
+        save_cont += 1
+      else
+        puts "Error saving customer: #{customer.errors.full_messages.join(', ')}"
+      end
+    end
+    save_cont
+  end
+  
+  #customer_export
   def self.generate_csv
     CSV.generate(headers:true) do |csv|
       csv << csv_attributes
