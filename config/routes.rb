@@ -98,6 +98,7 @@ Rails.application.routes.draw do
       get 'search', to: 'customers#search', as: 'search'
       get :industry_code_total
       get :complete
+      post :all_import
       post :import
       #post :repost_import
       #post :update_import

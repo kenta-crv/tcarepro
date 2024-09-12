@@ -229,63 +229,106 @@ scope :before_sended_at, ->(sended_at){
      "number", "start", "remarks", "extraction_count", "send_count"]
   end
 
+  def self.call_attributes
+    ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
+  end
+
+  def self.all_import(file)
+    save_count = import(file)
+    call_count = call_import(file)
+    repurpose_count = repurpose_import(file)
+    
+    { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count }
+  end
+  
+  # 既存の import メソッド
   def self.import(file)
     save_cont = 0
     CSV.foreach(file.path, headers:true) do |row|
-     customer = find_by(id: row["id"]) || new
-     customer.attributes = row.to_hash.slice(*updatable_attributes)
-     next if customer.industry == nil
-     next if self.where(tel: customer.tel).where(industry: nil).count > 0
-     next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-     customer.save!
-     save_cont += 1
+      customer = find_by(id: row["id"]) || new
+      customer.attributes = row.to_hash.slice(*updatable_attributes)
+      next if customer.industry.nil?
+      next if where(tel: customer.tel).where(industry: nil).count > 0
+      next if where(tel: customer.tel).where(industry: customer.industry).count > 0
+      customer.save!
+      save_cont += 1
     end
     save_cont
   end
 
-  def self.repost_import(file)
-    new_import_count = 0
-    repost_count = 0
-    CSV.foreach(file.path, headers: true) do |row|
+  def self.call_import(call_file)
+    save_cnt = 0
+    CSV.foreach(call_file.path, headers: true) do |row|
       # companyとindustryが一致する既存のCustomerを探す
-      existing_customer = Customer.find_by(company: row['company'], industry: row['industry'])
+      existing_customer = find_by(company: row['company'], industry: row['industry'])
       if existing_customer
         # industryが一致する場合、再掲載処理を行う
         latest_call = existing_customer.calls.order(created_at: :desc).first
         # 最新のcallが存在し、2ヶ月以上経過していて、かつstatuが"APP"または"永久NG"でない場合のみ再掲載
         if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
           existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
-          repost_count += 1
+          save_cnt += 1
         end
-      else
-        # 既存のCustomerが存在しない場合、新しいCustomerを作成
-        customer = Customer.new(row.to_hash.slice(*(updatable_attributes - ["industry"])))
-        customer.industry = row['industry']
-        customer.save!
-        new_import_count += 1
       end
     end
-  
-    { new_import_count: new_import_count, repost_count: repost_count }
+    { save_cnt: save_cnt }  # 修正：ハッシュを返す
   end
 
-  def self.tcare_import(tcare_file)
-    save_cont = 0
-    CSV.foreach(tcare_file.path, headers: true) do |row|
-      customer = find_by(id: row["id"]) || new
-      customer.attributes = row.to_hash.slice(*updatable_attributes)
-      next if customer.industry.nil?
-  
-      customer.status = "draft" # statusを"draft"に設定
-      customer.skip_validation = true # バリデーションをスキップ
-  
-      if customer.save
-        save_cont += 1
+  def self.repurpose_import(repurpose_file)
+    repurpose_import_count = 0
+    CSV.foreach(repurpose_file.path, headers: true) do |row|
+      # インポートデータの company と industry が一致する既存データを検索
+      existing_customer = find_by(company: row['company'], industry: row['industry'])
+      if existing_customer
+        # 条件1: industry と company が一致する既存データが存在する場合、登録をスキップ
+        next
       else
-        puts "Error saving customer: #{customer.errors.full_messages.join(', ')}"
+        # 条件2: company が一致し、industry が異なる場合
+        existing_customer_with_same_company = find_by(company: row['company'])
+        if existing_customer_with_same_company
+          # 既存データの電話番号が存在するか確認
+          next if existing_customer_with_same_company.tel.blank?
+          # 新規Customerのデータを作成
+          repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).tap do |attributes|
+            attributes['industry'] = row['industry']
+            attributes['url_2'] = row['url_2']
+          end
+          # 既存データの属性を転用し、新しいCustomerを作成
+          repurpose_customer = Customer.new(repurpose_customer_attributes.merge(
+            existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
+              'industry' => row['industry'],
+              'url_2' => row['url_2']
+            )
+          ))
+          repurpose_customer.save!
+          repurpose_import_count += 1
+        end
       end
     end
-    save_cont
+    { repurpose_import_count: repurpose_import_count }  # 修正：ハッシュを返す
+  end  
+
+  def self.draft_import(draft_file)
+    draft_import_count = 0  # 保存された顧客の数をカウントするための変数
+    CSV.foreach(draft_file.path, headers: true) do |row|
+      # 電話番号 (tel) が空でない場合はスキップ
+      next if row['tel'].present?
+      # company と industry、または store と industry の組み合わせで既存データを検索
+      existing_customer = find_by(industry: row['industry'], company: row['company']) ||
+                          find_by(industry: row['industry'], store: row['store'])
+      # 条件に一致する既存顧客が存在する場合はスキップ
+      next if existing_customer
+      # 新規Customerのデータを作成
+      customer = Customer.new(row.to_hash.slice(*updatable_attributes))
+      # industry が存在しない場合はスキップ
+      next if customer.industry.nil?
+      # status を "draft" に設定
+      customer.status = "draft"
+      # バリデーションをスキップ
+      customer.skip_validation = true
+      draft_import_count += 1
+    end
+    { draft_import_count: draft_import_count }
   end
   
   #customer_export
@@ -491,8 +534,8 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def valid_business?(required_business, customer_business)
-    # 完全一致を求めるbusinessのバリデーションロジック
-    customer_business == required_business
+    # 2文字以上一致する場合にバリデーション通過
+    required_business.present? && customer_business.present? && (required_business & customer_business).size >= 2
   end
   
   def valid_genre?(required_genre, customer_genre)

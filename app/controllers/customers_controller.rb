@@ -238,15 +238,16 @@ class CustomersController < ApplicationController
     @customers =  Customer.all
   end
 
-  def import
+  def all_import
     # CSVファイルをインポートし、件数を取得
-    cnt = Customer.import(params[:file])
-    # `repost_import` を呼び出して再掲載件数と新規インポート件数を取得
-    repost_result = Customer.repost_import(params[:file])
-    # `tcare_import` を呼び出して、追加の顧客データをインポート
-    tcare_count = Customer.tcare_import(params[:tcare_file]) if params[:tcare_file]
-    # noticeメッセージを作成
-    notice_message = "新規インポート：#{cnt}件登録されました。再掲載件数: #{repost_result[:repost_count]}件、転用登録件数: #{repost_result[:new_import_count]}件、ドラフト件数: #{tcare_count || 0}件"
+    save_count = Customer.import(params[:file])
+    # `call_import` を呼び出して再掲載件数を取得
+    call_count = Customer.call_import(params[:file])
+    # `repurpose_import` を呼び出して再掲載件数を取得
+    repurpose_count = Customer.repurpose_import(params[:file])
+     # `draft_import` を呼び出してドラフト件数を取得
+    draft_count = Customer.draft_import(params[:file])
+    notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_import_count]}件"
     redirect_to customers_url, notice: notice_message
   end
 
