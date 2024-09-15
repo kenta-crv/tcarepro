@@ -247,7 +247,7 @@ class CustomersController < ApplicationController
     repurpose_count = Customer.repurpose_import(params[:file])
      # `draft_import` を呼び出してドラフト件数を取得
     draft_count = Customer.draft_import(params[:file])
-    notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_import_count]}件"
+    notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
     redirect_to customers_url, notice: notice_message
   end
 
