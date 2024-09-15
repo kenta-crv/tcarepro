@@ -9,29 +9,17 @@ class OkuriteController < ApplicationController
 
   def index
     @q = Customer.ransack(params[:q])
-        ransack_results = @q.result.includes(:worker)
-    conditional_results = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠'))
-    @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)    
+    ransack_results = @q.result.includes(:worker)
+    conditional_results = Customer.where(forever: nil).where('updated_at > ?', 3.months.ago).or(Customer.where(choice: 'アポ匠'))
+    @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
   
   def resend
-    # 1ヶ月より前に送信された履歴がある顧客を抽出
-    customers = Customer.joins(:contact_trackings)
-                        .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
-                        .where('contact_trackings.created_at < ?', 1.month.ago)
-                        .distinct
-  
-    # Ransack オブジェクトを初期化
+    customers = Customer.joins(:contact_trackings).where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' }).where('contact_trackings.created_at < ?', 1.month.ago).distinct
     @q = customers.ransack(params[:q])
-    
-    # フィルタリング条件を適用して、対象の顧客を絞り込み
-    filtered_customers = @q.result.where(forever: nil).or(@q.result.where(choice: 'アポ匠'))
-    
-    # ページネーションを適用して顧客リストを取得
+    filtered_customers = @q.result.where(forever: nil).where('customers.updated_at > ?', 3.months.ago).or(@q.result.where(choice: 'アポ匠'))
     @customers = filtered_customers.page(params[:page]).per(30)
-    
-    # 抽出した顧客のIDを基に連絡履歴を取得
     @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
   end
   
