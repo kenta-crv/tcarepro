@@ -37,9 +37,11 @@ Rails.application.routes.draw do
       get 'practices/question1', to: 'workers#question1'
       get 'practices/question2', to: 'workers#question2'
       get 'practices/question3', to: 'workers#question3'
+      get 'practices/question4', to: 'workers#question4'
       get 'practices/reference1', to: 'workers#reference1'
       get 'practices/reference2', to: 'workers#reference2'
       get 'practices/reference3', to: 'workers#reference3'
+      get 'practices/reference4', to: 'workers#reference4'
     end
     resources :tests
     resources :sends

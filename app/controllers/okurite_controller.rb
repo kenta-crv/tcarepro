@@ -10,7 +10,7 @@ class OkuriteController < ApplicationController
   def index
     @q = Customer.ransack(params[:q])
     ransack_results = @q.result.includes(:worker)
-    conditional_results = Customer.where(forever: nil).where('customers.updated_at > ?', 3.months.ago).or(Customer.where(choice: 'アポ匠'))
+    conditional_results = Customer.where(forever: nil)
     @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
