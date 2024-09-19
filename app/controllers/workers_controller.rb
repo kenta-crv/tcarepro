@@ -95,6 +95,10 @@ class WorkersController < ApplicationController
     render 'workers/practices/question3'
   end
 
+  def question4
+    render 'workers/practices/question4'
+  end
+
   def reference1
     render 'workers/practices/reference1'
   end
@@ -105,6 +109,10 @@ class WorkersController < ApplicationController
 
   def reference3
     render 'workers/practices/reference3'
+  end
+
+  def reference4
+    render 'workers/practices/reference4'
   end
 
   def next 
