@@ -32,7 +32,7 @@ class CustomersController < ApplicationController
     @customers = @customers.where(id: last_call) if last_call
   
     # 電話番号が存在する顧客のみをフィルタリング
-    @customers = @customers.where.not(tel: [nil, ""])
+    @customers = @customers.where.not(tel: [nil, "", " "])
   
     @csv_customers = @customers.distinct.preload(:calls)
     @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エクスポート総数
@@ -99,32 +99,46 @@ class CustomersController < ApplicationController
     if worker_signed_in?
       # 電話番号がない顧客のみを表示
       @q = Customer.where(status: "draft").where("TRIM(tel) = ''")
-      # 他の人が既に作業を完了していない顧客をフィルター
-      @q = @q.where.not(id: Call.select(:customer_id))
+      ## 他の人が既に作業を完了していない顧客をフィルター
+      #@q = @q.where.not(id: Call.select(:customer_id))
       # 管理者を除外
-      if current_user && current_user.admin?
-        @q = @q.where.not(user_id: User.admins.pluck(:id))
-      end
+      #if current_user && current_admin?
+      #  @q = @q.where.not(user_id: User.admins.pluck(:id))
+      #end
       @customers = @q.ransack(params[:q]).result.page(params[:page]).per(100)
     end
   end
 
   def update
     @customer = Customer.find(params[:id])
+  
     if params[:commit] == '対象外リストとして登録'
       @customer.skip_validation = true
       @customer.status = "hidden"
     end
     
-    # @next_draft を次の編集対象顧客として定義
-    @next_draft = Customer.where(status: 'draft').where('id > ?', @customer.id).order(:id).first
+    # 現在のフィルタ条件を考慮して次のdraft顧客を取得
+    @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
+  
+    if params[:industry_name].present?
+      @q = @q.where(industry: params[:industry_name])
+    end
+  
+    if params[:tel_filter] == "with_tel"
+      @q = @q.where.not("TRIM(tel) = ''")
+    elsif params[:tel_filter] == "without_tel"
+      @q = @q.where("TRIM(tel) = ''")
+    end
+  
+    @next_draft = @q.order(:id).first
   
     if @customer.update(customer_params)
       if worker_signed_in?
         if @next_draft
           redirect_to edit_customer_path(
             id: @next_draft.id,
-            industry_name: params[:industry_name]
+            industry_name: params[:industry_name],
+            tel_filter: params[:tel_filter]
           )
         else
           redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
@@ -136,7 +150,7 @@ class CustomersController < ApplicationController
       render 'edit'
     end
   end
-
+  
   def destroy
     @customer = Customer.find(params[:id])
     @customer.destroy
@@ -224,21 +238,19 @@ class CustomersController < ApplicationController
     @customers =  Customer.all
   end
 
-  def import
-    cnt = Customer.import(params[:file])
-    redirect_to customers_url, notice:"#{cnt}件登録されました。"
+  def all_import
+    # CSVファイルをインポートし、件数を取得
+    save_count = Customer.import(params[:file])
+    # `call_import` を呼び出して再掲載件数を取得
+    call_count = Customer.call_import(params[:file])
+    # `repurpose_import` を呼び出して再掲載件数を取得
+    repurpose_count = Customer.repurpose_import(params[:file])
+     # `draft_import` を呼び出してドラフト件数を取得
+    draft_count = Customer.draft_import(params[:file])
+    notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
+    redirect_to customers_url, notice: notice_message
   end
 
-  def repost_import
-    result = Customer.repost_import(params[:file])
-    redirect_to customers_url, notice: "#{result[:new_import_count]}件新規インポート、#{result[:repost_count]}件再掲載登録されました。"
-  end
-
-  def update_import
-    cnt = Customer.update_import(params[:update_file])
-    redirect_to customers_url, notice:"#{cnt}件登録されました。"
-  end
-  #上書きインポート
   def tcare_import
     cnt = Customer.tcare_import(params[:tcare_file])
     redirect_to extraction_url, notice:"#{cnt}件登録されました。"
@@ -343,52 +355,31 @@ class CustomersController < ApplicationController
   def draft
     @industries = Customer::INDUSTRY_MAPPING.keys
     if admin_signed_in?
-      @q = Customer.where(status: "draft").where.not("TRIM(tel) = ''").ransack(params[:q])
+      @q = Customer.where(status: "draft").where.not(tel: [nil, '']).ransack(params[:q])
       @customers = @q.result.page(params[:page]).per(100)
     else
-      @q = Customer.where(status: "draft").where("TRIM(tel) = ''").ransack(params[:q])
+      @q = Customer.where(status: "draft").where(tel: [nil, '']).ransack(params[:q])
       @customers = @q.result.page(params[:page]).per(100)
     end
   end
-
+  
   def filter_by_industry
     industry_name = params[:industry_name]
     tel_filter = params[:tel_filter] # 新しいパラメータ
-
+  
     @industries = Customer::INDUSTRY_MAPPING.keys
-    @q = Customer.where(status: "draft").ransack(params[:q])
-    @q = @q.result.where(industry: industry_name)
-
+    @q = Customer.where(status: "draft").where(industry: industry_name)
+  
     if tel_filter == "with_tel"
-      @q = @q.where.not("TRIM(tel) = ''")
+      @q = @q.where.not(tel: [nil, ''])
     elsif tel_filter == "without_tel"
-      @q = @q.where("TRIM(tel) = ''")
+      @q = @q.where(tel: [nil, ''])
     end
-
+  
     @customers = @q.page(params[:page]).per(100)
     render :draft
   end
   
-  def update_all_status
-    status = params[:status] || 'hidden'
-    published_count = 0
-    hidden_count = 0
-    @customers.each do |customer|
-      customer.skip_validation = true
-      if status == 'hidden'
-        if customer.update(status: 'hidden')
-          hidden_count += 1
-        end
-      else
-        if customer.update(status: nil)
-          published_count += 1
-        end
-      end
-    end
-    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされました。"
-    redirect_to customers_path
-  end
-
   private
 
   def set_customers

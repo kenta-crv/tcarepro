@@ -9,34 +9,20 @@ class OkuriteController < ApplicationController
 
   def index
     @q = Customer.ransack(params[:q])
-        ransack_results = @q.result.includes(:worker)
-    conditional_results = Customer.where(forever: nil).or(Customer.where(choice: 'アポ匠'))
-    @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)    
+    ransack_results = @q.result.includes(:worker)
+    conditional_results = Customer.where(forever: nil)
+    @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
-
+  
   def resend
-    # 1ヶ月より前に送信済の履歴がある顧客を抽出
-    customers = Customer.joins(:contact_trackings)
-                        .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
-                        .where('contact_trackings.created_at < ?', 1.month.ago)
-                        .distinct
-    # 最新のContactTrackingを取得
-    latest_contact_tracking_subquery = ContactTracking
-                                        .select('DISTINCT ON (customer_id) *')
-                                        .where(sender_id: params[:sender_id])
-                                        .order(:customer_id, created_at: :desc)
-    # 最新の連絡履歴に基づく顧客を抽出
-    @customers = customers.joins("INNER JOIN (#{latest_contact_tracking_subquery.to_sql}) AS latest_trackings ON latest_trackings.customer_id = customers.id")
-                          .page(params[:page])
-                          .per(30)
-    # 最新の連絡履歴のみを表示
-    @contact_trackings = ContactTracking.where(id: latest_contact_tracking_subquery.select(:id))
-    # Ransack オブジェクトを初期化
-    @q = @customers.ransack(params[:q])
+    customers = Customer.joins(:contact_trackings).where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' }).where('contact_trackings.created_at < ?', 1.month.ago).distinct
+    @q = customers.ransack(params[:q])
+    filtered_customers = @q.result.where(forever: nil).where('customers.updated_at > ?', 3.months.ago).or(@q.result.where(choice: 'アポ匠'))
+    @customers = filtered_customers.page(params[:page]).per(30)
+    @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
   end
   
-
   def show
     @customer = Customer.find(params[:id])
   end

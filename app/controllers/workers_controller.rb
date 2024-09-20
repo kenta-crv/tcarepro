@@ -18,9 +18,10 @@ class WorkersController < ApplicationController
     @assigned_crowdworks = @worker.crowdworks
   
     # Calculate counts of customers updated today, this week, and this month
-    @count_day = @customers.where('updated_at >= ?', Time.current.beginning_of_day).where('updated_at <= ?', Time.current.end_of_day).count
-    @count_week = @customers.where('updated_at >= ?', Time.current.beginning_of_week).where('updated_at <= ?', Time.current.end_of_week).count
-    @count_month = @customers.where('updated_at >= ?', Time.current.beginning_of_month).where('updated_at <= ?', Time.current.end_of_month).count
+    @count_day = @customers.where(status:"draft").where.not(tel: nil).where('updated_at >= ?', Time.current.beginning_of_day).where('updated_at <= ?', Time.current.end_of_day).count
+    @count_week = @customers.where(status:"draft").where.not(tel: nil).where('updated_at >= ?', Time.current.beginning_of_week).where('updated_at <= ?', Time.current.end_of_week).count
+    @count_month = @customers.where(status:"draft").where.not(tel: nil).where('updated_at >= ?', Time.current.beginning_of_month).where('updated_at <= ?', Time.current.end_of_month).count
+    @count_month_price = @count_month * 3
     @total_count = @customers.count
     
     # Retrieve contact trackings for the current and previous month, day, and week
@@ -94,6 +95,10 @@ class WorkersController < ApplicationController
     render 'workers/practices/question3'
   end
 
+  def question4
+    render 'workers/practices/question4'
+  end
+
   def reference1
     render 'workers/practices/reference1'
   end
@@ -104,6 +109,10 @@ class WorkersController < ApplicationController
 
   def reference3
     render 'workers/practices/reference3'
+  end
+
+  def reference4
+    render 'workers/practices/reference4'
   end
 
   def next 

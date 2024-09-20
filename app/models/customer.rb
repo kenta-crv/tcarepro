@@ -10,14 +10,10 @@ class Customer < ApplicationRecord
     'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
     'SOUND（食品）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
     'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日"},
-    'ニュートラル（介護）' => {industry_code: 25000, company_name: "ニュートラル協同組合", payment_date: "10日"},
     'グローバル（食品）' => {industry_code: 30000, company_name: "グローバル協同組合", payment_date: "10日"},
     'グローバル（介護）' => {industry_code: 30000, company_name: "グローバル協同組合", payment_date: "10日"},
     'ワークリレーション' => {industry_code: 15000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
-    'ワーク（工場）' => {industry_code: 15000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
-    'データ入力' => {industry_code: 15000, company_name: "株式会社セールスプロ", payment_date: "10日"},
-    '富士（工場）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"}, 
-    '富士（飲食）' => {industry_code: 29000, company_name: "株式会社さこんじ", payment_date: "10日"},
+    'ワーク（外国人）' => {industry_code: 30000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
     'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
     'VIETA（介護）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日"},
     'VIETA（工場）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日"},
@@ -223,106 +219,176 @@ scope :before_sended_at, ->(sended_at){
     where(contact_tracking_sended_at: (from.beginning_of_day..to.end_of_day))
   }
 
-  def self.import(file)
-    save_cont = 0
-    CSV.foreach(file.path, headers:true) do |row|
-     customer = find_by(id: row["id"]) || new
-     customer.attributes = row.to_hash.slice(*updatable_attributes)
-     next if customer.industry == nil
-     next if self.where(tel: customer.tel).where(industry: nil).count > 0
-     next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-     customer.save!
-     save_cont += 1
-    end
-    save_cont
-  end
   def self.updatable_attributes
-    ["id","company","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
-     "caption","business","genre","mobile","choice","inflow","other","history","area","target","meeting","experience","price",
-     "number","start","remarks","extraction_count","send_count"]
+    ["id", "company", "store", "tel", "address", "url", "url_2", "title", "industry", "mail", "first_name", "postnumber", "people",
+     "caption", "business", "genre", "mobile", "choice", "inflow", "other", "history", "area", "target", "meeting", "experience", "price",
+     "number", "start", "remarks", "extraction_count", "send_count"]
   end
 
-  def self.repost_import(file)
-    new_import_count = 0
-    repost_count = 0
+  def self.call_attributes
+    ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
+  end
+
+  def self.all_import(file)
+    save_count = import(file)
+    call_count = call_import(file)
+    repurpose_count = repurpose_import(file)
+    draft_count = draft_import(file)
+    { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
+  end
   
+  # 既存の import メソッド
+  def self.import(file)
+    save_count = 0
+    batch_size = 1000
+    batch = []
     CSV.foreach(file.path, headers: true) do |row|
-      # companyが一致する既存のCustomerを探す
-      existing_customer = Customer.find_by(company: row['company'])
-  
-      if existing_customer
-        # 既存のCustomerにtelがない場合はスキップ
-        next if existing_customer.tel.blank?
-  
-        # 既存のCustomerのindustryがCSVのindustryと異なる場合、新しいCustomerを作成
-        if existing_customer.industry != row['industry']
-          customer = existing_customer.dup  # 既存のCustomerを複製
-          customer.industry = row['industry']  # industryのみCSVから設定
-          customer.save!
-          new_import_count += 1
-        else
-          # industryが一致する場合、再掲載処理を行う
-          latest_call = existing_customer.calls.order(created_at: :desc).first
-  
-          # 最新のcallが存在し、2ヶ月以上経過していて、かつstatuが"APP"または"永久NG"でない場合のみ再掲載
-          if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
-            existing_customer.calls.create!(statu: "再掲載", created_at: Time.current)
-            repost_count += 1
-          end
+      customer = find_or_initialize_by(id: row["id"])
+      customer.attributes = row.to_hash.slice(*updatable_attributes)
+      next if customer.industry.nil?
+      next if customer.tel.blank?  # 電話番号が空の場合はスキップ
+      next if where(tel: customer.tel).where(industry: nil).count > 0
+      next if where(tel: customer.tel).where(industry: customer.industry).count > 0
+      batch << customer
+      if batch.size >= batch_size
+        Customer.transaction do
+          batch.each(&:save!)
         end
-      else
-        # 既存のCustomerが存在しない場合、新しいCustomerを作成
-        customer = Customer.new(row.to_hash.slice(*(updatable_attributes - ["industry"])))
-        customer.industry = row['industry']
-  
-        # 新規Customerにtelがない場合は登録をスキップ
-        next if customer.tel.blank?
-  
-        customer.save!
-        new_import_count += 1
+        save_count += batch.size
+        batch.clear
       end
     end
-  
-    { new_import_count: new_import_count, repost_count: repost_count }
+    unless batch.empty?
+      Customer.transaction do
+        batch.each(&:save!)
+      end
+      save_count += batch.size
+    end
+    save_count
   end
-  
-  
-  #update_import
-  def self.update_import(update_file)
+
+  def self.call_import(call_file)
     save_cnt = 0
-    CSV.foreach(update_file.path, headers: true) do |row|
-      customer = find_by(id: row["id"]) || new
-      customer.attributes = row.to_hash.slice(*updatable_attributes)
-      next if customer.industry == nil
-      next if self.where(tel: customer.tel).where(industry: nil).count > 0
-      next if self.where(tel: customer.tel).where(industry: customer.industry).count > 0
-      customer.save!
-      save_cnt += 1
+    batch_size = 1000
+    batch = []
+    CSV.foreach(call_file.path, headers: true) do |row|
+      existing_customer = find_by(company: row['company'], industry: row['industry'])
+      if existing_customer
+        latest_call = existing_customer.calls.order(created_at: :desc).first
+        if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
+          batch << existing_customer
+          if batch.size >= batch_size
+            Customer.transaction do
+              batch.each do |customer|
+                customer.calls.create!(statu: "再掲載", created_at: Time.current)
+              end
+            end
+            save_count += batch.size
+            batch.clear
+          end
+        end
+      end
     end
-    save_cnt
-  end
- 
-# tcare_import
-def self.tcare_import(tcare_file)
-  save_cont = 0
-  CSV.foreach(tcare_file.path, headers: true) do |row|
-    customer = find_by(id: row["id"]) || new
-    customer.attributes = row.to_hash.slice(*updatable_attributes)
-    next if customer.industry.nil?
-
-    customer.status = "draft" # statusを"draft"に設定
-    customer.skip_validation = true # バリデーションをスキップ
-
-    if customer.save
-      save_cont += 1
-    else
-      puts "Error saving customer: #{customer.errors.full_messages.join(', ')}"
+    unless batch.empty?
+      Customer.transaction do
+        batch.each do |customer|
+          customer.calls.create!(statu: "再掲載", created_at: Time.current)
+        end
+      end
+      save_cnt += batch.size
     end
+    { save_cnt: save_cnt }
   end
-  save_cont
-end
- 
-#customer_export
+  
+  def self.repurpose_import(repurpose_file)
+    repurpose_import_count = 0
+    batch_size = 1000
+    batch = []
+    # crowdwork_data をデータベースから取得
+    crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
+      { 'title' => title, 'area' => area.split(',') }
+    end
+    CSV.foreach(repurpose_file.path, headers: true) do |row|
+      existing_customer = find_by(company: row['company'], industry: row['industry'])
+      if existing_customer
+        next # 条件1: industry と company が一致する既存データが存在する場合、登録をスキップ
+      else
+        existing_customer_with_same_company = find_by(company: row['company'])
+        if existing_customer_with_same_company
+          next if existing_customer_with_same_company.tel.blank? # 電話番号が存在しない場合スキップ
+          crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
+          if crowdwork
+            area_match = crowdwork['area'].any? do |area|
+              existing_customer_with_same_company.address.include?(area)
+            end
+            next unless area_match
+          end
+          # 新しい Customer のデータ作成
+          repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
+            'industry' => row['industry'],
+            'url_2' => row['url_2']
+          )
+          repurpose_customer = Customer.new(
+            repurpose_customer_attributes.merge(
+              existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
+                'industry' => row['industry'],
+                'url_2' => row['url_2']
+              )
+            )
+          )
+          batch << repurpose_customer
+  
+          if batch.size >= batch_size
+            Customer.transaction do
+              batch.each(&:save!)
+            end
+            repurpose_import_count += batch.size
+            batch.clear
+          end
+        end
+      end
+    end
+    unless batch.empty?
+      Customer.transaction do
+        batch.each(&:save!)
+      end
+      repurpose_import_count += batch.size
+    end
+    { repurpose_import_count: repurpose_import_count }
+  end
+
+  def self.draft_import(draft_file)
+    draft_count = 0
+    batch_size = 1000
+    batch = []
+    CSV.foreach(draft_file.path, headers: true) do |row|
+      next if row['tel'].present?
+      existing_customer = find_by(industry: row['industry'], company: row['company']) ||
+                          find_by(industry: row['industry'], store: row['store'])
+      next if existing_customer
+      customer = Customer.new(row.to_hash.slice(*updatable_attributes))
+      next if customer.industry.nil?
+      customer.status = "draft"
+      customer.skip_validation = true
+      batch << customer
+      if batch.size >= batch_size
+        Customer.transaction do
+          batch.each(&:save!)
+        end
+        draft_count += batch.size
+        batch.clear
+      end
+    end
+    unless batch.empty?
+      Customer.transaction do
+        batch.each(&:save!)
+      end
+      draft_count += batch.size
+    end
+    { draft_count: draft_count }
+  end
+    
+  #customer_export
   def self.generate_csv
     CSV.generate(headers:true) do |csv|
       csv << csv_attributes
@@ -332,7 +398,7 @@ end
     end
   end
   def self.csv_attributes
-    ["id","company","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
+    ["id","company","store","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
      "caption","business","genre","mobile","choice","inflow","other","history","area","target","meeting","experience","price",
      "number","start","remarks","extraction_count","send_count"]
   end
@@ -525,8 +591,8 @@ end
   end
   
   def valid_business?(required_business, customer_business)
-    # 完全一致を求めるbusinessのバリデーションロジック
-    customer_business == required_business
+    # 2文字以上一致する場合にバリデーション通過
+    required_business.present? && customer_business.present? && (required_business & customer_business).size >= 2
   end
   
   def valid_genre?(required_genre, customer_genre)
