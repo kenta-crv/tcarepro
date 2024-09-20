@@ -6,19 +6,23 @@ class Customer < ApplicationRecord
     'コンシェルテック（販売）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
     'コンシェルテック（工場）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
     'SORAIRO（工場）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "末日"},
-    'SORAIRO（食品）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "末日"},
     'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
     'SOUND（食品）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
     'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日"},
-    'グローバル（食品）' => {industry_code: 30000, company_name: "グローバル協同組合", payment_date: "10日"},
     'グローバル（介護）' => {industry_code: 30000, company_name: "グローバル協同組合", payment_date: "10日"},
-    'ワークリレーション' => {industry_code: 15000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
+    'ワークリレーション' => {industry_code: 21000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
     'ワーク（外国人）' => {industry_code: 30000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
     'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
     'VIETA（介護）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日"},
     'VIETA（工場）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日"},
     'VIETA（飲食）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日"},
     'ジョイスリー（介護）' => {industry_code: 23000, company_name: "ジョイスリー株式会社", payment_date: "10日"},
+    'ニューアース' => {industry_code: 35000, company_name: "ニューアース株式会社", payment_date: "10日"},
+    '登録支援機関' => {industry_code: 29000, company_name: "医療法人社団光誠会", payment_date: "10日"},
+    '登録支援機関' => {industry_code: 10000, company_name: "自社", payment_date: ""},
+    'エンジスト' => {industry_code: 10000, company_name: "自社", payment_date: ""},
+    'ケアリンク' => {industry_code: 10000, company_name: "自社", payment_date: ""},
+    'エクステリア' => {industry_code: 10000, company_name: "自社", payment_date: ""},
   }
 
   before_save :set_industry_defaults
@@ -240,7 +244,7 @@ scope :before_sended_at, ->(sended_at){
   # 既存の import メソッド
   def self.import(file)
     save_count = 0
-    batch_size = 1000
+    batch_size = 5000
     batch = []
     CSV.foreach(file.path, headers: true) do |row|
       customer = find_or_initialize_by(id: row["id"])
@@ -269,7 +273,7 @@ scope :before_sended_at, ->(sended_at){
 
   def self.call_import(call_file)
     save_cnt = 0
-    batch_size = 1000
+    batch_size = 5000
     batch = []
     CSV.foreach(call_file.path, headers: true) do |row|
       existing_customer = find_by(company: row['company'], industry: row['industry'])
@@ -300,66 +304,82 @@ scope :before_sended_at, ->(sended_at){
     { save_cnt: save_cnt }
   end
   
-  def self.repurpose_import(repurpose_file)
-    repurpose_import_count = 0
-    batch_size = 1000
-    batch = []
-    # crowdwork_data をデータベースから取得
-    crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
-      { 'title' => title, 'area' => area.split(',') }
-    end
-    CSV.foreach(repurpose_file.path, headers: true) do |row|
-      existing_customer = find_by(company: row['company'], industry: row['industry'])
-      if existing_customer
-        next # 条件1: industry と company が一致する既存データが存在する場合、登録をスキップ
-      else
-        existing_customer_with_same_company = find_by(company: row['company'])
-        if existing_customer_with_same_company
-          next if existing_customer_with_same_company.tel.blank? # 電話番号が存在しない場合スキップ
-          crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
-          if crowdwork
-            area_match = crowdwork['area'].any? do |area|
-              existing_customer_with_same_company.address.include?(area)
-            end
-            next unless area_match
+def self.repurpose_import(repurpose_file)
+  repurpose_import_count = 0
+  batch_size = 5000
+  batch = []
+  
+  # crowdwork_data をデータベースから取得
+  crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
+    { 'title' => title, 'area' => area.split(',') }
+  end
+  
+  CSV.foreach(repurpose_file.path, headers: true) do |row|
+    existing_customer = find_by(company: row['company'], industry: row['industry'])
+    
+    if existing_customer
+      next # 条件1: industry と company が一致する既存データが存在する場合、登録をスキップ
+    else
+      existing_customer_with_same_company = find_by(company: row['company'])
+      
+      if existing_customer_with_same_company
+        crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
+        
+        if crowdwork
+          # crowdwork.area に部分一致する address が存在するかチェック
+          area_match = crowdwork['area'].any? do |area|
+            existing_customer_with_same_company.address.include?(area)
           end
-          # 新しい Customer のデータ作成
-          repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
-            'industry' => row['industry'],
-            'url_2' => row['url_2']
-          )
-          repurpose_customer = Customer.new(
-            repurpose_customer_attributes.merge(
-              existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
-                'industry' => row['industry'],
-                'url_2' => row['url_2']
-              )
+          # 一致しない場合スキップ
+          next unless area_match
+        end
+        
+        # 新しい Customer のデータ作成
+        repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
+          'industry' => row['industry'],
+          'url_2' => row['url_2']
+        )
+        
+        repurpose_customer = Customer.new(
+          repurpose_customer_attributes.merge(
+            # 既存顧客の一部情報を転用する
+            existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
+              'industry' => row['industry'], # インポートの industry を優先
+              'url_2' => row['url_2'] # インポートの url_2 を優先
             )
           )
-          batch << repurpose_customer
-  
-          if batch.size >= batch_size
-            Customer.transaction do
-              batch.each(&:save!)
-            end
-            repurpose_import_count += batch.size
-            batch.clear
+        )
+        
+        # バッチに追加
+        batch << repurpose_customer
+        
+        # バッチサイズが規定値を超えたら保存
+        if batch.size >= batch_size
+          Customer.transaction do
+            batch.each(&:save!)
           end
+          repurpose_import_count += batch.size
+          batch.clear
         end
       end
     end
-    unless batch.empty?
-      Customer.transaction do
-        batch.each(&:save!)
-      end
-      repurpose_import_count += batch.size
-    end
-    { repurpose_import_count: repurpose_import_count }
   end
+  
+  # 残りのバッチを保存
+  unless batch.empty?
+    Customer.transaction do
+      batch.each(&:save!)
+    end
+    repurpose_import_count += batch.size
+  end
+  
+  { repurpose_import_count: repurpose_import_count }
+end
+
 
   def self.draft_import(draft_file)
     draft_count = 0
-    batch_size = 1000
+    batch_size = 5000
     batch = []
     CSV.foreach(draft_file.path, headers: true) do |row|
       next if row['tel'].present?
