@@ -363,8 +363,7 @@ scope :before_sended_at, ->(sended_at){
     batch = []
     CSV.foreach(draft_file.path, headers: true) do |row|
       next if row['tel'].present?
-      existing_customer = find_by(industry: row['industry'], company: row['company'])# ||
-                          #find_by(industry: row['industry'], store: row['store'])
+      existing_customer = find_by(industry: row['industry'], company: row['company'])
       next if existing_customer
       customer = Customer.new(row.to_hash.slice(*updatable_attributes))
       next if customer.industry.nil?
