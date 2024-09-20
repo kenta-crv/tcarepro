@@ -246,6 +246,7 @@ scope :before_sended_at, ->(sended_at){
       customer = find_or_initialize_by(id: row["id"])
       customer.attributes = row.to_hash.slice(*updatable_attributes)
       next if customer.industry.nil?
+      next if customer.tel.blank?  # 電話番号が空の場合はスキップ
       next if where(tel: customer.tel).where(industry: nil).count > 0
       next if where(tel: customer.tel).where(industry: customer.industry).count > 0
       batch << customer
