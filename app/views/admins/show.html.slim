@@ -166,19 +166,19 @@
         th 削除
         th 解除
       - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
-        - count_day = worker.customers.where(status:"draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?', Time.current.end_of_day).count
-        - count_week = worker.customers.where(status:"draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?', Time.current.end_of_week).count
-        - count_month = worker.customers.where(status:"draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_month).where('updated_at < ?', Time.current.end_of_month).count
+        - count_day = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?', Time.current.end_of_day).count
+        - count_week = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?', Time.current.end_of_week).count
+        - count_month = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_month).where('updated_at < ?', Time.current.end_of_month).count
         - total_number = worker.customers.count
         - count_month_price = count_month * 3
         - assigned_crowdwork = @assigned_crowdworks[worker.id]
         tr 
           td
-            = select_tag "crowdwork_ids[#{worker.id}]", options_for_select(Crowdwork.all.map { |cw| [cw.title, cw.id] }, @assigned_crowdworks[worker.id]&.id), prompt: "Crowdworkを選択", id: "crowdwork_select_#{worker.id}"
+            = select_tag "crowdwork_ids[#{worker.id}]", options_for_select(Crowdwork.all.map { |cw| [cw.title, cw.id] }, assigned_crowdwork&.id), prompt: "Crowdworkを選択", id: "crowdwork_select_#{worker.id}"
           td = worker.user_name
           td
             - if assigned_crowdwork
-              = link_to assigned_crowdwork.title, "/draft/filter_by_industry?industry_name=#{assigned_crowdwork.title}", target: "_blank", class:"btn btn-success"
+              = link_to assigned_crowdwork.title, "/draft/filter_by_industry?industry_name=#{assigned_crowdwork.title}", target: "_blank", class: "btn btn-success"
             - else
               | なし
           td = count_day
@@ -204,7 +204,7 @@
               | 未登録
           td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
           td
-           - if assigned_crowdwork
-            = button_to '解除', remove_worker_admin_path(@admin, crowdwork_id: assigned_crowdwork.id, worker_id: worker.id), method: :post, data: { confirm: '本当に解除しますか？' }  
+            - if assigned_crowdwork
+              = button_to '解除', remove_worker_admin_path(@admin, crowdwork_id: assigned_crowdwork.id, worker_id: worker.id), method: :post, data: { confirm: '本当に解除しますか？' }  
     .field
-        = submit_tag "更新", class: "btn btn-primary"
+      = f.submit "割り当てる"

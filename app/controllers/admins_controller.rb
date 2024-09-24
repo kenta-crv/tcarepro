@@ -4,8 +4,10 @@ class AdminsController < ApplicationController
     @senders = Sender.all
     @workers = Worker.all
 
-    # 各ワーカーに関連するCrowdworkを取得する
-    @assigned_crowdworks = @workers.index_by(&:id).transform_values { |worker| worker.crowdworks.to_a }
+    # 各ワーカーに関連する最新のCrowdworkを取得する
+    @assigned_crowdworks = @workers.index_by(&:id).transform_values do |worker|
+      worker.crowdworks.order(created_at: :desc).first  # 最新のCrowdworkを取得
+    end
   end
 
   def assign_workers
