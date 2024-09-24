@@ -158,11 +158,12 @@ class CustomersController < ApplicationController
   end
 
   def destroy_all
-    checked_data = params[:deletes].keys #checkデータを受け取る
-    if Customer.destroy(checked_data)
-      redirect_to customers_path
+    checked_data = params[:deletes].keys # チェックされたデータを取得
+    deleted_count = Customer.where(id: checked_data).destroy_all # 削除処理を実行
+    if deleted_count.present?
+      redirect_to customers_path, notice: "draftから#{deleted_count.size}件削除しました。" # 削除件数を含めたメッセージ
     else
-      render action: 'index'
+      redirect_to customers_path, alert: '削除に失敗しました。'
     end
   end
 
@@ -378,6 +379,38 @@ class CustomersController < ApplicationController
   
     @customers = @q.page(params[:page]).per(100)
     render :draft
+  end
+
+  def bulk_action
+    @customers = Customer.where(id: params[:deletes].keys)
+  
+    if params[:commit] == '一括更新'
+      update_all_status
+    elsif params[:commit] == '一括削除'
+      destroy_all
+    else
+      redirect_to customers_path, alert: '無効なアクションです。'
+    end
+  end
+
+  def update_all_status
+    status = params[:status] || 'hidden'
+    published_count = 0
+    hidden_count = 0
+    @customers.each do |customer|
+      customer.skip_validation = true
+      if status == 'hidden'
+        if customer.update(status: 'hidden')
+          hidden_count += 1
+        end
+      else
+        if customer.update(status: nil)
+          published_count += 1
+        end
+      end
+    end
+    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされました。"
+    redirect_to customers_path
   end
   
   private

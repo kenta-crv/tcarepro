@@ -7,9 +7,11 @@ Rails.application.routes.draw do
   devise_for :admins, controllers: {
     registrations: 'admins/registrations'
   }
-  resources :admins, only: [:show] do
+  resources :admins do
+    post 'assign_workers', on: :member
+    post 'remove_worker', on: :member
     member do
-      post 'assign_workers'  # 'assign_workers_to_crowdwork' ではなく 'assign_workers' に変更
+      patch :assign_worker_crowdwork  # 各管理者に対するワーカーの割り当て
     end
   end
   #ユーザーアカウント
@@ -97,6 +99,7 @@ Rails.application.routes.draw do
     post 'exclude', on: :member
     resources :calls
     collection do
+      post :bulk_action # bulk_actionへのルートを追加
       put 'update_all_status'
       get 'search', to: 'customers#search', as: 'search'
       get :industry_code_total

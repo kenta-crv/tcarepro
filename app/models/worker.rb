@@ -5,10 +5,9 @@ class Worker < ApplicationRecord
          :recoverable, :rememberable, :validatable
   has_many :customers
   has_many :contact_trackings
-  has_many :lists
-  has_many :assignments
+  has_many :assignments, dependent: :destroy
   has_many :contacts
-  has_many :tests
+  has_many :tests, dependent: :destroy
   has_many :crowdworks, through: :assignments
   has_many :sender_assignments
   has_many :senders, through: :sender_assignments

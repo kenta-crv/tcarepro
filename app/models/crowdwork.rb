@@ -1,5 +1,5 @@
 class Crowdwork < ApplicationRecord
-    has_many :assignments
+    has_many :assignments, dependent: :destroy
     has_many :workers, through: :assignments
   
     def area=(values)

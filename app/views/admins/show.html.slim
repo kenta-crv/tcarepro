@@ -136,7 +136,6 @@
             | 未登録
         td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
   br
-  br
   
   = link_to "アカウント情報編集", edit_admin_registration_path, class:"btn btn-success"
   = link_to "ログアウト", destroy_admin_session_path, method: :delete, class:"btn btn-success"
@@ -165,6 +164,7 @@
         th 支払
         th 契約終了
         th 削除
+        th 解除
       - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
         - count_day = worker.customers.where(status:"draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?', Time.current.end_of_day).count
         - count_week = worker.customers.where(status:"draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?', Time.current.end_of_week).count
@@ -174,7 +174,7 @@
         - assigned_crowdwork = @assigned_crowdworks[worker.id]
         tr 
           td
-            = check_box_tag 'worker_ids[]', worker.id, false, id: "worker_ids_#{worker.id}"
+            = select_tag "crowdwork_ids[#{worker.id}]", options_for_select(Crowdwork.all.map { |cw| [cw.title, cw.id] }, @assigned_crowdworks[worker.id]&.id), prompt: "Crowdworkを選択", id: "crowdwork_select_#{worker.id}"
           td = worker.user_name
           td
             - if assigned_crowdwork
@@ -203,10 +203,8 @@
             - else
               | 未登録
           td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
-  
+          td
+           - if assigned_crowdwork
+            = button_to '解除', remove_worker_admin_path(@admin, crowdwork_id: assigned_crowdwork.id, worker_id: worker.id), method: :post, data: { confirm: '本当に解除しますか？' }  
     .field
-      = f.label :crowdwork_id, "Crowdworkを選択"
-      = f.collection_select :crowdwork_id, Crowdwork.all, :id, :title, prompt: "案件を選択"
-  
-    .field
-      = f.submit "割り当てる"
+        = submit_tag "更新", class: "btn btn-primary"

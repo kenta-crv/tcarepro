@@ -5,20 +5,47 @@ class AdminsController < ApplicationController
     @workers = Worker.all
 
     # 各ワーカーに関連するCrowdworkを取得する
-    @assigned_crowdworks = @workers.index_by(&:id).transform_values { |worker| worker.crowdworks.first }
+    @assigned_crowdworks = @workers.index_by(&:id).transform_values { |worker| worker.crowdworks.to_a }
   end
+
   def assign_workers
     @admin = Admin.find(params[:id])
+    
+    # crowdwork_idsを取得
+    crowdwork_ids = params[:crowdwork_ids] || {}
+    
+    crowdwork_ids.each do |worker_id, crowdwork_id|
+      next if crowdwork_id.blank?  # 空の場合はスキップ
+  
+      # crowdworkを取得
+      crowdwork = Crowdwork.find(crowdwork_id)
+  
+      # workerを取得
+      worker = Worker.find(worker_id)
+  
+      # 割り当て
+      unless crowdwork.workers.exists?(worker.id)
+        crowdwork.workers << worker
+      end
+    end
+  
+    redirect_to admin_path(@admin), notice: 'ワーカーが正常に割り当てられました。'
+  end
+  
+  def remove_worker
+    @admin = Admin.find(params[:id])
     crowdwork = Crowdwork.find(params[:crowdwork_id])
-    worker_ids = params[:worker_ids] || []
+    worker = Worker.find(params[:worker_id])
+  
+    # 削除処理
+    crowdwork.workers.delete(worker)
+  
+    redirect_to admin_path(@admin), notice: 'ワーカーが解除されました。'
+  end
+  
+  private
 
-    # 既存の割り当てを保持しつつ、新しい割り当てを追加
-    current_worker_ids = crowdwork.worker_ids
-    new_worker_ids = current_worker_ids | worker_ids.map(&:to_i)  # 既存と新しいワーカーのIDを統合
-
-    # 更新された割り当てを保存
-    crowdwork.worker_ids = new_worker_ids
-
-    redirect_to admin_path(@admin), notice: 'ワーカーが割り当てられました。'
+  def assign_workers_params
+    params.permit(:crowdwork_id, worker_ids: [])
   end
 end
