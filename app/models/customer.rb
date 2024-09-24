@@ -234,12 +234,13 @@ scope :before_sended_at, ->(sended_at){
 
   def self.all_import(file)
     save_count = import(file)
-    call_count = call_import(file)
-    repurpose_count = repurpose_import(file)
-    draft_count = draft_import(file)
-    { save_count: save_count, call_count: call_count[:save_cnt], repurpose_count: repurpose_count[:repurpose_import_count], draft_count: draft_count[:draft_count] }
+    call_count = call_import(file)[:save_count]  # save_count で統一
+    repurpose_count = repurpose_import(file)[:repurpose_import_count]  # count を統一
+    draft_count = draft_import(file)[:draft_count]
+    { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
   end
   
+  # 既存の import メソッド
   def self.import(file)
     save_count = 0
     batch_size = 5000
@@ -248,10 +249,9 @@ scope :before_sended_at, ->(sended_at){
       customer = find_or_initialize_by(id: row["id"])
       customer.attributes = row.to_hash.slice(*updatable_attributes)
       next if customer.industry.nil?
-      next if customer.tel.blank?
+      next if customer.tel.blank?  # 電話番号が空の場合はスキップ
       next if where(tel: customer.tel).where(industry: nil).count > 0
       next if where(tel: customer.tel).where(industry: customer.industry).count > 0
-      customer.skip_validation = true  # バリデーションをスキップ
       batch << customer
       if batch.size >= batch_size
         Customer.transaction do
@@ -269,7 +269,7 @@ scope :before_sended_at, ->(sended_at){
     end
     save_count
   end
-  
+
   def self.call_import(call_file)
     save_cnt = 0
     batch_size = 5000
@@ -283,7 +283,7 @@ scope :before_sended_at, ->(sended_at){
           if batch.size >= batch_size
             Customer.transaction do
               batch.each do |customer|
-                customer.calls.create!(statu: "再掲載", created_at: Time.current, validate: false)  # バリデーションをスキップ
+                customer.calls.create!(statu: "再掲載", created_at: Time.current)
               end
             end
             save_cnt += batch.size
@@ -292,59 +292,74 @@ scope :before_sended_at, ->(sended_at){
         end
       end
     end
+    # 残りのバッチがあれば処理する
     unless batch.empty?
       Customer.transaction do
         batch.each do |customer|
-          customer.calls.create!(statu: "再掲載", created_at: Time.current, validate: false)  # バリデーションをスキップ
+          customer.calls.create!(statu: "再掲載", created_at: Time.current)
         end
       end
       save_cnt += batch.size
     end
     { save_cnt: save_cnt }
   end
-  
-  
+    
   def self.repurpose_import(repurpose_file)
     repurpose_import_count = 0
     batch_size = 5000
     batch = []
-    crowdwork_data = Crowdwork.pluck(:title, :area).map { |title, area| { 'title' => title, 'area' => area.split(',') } }
+  
+    crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
+      { 'title' => title, 'area' => area.split(',') }
+    end
+  
     CSV.foreach(repurpose_file.path, headers: true) do |row|
       existing_customer = find_by(company: row['company'], industry: row['industry'])
-      next if existing_customer
+      
+      if existing_customer
+        next
+      else
+        existing_customer_with_same_company = find_by(company: row['company'])
+        
+        if existing_customer_with_same_company
+          crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
+          
+          if crowdwork
+            if existing_customer_with_same_company.address.present?
+              area_match = crowdwork['area'].any? do |area|
+                existing_customer_with_same_company.address.include?(area)
+              end
+              next unless area_match
+            else
+              next
+            end
+          end
   
-      existing_customer_with_same_company = find_by(company: row['company'])
-      if existing_customer_with_same_company
-        crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
-        if crowdwork && existing_customer_with_same_company.address.present?
-          area_match = crowdwork['area'].any? { |area| existing_customer_with_same_company.address.include?(area) }
-          next unless area_match
-        else
-          next
-        end
+          # ここで repurpose_customer_attributes を定義
+          repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
+            'industry' => row['industry'],
+            'url_2' => row['url_2']
+          )
   
-        repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
-          'industry' => row['industry'],
-          'url_2' => row['url_2']
-        )
-  
-        repurpose_customer = Customer.new(
-          repurpose_customer_attributes.merge(
-            existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
-              'industry' => row['industry'],
-              'url_2' => row['url_2']
+          # Customer オブジェクトを作成
+          repurpose_customer = Customer.new(
+            repurpose_customer_attributes.merge(
+              existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
+                'industry' => row['industry'],
+                'url_2' => row['url_2']
+              )
             )
           )
-        )
-        repurpose_customer.skip_validation = true  # バリデーションをスキップ
-        batch << repurpose_customer
   
-        if batch.size >= batch_size
-          Customer.transaction do
-            batch.each(&:save!)
+          batch << repurpose_customer
+  
+          if batch.size >= batch_size
+            Customer.transaction do
+              batch.each(&:save!)
+            end
+            repurpose_import_count += batch.size
+            batch.clear
           end
-          repurpose_import_count += batch.size
-          batch.clear
         end
       end
     end
@@ -370,7 +385,7 @@ scope :before_sended_at, ->(sended_at){
       customer = Customer.new(row.to_hash.slice(*updatable_attributes))
       next if customer.industry.nil?
       customer.status = "draft"
-      customer.skip_validation = true  # バリデーションをスキップ
+      customer.skip_validation = true
       batch << customer
       if batch.size >= batch_size
         Customer.transaction do
@@ -388,7 +403,7 @@ scope :before_sended_at, ->(sended_at){
     end
     { draft_count: draft_count }
   end
-        
+    
   #customer_export
   def self.generate_csv
     CSV.generate(headers:true) do |csv|
