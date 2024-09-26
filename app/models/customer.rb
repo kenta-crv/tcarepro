@@ -627,8 +627,13 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def valid_business?(required_business, customer_business)
-    # 2文字以上一致する場合にバリデーション通過
-    required_business.present? && customer_business.present? && (required_business & customer_business).size >= 2
+    # 2文字以上一致するかをチェック
+    if required_business.present? && customer_business.present?
+      # 共通する部分文字列が2文字以上あるかを確認
+      common_substring = required_business.chars & customer_business.chars
+      return common_substring.size >= 2
+    end
+    false
   end
   
   def valid_genre?(required_genre, customer_genre)
