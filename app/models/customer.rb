@@ -612,13 +612,17 @@ scope :before_sended_at, ->(sended_at){
     matching_crowdwork = Crowdwork.find_by(title: industry)
     if matching_crowdwork
       # businessのバリデーションを行う
-      unless valid_business?(matching_crowdwork.business, business)
-        errors.add(:business, '指定された業種以外は登録できません。')
-      end 
+      if matching_crowdwork.business.present?
+        unless valid_business?(matching_crowdwork.business, business)
+          errors.add(:business, '指定された業種以外は登録できません。')
+        end
+      end
+      
       # genreのバリデーションを行う
       unless valid_genre?(matching_crowdwork.genre, genre)
         errors.add(:genre, '指定された職種が含まれていないため登録できません。')
       end
+  
       # areaのバリデーションを行う
       unless valid_area?(matching_crowdwork.area, address)
         errors.add(:address, '指定されたエリアが含まれていないため登録できません。')
@@ -642,24 +646,30 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def valid_area?(required_area, customer_address)
-    # required_area が文字列で、エスケープされた配列のような形で渡された場合、JSONとしてパースして配列に変換する
+    # required_area がJSON形式の文字列として渡されている場合、配列に変換
     if required_area.is_a?(String) && required_area.start_with?('[')
       begin
+        # 配列に変換
         required_area = JSON.parse(required_area)
       rescue JSON::ParserError
-        # パースに失敗した場合はそのまま処理
+        raise "JSONのパースに失敗しました: #{required_area}"
       end
     end
   
-    # required_area が配列の場合
+    # 配列としての処理
     if required_area.is_a?(Array)
-      # 配列内のいずれかのエリアが customer_address に含まれているかをチェック
-      return required_area.any? { |area| customer_address.include?(area.to_s.strip) }
+      # エリア内の余分な空白やクォートを除去して比較
+      return required_area.any? do |area|
+        cleaned_area = area.strip.gsub(/\A["']+|["']+\z/, '')  # クォートと空白を除去
+        customer_address.include?(cleaned_area)
+      end
     else
-      # required_area が文字列の場合
-      return customer_address.include?(required_area.to_s.strip)
+      # 文字列の場合の処理（配列でない場合）
+      cleaned_area = required_area.strip.gsub(/\A["']+|["']+\z/, '')  # クォートと空白を除去
+      return customer_address.include?(cleaned_area)
     end
-  end  
+  end
+    
   #draftでworkerの履歴を残す
   def add_worker_update_history(worker, status)
     self.update_history = {} if self.update_history.nil?
