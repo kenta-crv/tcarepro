@@ -642,16 +642,24 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def valid_area?(required_area, customer_address)
+    # required_area が文字列で、エスケープされた配列のような形で渡された場合、JSONとしてパースして配列に変換する
+    if required_area.is_a?(String) && required_area.start_with?('[')
+      begin
+        required_area = JSON.parse(required_area)
+      rescue JSON::ParserError
+        # パースに失敗した場合はそのまま処理
+      end
+    end
+  
     # required_area が配列の場合
     if required_area.is_a?(Array)
       # 配列内のいずれかのエリアが customer_address に含まれているかをチェック
-      required_area.any? { |area| customer_address.include?(area.to_s) }
+      return required_area.any? { |area| customer_address.include?(area.to_s.strip) }
     else
       # required_area が文字列の場合
-      customer_address.include?(required_area.to_s)
+      return customer_address.include?(required_area.to_s.strip)
     end
-  end
-  
+  end  
   #draftでworkerの履歴を残す
   def add_worker_update_history(worker, status)
     self.update_history = {} if self.update_history.nil?
