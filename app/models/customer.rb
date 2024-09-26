@@ -240,10 +240,9 @@ scope :before_sended_at, ->(sended_at){
     { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
   end
   
-  # 既存の import メソッド
   def self.import(file)
     save_count = 0
-    batch_size = 5000
+    batch_size = 2500
     batch = []
     CSV.foreach(file.path, headers: true) do |row|
       customer = find_or_initialize_by(id: row["id"])
@@ -252,6 +251,10 @@ scope :before_sended_at, ->(sended_at){
       next if customer.tel.blank?  # 電話番号が空の場合はスキップ
       next if where(tel: customer.tel).where(industry: nil).count > 0
       next if where(tel: customer.tel).where(industry: customer.industry).count > 0
+  
+      # 既にバッチに含まれていないか確認
+      next if batch.any? { |c| c.tel == customer.tel && c.industry == customer.industry }
+  
       batch << customer
       if batch.size >= batch_size
         Customer.transaction do
@@ -269,17 +272,24 @@ scope :before_sended_at, ->(sended_at){
     end
     save_count
   end
-
+  
   def self.call_import(call_file)
     save_cnt = 0
-    batch_size = 5000
+    batch_size = 2500
     batch = []
     CSV.foreach(call_file.path, headers: true) do |row|
       existing_customer = find_by(company: row['company'], industry: row['industry'])
       if existing_customer
+        # 既に "再掲載" ステータスの Call が最近2ヶ月以内に登録されているかを確認
+        recent_republication = existing_customer.calls.where(statu: "再掲載").where("created_at >= ?", 2.months.ago).exists?
+  
+        # 最新の Call を取得
         latest_call = existing_customer.calls.order(created_at: :desc).first
-        if latest_call && latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)
-          batch << existing_customer
+        
+        # 再掲載が2ヶ月以内に存在しない場合か、古い Call で APP や 永久NG ではない場合にのみ追加
+        if !recent_republication && (latest_call.nil? || (latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)))
+          batch << existing_customer unless batch.include?(existing_customer)
+  
           if batch.size >= batch_size
             Customer.transaction do
               batch.each do |customer|
@@ -292,6 +302,7 @@ scope :before_sended_at, ->(sended_at){
         end
       end
     end
+  
     # 残りのバッチがあれば処理する
     unless batch.empty?
       Customer.transaction do
@@ -301,18 +312,19 @@ scope :before_sended_at, ->(sended_at){
       end
       save_cnt += batch.size
     end
+  
     { save_cnt: save_cnt }
   end
-    
+      
   def self.repurpose_import(repurpose_file)
     repurpose_import_count = 0
-    batch_size = 5000
+    batch_size = 2500
     batch = []
-  
+    
     crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
       { 'title' => title, 'area' => area.split(',') }
     end
-  
+    
     CSV.foreach(repurpose_file.path, headers: true) do |row|
       existing_customer = find_by(company: row['company'], industry: row['industry'])
       
@@ -335,7 +347,10 @@ scope :before_sended_at, ->(sended_at){
             end
           end
   
-          # ここで repurpose_customer_attributes を定義
+          # 既にバッチに含まれていないか確認
+          next if batch.any? { |c| c.company == row['company'] && c.industry == row['industry'] }
+  
+          # repurpose_customer_attributes の作成
           repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
             'industry' => row['industry'],
             'url_2' => row['url_2']
@@ -363,25 +378,30 @@ scope :before_sended_at, ->(sended_at){
         end
       end
     end
-  
+    
     unless batch.empty?
       Customer.transaction do
         batch.each(&:save!)
       end
       repurpose_import_count += batch.size
     end
-  
+    
     { repurpose_import_count: repurpose_import_count }
   end
   
+  
   def self.draft_import(draft_file)
     draft_count = 0
-    batch_size = 5000
+    batch_size = 2500
     batch = []
     CSV.foreach(draft_file.path, headers: true) do |row|
       next if row['tel'].present?
       existing_customer = find_by(industry: row['industry'], company: row['company'])
       next if existing_customer
+  
+      # 既にバッチに含まれていないか確認
+      next if batch.any? { |c| c.company == row['company'] && c.industry == row['industry'] }
+  
       customer = Customer.new(row.to_hash.slice(*updatable_attributes))
       next if customer.industry.nil?
       customer.status = "draft"
