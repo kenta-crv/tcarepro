@@ -116,7 +116,12 @@ class CustomersController < ApplicationController
       @customer.skip_validation = true
       @customer.status = "hidden"
     end
-    
+  
+    # workerがサインインしていない場合、バリデーションをスキップ
+    unless worker_signed_in?
+      @customer.skip_validation = true
+    end
+  
     # 現在のフィルタ条件を考慮して次のdraft顧客を取得
     @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
   
@@ -150,7 +155,7 @@ class CustomersController < ApplicationController
       render 'edit'
     end
   end
-  
+    
   def destroy
     @customer = Customer.find(params[:id])
     @customer.destroy
