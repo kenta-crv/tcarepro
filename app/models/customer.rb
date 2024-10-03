@@ -2,9 +2,9 @@ require 'scraping'
 
 class Customer < ApplicationRecord
   INDUSTRY_MAPPING = {
-    'コンシェルテック（営業）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
-    'コンシェルテック（販売）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
-    'コンシェルテック（工場）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日"},
+    'コンシェルテック（営業）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日", industry_mail: "info@ri-plus.jp"},
+    'コンシェルテック（販売）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日", industry_mail: "info@ri-plus.jp"},
+    'コンシェルテック（工場）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日", industry_mail: "info@ri-plus.jp"},
     'SORAIRO（工場）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "末日"},
     'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
     'SOUND（食品）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
@@ -18,7 +18,7 @@ class Customer < ApplicationRecord
     'VIETA（飲食）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日"},
     'ジョイスリー（介護）' => {industry_code: 23000, company_name: "ジョイスリー株式会社", payment_date: "10日"},
     'ニューアース' => {industry_code: 35000, company_name: "ニューアース株式会社", payment_date: "10日"},
-    '光誠会' => {industry_code: 29000, company_name: "医療法人社団光誠会", payment_date: "10日"},
+    '光誠会（介護）' => {industry_code: 29000, company_name: "医療法人社団光誠会", payment_date: "10日"},
     '登録支援機関' => {industry_code: 10000, company_name: "自社", payment_date: ""},
     'エンジスト' => {industry_code: 10000, company_name: "自社", payment_date: ""},
     'ケアリンク' => {industry_code: 10000, company_name: "自社", payment_date: ""},
@@ -26,6 +26,10 @@ class Customer < ApplicationRecord
   }
 
   before_save :set_industry_defaults
+  
+  def industry_mail
+    INDUSTRY_MAPPING[self.industry][:industry_mail]
+  end
 
   def set_industry_defaults
     Rails.logger.debug("Setting industry defaults for #{industry}")
@@ -35,22 +39,19 @@ class Customer < ApplicationRecord
       self.industry_code = defaults[:industry_code]
       self.company_name = defaults[:company_name]
       self.payment_date = defaults[:payment_date]
+      self.industry_mail = defaults[:industry_mail]
     else
       Rails.logger.debug("No defaults found for industry: #{industry}")
     end
 
     Rails.logger.debug("Defaults set: #{defaults.inspect}")
   end
-  
-  def set_industry_defaults
-    return unless INDUSTRY_MAPPING.key?(industry)
 
-    defaults = INDUSTRY_MAPPING[industry]
-    self.industry_code = defaults[:industry_code]
-    self.company_name = defaults[:company_name]
-    self.payment_date = defaults[:payment_date]
+  def self.unique_customers_data
+    # 例: industry_name をキーとし、データをグループ化して返す
+    all.group_by(&:industry_name) # 適切なカラムに変更
   end
-
+  
   def self.analytics_for(industry_name)
     customers = where(industry: industry_name)
     appointment_count = customers.count
@@ -84,6 +85,42 @@ class Customer < ApplicationRecord
       app_count: app_count,
     }
   end
+
+  def self.analytics2_for(company_name)
+    customers = where(industry: company_name)
+    appointment_count = customers.count
+    #unit_price_inc_tax = customers.average(:unit_price_inc_tax) || 1000 # 仮の値
+    list_count = customers.where.not(created_at: nil)
+    .where('customers.created_at > ?', Time.current.beginning_of_month)
+    .where('customers.created_at < ?', Time.current.end_of_month)
+    .to_a.count
+
+    call_count = customers.joins(:calls)
+    .where.not(calls: { created_at: nil })
+    .where('calls.created_at > ?', Time.current.beginning_of_month)
+    .where('calls.created_at < ?', Time.current.end_of_month)
+    .count
+
+    app_count = customers.joins(:calls)
+    .where(calls: { statu: "APP" })
+    .where('calls.created_at > ?', Time.current.beginning_of_month)
+    .where('calls.created_at < ?', Time.current.end_of_month)
+    .to_a.count
+    # 業界情報を取得
+
+    industry_data = INDUSTRY_MAPPING[company_name] || { industry_code: nil, company_name: nil, payment_date: nil }
+
+    {
+      company_name: company_name,
+      industry_code: industry_data[:industry_code],
+      company_name: industry_data[:company_name],
+      payment_date: industry_data[:payment_date],
+      list_count: list_count,
+      call_count: call_count,
+      app_count: app_count,
+    }
+  end
+
 
   before_save :set_industry_defaults
   belongs_to :user, optional: true

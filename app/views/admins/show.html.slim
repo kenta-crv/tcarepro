@@ -86,7 +86,8 @@
       th 昨日の送信数
       th 一昨日の送信数
       th 直近一週間の送信数
-      th 月間送信数
+      th 先月送信数
+      th 先月支払額
       th 合計送信数
       th 登録日
       th 支払
@@ -94,12 +95,14 @@
       th 削除
     - @workers.select { |worker| worker.select == "メール送信" }.each do |worker|
       - @contact_trackings_month = worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
+      - @contact_trackings_before_month = worker.contact_trackings.where(created_at: Time.current.prev_month.beginning_of_month..Time.current.prev_month.end_of_month)
       - @contact_trackings_total_month = worker.contact_trackings.all
       - @contact_trackings_day = worker.contact_trackings.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
       - @contact_trackings_yesterday = worker.contact_trackings.where(created_at: 1.day.ago.beginning_of_day..1.day.ago.end_of_day)
       - @contact_trackings_2yesterday = worker.contact_trackings.where(created_at: 2.days.ago.beginning_of_day..2.days.ago.end_of_day)
       - @contact_trackings_week = worker.contact_trackings.where(created_at: Time.current.beginning_of_week..Time.current.end_of_week)
       - @send_success_count_month = @contact_trackings_month.where(status: '送信済').count.to_i
+      - @send_success_count_before_month = @contact_trackings_before_month.where(status: '送信済').count.to_i
       - @send_success_count_total_month = @contact_trackings_total_month.where(status: '送信済').count.to_i
       - @send_error_count_month = @contact_trackings_month.where(status: '送信不可').count.to_i
       - @send_ng_count_month = @contact_trackings_month.where(status: '営業NG').count.to_i
@@ -121,7 +124,8 @@
         td = @send_count_yesterday
         td = @send_count_2yesterday
         td = @send_success_count_week
-        td = @send_success_count_month
+        td = @send_success_count_before_month
+        td = @send_success_count_before_month * 3
         td = @send_success_count_total_month
         td = worker.created_at.strftime("%-m月%-d日")
         td
@@ -156,10 +160,10 @@
         th 配置先
         th 本日の件数
         th 今週の件数
-        th 今週の不足件数
         th 今月の件数
+        th 先月の件数
         th トータル件数
-        th 今月支払額
+        th 先月支払額
         th 登録日
         th 支払
         th 契約終了
@@ -169,8 +173,9 @@
         - count_day = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?', Time.current.end_of_day).count
         - count_week = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?', Time.current.end_of_week).count
         - count_month = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_month).where('updated_at < ?', Time.current.end_of_month).count
-        - total_number = worker.customers.count
-        - count_month_price = count_month * 3
+        - count_before_month = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.prev_month.beginning_of_month).where('updated_at < ?', Time.current.prev_month.end_of_month).count 
+        - total_number = worker.customers.where(status: "draft").where.not(tel: nil).count
+        - count_month_price = count_before_month * 3
         - assigned_crowdwork = @assigned_crowdworks[worker.id]
         tr 
           td
@@ -183,12 +188,8 @@
               | なし
           td = count_day
           td = count_week
-          td
-            - if count_week.to_i < 150
-              = 150 - count_week.to_i
-            - else
-              | 
           td = count_month
+          td = count_before_month
           td = total_number
           td = count_month_price
           td = worker.created_at.strftime("%-m月%-d日")

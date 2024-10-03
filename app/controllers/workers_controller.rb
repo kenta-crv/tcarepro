@@ -21,7 +21,7 @@ class WorkersController < ApplicationController
     @count_day = @customers.where(status:"draft").where.not(tel: nil).where('updated_at >= ?', Time.current.beginning_of_day).where('updated_at <= ?', Time.current.end_of_day).count
     @count_week = @customers.where(status:"draft").where.not(tel: nil).where('updated_at >= ?', Time.current.beginning_of_week).where('updated_at <= ?', Time.current.end_of_week).count
     @count_month = @customers.where(status:"draft").where.not(tel: nil).where('updated_at >= ?', Time.current.beginning_of_month).where('updated_at <= ?', Time.current.end_of_month).count
-    @count_month_price = @count_month * 3
+    @count_before_month = @customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.prev_month.beginning_of_month).where('updated_at < ?', Time.current.prev_month.end_of_month).count
     @total_count = @customers.count
     
     # Retrieve contact trackings for the current and previous month, day, and week

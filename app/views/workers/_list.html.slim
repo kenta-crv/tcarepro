@@ -28,18 +28,15 @@
       tr
         th 本日の件数
         th 今週の件数
-        th 今週の不足件数
         th 今月の件数
+        th 先月の件数
+        th 先月支払額
         th トータル件数
       tr
         td = @count_day
         td = @count_week
-        - if @count_week.to_i < 150
-         td.red
-          = 150 - @count_week.to_i
-        - else
-         td.red
-          | CLEAR
         td = @count_month
+        td = @count_before_month
+        td = @count_before_month * 3
         td = @total_number
   br/

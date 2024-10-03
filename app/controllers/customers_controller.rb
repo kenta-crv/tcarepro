@@ -117,10 +117,11 @@ class CustomersController < ApplicationController
       @customer.status = "hidden"
     end
   
-    # workerがサインインしていない場合、バリデーションをスキップ
-    unless worker_signed_in?
-      @customer.skip_validation = true
-    end
+  # admin または user がサインインしている場合、バリデーションをスキップ
+  if admin_signed_in? || user_signed_in?
+    @customer.skip_validation = true
+  end
+
   
     # 現在のフィルタ条件を考慮して次のdraft顧客を取得
     @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
@@ -155,7 +156,7 @@ class CustomersController < ApplicationController
       render 'edit'
     end
   end
-    
+
   def destroy
     @customer = Customer.find(params[:id])
     @customer.destroy
@@ -237,7 +238,27 @@ class CustomersController < ApplicationController
 
       @industries_data = INDUSTRY_ADDITIONAL_DATA.keys.map do |industry_name|
         Customer.analytics_for(industry_name)
-      end
+      end    
+
+      @companies_data = INDUSTRY_ADDITIONAL_DATA.keys.map do |company_name|
+        Customer.analytics2_for(company_name)
+      end.group_by { |data| data[:company_name] }
+         .map do |company_name, records|
+           # 同じcompany_nameが存在する場合、そのデータをまとめる
+           first_record = records.first
+      
+           # もし必要であれば、複数の同じcompany_nameのデータを合算
+           combined_data = {
+             company_name: first_record[:company_name],
+             industry_code: first_record[:industry_code],
+             industry_name: first_record[:industry_name],
+             list_count: records.sum { |record| record[:list_count] || 0 },
+             call_count: records.sum { |record| record[:call_count] || 0 },
+             app_count: records.sum { |record| record[:app_count] || 0 },
+             payment_date: first_record[:payment_date] # 日付は一番最初のデータを使用
+           }
+           combined_data
+         end
   end
 
   def news
@@ -269,63 +290,109 @@ class CustomersController < ApplicationController
   
   def print
     report = Thinreports::Report.new layout: "app/reports/layouts/invoice.tlf"
-    @industries_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |data|
-      Customer.analytics_for(data)
-    end
     
-    @industries_data.each do |data|
+    @companies_data = INDUSTRY_ADDITIONAL_DATA.keys.map do |company_name|
+      Customer.analytics2_for(company_name)
+    end.group_by { |data| data[:company_name] }
+    .map do |company_name, records|
+      first_record = records.first
+      combined_data = {
+        company_name: first_record[:company_name],
+        industry_code: first_record[:industry_code],
+        industry_name: first_record[:industry_name],
+        list_count: records.sum { |record| record[:list_count] || 0 },
+        call_count: records.sum { |record| record[:call_count] || 0 },
+        app_count: records.sum { |record| record[:app_count] || 0 },
+        payment_date: first_record[:payment_date]
+      }
+      combined_data
+    end  
+    @companies_data.each do |data|
       create_pdf_page(report, data)
     end
-    
     send_data(report.generate, filename: "industries_report_#{Time.zone.now.to_formatted_s(:number)}.pdf", type: "application/pdf")
   end
-
+  
   def generate_pdf
-    industry_name = params[:industry_name]
-    
-    # `@industries_data` からデータを取得するために、情報が必要です。
-    @industries_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |name|
-      Customer.analytics_for(name)
+    company_name = params[:company_name]
+    @companies_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |name|
+      Customer.analytics2_for(name)
+    end.group_by { |data| data[:company_name] }
+    .map do |company_name, records|
+      first_record = records.first
+      combined_data = {
+        company_name: first_record[:company_name],
+        industry_code: first_record[:industry_code],
+        industry_name: first_record[:industry_name],
+        list_count: records.sum { |record| record[:list_count] || 0 },
+        call_count: records.sum { |record| record[:call_count] || 0 },
+        app_count: records.sum { |record| record[:app_count] || 0 },
+        payment_date: first_record[:payment_date]
+      }
+      combined_data
     end
-    
-    # `@industries_data` を利用して、`data` を設定します
-    data = @industries_data.find { |d| d[:industry_name] == industry_name }
-    
+    data = @companies_data.find { |d| d[:company_name] == company_name }
     if data.nil?
-      Rails.logger.error("No data found for industry name: #{industry_name}")
+      Rails.logger.error("No data found for industry name: #{company_name}")
       return
     end
-    
     report = Thinreports::Report.new layout: 'app/reports/layouts/invoice.tlf'
     create_pdf_page(report, data)
-    
-    send_data report.generate, filename: "#{industry_name}.pdf", type: 'application/pdf', disposition: 'attachment'
+    send_data report.generate, filename: "#{company_name}.pdf", type: 'application/pdf', disposition: 'attachment'
   end
-
+  
   def thinreports_email
-    industry_name = params[:industry_name]
-
-    # `@industries_data`から該当するデータを取得
-    @industries_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |name|
-      Customer.analytics_for(name)
-    end
-
-    data = @industries_data.find { |d| d[:industry_name] == industry_name }
-
+    company_name = params[:company_name] # paramsからcompany_nameを取得
+    Rails.logger.info("Looking for customer with company_name: #{company_name}")
+    
+    # @companies_dataの取得と処理
+    @companies_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |name|
+      Customer.analytics2_for(name)
+    end.group_by { |data| data[:company_name] }
+     .map do |company_name, records|
+       first_record = records.first
+  
+       combined_data = {
+         company_name: first_record[:company_name],
+         industry_code: first_record[:industry_code],
+         industry_name: first_record[:industry_name],
+         list_count: records.sum { |record| record[:list_count] || 0 },
+         call_count: records.sum { |record| record[:call_count] || 0 },
+         app_count: records.sum { |record| record[:app_count] || 0 },
+         payment_date: first_record[:payment_date]
+       }
+       combined_data
+     end
+    
+    # company_nameの検索とデータ取得
+    data = @companies_data.find { |d| d[:company_name] == company_name }
     if data.nil?
-      Rails.logger.error("No data found for industry name: #{industry_name}")
+      Rails.logger.error("No data found for industry name: #{company_name}")
       redirect_to customers_path, alert: "指定された業界のデータが見つかりませんでした。"
       return
     end
-
-    # PDFを生成
+    
+    # 顧客情報の取得とindustry_mailの確認
+    customer = Customer.where("company_name LIKE ?", "%#{company_name}%").first
+    if customer.blank?
+      redirect_to customers_path, alert: "メールアドレスが見つかりません。"
+      return
+    end
+  
+    industry_mail = customer.industry_mail
+    if industry_mail.blank?
+      redirect_to customers_path, alert: "industry_mailが見つかりませんでした。"
+      return
+    end
+  
+    # ThinreportsでPDFを作成
     report = Thinreports::Report.new layout: 'app/reports/layouts/invoice.tlf'
-    create_pdf_page(report, data)
+    create_pdf_page(report, data)  # PDF作成メソッドを利用
     pdf_content = report.generate
-
-    # メールを送信
-    CustomerMailer.send_thinreports_data(data, pdf_content).deliver_now
-
+    
+    # メール送信、データも渡す
+    CustomerMailer.send_thinreports_data(industry_mail, data, pdf_content, customers).deliver_now
+    #CustomerMailer.send_thinreports_data(industry_mail, data, pdf_content).deliver_now  
     redirect_to customers_path, notice: "メールが送信されました"
   end
   
@@ -342,7 +409,6 @@ class CustomersController < ApplicationController
     redirect_to customers_path, notice: 'Email sent successfully!'
   end
   
-
   def extraction
     @q = Customer.ransack(params[:q])
     @customers = @q.result
@@ -530,6 +596,7 @@ class CustomersController < ApplicationController
         :industry_code,
         :company_name,
         :payment_date,
+        industry_mail,
        )&.merge(worker: current_worker)
     end
 

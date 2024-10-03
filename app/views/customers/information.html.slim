@@ -704,8 +704,6 @@ table
       th 税込単価
       th 売上
       th 締め日
-      th PDF
-      th Mail
   tbody
     - @industries_data.each do |data|
       tr
@@ -726,16 +724,11 @@ table
          /= data[:conversion_count conversion] 
         /td = number_to_currency(data[:unit_price_inc_tax] * data[:appointment_count])
         td = data[:payment_date]
-        td = link_to 'PDF', customers_analytics_generate_pdf_path(industry_name: data[:industry_name], format: 'pdf'), target: '_blank', class: "btn btn-success"
-        td = link_to 'Mail', customers_thinreports_email_path(industry_name: data[:industry_name]), class: "btn btn-primary"
 
-
-.heading
-  h2 インポート
-  br/
-  br/
-  = form_with(url: all_import_customers_path, method: :post, local: true, multipart: true) do |f|
-    table
+br/
+br/
+= form_with(url: all_import_customers_path, method: :post, local: true, multipart: true) do |f|
+  table[width="100%"]
       tbody
         tr
           th ファイル選択
@@ -745,3 +738,45 @@ table
             = f.file_field :file
           td
             = f.submit 'インポート実行'
+
+br/
+br/
+
+table
+  thead
+    tr
+      th 企業名
+      th 案件名
+      th リスト数
+      th コール数
+      th APP数
+      th 獲得率
+      th 税抜単価
+      th 税込単価
+      th 売上
+      th 締め日
+      th PDF 
+      th Mail
+  tbody
+    - @companies_data.each do |data|
+      tr
+        td = data[:company_name]
+        td = data[:industry_name]
+        td = data[:list_count] 
+        td = data[:call_count] 
+        td = data[:app_count]
+        td 
+          - if data[:call_count].to_f > 0
+            - acquisition_rate = (data[:app_count].to_f / data[:call_count]) * 100
+            = number_to_percentage(acquisition_rate, precision: 2)
+          - else
+          
+        td = data[:industry_code]
+        td = ((data[:industry_code] || 0) * 1.10).to_i
+        td = ((data[:industry_code] || 0) * 1.10).to_i * (data[:app_count] || 0)
+         /= data[:conversion_count conversion] 
+        /td = number_to_currency(data[:unit_price_inc_tax] * data[:appointment_count])
+        td = data[:payment_date]
+        td = link_to 'PDF', customers_analytics_generate_pdf_path(company_name: data[:company_name], format: 'pdf'), target: '_blank', class: "btn btn-success"
+        td = link_to 'Mail', customers_thinreports_email_path(company_name: data[:company_name]), class: "btn btn-primary"
+
