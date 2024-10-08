@@ -130,12 +130,12 @@
         td = worker.created_at.strftime("%-m月%-d日")
         td
           - if worker.number_code.present?
-            = link_to "支払", "https://crowdworks.jp/contracts/#{worker.number_code}", class: "btn btn-success"
+            = link_to "支払", "https://crowdworks.jp/contracts/#{worker.number_code}", class: "btn btn-success", target:"_blank"
           - else
             | 未登録
         td
           - if worker.number_code.present?
-            = link_to "終了", "https://crowdworks.jp/contracts/#{worker.number_code}/termination_requests/new", class: "btn btn-success"
+            = link_to "終了", "https://crowdworks.jp/contracts/#{worker.number_code}/termination_requests/new", class: "btn btn-success", target:"_blank"
           - else
             | 未登録
         td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
@@ -169,7 +169,8 @@
         th 契約終了
         th 削除
         th 解除
-      - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
+      = form_with url: assign_workers_admin_path(@admin), method: :post do
+       - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
         - count_day = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?', Time.current.end_of_day).count
         - count_week = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?', Time.current.end_of_week).count
         - count_month = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_month).where('updated_at < ?', Time.current.end_of_month).count
@@ -195,12 +196,12 @@
           td = worker.created_at.strftime("%-m月%-d日")
           td
             - if worker.number_code.present?
-              = link_to "支払", "https://crowdworks.jp/contracts/#{worker.number_code}", class: "btn btn-success"
+              = link_to "支払", "https://crowdworks.jp/contracts/#{worker.number_code}", class: "btn btn-success", target:"_blank"
             - else
               | 未登録
           td
             - if worker.number_code.present?
-              = link_to "終了", "https://crowdworks.jp/contracts/#{worker.number_code}/termination_requests/new", class: "btn btn-success"
+              = link_to "終了", "https://crowdworks.jp/contracts/#{worker.number_code}/termination_requests/new", class: "btn btn-success", target:"_blank"
             - else
               | 未登録
           td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"

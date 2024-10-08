@@ -34,8 +34,7 @@ class CustomerMailer < ActionMailer::Base
   
   def send_thinreports_data(customer_email, data, pdf_content)
     @data = data  # データを直接使用
-    @customers = customers 
-    Rails.logger.debug("Sending email with data: #{@data.inspect}")
+    app_count_customers = @data[:app_count_customers]
     attachments['report.pdf'] = pdf_content
     mail(
       from: "info@ri-plus.jp", 
@@ -44,3 +43,4 @@ class CustomerMailer < ActionMailer::Base
     )
   end
 end
+

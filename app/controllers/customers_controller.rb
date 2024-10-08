@@ -342,59 +342,36 @@ class CustomersController < ApplicationController
   end
   
   def thinreports_email
-    company_name = params[:company_name] # paramsからcompany_nameを取得
+    company_name = params[:company_name]
     Rails.logger.info("Looking for customer with company_name: #{company_name}")
-    
+  
     # @companies_dataの取得と処理
     @companies_data ||= INDUSTRY_ADDITIONAL_DATA.keys.map do |name|
       Customer.analytics2_for(name)
-    end.group_by { |data| data[:company_name] }
-     .map do |company_name, records|
-       first_record = records.first
-  
-       combined_data = {
-         company_name: first_record[:company_name],
-         industry_code: first_record[:industry_code],
-         industry_name: first_record[:industry_name],
-         list_count: records.sum { |record| record[:list_count] || 0 },
-         call_count: records.sum { |record| record[:call_count] || 0 },
-         app_count: records.sum { |record| record[:app_count] || 0 },
-         payment_date: first_record[:payment_date]
-       }
-       combined_data
-     end
-    
-    # company_nameの検索とデータ取得
-    data = @companies_data.find { |d| d[:company_name] == company_name }
-    if data.nil?
-      Rails.logger.error("No data found for industry name: #{company_name}")
-      redirect_to customers_path, alert: "指定された業界のデータが見つかりませんでした。"
-      return
     end
-    
+  
+    data = @companies_data.find { |d| d[:company_name] == company_name }
+    app_count_customers = data[:app_count_customers]
+  
+    app_count_customers.each do |customer|
+      customer.calls.where(statu: "APP").each do |call|
+        puts "Company: #{customer.company}, Call Created At: #{call.created_at}"
+      end
+    end
     # 顧客情報の取得とindustry_mailの確認
     customer = Customer.where("company_name LIKE ?", "%#{company_name}%").first
-    if customer.blank?
-      redirect_to customers_path, alert: "メールアドレスが見つかりません。"
-      return
-    end
-  
     industry_mail = customer.industry_mail
-    if industry_mail.blank?
-      redirect_to customers_path, alert: "industry_mailが見つかりませんでした。"
-      return
-    end
   
     # ThinreportsでPDFを作成
     report = Thinreports::Report.new layout: 'app/reports/layouts/invoice.tlf'
     create_pdf_page(report, data)  # PDF作成メソッドを利用
     pdf_content = report.generate
-    
+  
     # メール送信、データも渡す
-    CustomerMailer.send_thinreports_data(industry_mail, data, pdf_content, customers).deliver_now
-    #CustomerMailer.send_thinreports_data(industry_mail, data, pdf_content).deliver_now  
+    CustomerMailer.send_thinreports_data(industry_mail, data, pdf_content).deliver_now  
     redirect_to customers_path, notice: "メールが送信されました"
   end
+  
   
   def send_email
     @customer = Customer.find(params[:id])
@@ -596,7 +573,7 @@ class CustomersController < ApplicationController
         :industry_code,
         :company_name,
         :payment_date,
-        industry_mail,
+        :industry_mail,
        )&.merge(worker: current_worker)
     end
 

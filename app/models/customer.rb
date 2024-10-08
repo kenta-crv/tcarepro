@@ -2,15 +2,10 @@ require 'scraping'
 
 class Customer < ApplicationRecord
   INDUSTRY_MAPPING = {
-    'コンシェルテック（営業）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日", industry_mail: "info@ri-plus.jp"},
-    'コンシェルテック（販売）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日", industry_mail: "info@ri-plus.jp"},
-    'コンシェルテック（工場）' => {industry_code: 15000, company_name: "株式会社コンシェルテック", payment_date: "末日", industry_mail: "info@ri-plus.jp"},
-    'SORAIRO（工場）' => {industry_code: 27273, company_name: "株式会社未来ジャパン", payment_date: "末日"},
     'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
     'SOUND（食品）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日"},
     'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日"},
-    'グローバル（介護）' => {industry_code: 30000, company_name: "グローバル協同組合", payment_date: "10日"},
-    'ワークリレーション' => {industry_code: 21000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
+    'ワークリレーション' => {industry_code: 21000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"info@ri-plus.jp"},
     'ワーク（外国人）' => {industry_code: 30000, company_name: "株式会社ワークリレーション", payment_date: "10日"},
     'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日"},
     'VIETA（介護）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日"},
@@ -106,7 +101,14 @@ class Customer < ApplicationRecord
     .where('calls.created_at > ?', Time.current.beginning_of_month)
     .where('calls.created_at < ?', Time.current.end_of_month)
     .to_a.count
-    # 業界情報を取得
+
+  # app_count_customers をそのまま取得
+   app_count_customers = customers.joins(:calls)
+                                 .where(calls: { statu: "APP" })
+                                 .where('calls.created_at > ?', Time.current.beginning_of_month)
+                                 .where('calls.created_at < ?', Time.current.end_of_month)
+                                 .to_a# ここで直接取得
+
 
     industry_data = INDUSTRY_MAPPING[company_name] || { industry_code: nil, company_name: nil, payment_date: nil }
 
@@ -118,6 +120,7 @@ class Customer < ApplicationRecord
       list_count: list_count,
       call_count: call_count,
       app_count: app_count,
+      app_count_customers: app_count_customers
     }
   end
 

@@ -11,7 +11,9 @@
 また、以下に獲得企業一覧も記載しております。
 
 【獲得企業一覧】
-<%= @data[:app_count]%>
+<%- @data[:app_count_customers].each do |app_customer| %>
+  ・<%= app_customer.company %>：<%= app_customer.calls.first.created_at.strftime('%Y年%m月%d日 %H時%M分') %>
+<%- end %>
 
 尚、お振込み日については翌月<%= @data[:payment_date]%>となりますので、期日までのご対応をお願い出来ればと存じます。
 

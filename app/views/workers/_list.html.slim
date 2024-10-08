@@ -17,6 +17,8 @@
           th = crowdwork.title
           td  
             = link_to "本日の業務を行う", "/draft/filter_by_industry?industry_name=#{crowdwork.title}", class: "btn btn-success"
+          td  
+            = link_to "割当業務内容を確認", "/crowdworks", class: "btn btn-success"
 
   h2.headline
       | リスト制作実施件数
