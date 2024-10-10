@@ -26,7 +26,11 @@ class Call < ApplicationRecord
   }
 
   scope :call_count_hour, -> {
-    where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour)
+    where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG"]).where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour)
+  }
+
+  scope :basic_count_today, -> {
+    call_count_today.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG"])
   }
 
   # 本日獲得見込数
@@ -98,17 +102,17 @@ class Call < ApplicationRecord
 
   # 見込数
   def self.protect_convertion
-    (Call.protect_count_today.count.to_f / Call.call_count_today.count.to_f) * 100
+    (Call.protect_count_today.count.to_f / Call.basic_count_today.count.to_f) * 100
   end
 
   # アポ率
   def self.app_convertion
-    (Call.app_count_today.count.to_f / Call.call_count_today.count.to_f) * 100
+    (Call.app_count_today.count.to_f / Call.basic_count_today.count.to_f) * 100
   end
 
   # 活動中ユーザ数
   def self.active_user_count
-    Call.call_count_today.group(:user_id).having('count(*) > 0').count.count
+    Call.basic_count_today.group(:user_id).having('count(*) > 0').count.count
   end
 
   def date_count

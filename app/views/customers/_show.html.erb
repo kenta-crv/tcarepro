@@ -6,7 +6,7 @@
         <%= link_to "前へ", customer_path(id: @prev_customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class:"prev btn btn-success" %>
       <% end %>
     </th>
-      <th>総コール：<%= Call.call_count_today.count %>Call</th>
+      <th>総コール：<%= Call.basic_count_today.count  %>Call</th>
       <th>平均コール：<%= Call.active_user_count == 0 ? 0 : Call.call_count_hour.count / Call.active_user_count %>Call</th>
       <th>見込数：<%= Call.protect_count_today.count %>件</th>
       <th>アポ数：<%= Call.app_count_today.count %>件</th>
@@ -20,18 +20,18 @@
   </tr>
   <tr>
     <%- if admin_signed_in? %>
-      <th>自己コール：<%= current_admin.calls.count %>Call</th>
+      <th>自己コール：-</th>
       <th>不足コール：<%= -35 + current_admin.calls.count %>Call</th>
-      <th>総コール：<%= current_admin.calls.call_count_today.count %>Call</th>
-      <th>アポ数：<%= current_admin.calls.call_count_today.where(statu: "APP").count %>Call</th>
-      <th>アポ率：<%= number_to_percentage(current_admin.calls.call_count_today.count / current_admin.calls.app_count_today.count.to_f * 100 ,precision: 1 ) %>Call</th>
+      <th>総コール：<%= current_admin.calls.basic_count_today.count %>Call</th>
+      <th></th>
+      <th></th>
       <th></th>
     <%- elsif user_signed_in? %>
       <th>自己コール：<%= current_user.calls.call_count_hour.count %>Call</th>
       <th>不足コール：<%= -35 + current_user.calls.call_count_hour.count %>Call</th>
-      <th>総コール：<%= current_user.calls.call_count_today.count %>Call</th>
+      <th>総コール：<%= current_user.calls.basic_count_today.count %>Call</th>
       <th>アポ数：<%= current_user.calls.app_count_today.count %>Call</th>
-      <th>アポ率：<%= number_to_percentage(current_user.calls.call_count_today.count / current_user.calls.app_count_today.count.to_f * 100 ,precision: 1 ) %>Call</th>
+      <th>アポ率：<%= number_to_percentage(current_user.calls.basic_count_today.count / current_user.calls.app_count_today.count.to_f * 100 ,precision: 1 ) %>Call</th>
       <th></th>
     <%- end %>
   </tr>
