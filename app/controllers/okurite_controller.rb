@@ -19,10 +19,11 @@ class OkuriteController < ApplicationController
   end
   
   def resend
-    customers = Customer.joins(:contact_trackings).where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' }).where('contact_trackings.created_at < ?', 1.month.ago).distinct
+    customers = Customer.joins(:contact_trackings)
+                        .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
+                        .distinct
     @q = customers.ransack(params[:q])
-    filtered_customers = @q.result.where(forever: nil).where('customers.updated_at > ?', 3.months.ago).or(@q.result.where(choice: 'アポ匠'))
-    @customers = filtered_customers.page(params[:page]).per(30)
+    @customers = @q.result.page(params[:page]).per(30)
     @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
   end
   

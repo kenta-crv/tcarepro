@@ -33,6 +33,8 @@ module Smart
     # Thinreports
     config.autoload_paths += %W(#{config.root}/app/reports)
 
+    config.active_job.queue_adapter = :sidekiq
+
 
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {

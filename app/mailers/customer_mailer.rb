@@ -42,5 +42,15 @@ class CustomerMailer < ActionMailer::Base
       subject: '請求書発行のご案内'
     )
   end
+
+  def send_inquiry(customer, inquiry)
+    @customer = customer
+    @inquiry = inquiry
+    mail(to: @customer.mail, subject: @inquiry.title, body: @inquiry.content)
+  end
+
+  def completion_notification
+    mail(to: 'reply@ri-plus.jp', subject: '送信完了', body: 'すべてのメールが正常に送信されました。')
+  end
 end
 

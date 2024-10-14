@@ -412,6 +412,36 @@ class CustomersController < ApplicationController
     end
   end
   
+  def infosends
+    #@q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").ransack(params[:q])
+    @q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
+    @customers = @q.result.page(params[:page]).per(100)
+  end
+
+  def send_emails
+    inquiry_id = params[:inquiry_id]
+    email_count = params[:email_count].to_i
+  
+    inquiry = Inquiry.find(inquiry_id)
+    customers = Customer.where(mail: "mail@ri-plus.jp").limit(email_count)
+  
+    # 送信対象の顧客IDを配列に保存
+    customer_ids = customers.pluck(:id)
+  
+    # 現在の時間帯が送信可能かチェック
+    current_hour = Time.now.hour
+    if (5..9).cover?(current_hour) || (17..25).cover?(current_hour)
+      # メール送信を開始
+      EmailSendingJob.perform_later(inquiry_id, customer_ids, 0) # 最初のインデックスを0で呼び出す
+      redirect_to infosends_path, notice: 'メール送信を開始しました。'
+    else
+      # 次の指定時間帯にジョブを予約
+      next_send_time = calculate_next_send_time(current_hour)
+      EmailSendingJob.set(wait_until: next_send_time).perform_later(inquiry_id, customer_ids, 0) # 修正
+      redirect_to infosends_path, notice: '指定の時間帯にメール送信を予約しました。'
+    end
+  end
+    
   def filter_by_industry
     industry_name = params[:industry_name]
     tel_filter = params[:tel_filter] # 新しいパラメータ

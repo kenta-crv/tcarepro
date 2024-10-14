@@ -106,6 +106,7 @@ Rails.application.routes.draw do
       get :complete
       post :all_import
       post :import
+      post :send_emails #info
       #post :repost_import
       #post :update_import
       #post :call_import
@@ -119,6 +120,7 @@ Rails.application.routes.draw do
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
   get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
   get '/customers/analytics/thinreports_email', to: 'customers#thinreports_email', as: 'customers_thinreports_email'
+  get 'infosends' => 'customers#infosends' #締め
   get 'draft' => 'customers#draft' #締め
   get 'draft/filter_by_industry', to: 'customers#filter_by_industry', as: 'filter_by_industry'
   #showからのメール送信
@@ -181,6 +183,9 @@ Rails.application.routes.draw do
       post 'reject_email', to: 'recruits#reject_email', as: 'reject_email'
     end
   end
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
   
   get '*path', controller: 'application', action: 'render_404'

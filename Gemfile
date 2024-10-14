@@ -131,3 +131,4 @@ gem 'rails_autolink'
 gem 'rails-html-sanitizer', '1.4.3'
 gem 'dotenv-rails', groups: [:development, :test]
 
+gem 'sidekiq'
