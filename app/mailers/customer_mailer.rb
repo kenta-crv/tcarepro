@@ -43,10 +43,10 @@ class CustomerMailer < ActionMailer::Base
     )
   end
 
-  def send_inquiry(customer, inquiry)
+  def send_inquiry(customer, inquiry, from_email)
     @customer = customer
     @inquiry = inquiry
-    mail(to: @customer.mail, subject: @inquiry.title, body: @inquiry.content)
+    mail(from: from_email, to: @customer.mail, subject: @inquiry.title, body: @inquiry.content)
   end
 
   def completion_notification

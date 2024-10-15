@@ -40,15 +40,17 @@
         = paginate @customers
 
 
-= form_with url: send_emails_customers_path, method: :post do |f|
- table
-  tr 
-   td 
-    = f.select :inquiry_id, Inquiry.all.collect { |inquiry| [inquiry.title, inquiry.id] }, prompt: "メッセージを選択"
-   td 
-    = f.number_field :email_count, value: 100, min: 1, max: 500
-   td
-    = f.submit "送信開始", class: "btn btn-primary"
+= form_for :email_form, url: send_emails_customers_path, method: :post do |f|
+  table
+    tr 
+      td 
+        = f.select :inquiry_id, Inquiry.all.collect { |inquiry| [inquiry.title, inquiry.id] }, prompt: "メッセージを選択"
+      td 
+        = f.number_field :email_count, value: 100, min: 1, max: 500
+      td
+        = f.text_field :from_email, placeholder: "送信元のメールアドレスを入力"
+      td
+        = f.submit "送信開始", class: "btn btn-primary"
 
 
 #createTicket.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
