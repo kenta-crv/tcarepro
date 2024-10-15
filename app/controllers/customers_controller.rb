@@ -431,7 +431,7 @@ class CustomersController < ApplicationController
   
     # 現在の時間帯が送信可能かチェック
     current_hour = Time.current.hour
-    if (5..9).cover?(current_hour) || (17..25).cover?(current_hour)	  if (5..9).cover?(current_hour) || (17..23).cover?(current_hour) || current_hour == 0 || current_hour == 1
+    if (5..9).cover?(current_hour) || (17..23).cover?(current_hour) || current_hour == 0 || current_hour == 1
       # メール送信を開始
       EmailSendingJob.perform_later(inquiry_id, customer_ids, 0, from_email) # 送信元アドレスも渡す
       redirect_to infosends_path, notice: 'メール送信を開始しました。'
@@ -440,6 +440,19 @@ class CustomersController < ApplicationController
       next_send_time = calculate_next_send_time(current_hour)
       EmailSendingJob.set(wait_until: next_send_time).perform_later(inquiry_id, customer_ids, 0, from_email) # 修正
       redirect_to infosends_path, notice: '指定の時間帯にメール送信を予約しました。'
+    end
+  end
+
+  def calculate_next_send_time(current_hour)
+    if (5..9).cover?(current_hour)
+      # 10時に次の送信をスケジュール
+      Time.current.change(hour: 10, min: 0, sec: 0)
+    elsif (10..16).cover?(current_hour)
+      # 17時に次の送信をスケジュール
+      Time.current.change(hour: 17, min: 0, sec: 0)
+    else
+      # 次の日の5時に送信をスケジュール
+      (Time.current + 1.day).change(hour: 5, min: 0, sec: 0)
     end
   end
   
