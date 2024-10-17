@@ -413,16 +413,15 @@ class CustomersController < ApplicationController
   end
   
   def infosends
-    @q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''")
-    .where("business ILIKE ?", "%エンジニア%")
-    .ransack(params[:q])    #@q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
+    #@q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").where("business LIKE ?", "%エンジニア%").ransack(params[:q])    
+    @q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
     @customers = @q.result.page(params[:page]).per(100)
   end
 
   def send_emails
     email_count = params[:email_form][:email_count].to_i
     inquiry_id = params[:email_form][:inquiry_id]
-    from_email = params[:email_form][:from_email] # フォームから送信元のメールアドレスを取得
+    from_email = params[:email_form][:from_email]
   
     inquiry = Inquiry.find(inquiry_id)
     customers = Customer.where(mail: "mail@ri-plus.jp").limit(email_count)
@@ -434,7 +433,7 @@ class CustomersController < ApplicationController
     current_hour = Time.current.hour
     if (5..9).cover?(current_hour) || (17..23).cover?(current_hour) || current_hour == 0 || current_hour == 1
       # メール送信を開始
-      EmailSendingJob.perform_later(inquiry_id, customer_ids, 0, from_email) # 送信元アドレスも渡す
+      EmailSendingJob.perform_later(inquiry_id, customer_ids, 0, from_email) # 修正
       redirect_to infosends_path, notice: 'メール送信を開始しました。'
     else
       # 次の指定時間帯にジョブを予約
@@ -443,7 +442,7 @@ class CustomersController < ApplicationController
       redirect_to infosends_path, notice: '指定の時間帯にメール送信を予約しました。'
     end
   end
-
+  
   def calculate_next_send_time(current_hour)
     if (5..9).cover?(current_hour)
       # 10時に次の送信をスケジュール
