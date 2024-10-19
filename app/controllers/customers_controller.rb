@@ -433,28 +433,32 @@ class CustomersController < ApplicationController
     current_hour = Time.current.hour
     if (5..9).cover?(current_hour) || (17..23).cover?(current_hour) || current_hour == 0 || current_hour == 1
       # メール送信を開始
-      EmailSendingJob.perform_later(inquiry_id, customer_ids, 0, from_email) # 修正
+      EmailSendingJob.perform_later(inquiry_id, customer_ids, 0, from_email)
       redirect_to infosends_path, notice: 'メール送信を開始しました。'
     else
       # 次の指定時間帯にジョブを予約
       next_send_time = calculate_next_send_time(current_hour)
-      EmailSendingJob.set(wait_until: next_send_time).perform_later(inquiry_id, customer_ids, 0, from_email) # 修正
+      EmailSendingJob.set(wait_until: next_send_time).perform_later(inquiry_id, customer_ids, 0, from_email)
       redirect_to infosends_path, notice: '指定の時間帯にメール送信を予約しました。'
     end
   end
   
   def calculate_next_send_time(current_hour)
+    # タイムゾーンを日本時間に設定
+    current_time_in_japan = Time.zone.now
+  
     if (5..9).cover?(current_hour)
       # 10時に次の送信をスケジュール
-      Time.current.change(hour: 10, min: 0, sec: 0)
+      current_time_in_japan.change(hour: 10, min: 0, sec: 0)
     elsif (10..16).cover?(current_hour)
       # 17時に次の送信をスケジュール
-      Time.current.change(hour: 17, min: 0, sec: 0)
+      current_time_in_japan.change(hour: 17, min: 0, sec: 0)
     else
       # 次の日の5時に送信をスケジュール
-      (Time.current + 1.day).change(hour: 5, min: 0, sec: 0)
+      (current_time_in_japan + 1.day).change(hour: 5, min: 0, sec: 0)
     end
   end
+  
   
   def filter_by_industry
     industry_name = params[:industry_name]
