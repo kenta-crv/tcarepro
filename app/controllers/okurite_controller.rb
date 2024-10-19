@@ -10,12 +10,9 @@ class OkuriteController < ApplicationController
   def index
     @q = Customer.ransack(params[:q])
     ransack_results = @q.result.includes(:worker)
-    untracked_customers = Customer.left_joins(:contact_trackings)
-                                  .where(contact_trackings: { id: nil })
-                                  .or(Customer.left_joins(:contact_trackings)
-                                              .where.not(contact_trackings: { sender_id: @sender.id }))
-    @customers = ransack_results.merge(untracked_customers).where(forever: nil).page(params[:page]).per(30)
-    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.pluck(:id))
+    conditional_results = Customer.where(forever: nil)
+    @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)
+    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
   
   def resend

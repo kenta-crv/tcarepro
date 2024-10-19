@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
-  devise_for :staffs
-  root to: 'customers#index'
+  Rails.logger.debug("routes: " + DateTime.now.to_s)
   # 発信認証用ルーティング
   post 'notifications', to: 'notifications#create'
+  devise_for :staffs
+  root to: 'customers#index'
   #管理者アカウント
   devise_for :admins, controllers: {
     registrations: 'admins/registrations'

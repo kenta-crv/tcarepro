@@ -35,28 +35,35 @@
 
 require 'net/http'
 require 'uri'
+require 'json'
 
 class NotificationsController < ApplicationController
 
     def create
+        Rails.logger.info("notifications: " + Time.now.to_i.to_s)
         # Bearerトークンを取得
-        token = FCMService.get_access_token
+        access_token = get_access_token
         device_token = params[:token] # フロントエンドからのデバイストークン
         telephone = params[:telephone] # フロントエンドからの電話番号
 
-        # FCMのAPIのURL
-        url = URI.parse("https://fcm.googleapis.com/v1/projects/smart-edee0/messages:send")
+        Rails.logger.info("device_token: #{device_token}, telephone: #{telephone}, access_token: #{access_token}")
 
+
+        # FCMのAPIのURL
+        url = URI("https://fcm.googleapis.com/v1/projects/smart-edee0/messages:send")
+
+        
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
 
+        
         # POSTリクエストの設定
-        request = Net::HTTP::Post.new(url)
-        request["Authorization"] = "Bearer #{token}"
-        request["Content-Type"] = "application/json"
+        request = Net::HTTP::Post.new(url.path, {
+            "Content-Type" => "application/json",
+            "Authorization" => "Bearer #{access_token}"
+        })
 
-        # リクエストボディの設定
-        request.body = {
+        payload = {
             message: {
                 token: device_token,
                 notification: {
@@ -66,18 +73,43 @@ class NotificationsController < ApplicationController
                     # time_to_live: 1
                 },
                 data: {
-                    telephone: telephone,
-                    date: String(Time.now.to_i)
+                    "telephone": telephone,
+                    "date": String(Time.now.to_i)
                 }
             }
-        }.to_json
+        }
 
-        # リクエストを送信
+
+        # リクエストボディの設定
+        request.body = payload.to_json
+
+        # # リクエストを送信
         response = http.request(request)
 
-        # レスポンスを返す
-        render json: response.body, status: response.code
-        rescue StandardError => e
-            render json: { error: e.message }, status: :internal_server_error
+        # render json: { status: 'SUCCESS', message: 'OK', data: {access_token: access_token, device_token: device_token, telephone: telephone, body: response.body} }
+
+        if response.is_a?(Net::HTTPSuccess)
+            render json: response.body, status: :ok
+        else
+            Rails.logger.info("FCM response error: #{response.body}")
+            render json: { error: response.body }, status: response.code
         end
+        
+        # # レスポンスを返す
+        # render json: response.body, status: response.code
+        # rescue StandardError => e
+        #     render json: { error: e.message }, status: :internal_server_error
     end
+
+    def get_access_token
+        scope = 'https://www.googleapis.com/auth/firebase.messaging'
+        service_account_file = Rails.root.join('config/smart-edee0-firebase-adminsdk-m74sr-92f564d81e.json')
+        
+        authorizer = Google::Auth::ServiceAccountCredentials.make_creds(
+          json_key_io: File.open(service_account_file),
+          scope: scope
+        )
+        
+        authorizer.fetch_access_token!['access_token']
+    end
+end

@@ -1,6 +1,7 @@
 doctype html
 html
   head
+      = csrf_meta_tags
       = render template: 'layouts/_header.html.slim'
       = include_gon
       = javascript_include_tag "application"

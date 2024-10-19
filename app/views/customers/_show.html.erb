@@ -180,8 +180,12 @@
 <script>
 $(function() {
  
-  const csrfToken = $('meta[name="csrf-token"]').attr('content'); // CSRFトークンを定義
-
+  const csrfToken = $('meta[name="csrf-token"]').attr('content');
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-Token': csrfToken
+    }
+  });
   // 前回選択時の発信先を初期設定する
   for (var cookie of document.cookie.split(';')) {
     var keyValue = cookie.split('=');
@@ -228,20 +232,22 @@ $(function() {
     //  data: JSON.stringify({ "to": token, "priority": "high", "time_to_live": 1, "data": { "telephone": telephone.replace(/-/g, ''), "date": new Date().getTime() } }),
     //})
 
-    
+    const json = JSON.stringify({
+      token: token, // デバイストークンを渡す
+      telephone: telephone.replace(/-/g, '')
+    })
+
     // Push通知を送信_New
     $.ajax({
       type: 'post',
+      url: '/notifications',
       // url: 'http://localhost:3000/notifications',
-      url: 'http://tcare.pro/notifications',
+      // url: 'http://tcare.pro/notifications',
       contentType: 'application/json',
+      data: json,
       headers: {
-        'X-CSRF-Token': csrfToken // CSRFトークンを追加
+        'X-CSRF-Token': csrfToken
       },
-      data: JSON.stringify({
-        token: token, // デバイストークンを渡す
-        telephone: telephone.replace(/-/g, '')
-      })
     })
     .done((data, textStatus, jqXHR) => {
       if (data.failure > 0) {
@@ -251,9 +257,10 @@ $(function() {
       }
       console.log('done', jqXHR.status);
     })
-     .fail((jqXHR, textStatus, errorThrown) => {
-      alert('発信時にエラーが発生しました。\nシステム管理者にお問い合わせください。\n\nエラーコード：' + jqXHR.status);
-      console.log('fail', jqXHR.status);
+    .fail((jqXHR, textStatus, errorThrown) => {
+      const res = JSON.parse(jqXHR.responseJSON.error)
+      alert('発信時にエラーが発生しました。\nシステム管理者にお問い合わせください。\n\nエラーコード：' + res.error.message);
+      console.log('fail', error);
      })
     .always(() => {
       // nop

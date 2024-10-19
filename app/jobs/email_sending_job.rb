@@ -1,7 +1,7 @@
 class EmailSendingJob < ApplicationJob
   queue_as :default
 
-  def perform(inquiry_id, customer_ids, index = 0)
+  def perform(inquiry_id, customer_ids, index = 0, from_email)
     inquiry = Inquiry.find(inquiry_id)
 
     # 指定されたインデックスが顧客数を超えている場合は終了
@@ -11,9 +11,9 @@ class EmailSendingJob < ApplicationJob
     customer = Customer.find(customer_id)
 
     # メールを送信
-    CustomerMailer.send_inquiry(customer, inquiry).deliver_later
+    CustomerMailer.send_inquiry(customer, inquiry, from_email).deliver_later
 
     # 次のインデックスを計算し、45秒後に再実行
-    EmailSendingJob.set(wait: 45.seconds).perform_later(inquiry_id, customer_ids, index + 1)
+    EmailSendingJob.set(wait: 45.seconds).perform_later(inquiry_id, customer_ids, index + 1, from_email)
   end
 end
