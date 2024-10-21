@@ -317,32 +317,36 @@ scope :before_sended_at, ->(sended_at){
     save_cnt = 0
     batch_size = 2500
     batch = []
+    
     CSV.foreach(call_file.path, headers: true) do |row|
       existing_customer = find_by(company: row['company'], industry: row['industry'])
-      if existing_customer && existing_customer.calls.exists?  # callが存在するか確認
-        # 既に "再掲載" ステータスの Call が最近2ヶ月以内に登録されているかを確認
-        recent_republication = existing_customer.calls.where(statu: "再掲載").where("created_at >= ?", 2.months.ago).exists?
+      
+      # callが存在しない顧客はスキップ
+      next if existing_customer.nil? || existing_customer.calls.empty?
   
-        # 最新の Call を取得
-        latest_call = existing_customer.calls.order(created_at: :desc).first
-        
-        # 再掲載が2ヶ月以内に存在しない場合か、古い Call で APP や 永久NG ではない場合にのみ追加
-        if !recent_republication && (latest_call.nil? || (latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)))
-          batch << existing_customer unless batch.include?(existing_customer)
+      # "再掲載" ステータスの Call が最近2ヶ月以内に登録されているかを確認
+      recent_republication = existing_customer.calls.where(statu: "再掲載").where("created_at >= ?", 2.months.ago).exists?
+      
+      # 最新の Call を取得
+      latest_call = existing_customer.calls.order(created_at: :desc).first
+      
+      # 再掲載が2ヶ月以内に存在しない場合か、古い Call で APP や 永久NG ではない場合にのみ追加
+      if !recent_republication && (latest_call.nil? || (latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)))
+        batch << existing_customer unless batch.include?(existing_customer)
   
-          if batch.size >= batch_size
-            Customer.transaction do
-              batch.each do |customer|
-                customer.calls.create!(statu: "再掲載", created_at: Time.current)
-              end
+        if batch.size >= batch_size
+          Customer.transaction do
+            batch.each do |customer|
+              customer.calls.create!(statu: "再掲載", created_at: Time.current)
             end
-            save_cnt += batch.size
-            batch.clear
           end
+          save_cnt += batch.size
+          batch.clear
         end
       end
     end
-    # 残りのバッチを保存
+    
+    # 残りのバッチがあれば処理する
     unless batch.empty?
       Customer.transaction do
         batch.each do |customer|
@@ -351,9 +355,10 @@ scope :before_sended_at, ->(sended_at){
       end
       save_cnt += batch.size
     end
-    save_cnt
+    
+    { save_cnt: save_cnt }
   end
-        
+  
   def self.repurpose_import(repurpose_file)
     repurpose_import_count = 0
     batch_size = 2500
