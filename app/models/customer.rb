@@ -319,7 +319,7 @@ scope :before_sended_at, ->(sended_at){
     batch = []
     CSV.foreach(call_file.path, headers: true) do |row|
       existing_customer = find_by(company: row['company'], industry: row['industry'])
-      if existing_customer
+      if existing_customer && existing_customer.calls.exists?  # callが存在するか確認
         # 既に "再掲載" ステータスの Call が最近2ヶ月以内に登録されているかを確認
         recent_republication = existing_customer.calls.where(statu: "再掲載").where("created_at >= ?", 2.months.ago).exists?
   
@@ -342,8 +342,7 @@ scope :before_sended_at, ->(sended_at){
         end
       end
     end
-  
-    # 残りのバッチがあれば処理する
+    # 残りのバッチを保存
     unless batch.empty?
       Customer.transaction do
         batch.each do |customer|
@@ -352,10 +351,9 @@ scope :before_sended_at, ->(sended_at){
       end
       save_cnt += batch.size
     end
-  
-    { save_cnt: save_cnt }
+    save_cnt
   end
-      
+        
   def self.repurpose_import(repurpose_file)
     repurpose_import_count = 0
     batch_size = 2500
