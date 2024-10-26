@@ -12,7 +12,7 @@ class Customer < ApplicationRecord
     'VIETA（工場）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
     'VIETA（飲食）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
     'ジョイスリー（介護）' => {industry_code: 23000, company_name: "ジョイスリー株式会社", payment_date: "10日", industry_mail:"yamao.ysfm@hinode.or.jp"},
-    'ニューアース' => {industry_code: 35000, company_name: "ニューアース株式会社", payment_date: "10日", industry_mail:"nshiro5_14@yahoo.co.jp"},
+    'ニューアース（介護）' => {industry_code: 35000, company_name: "ニューアース株式会社", payment_date: "10日", industry_mail:"nshiro5_14@yahoo.co.jp"},
     '光誠会（介護）' => {industry_code: 29000, company_name: "医療法人社団光誠会", payment_date: "10日", industry_mail:"nishizawa@kouseikai-t.or.jp"},
     '登録支援機関' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
     'エンジスト' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
@@ -58,10 +58,11 @@ class Customer < ApplicationRecord
 
     call_count = customers.joins(:calls)
     .where.not(calls: { created_at: nil })
+    .where(calls: { statu: ["着信留守", "担当者不在", "フロントNG", "見込", "APP", "NG", "クロージングNG", "受付NG", "自己紹介NG", "質問段階NG", "日程調整NG"] })
     .where('calls.created_at > ?', Time.current.beginning_of_month)
     .where('calls.created_at < ?', Time.current.end_of_month)
     .count
-
+    
     app_count = customers.joins(:calls)
     .where(calls: { statu: "APP" })
     .where('calls.created_at > ?', Time.current.beginning_of_month)
@@ -92,6 +93,7 @@ class Customer < ApplicationRecord
 
     call_count = customers.joins(:calls)
     .where.not(calls: { created_at: nil })
+    .where(calls: { statu: ["着信留守", "担当者不在", "フロントNG", "見込", "APP", "NG", "クロージングNG", "受付NG", "自己紹介NG", "質問段階NG", "日程調整NG"] })
     .where('calls.created_at > ?', Time.current.beginning_of_month)
     .where('calls.created_at < ?', Time.current.end_of_month)
     .count
