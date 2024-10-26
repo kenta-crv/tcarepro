@@ -716,6 +716,7 @@ table
       th 締め日
   tbody
     - @industries_data.each do |data|
+     - if data[:call_count].to_f > 0
       tr
         td = data[:company_name]
         td = data[:industry_name]
@@ -769,6 +770,7 @@ table
       th Mail
   tbody
     - @companies_data.each do |data|
+     - if data[:call_count].to_f > 0
       tr
         td = data[:company_name]
         td = data[:industry_name]
