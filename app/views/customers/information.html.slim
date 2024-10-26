@@ -596,9 +596,13 @@ table
       th
         | APP
       th
-        | NG
+        | 受付NG
       th
-        | フロントNG
+        | 自己紹介NG 
+      th
+        | 質問段階NG
+      th
+        | 日程調整NG 
       th
         | クロージングNG
       th
@@ -612,11 +616,11 @@ table
       td
           = link_to user.user_name, new_user_attendance_path(user)
       td
-          = link_to user.calls_count_in_period(Time.current.beginning_of_day, Time.current.end_of_day), customers_path(q: {calls_user_user_name_cont: user.user_name, created_at_from: Time.current.beginning_of_day, created_at_to: Time.current.end_of_day})
+          = link_to user.calls.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG","受付NG","自己紹介NG","質問段階NG","日程調整NG"]).where('created_at > ?', Time.current.beginning_of_day).where('created_at < ?', Time.current.end_of_day).count, customers_path(calls_user_user_name_cont: user.user_name)      
       td
-          = link_to user.calls.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count, customers_path(calls_user_user_name_cont: user.user_name)
+          = link_to user.calls.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG","受付NG","自己紹介NG","質問段階NG","日程調整NG"]).where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
-          = link_to user.calls.where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).count, customers_path(calls_user_user_name_cont: user.user_name)
+          = link_to user.calls.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG","受付NG","自己紹介NG","質問段階NG","日程調整NG"]).where('created_at > ?', Time.current.last_month.beginning_of_month).where('created_at < ?', Time.current.last_month.end_of_month).count, customers_path(calls_user_user_name_cont: user.user_name)
       td
           - app_customers_for_user_last_month = Call.joins(:customer).where('calls.created_at > ?', Time.current.beginning_of_month).where('calls.created_at < ?', Time.current.end_of_month).select('customers.id').where(statu:"APP").where(user_id: user.id)
           = app_customers_for_user_last_month.present? ? app_customers_for_user_last_month.sum(:industry_code) : 0
@@ -662,16 +666,22 @@ table
         = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "APP" }.count / user_calls_month.count.to_f * 100, precision: 1)
         |)
       td
-        = user_calls_month.select { |call| call.statu == "NG" }.count
+        = user_calls_month.select { |call| call.statu == "受付NG" }.count
         br
         |(
-        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "受付NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
         |)
       td
-        = user_calls_month.select { |call| call.statu == "フロントNG" }.count
+        = user_calls_month.select { |call| call.statu == "自己紹介NG" }.count
         br
         |(
-        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "フロントNG" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "自己紹介NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
+        = user_calls_month.select { |call| call.statu == "日程調整NG" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "日程調整NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
         |)
       td
         = user_calls_month.select { |call| call.statu == "クロージングNG" }.count
