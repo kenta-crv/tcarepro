@@ -171,10 +171,10 @@
         th 解除
       = form_with url: assign_workers_admin_path(@admin), method: :post do
        - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
-        - count_day = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_day).where('updated_at < ?', Time.current.end_of_day).count
-        - count_week = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_week).where('updated_at < ?', Time.current.end_of_week).count
-        - count_month = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.beginning_of_month).where('updated_at < ?', Time.current.end_of_month).count
-        - count_before_month = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.prev_month.beginning_of_month).where('updated_at < ?', Time.current.prev_month.end_of_month).count 
+        - count_day = worker.customers.where(status: "draft").where.not(tel: nil).joins(:versions).where(versions: { whodunnit: worker.id }).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count
+        - count_week = worker.customers.where(status: "draft").where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).where("(EXISTS (SELECT 1 FROM versions WHERE versions.item_id = customers.id AND versions.whodunnit = ?) AND customers.updated_at >= ?) OR customers.updated_at < ?", worker.id, Time.current.beginning_of_day, Time.current.beginning_of_day).count
+        - count_month = worker.customers.where(status: "draft").where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).where("(EXISTS (SELECT 1 FROM versions WHERE versions.item_id = customers.id AND versions.whodunnit = ?) AND customers.updated_at >= ?) OR customers.updated_at < ?", worker.id, Time.current.beginning_of_day, Time.current.beginning_of_day).count
+        - count_before_month = worker.customers.where(status: "draft").where.not(tel: nil).where('updated_at > ?', Time.current.prev_month.beginning_of_month).where('updated_at < ?', Time.current.prev_month.end_of_month).count
         - total_number = worker.customers.where(status: "draft").where.not(tel: nil).count
         - count_month_price = count_before_month * 3
         - assigned_crowdwork = @assigned_crowdworks[worker.id]

@@ -22,6 +22,8 @@ class Customer < ApplicationRecord
 
   before_save :set_industry_defaults
   
+  has_paper_trail #更新履歴の管理
+  
   def industry_mail
     INDUSTRY_MAPPING[self.industry][:industry_mail]
   end
