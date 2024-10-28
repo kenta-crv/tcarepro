@@ -26,11 +26,11 @@ class Call < ApplicationRecord
   }
 
   scope :call_count_hour, -> {
-    where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG"]).where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour)
+    where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG","受付NG","自己紹介NG","質問段階NG","日程調整NG"]).where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour)
   }
 
   scope :basic_count_today, -> {
-    call_count_today.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG"])
+    call_count_today.where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG","受付NG","自己紹介NG","質問段階NG","日程調整NG"])
   }
 
   # 本日獲得見込数
