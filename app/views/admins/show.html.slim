@@ -173,11 +173,12 @@
        - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
         - count_day = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count
         - count_week = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count
-        - count_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_month).count
-        - count_before_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('updated_at > ?', Time.current.prev_month.beginning_of_month).where('updated_at < ?', Time.current.prev_month.end_of_month).count
+        - count_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count
+        - count_before_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count
         - total_number = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).count
         - count_month_price = count_before_month * 3
         - assigned_crowdwork = @assigned_crowdworks[worker.id]
+
         tr 
           td
             = select_tag "crowdwork_ids[#{worker.id}]", options_for_select(Crowdwork.all.map { |cw| [cw.title, cw.id] }, assigned_crowdwork&.id), prompt: "Crowdworkを選択", id: "crowdwork_select_#{worker.id}"
