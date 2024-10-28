@@ -496,11 +496,11 @@ class CustomersController < ApplicationController
     @customers.each do |customer|
       customer.skip_validation = true
       if status == 'hidden'
-        if customer.update(status: 'hidden')
+        if customer.update_columns(status: 'hidden')  # `updated_at` は自動更新されません
           hidden_count += 1
         end
       else
-        if customer.update(status: nil)
+        if customer.update_columns(status: nil)  # `updated_at` は自動更新されません
           published_count += 1
         end
       end
@@ -508,6 +508,7 @@ class CustomersController < ApplicationController
     flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされました。"
     redirect_to customers_path
   end
+  
   
   private
 

@@ -10,8 +10,6 @@ Rails.application.configure do
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
 
-  config.active_job.queue_adapter = :sidekiq
-
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = true # 社内向けAppのため、本番でもエラー内容を表示している
   config.action_controller.perform_caching = true

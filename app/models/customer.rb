@@ -22,7 +22,6 @@ class Customer < ApplicationRecord
 
   before_save :set_industry_defaults
   
-  has_paper_trail #更新履歴の管理
   
   def industry_mail
     INDUSTRY_MAPPING[self.industry][:industry_mail]
@@ -127,7 +126,6 @@ class Customer < ApplicationRecord
       app_count_customers: app_count_customers
     }
   end
-
 
   before_save :set_industry_defaults
   belongs_to :user, optional: true

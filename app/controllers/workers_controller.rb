@@ -18,14 +18,11 @@ class WorkersController < ApplicationController
     @assigned_crowdworks = @worker.crowdworks
   
     # Calculate counts of customers updated today, this week, and this month
-initially_updated_customer_ids = @customers.where(status: "draft").where.not(tel: nil).joins(:versions).where(versions: { whodunnit: current_worker.id }).where('versions.created_at >= ?', Time.current.beginning_of_day).where('versions.created_at <= ?', Time.current.end_of_day).select(:id); 
-@count_day = @customers.where(id: initially_updated_customer_ids).joins(:versions).where('versions.created_at >= ?', Time.current.beginning_of_day).where('versions.created_at <= ?', Time.current.end_of_day).distinct.count('customers.id')
-
-
-    @count_week = @customers.where(status:"draft").where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count
-    @count_month = @customers.where(status:"draft").where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count
-    @count_before_month = @customers.where(status:"draft").where.not(tel: nil).where('updated_at > ?', Time.current.prev_month.beginning_of_month).where('updated_at < ?', Time.current.prev_month.end_of_month).count
-        @total_count = @customers.count
+    @count_day = @customers.where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count
+    @count_week = @customers.where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count
+    @count_month = @customers.where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count
+    @count_before_month = @customers.where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('updated_at > ?', Time.current.prev_month.beginning_of_month).where('updated_at < ?', Time.current.prev_month.end_of_month).count
+    @total_count = @customers.count
     
     # Retrieve contact trackings for the current and previous month, day, and week
     @contact_trackings_month = @worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)

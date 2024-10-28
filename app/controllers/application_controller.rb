@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
   #before_action :set_user
   before_action :current_user_to_js
-  before_action :set_paper_trail_whodunnit #更新履歴の管理
 
   #def set_user
   #  @user = User.find(params[:id])
