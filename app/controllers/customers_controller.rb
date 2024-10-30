@@ -419,46 +419,32 @@ class CustomersController < ApplicationController
   end
 
   def send_emails
-    email_count = params[:email_form][:email_count].to_i
+    email_count = [params[:email_form][:email_count].to_i, 280].min # 280件を上限
     inquiry_id = params[:email_form][:inquiry_id]
     from_email = params[:email_form][:from_email]
   
     inquiry = Inquiry.find(inquiry_id)
-    customers = Customer.where(mail: "mail@ri-plus.jp").limit(email_count)
+    customers = Customer.where(mail: "mail@ri-plus.jp")
+                        .where.not(id: EmailHistory.where(inquiry_id: inquiry_id, status: "success").select(:customer_id))
+                        .limit(email_count)
   
-    # 送信対象の顧客IDを配列に保存
     customer_ids = customers.pluck(:id)
   
-    # 現在の時間帯が送信可能かチェック
     current_hour = Time.current.hour
     if (5..9).cover?(current_hour) || (17..23).cover?(current_hour) || current_hour == 0 || current_hour == 1
-      # メール送信を開始
       EmailSendingJob.perform_later(inquiry_id, customer_ids, 0, from_email)
       redirect_to infosends_path, notice: 'メール送信を開始しました。'
     else
-      # 次の指定時間帯にジョブを予約
-      next_send_time = calculate_next_send_time(current_hour)
+      # 次の即時送信時間帯を1時間後に設定
+      next_send_time = if current_hour < 5
+                           Time.zone.now.beginning_of_day + 5.hours
+                       else
+                           Time.zone.now + 1.hour
+                       end
       EmailSendingJob.set(wait_until: next_send_time).perform_later(inquiry_id, customer_ids, 0, from_email)
       redirect_to infosends_path, notice: '指定の時間帯にメール送信を予約しました。'
     end
   end
-  
-  def calculate_next_send_time(current_hour)
-    # タイムゾーンを日本時間に設定
-    current_time_in_japan = Time.zone.now
-  
-    if (5..9).cover?(current_hour)
-      # 10時に次の送信をスケジュール
-      current_time_in_japan.change(hour: 10, min: 0, sec: 0)
-    elsif (10..16).cover?(current_hour)
-      # 17時に次の送信をスケジュール
-      current_time_in_japan.change(hour: 17, min: 0, sec: 0)
-    else
-      # 次の日の5時に送信をスケジュール
-      (current_time_in_japan + 1.day).change(hour: 5, min: 0, sec: 0)
-    end
-  end
-  
   
   def filter_by_industry
     industry_name = params[:industry_name]

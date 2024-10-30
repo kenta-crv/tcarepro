@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20241028122850) do
+ActiveRecord::Schema.define(version: 20241029063456) do
 
   create_table "admins", force: :cascade do |t|
     t.string "user_name", default: "", null: false
@@ -268,6 +268,17 @@ ActiveRecord::Schema.define(version: 20241028122850) do
     t.index ["sender_id"], name: "index_direct_mail_contact_trackings_on_sender_id"
     t.index ["user_id"], name: "index_direct_mail_contact_trackings_on_user_id"
     t.index ["worker_id"], name: "index_direct_mail_contact_trackings_on_worker_id"
+  end
+
+  create_table "email_histories", force: :cascade do |t|
+    t.integer "customer_id", null: false
+    t.integer "inquiry_id", null: false
+    t.datetime "sent_at", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_email_histories_on_customer_id"
+    t.index ["inquiry_id"], name: "index_email_histories_on_inquiry_id"
   end
 
   create_table "estimates", force: :cascade do |t|

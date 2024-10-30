@@ -132,3 +132,5 @@ gem 'rails-html-sanitizer', '1.4.3'
 gem 'dotenv-rails', groups: [:development, :test]
 
 gem 'whenever', require: false
+
+gem 'date', '3.3.4'
