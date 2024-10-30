@@ -23,6 +23,10 @@
           | 業種
         th
           | 職種
+        th
+          | 送信日
+        th
+          | ステータス
     - @customers.each do |customer|
       tr
         td
@@ -35,8 +39,20 @@
           = customer.business
         td
           = customer.genre
+        td
+          - latest_email_history = customer.email_histories.order(created_at: :desc).first
+          - if latest_email_history.present?
+            = latest_email_history.created_at
+          - else
+            | 履歴なし
+        td
+          - latest_email_history = customer.email_histories.order(created_at: :desc).first
+          - if latest_email_history.present?
+            = latest_email_history.status
+          - else
+            | 履歴なし
     tr
-      th[colspan="5"]
+      th[colspan="7"]
         = paginate @customers
 
 
