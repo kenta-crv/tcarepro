@@ -413,13 +413,13 @@ class CustomersController < ApplicationController
   end
   
   def infosends
-    #@q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").where("business LIKE ?", "%エンジニア%").ransack(params[:q])    
-    @q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
+    @q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").ransack(params[:q])    
+    #@q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
     @customers = @q.result.page(params[:page]).per(100)
   end
 
   def send_emails
-    email_count = [params[:email_form][:email_count].to_i, 2].min # 280件を上限
+    email_count = [params[:email_form][:email_count].to_i, 280].min # 280件を上限
     inquiry_id = params[:email_form][:inquiry_id]
     from_email = params[:email_form][:from_email]
   
@@ -432,7 +432,7 @@ class CustomersController < ApplicationController
   
     current_hour = Time.current.hour
     if (5..9).cover?(current_hour) || (17..23).cover?(current_hour) || current_hour == 0 || current_hour == 1
-      EmailSendingJob.perform_later(inquiry_id, customer_ids, 0, from_email)
+      EmailSendingJob.perform_now(inquiry_id, customer_ids, 0, from_email)
       redirect_to infosends_path, notice: 'メール送信を開始しました。'
     else
       # 次の即時送信時間帯を1時間後に設定
@@ -441,7 +441,7 @@ class CustomersController < ApplicationController
                        else
                            Time.zone.now + 1.hour
                        end
-      EmailSendingJob.set(wait_until: next_send_time).perform_later(inquiry_id, customer_ids, 0, from_email)
+      EmailSendingJob.set(wait_until: next_send_time).perform_now(inquiry_id, customer_ids, 0, from_email)
       redirect_to infosends_path, notice: '指定の時間帯にメール送信を予約しました。'
     end
   end

@@ -1,6 +1,6 @@
 class EmailSendingJob < ApplicationJob
   queue_as :default
-  BATCH_LIMIT = 2
+  BATCH_LIMIT = 280
 
   def perform(inquiry_id, customer_ids, retries, from_email)
     inquiry = Inquiry.find(inquiry_id)
@@ -39,7 +39,7 @@ class EmailSendingJob < ApplicationJob
     logger.info "Remaining customer_ids for next batch: #{remaining_ids}"
     if remaining_ids.any?
       next_send_time = Time.zone.now + 1.hour
-      EmailSendingJob.set(wait_until: next_send_time).perform_later(inquiry_id, remaining_ids, retries + 1, from_email)
+      EmailSendingJob.set(wait_until: next_send_time).perform_now(inquiry_id, remaining_ids, retries + 1, from_email)
     else
       # すべてのメール送信後に通知を行う場合はここに追加
       completion_notification
