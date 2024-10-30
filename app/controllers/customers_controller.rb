@@ -419,7 +419,7 @@ class CustomersController < ApplicationController
   end
 
   def send_emails
-    email_count = [params[:email_form][:email_count].to_i, 280].min # 280件を上限
+    email_count = [params[:email_form][:email_count].to_i, 2].min # 280件を上限
     inquiry_id = params[:email_form][:inquiry_id]
     from_email = params[:email_form][:from_email]
   
