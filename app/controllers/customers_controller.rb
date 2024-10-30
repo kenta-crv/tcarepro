@@ -413,8 +413,7 @@ class CustomersController < ApplicationController
   end
   
   def infosends
-    @q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").group(:mail).ransack(params[:q])    
-    #@q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").ransack(params[:q])    
+    @q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").where("business LIKE ?", "%食品%").group(:mail).ransack(params[:q])     
     #@q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
     @customers = @q.result.page(params[:page]).per(100)
   end
