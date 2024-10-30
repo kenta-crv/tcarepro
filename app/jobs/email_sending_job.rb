@@ -1,6 +1,6 @@
 class EmailSendingJob < ApplicationJob
   queue_as :default
-  BATCH_LIMIT = 280
+  BATCH_LIMIT = 2
 
   def perform(inquiry_id, customer_ids, retries, from_email)
     inquiry = Inquiry.find(inquiry_id)
