@@ -31,5 +31,5 @@ set :output, "#{Rails.root}/log/cron.log"
 
 every 1.hour, at: ['0:00', '1:00', '5:00', '6:00', '7:00', '8:00', '9:00', 
                    '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'] do
-  command "/bin/bash -l -c 'cd /webroot/tcarepro/app && bundle exec rails runner -e development \"WorkerCheckJob.perform_now\"'"
+  command "/bin/bash -l -c 'cd /home/smart/webroot/tcarepro/app && bundle exec rails runner -e development \"WorkerCheckJob.perform_now\"'"
 end
