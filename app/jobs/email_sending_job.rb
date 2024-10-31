@@ -39,7 +39,7 @@ class EmailSendingJob < ApplicationJob
     logger.info "Remaining customer_ids for next batch: #{remaining_ids}"
     if remaining_ids.any?
       next_send_time = Time.zone.now + 1.hour
-      EmailSendingJob.set(wait_until: next_send_time).perform_now(inquiry_id, remaining_ids, retries + 1, from_email)
+      EmailSendingJob.set(wait_until: next_send_time).perform_later(inquiry_id, remaining_ids, retries + 1, from_email)
     else
       # すべてのメール送信後に通知を行う場合はここに追加
       completion_notification
@@ -49,11 +49,11 @@ class EmailSendingJob < ApplicationJob
   private
 
   def send_inquiry(customer, inquiry, from_email)
-    CustomerMailer.send_inquiry(customer, inquiry, from_email).deliver_now
+    CustomerMailer.send_inquiry(customer, inquiry, from_email).deliver_later
   end
 
   def completion_notification
     # 送信完了通知を行うロジック（必要に応じて実装）
-    CustomerMailer.completion_notification.deliver_now
+    CustomerMailer.completion_notification.deliver_later
   end
 end
