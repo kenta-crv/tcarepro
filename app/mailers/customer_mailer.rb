@@ -46,7 +46,6 @@ class CustomerMailer < ActionMailer::Base
   def send_inquiry(customer, inquiry, from_email)
     @customer = customer
     @inquiry = inquiry
-  
     mail(
       from: from_email,
       to: @customer.mail,
