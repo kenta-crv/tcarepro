@@ -295,6 +295,7 @@ scope :before_sended_at, ->(sended_at){
       # 既にバッチに含まれていないか確認
       next if batch.any? { |c| c.tel == customer.tel && c.industry == customer.industry }
   
+      customer.status = "draft"
       batch << customer
       if batch.size >= batch_size
         Customer.transaction do
@@ -408,7 +409,7 @@ scope :before_sended_at, ->(sended_at){
               )
             )
           )
-  
+          repurpose_customer.status = "draft" #statu draftで追加する
           batch << repurpose_customer
   
           if batch.size >= batch_size
