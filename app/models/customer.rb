@@ -2,22 +2,22 @@ require 'scraping'
 
 class Customer < ApplicationRecord
   INDUSTRY_MAPPING = {
-    'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日", industry_mail: "tanaka@jfbfe.or.jp"},
-    'SOUND（食品）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日", industry_mail: "tanaka@jfbfe.or.jp"},
-    'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日", industry_mail: "tokumaru.junichi@globa-ca.com"},
+    #'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日", industry_mail: "tanaka@jfbfe.or.jp"},
+    #'SOUND（食品）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日", industry_mail: "tanaka@jfbfe.or.jp"},
+    #'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日", industry_mail: "tokumaru.junichi@globa-ca.com"},
     'ワークリレーション' => {industry_code: 21000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"fujita@work-re.com"},
     'ワーク（外国人）' => {industry_code: 30000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"fujita@work-re.com"},
     'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日", industry_mail:"takayama@monkeycrew-j.com"},
     'VIETA（介護）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
     'VIETA（工場）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
-    'VIETA（飲食）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
+    #'VIETA（飲食）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
     'ジョイスリー（介護）' => {industry_code: 23000, company_name: "ジョイスリー株式会社", payment_date: "10日", industry_mail:"yamao.ysfm@hinode.or.jp"},
     'ニューアース（介護）' => {industry_code: 35000, company_name: "ニューアース株式会社", payment_date: "10日", industry_mail:"nshiro5_14@yahoo.co.jp"},
     '光誠会（介護）' => {industry_code: 29000, company_name: "医療法人社団光誠会", payment_date: "10日", industry_mail:"nishizawa@kouseikai-t.or.jp"},
     '登録支援機関' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
     'エンジスト' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
-    'ケアリンク' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
-    'エクステリア' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
+    #'ケアリンク' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
+    #'エクステリア' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
   }
 
   before_save :set_industry_defaults
