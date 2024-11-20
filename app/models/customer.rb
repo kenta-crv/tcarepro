@@ -282,7 +282,7 @@ scope :before_sended_at, ->(sended_at){
   
   def self.import(file)
     save_count = 0
-    batch_size = 2500
+    batch_size = 1250
     batch = []
     CSV.foreach(file.path, headers: true) do |row|
       customer = find_or_initialize_by(id: row["id"])
@@ -298,16 +298,20 @@ scope :before_sended_at, ->(sended_at){
       customer.status = "draft"
       batch << customer
       if batch.size >= batch_size
-        Customer.transaction do
-          batch.each(&:save!)
+        batch.each do |customer|
+          Customer.transaction do
+            customer.save!
+          end
         end
         save_count += batch.size
         batch.clear
       end
     end
     unless batch.empty?
-      Customer.transaction do
-        batch.each(&:save!)
+      batch.each do |customer|
+        Customer.transaction do
+          customer.save!
+        end
       end
       save_count += batch.size
     end
@@ -316,7 +320,7 @@ scope :before_sended_at, ->(sended_at){
   
   def self.call_import(call_file)
     save_cnt = 0
-    batch_size = 2500
+    batch_size = 1250
     batch = []
     
     CSV.foreach(call_file.path, headers: true) do |row|
@@ -362,7 +366,7 @@ scope :before_sended_at, ->(sended_at){
   
   def self.repurpose_import(repurpose_file)
     repurpose_import_count = 0
-    batch_size = 2500
+    batch_size = 1250
     batch = []
     
     crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
@@ -370,6 +374,13 @@ scope :before_sended_at, ->(sended_at){
     end
     
     CSV.foreach(repurpose_file.path, headers: true) do |row|
+        # 重複チェックを追加
+      next if Customer.where(company: row['company'], industry: row['industry']).exists?
+      next if Customer.where(tel: row['tel'], industry: row['industry']).exists?
+      next if batch.any? do |c|
+       (c.company == row['company'] && c.industry == row['industry']) ||
+       (c.tel == row['tel'] && c.industry == row['industry'])
+      end
       existing_customer = find_by(company: row['company'], industry: row['industry'])
       
       if existing_customer
@@ -413,8 +424,10 @@ scope :before_sended_at, ->(sended_at){
           batch << repurpose_customer
   
           if batch.size >= batch_size
-            Customer.transaction do
-              batch.each(&:save!)
+            batch.each do |customer|
+              Customer.transaction do
+                customer.save!
+              end
             end
             repurpose_import_count += batch.size
             batch.clear
@@ -424,8 +437,10 @@ scope :before_sended_at, ->(sended_at){
     end
     
     unless batch.empty?
-      Customer.transaction do
-        batch.each(&:save!)
+      batch.each do |customer|
+        Customer.transaction do
+          customer.save!
+        end
       end
       repurpose_import_count += batch.size
     end
@@ -436,7 +451,7 @@ scope :before_sended_at, ->(sended_at){
   
   def self.draft_import(draft_file)
     draft_count = 0
-    batch_size = 2500
+    batch_size = 1250
     batch = []
     CSV.foreach(draft_file.path, headers: true) do |row|
       next if row['tel'].present?
@@ -452,16 +467,20 @@ scope :before_sended_at, ->(sended_at){
       customer.skip_validation = true
       batch << customer
       if batch.size >= batch_size
-        Customer.transaction do
-          batch.each(&:save!)
+        batch.each do |customer|
+          Customer.transaction do
+            customer.save!
+          end
         end
         draft_count += batch.size
         batch.clear
       end
     end
     unless batch.empty?
-      Customer.transaction do
-        batch.each(&:save!)
+      batch.each do |customer|
+        Customer.transaction do
+          customer.save!
+        end
       end
       draft_count += batch.size
     end
