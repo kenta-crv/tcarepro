@@ -62,9 +62,10 @@ class CustomersController < ApplicationController
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
     @customers = @q.result || @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call )  if last_call
-    @call = Call.new
+    @customers = @customers.where.not(tel: [nil, "", " "])
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
+    @call = Call.new
     @is_auto_call = (params[:is_auto_call] == 'true')
     @user = current_user
     @worker = current_worker
