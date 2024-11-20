@@ -33,6 +33,7 @@ class CustomersController < ApplicationController
   
     # 電話番号が存在する顧客のみをフィルタリング
     @customers = @customers.where.not(tel: [nil, "", " "])
+    @customers = @customers.where.not(status: "draft")
   
     @csv_customers = @customers.distinct.preload(:calls)
     @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エクスポート総数
@@ -63,6 +64,7 @@ class CustomersController < ApplicationController
     @customers = @q.result || @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call )  if last_call
     @customers = @customers.where.not(tel: [nil, "", " "])
+    @customers = @customers.where.not(status: "draft")
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @call = Call.new
