@@ -178,7 +178,7 @@ class Customer < ApplicationRecord
 
   #news
   scope :between_created_at, ->(from, to){
-    where(created_at: from..to).where.not(tel: nil).where.not(status: "draft")
+    where(created_at: from..to).where.not(tel: nil)
   }
   scope :between_nexted_at, ->(from, to){
     joins(:calls).where("calls.created_at": from..to).where("calls.statu": "再掲載")
