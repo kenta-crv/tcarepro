@@ -696,8 +696,13 @@ scope :before_sended_at, ->(sended_at){
   
   def valid_genre?(required_genre, customer_genre)
     # 部分一致を求めるgenreのバリデーションロジック
-    customer_genre.include?(required_genre)
+    if required_genre.present? && customer_genre.present?
+      required_genre.split(',').any? { |required| customer_genre.include?(required.strip) }
+    else
+      false
+    end
   end
+  
   
   def valid_area?(required_area, customer_address)
     # required_area がJSON形式の文字列として渡されている場合、配列に変換
