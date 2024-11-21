@@ -53,7 +53,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%VIETA（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
         tr
           th
             | VIETA（工場）
@@ -87,7 +87,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%VIETA（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
@@ -122,7 +122,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%VIETA（飲食）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
@@ -157,7 +157,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%ニューアース（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
@@ -192,7 +192,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%光誠会（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
@@ -227,7 +227,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%ワークリレーション%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%ワークリレーション%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%ワークリレーション%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
@@ -262,7 +262,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%ワーク（外国人）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%ワーク（外国人）%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%ワーク（外国人）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
@@ -297,7 +297,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
@@ -332,7 +332,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%ジョイスリー（介護）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%ジョイスリー（介護）%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%ジョイスリー（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
@@ -346,7 +346,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
              .between_created_at
               = Customer.where("industry LIKE ?", "%ワークビュー%").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ワークビュー%").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ワークビュー%").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%ワークビュー%").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
               = Customer.where("industry LIKE ?", "%ワークビュー%").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ワークビュー%").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
@@ -367,7 +367,7 @@ table[width="90%" cellpadding="0" cellspacing="0"]
               = Customer.where("industry LIKE ?", "%ワークビュー%").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%ワークビュー%").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%ワークビュー%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
 
 p.small.center
