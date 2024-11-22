@@ -695,13 +695,28 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def valid_genre?(required_genre, customer_genre)
-    # 部分一致を求めるgenreのバリデーションロジック
-    if required_genre.present? && customer_genre.present?
-      required_genre.split(',').any? { |required| customer_genre.include?(required.strip) }
+    if customer_genre.present?
+      # required_genreが空の場合は無条件で通過
+      return true if required_genre.blank?
+  
+      # required_genreをスペース区切りで分割して部分一致を確認
+      matches = required_genre.split(/\s+/).map(&:strip).reject(&:empty?).any? do |required|
+        customer_genre.include?(required)
+      end
+  
+      # 一致するジャンルがない場合、エラーメッセージを追加
+      unless matches
+        errors.add(:genre, '指定された職種が含まれていないため登録できません。')
+        return false
+      end
+      true
     else
+      # customer_genreが空の場合はエラーを追加
+      errors.add(:genre, '職種が入力されていません。')
       false
     end
   end
+  
   
   
   def valid_area?(required_area, customer_address)
