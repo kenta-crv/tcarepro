@@ -93,13 +93,13 @@ table
     th
       | 支払日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%グローバルイノベーション%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%グローバルイノベーション").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%グローバルイノベーション%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%VIETA（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%VIETA（介護）").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%VIETA（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 20) ? 0 : 20 - @detailAppCount
-    - @global_innovation = @detailAppCount * 33000
+    - @global_innovation = @detailAppCount * 28600
     th
-      | グローバルイノベーション
+      | VIETA（介護）
     td
       = @ListCount
     td
@@ -116,13 +116,13 @@ table
       = @global_innovation
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%ニュートラル（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ニュートラル（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ニュートラル（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%VIETA（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%VIETA（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%VIETA（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @neutral = @detailAppCount * 27500
+    - @neutral = @detailAppCount * 28600
     th
-      | ニュートラル（介護）
+      | VIETA（工場）
     td
       = @ListCount
     td
@@ -139,13 +139,13 @@ table
       = @neutral
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%%SORAIRO（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（工場）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%VIETA（飲食）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%VIETA（飲食）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%VIETA（飲食）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @sorairo1_sales = @detailAppCount * 29000
+    - @sorairo1_sales = @detailAppCount * 28600
     th
-      | SORAIRO（工場）
+      | VIETA（飲食）
     td
       = @ListCount
     td
@@ -160,15 +160,15 @@ table
       = @detailRemainCount
     td
       = @sorairo1_sales
-    td 末日
+    td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%%SORAIRO（食品）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SORAIRO（食品）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @sorairo2_sales = @detailAppCount * 29000
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%ニューアース（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%%ニューアース（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%SORAIRO%").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ニューアース（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 5) ? 0 : 5 - @detailAppCount
+    - @sorairo2_sales = @detailAppCount * 38500
     th
-      | SORAIRO（食品）
+      | ニューアース（介護）
     td
       = @ListCount
     td
@@ -183,15 +183,15 @@ table
       = @detailRemainCount
     td
       = @sorairo2_sales
-    td 末日
+    td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%グローバル（食品）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%グローバル（食品）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%グローバル（食品）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @grobal_sales = @detailAppCount * 29700
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%光誠会（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%光誠会（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%光誠会（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @grobal_sales = @detailAppCount * 31900
     th
-      | グローバル（食品）
+      | 光誠会（介護）
     td
       = @ListCount
     td
@@ -208,13 +208,13 @@ table
       = @grobal_sales
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%グローバル（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%グローバル（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%グローバル（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @grobal1_sales = @detailAppCount * 29700
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%ワークリレーション%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ワークリレーション%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ワークリレーション%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 10) ? 0 : 10 - @detailAppCount
+    - @grobal1_sales = @detailAppCount * 24200
     th
-      | グローバル（介護）
+      | ワークリレーション
     td
       = @ListCount
     td
@@ -231,13 +231,13 @@ table
       = @grobal1_sales
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%SOUND（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%SOUND（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%SOUND（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @sound_sales = @detailAppCount * 27500
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%ワーク（外国人）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ワーク（外国人）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ワーク（外国人）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 5) ? 0 : 5 - @detailAppCount
+    - @sound_sales = @detailAppCount * 33000
     th
-      | SOUND（介護）
+      | ワーク（外国人）
     td
       = @ListCount
     td
@@ -252,15 +252,15 @@ table
       = @detailRemainCount
     td
       = @sound_sales
-    td 末日
+    td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%ワークリレーション%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ワークリレーション%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ワークリレーション%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%モンキークルー（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%モンキークルー（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%モンキークルー（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @work = @detailAppCount * 24200
+    - @work = @detailAppCount * 27500
     th
-      | ワークリレーション
+      | モンキークルー（介護）
     td
       = @ListCount
     td
@@ -277,13 +277,13 @@ table
       = @work
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（販売）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%コンシェルテック（販売）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（販売）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%ジョイスリー（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ジョイスリー（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ジョイスリー（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @concier_sale = @detailAppCount * 16500
+    - @concier_sale = @detailAppCount * 25300
     th
-      | コンシェルテック（販売）
+      | ジョイスリー（介護）
     td
       = @ListCount
     td
@@ -298,15 +298,15 @@ table
       = @detailRemainCount
     td
       = @concier_sale
-    td 末日
+    td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（営業）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%コンシェルテック（営業）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（営業）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @concier_sales = @detailAppCount * 16500
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%ワークビュー%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ワークビュー%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ワークビュー%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 7) ? 0 : 7 - @detailAppCount
+    - @concier_sales = @detailAppCount * 29700
     th
-      | コンシェルテック（営業）
+      | ワークビュー
     td
       = @ListCount
     td
@@ -321,7 +321,7 @@ table
       = @detailRemainCount
     td
       = @concier_sales
-    td 末日
+    td 10日
   tr
     - @ListCount = @detailcalls.where("industry LIKE ?", "%コンシェルテック（工場）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%コンシェルテック（工場）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
@@ -347,13 +347,13 @@ table
     td 末日
 
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%ワーク（外国人）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ワーク（外国人）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%ワーク（外国人）").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ワーク（外国人）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%未定%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%未定%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%ワーク（外国人）").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%未定%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
     - @work1 = @detailAppCount * 30000
     th
-      | ワーク（外国人）
+      | 未定
     td
       = @ListCount
     td
@@ -462,13 +462,13 @@ table
       = @fuji1
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%モンキークルー（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%モンキークルー（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%モンキークルー（介護）%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%モンキークルー（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @monkey = @detailAppCount * 27500
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%ENGIST%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ENGIST%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%モンキークルー（介護）%").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ENGIST%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 40) ? 0 : 40 - @detailAppCount
+    - @monkey = @detailAppCount * 0
     th
-      | モンキークルー（介護）
+      | ENGIST
     td
       = @ListCount
     td
@@ -485,13 +485,13 @@ table
       = @monkey
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%er（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%er（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%er（介護）%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%er（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @er = @detailAppCount * 33000
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%エクステリア%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%エクステリア%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%er（介護）%").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%エクステリア%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailRemainCount = (@detailAppCount > 50) ? 0 : 50 - @detailAppCount
+    - @er = @detailAppCount * 0
     th
-      | er（介護）
+      | エクステリア
     td
       = @ListCount
     td
@@ -508,13 +508,13 @@ table
       = @er
     td 10日
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%データ入力%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%データ入力%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%データ入力%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%登録支援機関%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%登録支援機関%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%登録支援機関%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
     - @factoru_sales = @detailAppCount * 0
     th
-      | データ入力
+      | 登録支援機関
     td
       = @ListCount
     td
@@ -531,13 +531,13 @@ table
       = @factoru_sales
     td -
   tr
-    - @ListCount = @detailcalls.where("industry LIKE ?", "%ジョイスリー（介護）%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
-    - @detailCount = @detailcustomers.where("industry LIKE ?", "%ジョイスリー（介護）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%ジョイスリー（介護）%").count
-    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ジョイスリー（介護）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+    - @ListCount = @detailcalls.where("industry LIKE ?", "%未定%").where("customers.created_at > ?", Time.current.beginning_of_month).where("customers.created_at < ?", Time.current.end_of_month).count
+    - @detailCount = @detailcustomers.where("industry LIKE ?", "%未定%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%ジョイスリー（介護）%").count
+    - @detailAppCount = @detailcalls.where("industry LIKE ?", "%未定%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
     - @joythree = @detailAppCount * 25300
     th
-      | ジョイスリー（介護）
+      | 未定
     td
       = @ListCount
     td
