@@ -695,24 +695,14 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def valid_genre?(required_genre, customer_genre)
-    if customer_genre.present?
-      # required_genreが空なら無条件で通過
-      return true if required_genre.blank?
-  
-      # required_genreをスペース区切りで分割して部分一致を確認
-      matches = required_genre.split(/\s+/).map(&:strip).reject(&:empty?).any? do |required|
-        customer_genre.include?(required)
-      end
-  
-      # 一致するジャンルがない場合はエラー
-      unless matches
-        errors.add(:genre, '指定された職種が含まれていないため登録できません。')
-        return false
-      end
+    if required_genre.blank?
+      # required_genreが空の場合は無条件で通過
       true
+    elsif customer_genre.present?
+      # required_genreに値がある場合は部分一致を確認
+      required_genre.split(/\s+/).any? { |required| customer_genre.include?(required.strip) }
     else
-      # customer_genreが空の場合はエラー
-      errors.add(:genre, '職種が入力されていません。')
+      # required_genreが存在し、customer_genreが空の場合はエラー
       false
     end
   end
