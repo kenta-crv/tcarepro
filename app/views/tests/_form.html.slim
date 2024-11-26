@@ -59,9 +59,9 @@
       th.arrow-box-cell  住所
       td.responsive-cell
         .input-container
-          = f.text_field :address, placeholder:"（例）東京都東京市東京町1-1-1 ※【都道府県から記載/住所と電話番号の地域は必ず一致】", value: "銀座1-1-1 2F"
+          = f.text_field :address, placeholder: "（例）東京都東京市東京町1-1-1 ※【都道府県から記載/住所と電話番号の地域は必ず一致】"
           - if @test.errors[:address].any?
-            .error-message = @test.errors[:address].first
+            .error-message = @test.errors[:address].first 
     tr
       td.label-cell
         strong.label
