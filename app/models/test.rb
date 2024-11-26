@@ -31,8 +31,15 @@ class Test < ApplicationRecord
   end
 
   def validate_tel_format
-    errors.add(:tel, "電話番号には「0」と「-」以外の文字を含めることはできません") if tel =~ /[^0\-]/
-    errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません") if tel !~ /\A[0-9\-]+\z/ || tel =~ /0120|0088/
+    # 0-9と-のみ許可する
+    unless tel =~ /\A[0-9\-]+\z/
+      errors.add(:tel, "電話番号には数字と「-」以外の文字を含めることはできません")
+    end
+  
+    # 0120または0088を含む場合はエラー
+    if tel =~ /0120|0088/
+      errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません")
+    end
   end
 
   def validate_address_format
