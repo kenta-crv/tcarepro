@@ -637,12 +637,14 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def validate_company_format
+    # 基本のバリデーション
     unless company =~ /株式会社|有限会社|社会福祉|合同会社|医療法人/
       errors.add(:company, "会社名には「株式会社」、「有限会社」、「社会福祉」、「合同会社」、「医療法人」のいずれかを含める必要があります。")
     end
   
-    if company =~ /支店|営業所/
-      errors.add(:company, "会社名には「支店」と「営業所」を含むことはできません。")
+    # 店・営業所・カッコを含む場合のバリデーション
+    if company =~ /店|営業所|\(|\)|（|）/
+      errors.add(:company, "正しい会社名を入力してください。")
     end
   end
   
@@ -664,35 +666,52 @@ scope :before_sended_at, ->(sended_at){
   def industry_matches_crowdwork_title_and_validate_business_and_genre
     # CustomerのindustryがCrowdworkのtitleと一致するかをチェック
     matching_crowdwork = Crowdwork.find_by(title: industry)
+    
+    # businessとgenreが空の場合のエラー
+    if business.blank?
+      errors.add(:business, '未入力では登録できません')
+    end
+    
+    if genre.blank?
+      errors.add(:genre, '未入力では登録できません')
+    end
+    
+    # Crowdworkが一致した場合の他のバリデーション
     if matching_crowdwork
-      # businessのバリデーションを行う
+      # businessのバリデーション
       if matching_crowdwork.business.present?
         unless valid_business?(matching_crowdwork.business, business)
           errors.add(:business, '指定された業種以外は登録できません。')
         end
       end
-      
-      # genreのバリデーションを行う
+  
+      # genreのバリデーション
       unless valid_genre?(matching_crowdwork.genre, genre)
         errors.add(:genre, '指定された職種が含まれていないため登録できません。')
       end
   
-      # areaのバリデーションを行う
+      # areaのバリデーション
       unless valid_area?(matching_crowdwork.area, address)
         errors.add(:address, '指定されたエリアが含まれていないため登録できません。')
       end
     end
+    
+    # Crowdwork.badに該当する内容が含まれている場合
+    if matching_crowdwork&.bad.present?
+      bad_keywords = matching_crowdwork.bad.split(',')
+      if bad_keywords.any? { |keyword| business&.include?(keyword.strip) || genre&.include?(keyword.strip) }
+        errors.add(:base, '抽出NGの内容が含まれています。')
+      end
+    end
+  end
+      
+  def valid_business?(required_businesses, customer_business)
+    # required_businessesがカンマ区切りの場合を配列に変換
+    required_businesses_array = required_businesses.split(',').map(&:strip)
+    # 入力されたbusinessがいずれかと一致すればtrue
+    required_businesses_array.any? { |required_business| customer_business.include?(required_business) }
   end
   
-  def valid_business?(required_business, customer_business)
-    # 2文字以上一致するかをチェック
-    if required_business.present? && customer_business.present?
-      # 共通する部分文字列が2文字以上あるかを確認
-      common_substring = required_business.chars & customer_business.chars
-      return common_substring.size >= 2
-    end
-    false
-  end
   
   def valid_genre?(required_genre, customer_genre)
     if required_genre.blank?
