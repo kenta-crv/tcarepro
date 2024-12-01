@@ -7,7 +7,7 @@ class Customer < ApplicationRecord
     #'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日", industry_mail: "tokumaru.junichi@globa-ca.com"},
     'ワークリレーション' => {industry_code: 21000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"fujita@work-re.com"},
     'ワーク（外国人）' => {industry_code: 30000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"fujita@work-re.com"},
-    'モンキージャパン（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日", industry_mail:"takayama@monkeycrew-j.com"},
+    'モンキークルー（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日", industry_mail:"takayama@monkeycrew-j.com"},
     'VIETA（介護）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
     'VIETA（工場）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
     'VIETA（飲食）' => {industry_code: 26000, company_name: "株式会社VIETA GLOBAL", payment_date: "10日", industry_mail:"koji-yamada@vieta-global.com"},
