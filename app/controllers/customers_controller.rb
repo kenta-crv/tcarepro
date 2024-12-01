@@ -406,15 +406,25 @@ class CustomersController < ApplicationController
 
   def draft
     @industries = Customer::INDUSTRY_MAPPING.keys
-    if admin_signed_in?
-      @q = Customer.where(status: "draft").where.not(tel: [nil, '']).ransack(params[:q])
-      @customers = @q.result.page(params[:page]).per(100)
-    else
-      @q = Customer.where(status: "draft").where(tel: [nil, '']).ransack(params[:q])
-      @customers = @q.result.page(params[:page]).per(100)
-    end
-  end
+    base_query = Customer.where(status: "draft")
+    
+    # 電話番号あり/なし/総合の件数
+    @tel_with_count = base_query.where.not(tel: [nil, '', " "]).count
+    @tel_without_count = base_query.where(tel: [nil, '', " "]).count
   
+    # 業種別の件数
+    @industry_counts = @industries.each_with_object({}) do |industry, hash|
+      industry_query = base_query.where(industry: industry)
+      hash[industry] = {
+        tel_with: industry_query.where.not(tel: [nil, '', " "]).count,
+        tel_without: industry_query.where(tel: [nil, '', " "]).count,
+      }
+    end
+  
+    @q = base_query.ransack(params[:q])
+    @customers = @q.result.page(params[:page]).per(100)
+  end
+    
   def infosends
     #@q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").where("business LIKE ?", "%食品%").group(:mail).ransack(params[:q])     
     @q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
@@ -451,32 +461,35 @@ class CustomersController < ApplicationController
   def filter_by_industry
     industry_name = params[:industry_name]
     tel_filter = params[:tel_filter] # 新しいパラメータ
-  
+    
     @industries = Customer::INDUSTRY_MAPPING.keys
-    @q = Customer.where(status: "draft").where(industry: industry_name)
+    @q = Customer.where(status: "draft")
   
+    if industry_name.present?
+      @q = @q.where(industry: industry_name)
+    end
+    
     if tel_filter == "with_tel"
-      @q = @q.where.not(tel: [nil, ''])
+      @q = @q.where.not(tel: [nil, '', " "])
     elsif tel_filter == "without_tel"
-      @q = @q.where(tel: [nil, ''])
+      @q = @q.where(tel: [nil, '', " "])
+    end
+  
+    # 各業種の件数を再計算
+    base_query = Customer.where(status: "draft")
+    @industry_counts = @industries.each_with_object({}) do |industry, hash|
+      industry_query = base_query.where(industry: industry)
+      hash[industry] = {
+        tel_with: industry_query.where.not(tel: [nil, '', " "]).count,
+        tel_without: industry_query.where(tel: [nil, '', " "]).count,
+        total: industry_query.count
+      }
     end
   
     @customers = @q.page(params[:page]).per(100)
     render :draft
   end
-
-  def bulk_action
-    @customers = Customer.where(id: params[:deletes].keys)
   
-    if params[:commit] == '一括更新'
-      update_all_status
-    elsif params[:commit] == '一括削除'
-      destroy_all
-    else
-      redirect_to customers_path, alert: '無効なアクションです。'
-    end
-  end
-
   def update_all_status
     status = params[:status] || 'hidden'
     published_count = 0

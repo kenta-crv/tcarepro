@@ -285,7 +285,7 @@ scope :before_sended_at, ->(sended_at){
   
   def self.import(file)
     save_count = 0
-    batch_size = 2500
+    batch_size = 500
     batch = []
     CSV.foreach(file.path, headers: true) do |row|
       customer = find_or_initialize_by(id: row["id"])
@@ -319,7 +319,7 @@ scope :before_sended_at, ->(sended_at){
   
   def self.call_import(call_file)
     save_cnt = 0
-    batch_size = 2500
+    batch_size = 500
     batch = []
     
     CSV.foreach(call_file.path, headers: true) do |row|
@@ -365,7 +365,7 @@ scope :before_sended_at, ->(sended_at){
   
   def self.repurpose_import(repurpose_file)
     repurpose_import_count = 0
-    batch_size = 2500
+    batch_size = 500
     batch = []
     
     crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
@@ -446,7 +446,7 @@ scope :before_sended_at, ->(sended_at){
   
   def self.draft_import(draft_file)
     draft_count = 0
-    batch_size = 2500
+    batch_size = 500
     batch = []
     CSV.foreach(draft_file.path, headers: true) do |row|
       next if row['tel'].present?
