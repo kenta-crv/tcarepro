@@ -425,6 +425,18 @@ class CustomersController < ApplicationController
     @customers = @q.result.page(params[:page]).per(100)
   end
     
+  def bulk_action
+    @customers = Customer.where(id: params[:deletes].keys)
+  
+    if params[:commit] == '一括更新'
+      update_all_status
+    elsif params[:commit] == '一括削除'
+      destroy_all
+    else
+      redirect_to customers_path, alert: '無効なアクションです。'
+    end
+  end
+  
   def infosends
     #@q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").where("business LIKE ?", "%食品%").group(:mail).ransack(params[:q])     
     @q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
