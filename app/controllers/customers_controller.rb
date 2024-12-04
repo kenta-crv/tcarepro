@@ -407,24 +407,30 @@ class CustomersController < ApplicationController
   def draft
     @industries = Customer::INDUSTRY_MAPPING.keys
     base_query = Customer.where(status: "draft")
-    
+  
     # 電話番号あり/なし/総合の件数
     @tel_with_count = base_query.where.not(tel: [nil, '', " "]).count
     @tel_without_count = base_query.where(tel: [nil, '', " "]).count
   
-    # 業種別の件数
+    # 業種別の件数を1回のクエリで取得
+    industry_counts_data = base_query.group(:industry)
+                                     .select(
+                                       :industry,
+                                       "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without_count",
+                                       "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with_count"
+                                     )
     @industry_counts = @industries.each_with_object({}) do |industry, hash|
-      industry_query = base_query.where(industry: industry)
+      data = industry_counts_data.find { |item| item.industry == industry }
       hash[industry] = {
-        tel_with: industry_query.where.not(tel: [nil, '', " "]).count,
-        tel_without: industry_query.where(tel: [nil, '', " "]).count,
+        tel_with: data&.tel_with_count.to_i,
+        tel_without: data&.tel_without_count.to_i
       }
     end
   
     @q = base_query.ransack(params[:q])
     @customers = @q.result.page(params[:page]).per(100)
   end
-    
+      
   def bulk_action
     @customers = Customer.where(id: params[:deletes].keys)
   
