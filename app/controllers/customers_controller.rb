@@ -486,36 +486,46 @@ class CustomersController < ApplicationController
     
   def filter_by_industry
     industry_name = params[:industry_name]
-    tel_filter = params[:tel_filter] # 新しいパラメータ
-    
+    tel_filter = params[:tel_filter]
+  
     @industries = Customer::INDUSTRY_MAPPING.keys
-    @q = Customer.where(status: "draft")
-  
-    if industry_name.present?
-      @q = @q.where(industry: industry_name)
-    end
-    
-    if tel_filter == "with_tel"
-      @q = @q.where.not(tel: [nil, '', " "])
-    elsif tel_filter == "without_tel"
-      @q = @q.where(tel: [nil, '', " "])
-    end
-  
-    # 各業種の件数を再計算
     base_query = Customer.where(status: "draft")
-    @industry_counts = @industries.each_with_object({}) do |industry, hash|
-      industry_query = base_query.where(industry: industry)
-      hash[industry] = {
-        tel_with: industry_query.where.not(tel: [nil, '', " "]).count,
-        tel_without: industry_query.where(tel: [nil, '', " "]).count,
-        total: industry_query.count
-      }
+  
+    # 絞り込み条件の適用
+    if industry_name.present?
+      base_query = base_query.where(industry: industry_name)
     end
   
-    @customers = @q.page(params[:page]).per(100)
+    if tel_filter == "with_tel"
+      base_query = base_query.where.not(tel: [nil, '', " "])
+    elsif tel_filter == "without_tel"
+      base_query = base_query.where(tel: [nil, '', " "])
+    end
+  
+    # 各業種の件数をキャッシュ化して効率的に取得
+    raw_counts = Rails.cache.fetch("industry_counts_filter_by_industry", expires_in: 10.minutes) do
+      Customer.where(status: "draft")
+              .group(:industry)
+              .select(
+                :industry,
+                "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with",
+                "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without"
+              )
+              .map { |data| [data.industry, { tel_with: data.tel_with.to_i, tel_without: data.tel_without.to_i }] }
+              .to_h
+    end
+  
+    # 必ず全業種を含むようにデフォルト値を設定
+    @industry_counts = @industries.each_with_object({}) do |industry, hash|
+      hash[industry] = raw_counts[industry] || { tel_with: 0, tel_without: 0 }
+    end
+  
+    # ページネーションを適用
+    @customers = base_query.page(params[:page]).per(50)
+  
     render :draft
   end
-  
+    
   def update_all_status
     status = params[:status] || 'hidden'
     published_count = 0
