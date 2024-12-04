@@ -11,9 +11,10 @@
       | /
       = @industry_counts[industry][:tel_without]
       | )
--if admin_signed_in?
- = form_tag({ controller: :customers, action: :bulk_action }, method: :post) do
-  .scroll
+
+= form_tag({ controller: :customers, action: :bulk_action }, method: :post) do
+  -if admin_signed_in?
+   .scroll
     = select_tag :status, options_for_select([['公開', nil], ['非表示', 'hidden']]), prompt: 'Select Status'
     = submit_tag '一括更新', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;'
     = submit_tag '一括削除', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;', data: { confirm: '本当に削除しますか？' }
