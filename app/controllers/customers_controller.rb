@@ -408,28 +408,36 @@ class CustomersController < ApplicationController
     @industries = Customer::INDUSTRY_MAPPING.keys
     base_query = Customer.where(status: "draft")
   
-    # 電話番号あり/なし/総合の件数
-    @tel_with_count = base_query.where.not(tel: [nil, '', " "]).count
-    @tel_without_count = base_query.where(tel: [nil, '', " "]).count
+    # 電話番号あり/なし/総合の件数をキャッシュ化
+    @tel_with_count = Rails.cache.fetch("tel_with_count", expires_in: 10.minutes) do
+      base_query.where.not(tel: [nil, '', " "]).count
+    end
+    @tel_without_count = Rails.cache.fetch("tel_without_count", expires_in: 10.minutes) do
+      base_query.where(tel: [nil, '', " "]).count
+    end
   
-    # 業種別の件数を1回のクエリで取得
-    industry_counts_data = base_query.group(:industry)
-                                     .select(
-                                       :industry,
-                                       "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without_count",
-                                       "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with_count"
-                                     )
+    # 業種別の件数をキャッシュ化
+    industry_counts_data = Rails.cache.fetch("industry_counts", expires_in: 10.minutes) do
+      base_query.group(:industry)
+                .select(
+                  :industry,
+                  "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without_count",
+                  "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with_count"
+                )
+    end
+  
     @industry_counts = @industries.each_with_object({}) do |industry, hash|
       data = industry_counts_data.find { |item| item.industry == industry }
       hash[industry] = {
-        tel_with: data&.tel_with_count.to_i,
-        tel_without: data&.tel_without_count.to_i
+        tel_with: data&.tel_with_count.to_i || 0,
+        tel_without: data&.tel_without_count.to_i || 0
       }
     end
   
     @q = base_query.ransack(params[:q])
-    @customers = @q.result.page(params[:page]).per(100)
+    @customers = @q.result.eager_load(:last_call).page(params[:page]).per(50)
   end
+  
       
   def bulk_action
     @customers = Customer.where(id: params[:deletes].keys)
