@@ -407,8 +407,13 @@ class CustomersController < ApplicationController
   def draft
     @industries = Customer::INDUSTRY_MAPPING.keys
     base_query = Customer.where(status: "draft")
-  
-    # 電話番号あり/なし/総合の件数をキャッシュ化
+    
+    # workerがログインしている場合、電話番号がない顧客のみ表示
+    if worker_signed_in?  # workerがログインしている場合
+      base_query = base_query.where(tel: [nil, '', " "])  # 電話番号がない顧客
+    end
+    
+    # 電話番号あり/なしの件数をキャッシュ化
     @tel_with_count = Rails.cache.fetch("tel_with_count", expires_in: 10.minutes) do
       base_query.where.not(tel: [nil, '', " "]).count
     end
@@ -437,8 +442,55 @@ class CustomersController < ApplicationController
     @q = base_query.ransack(params[:q])
     @customers = @q.result.eager_load(:last_call).page(params[:page]).per(50)
   end
+
+  def filter_by_industry
+    industry_name = params[:industry_name]
+    tel_filter = params[:tel_filter]
   
-      
+    @industries = Customer::INDUSTRY_MAPPING.keys
+    base_query = Customer.where(status: "draft")
+  
+    # workerがログインしている場合、電話番号がない顧客のみ表示
+    if worker_signed_in?  # workerがログインしている場合
+      base_query = base_query.where(tel: [nil, '', " "])  # 電話番号がない顧客
+    end
+  
+    # 絞り込み条件の適用
+    if industry_name.present?
+      base_query = base_query.where(industry: industry_name)
+    end
+  
+    if tel_filter == "with_tel"
+      base_query = base_query.where.not(tel: [nil, '', " "])
+    elsif tel_filter == "without_tel"
+      base_query = base_query.where(tel: [nil, '', " "])
+    end
+  
+    # 各業種の件数をキャッシュ化して効率的に取得
+    raw_counts = Rails.cache.fetch("industry_counts_filter_by_industry", expires_in: 10.minutes) do
+      Customer.where(status: "draft")
+              .group(:industry)
+              .select(
+                :industry,
+                "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with",
+                "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without"
+              )
+              .map { |data| [data.industry, { tel_with: data.tel_with.to_i, tel_without: data.tel_without.to_i }] }
+              .to_h
+    end
+  
+    # 必ず全業種を含むようにデフォルト値を設定
+    @industry_counts = @industries.each_with_object({}) do |industry, hash|
+      hash[industry] = raw_counts[industry] || { tel_with: 0, tel_without: 0 }
+    end
+  
+    # ページネーションを適用
+    @customers = base_query.page(params[:page]).per(50)
+  
+    render :draft
+  end
+  
+  
   def bulk_action
     @customers = Customer.where(id: params[:deletes].keys)
   
@@ -483,49 +535,7 @@ class CustomersController < ApplicationController
   
     redirect_to infosends_path, notice: 'メール送信を開始しました。'
   end
-    
-  def filter_by_industry
-    industry_name = params[:industry_name]
-    tel_filter = params[:tel_filter]
-  
-    @industries = Customer::INDUSTRY_MAPPING.keys
-    base_query = Customer.where(status: "draft")
-  
-    # 絞り込み条件の適用
-    if industry_name.present?
-      base_query = base_query.where(industry: industry_name)
-    end
-  
-    if tel_filter == "with_tel"
-      base_query = base_query.where.not(tel: [nil, '', " "])
-    elsif tel_filter == "without_tel"
-      base_query = base_query.where(tel: [nil, '', " "])
-    end
-  
-    # 各業種の件数をキャッシュ化して効率的に取得
-    raw_counts = Rails.cache.fetch("industry_counts_filter_by_industry", expires_in: 10.minutes) do
-      Customer.where(status: "draft")
-              .group(:industry)
-              .select(
-                :industry,
-                "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with",
-                "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without"
-              )
-              .map { |data| [data.industry, { tel_with: data.tel_with.to_i, tel_without: data.tel_without.to_i }] }
-              .to_h
-    end
-  
-    # 必ず全業種を含むようにデフォルト値を設定
-    @industry_counts = @industries.each_with_object({}) do |industry, hash|
-      hash[industry] = raw_counts[industry] || { tel_with: 0, tel_without: 0 }
-    end
-  
-    # ページネーションを適用
-    @customers = base_query.page(params[:page]).per(50)
-  
-    render :draft
-  end
-    
+        
   def update_all_status
     status = params[:status] || 'hidden'
     published_count = 0
