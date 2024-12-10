@@ -10,7 +10,7 @@ class BatchImportJob < ApplicationJob
       CSV.foreach(file_path, headers: true) do |row|
         case import_type
         when :import
-          Customer.import_row(row)  # 各行を処理するメソッド
+          Customer.import_row(row) # 各行を処理するメソッド
         when :call_import
           Customer.call_import_row(row)
         when :repurpose_import
@@ -26,6 +26,9 @@ class BatchImportJob < ApplicationJob
         progress = (rows_processed.to_f / total_rows * 100).round(2)
         Redis.current.set("progress_#{import_type}", progress)
       end
+  
+      # 処理後にファイルを削除
+      File.delete(file_path) if File.exist?(file_path)
     end
   end
   
