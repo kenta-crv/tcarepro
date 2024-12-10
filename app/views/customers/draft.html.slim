@@ -54,7 +54,7 @@
            | 担当者
          th
            | 作成日
-     - @customers.includes(:last_call).each_with_index do |customer, index|
+     - @customers.each do |customer|
        tr
          td
            = check_box_tag "deletes[#{customer.id}]", customer.id
