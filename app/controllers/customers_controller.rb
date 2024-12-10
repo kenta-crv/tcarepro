@@ -407,30 +407,22 @@ class CustomersController < ApplicationController
   def draft
     @industries = Customer::INDUSTRY_MAPPING.keys
     base_query = Customer.where(status: "draft")
-    
-    # workerがログインしている場合、電話番号がない顧客のみ表示
-    if worker_signed_in?  # workerがログインしている場合
-      base_query = base_query.where(tel: [nil, '', " "])  # 電話番号がない顧客
-    end
-    
-    # 電話番号あり/なしの件数をキャッシュ化
-    @tel_with_count = Rails.cache.fetch("tel_with_count", expires_in: 10.minutes) do
-      base_query.where.not(tel: [nil, '', " "]).count
-    end
-    @tel_without_count = Rails.cache.fetch("tel_without_count", expires_in: 10.minutes) do
-      base_query.where(tel: [nil, '', " "]).count
+  
+    # ロールによる条件分岐
+    if admin_signed_in?
+      base_query = base_query.where.not(tel: nil) # admin: 電話番号があるもの
+    elsif worker_signed_in?
+      base_query = base_query.where(tel: nil)    # worker: 電話番号がないもの
     end
   
-    # 業種別の件数をキャッシュ化
-    industry_counts_data = Rails.cache.fetch("industry_counts", expires_in: 10.minutes) do
-      base_query.group(:industry)
-                .select(
-                  :industry,
-                  "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without_count",
-                  "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with_count"
-                )
-    end
+    # 業種ごとの電話番号あり・なしの件数を集計
+    industry_counts_data = base_query.group(:industry).select(
+      :industry,
+      "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with_count",
+      "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without_count"
+    )
   
+    # 業種ごとのデータをハッシュに変換
     @industry_counts = @industries.each_with_object({}) do |industry, hash|
       data = industry_counts_data.find { |item| item.industry == industry }
       hash[industry] = {
@@ -439,57 +431,38 @@ class CustomersController < ApplicationController
       }
     end
   
+    # 検索条件とページネーションの適用
     @q = base_query.ransack(params[:q])
-    @customers = @q.result.eager_load(:last_call).page(params[:page]).per(50)
+    @customers = @q.result.page(params[:page]).per(200)
   end
-
+  
   def filter_by_industry
     industry_name = params[:industry_name]
     tel_filter = params[:tel_filter]
-  
-    @industries = Customer::INDUSTRY_MAPPING.keys
     base_query = Customer.where(status: "draft")
   
-    # workerがログインしている場合、電話番号がない顧客のみ表示
-    if worker_signed_in?  # workerがログインしている場合
-      base_query = base_query.where(tel: [nil, '', " "])  # 電話番号がない顧客
+    # ロールによる条件分岐
+    if admin_signed_in?
+      base_query = base_query.where.not(tel: nil) # admin: 電話番号があるもの
+    elsif worker_signed_in?
+      base_query = base_query.where(tel: nil)    # worker: 電話番号がないもの
     end
   
-    # 絞り込み条件の適用
-    if industry_name.present?
-      base_query = base_query.where(industry: industry_name)
-    end
+    # 業種フィルタリング
+    base_query = base_query.where(industry: industry_name) if industry_name.present?
   
+    # 電話番号の有無によるフィルタリング
     if tel_filter == "with_tel"
       base_query = base_query.where.not(tel: [nil, '', " "])
     elsif tel_filter == "without_tel"
       base_query = base_query.where(tel: [nil, '', " "])
     end
   
-    # 各業種の件数をキャッシュ化して効率的に取得
-    raw_counts = Rails.cache.fetch("industry_counts_filter_by_industry", expires_in: 10.minutes) do
-      Customer.where(status: "draft")
-              .group(:industry)
-              .select(
-                :industry,
-                "SUM(CASE WHEN tel IS NOT NULL AND tel != '' THEN 1 ELSE 0 END) AS tel_with",
-                "SUM(CASE WHEN tel IS NULL OR tel = '' THEN 1 ELSE 0 END) AS tel_without"
-              )
-              .map { |data| [data.industry, { tel_with: data.tel_with.to_i, tel_without: data.tel_without.to_i }] }
-              .to_h
-    end
-  
-    # 必ず全業種を含むようにデフォルト値を設定
-    @industry_counts = @industries.each_with_object({}) do |industry, hash|
-      hash[industry] = raw_counts[industry] || { tel_with: 0, tel_without: 0 }
-    end
-  
-    # ページネーションを適用
-    @customers = base_query.page(params[:page]).per(50)
+    # ページネーション適用
+    @customers = base_query.page(params[:page]).per(200)
   
     render :draft
   end
-  
   
   def bulk_action
     @customers = Customer.where(id: params[:deletes].keys)
