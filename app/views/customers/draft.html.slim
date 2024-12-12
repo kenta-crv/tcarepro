@@ -13,99 +13,77 @@
       | )
 
 = form_tag({ controller: :customers, action: :bulk_action }, method: :post) do
-  -if admin_signed_in?
-   .scroll
-    = select_tag :status, options_for_select([['公開', nil], ['非表示', 'hidden']]), prompt: 'Select Status'
-    = submit_tag '一括更新', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;'
-    = submit_tag '一括削除', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;', data: { confirm: '本当に削除しますか？' }
+  - if admin_signed_in?
+    .scroll
+      = select_tag :status, options_for_select([['公開', nil], ['非表示', 'hidden']]), prompt: 'Select Status'
+      = submit_tag '一括更新', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;'
+      = submit_tag '一括削除', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;', data: { confirm: '本当に削除しますか？' }
 
   table[width="100%" cellpadding="0" cellspacing="0"]
-     col[width="3%"]
-     col[width="10%"]
-     col[width="10%"]
-     col[width="15%"]
-     col[width="5%"]
-     col[width="10%"]
-     col[width="15%"]
-     col[width="15%"]
-     col[width="5%"]
-     col[width="10%"]
-     thead
-       tr
-         th
-           input.checkable_delete_all[type="checkbox", id="select_all"]
-         th
-           | 会社名
-         th
-          - if admin_signed_in?
-           = link_to '電話あり', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel'), class: "btn btn-default"
-           br/
-           = link_to '電話なし', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel'), class: "btn btn-default"
+    col[width="3%"]
+    col[width="10%"]
+    col[width="10%"]
+    col[width="15%"]
+    col[width="5%"]
+    col[width="10%"]
+    col[width="15%"]
+    col[width="15%"]
+    col[width="5%"]
+    col[width="10%"]
+    thead
+      tr
+        th
+          input.checkable_delete_all[type="checkbox", id="select_all"]
+        th
+          | 会社名
+        th
+          - if admin_signed_in? && worker_signed_in?
+            = link_to '電話番号あり', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel'), class: "btn btn-default"
+            br/
+            = link_to '電話番号なし', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel'), class: "btn btn-default"
+          - elsif admin_signed_in?
+            = link_to '電話番号あり', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel'), class: "btn btn-default"
+            br/
+            = link_to '電話番号なし', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel'), class: "btn btn-default"
           - else
-         th
-           | 住所
-         th
-           | 業種
-         th
-           | 職種
-         th
-           | URL 
-         th
-           | フォームURL
-         th
-           | 担当者
-         th
-           | 作成日
-     - @customers.each do |customer|
-       tr
-         td
-           = check_box_tag "deletes[#{customer.id}]", customer.id
-         td
-           = link_to (truncate(customer&.company.presence || customer.id.to_s, length: 15)), edit_customer_path(customer, industry_name: params[:industry_name]), class: 'command'
-         td
-           = customer&.tel
-         td
-           = truncate(customer&.address, length: 15)
-         td
-           = customer&.business
-         td
-           = truncate(customer&.genre, length: 15)
-         td
-           = truncate(customer&.url, length: 15)
-         td
-           = truncate(customer&.contact_url, length: 15)
-         td
-           = customer.worker&.user_name
-         td
-           = customer&.created_at.strftime("%m月%d日 %H時%M分")
-     tr
-       th[colspan="10"]
-         = paginate @customers
-
- 
-
-javascript:
-  $(function() {
-    var allChecableBox = $('.checkable_delete_all');
-    var deleteCheckBoxs = $("[id^='deletes_']");
-
-    allChecableBox.change(function() {
-      if (this.checked) {
-        deleteCheckBoxs.prop('checked', true);
-      } else {
-        deleteCheckBoxs.prop('checked', false);
-      }
-    });
-
-    deleteCheckBoxs.change(function() {
-      var unCheckedExist = $("input:not(:checked)[id^='deletes_']").length > 0;
-      var checkedExist = $("input:checked[id^='deletes_']").length > 0;
-
-      if (checkedExist && unCheckedExist) {
-        allChecableBox.prop('indeterminate', true);
-      } else {
-        allChecableBox.prop('indeterminate', false);
-        allChecableBox.prop('checked', checkedExist);
-      }
-    });
-  });
+            | 電話番号
+        th
+          | 住所
+        th
+          | 業種
+        th
+          | 職種
+        th
+          | URL 
+        th
+          | フォームURL
+        th
+          | 担当者
+        th
+          | 作成日
+    - @customers.each do |customer|
+      - if (worker_signed_in? && customer.tel.blank?) || (admin_signed_in? && (worker_signed_in? || customer.tel.present?))
+        tr
+          td
+            = check_box_tag "deletes[#{customer.id}]", customer.id
+          td
+            = link_to (truncate(customer&.company.presence || customer.id.to_s, length: 15)), edit_customer_path(customer, industry_name: params[:industry_name]), class: 'command'
+          td
+            = customer&.tel
+          td
+            = truncate(customer&.address, length: 15)
+          td
+            = customer&.business
+          td
+            = truncate(customer&.genre, length: 15)
+          td
+            = truncate(customer&.url, length: 15)
+          td
+            = truncate(customer&.contact_url, length: 15)
+          td
+            = customer.worker&.user_name
+          td
+            = customer&.created_at.strftime("%m月%d日 %H時%M分")
+    tr
+      th[colspan="10"]
+        = paginate @customers
