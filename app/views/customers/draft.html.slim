@@ -37,9 +37,11 @@
          th
            | 会社名
          th
-           = link_to 'tel_within', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel')
+          - if admin_signed_in?
+           = link_to '電話あり', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel'), class: "btn btn-default"
            br/
-           = link_to 'tel_without', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel')
+           = link_to '電話なし', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel'), class: "btn btn-default"
+          - else
          th
            | 住所
          th
