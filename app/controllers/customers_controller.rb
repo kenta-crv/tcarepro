@@ -439,6 +439,9 @@ class CustomersController < ApplicationController
   end
   
   def filter_by_industry
+    # 業種リストの初期化（draftと同じ処理を適用）
+    @industries = Customer::INDUSTRY_MAPPING&.keys || []
+  
     industry_name = params[:industry_name]
     tel_filter = params[:tel_filter]
   
@@ -474,7 +477,7 @@ class CustomersController < ApplicationController
   
     render :draft
   end
-  
+    
     
   def bulk_action
     @customers = Customer.where(id: params[:deletes].keys)
