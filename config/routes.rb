@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  Rails.logger.debug("routes: " + DateTime.now.to_s)
+  root to: 'customers#index'
   # 発信認証用ルーティング
   post 'notifications', to: 'notifications#create'
   devise_for :staffs
@@ -89,12 +89,6 @@ Rails.application.routes.draw do
   get 'callback' => 'okurite#callback', as: :callback
   get 'direct_mail_callback' => 'okurite#direct_mail_callback', as: :direct_mail_callback
 
-  resources :sendlist
-  resources :estimates, only: [:index, :show] do
-    member do
-      get :report
-    end
-  end
 
   resources :customers do
     post 'exclude', on: :member
@@ -108,20 +102,11 @@ Rails.application.routes.draw do
       post :all_import
       post :import
       post :send_emails #info
-      #post :repost_import
-      #post :update_import
-      #post :call_import
-      #post :tcare_import
       get :message
       put 'update_all_status'
     end
-    get 'analytics', on: :collection
   end
-  get '/customers/:id/copy', to: 'customers#copy', as: 'copy_customer' # コピー機能のためのルート
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
-  get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
-  get '/customers/analytics/thinreports_email', to: 'customers#thinreports_email', as: 'customers_thinreports_email'
-  get 'infosends' => 'customers#infosends' #締め
   get 'draft' => 'customers#draft' #締め
   get 'draft/filter_by_industry', to: 'customers#filter_by_industry', as: 'filter_by_industry'
   #showからのメール送信
@@ -134,9 +119,7 @@ Rails.application.routes.draw do
     get '' => 'customers#information', as: :information #分析
   end
 
-  get 'closing' => 'customers#closing' #締め
   get 'news' => 'customers#news' #インポート情報
-  get 'extraction' => 'customers#extraction' #TCARE
   delete :customers, to: 'customers#destroy_all' #Mailer
 
   resources :contracts  do

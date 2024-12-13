@@ -2,9 +2,6 @@ require 'scraping'
 
 class Customer < ApplicationRecord
   INDUSTRY_MAPPING = {
-    #'SOUND（介護）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日", industry_mail: "tanaka@jfbfe.or.jp"},
-    #'SOUND（食品）' => {industry_code: 27500, company_name: "一般社団法人日本料飲外国人雇用協会", payment_date: "末日", industry_mail: "tanaka@jfbfe.or.jp"},
-    #'グローバルイノベーション' => {industry_code: 30000, company_name: "協同組合グローバルイノベーション", payment_date: "10日", industry_mail: "tokumaru.junichi@globa-ca.com"},
     'ワークリレーション' => {industry_code: 21000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"fujita@work-re.com"},
     'ワーク（外国人）' => {industry_code: 30000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"fujita@work-re.com"},
     'モンキークルー（介護）' => {industry_code: 25000, company_name: "株式会社モンキークルージャパン", payment_date: "10日", industry_mail:"takayama@monkeycrew-j.com"},
@@ -19,8 +16,6 @@ class Customer < ApplicationRecord
     'ワークビュー' => {industry_code: 0, company_name: "", payment_date: "", industry_mail:""},
     'ミライユ（ドライバー）' => {industry_code: 0, company_name: "", payment_date: "", industry_mail:""},
     'ミライユ（警備）' => {industry_code: 0, company_name: "", payment_date: "", industry_mail:""},
-    #'ケアリンク' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
-    #'エクステリア' => {industry_code: 10000, company_name: "自社", payment_date: "", industry_mail:""},
   }
 
   before_save :set_industry_defaults
@@ -134,7 +129,6 @@ class Customer < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
   has_many :estimates
-  has_many :email_histories
   has_many :calls#, foreign_key: :tel, primary_key: :tel
   has_many :counts
   has_one :last_call, ->{
