@@ -2,7 +2,6 @@ require 'contactor'
 
 class Inquiry < ApplicationRecord
   has_many :contact_trackings
-  has_many :email_histories
 
   validates :headline, presence: true
   validates :from_company, presence: true

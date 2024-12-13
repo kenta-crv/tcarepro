@@ -1,6 +1,6 @@
 require 'rubygems'
 class CustomersController < ApplicationController
-  before_action :authenticate_admin!, only: [:destroy, :destroy_all, :analytics, :import, :call_import, :sfa, :mail, :call_history]
+  before_action :authenticate_admin!, only: [:destroy, :destroy_all, :sfa, :mail, :call_history]
   #before_action :authenticate_worker!, only: [:extraction, :direct_mail_send]
   before_action :authenticate_worker_or_user, only: [:new, :edit, :create, :update]
   before_action :authenticate_user_or_admin, only: [:index, :show]
@@ -281,16 +281,6 @@ class CustomersController < ApplicationController
     redirect_to customers_url, notice: notice_message
   end
 
-  def tcare_import
-    cnt = Customer.tcare_import(params[:tcare_file])
-    redirect_to extraction_url, notice:"#{cnt}件登録されました。"
-  end
-
-  def call_import
-    cnt = Call.call_import(params[:call_file])
-    redirect_to customers_url, notice:"#{cnt}件登録されました。"
-  end
-  
   def print
     report = Thinreports::Report.new layout: "app/reports/layouts/invoice.tlf"
     
@@ -388,12 +378,6 @@ class CustomersController < ApplicationController
     CustomerMailer.teleapo_send_email(@customer, email_params).deliver_now
     redirect_to customers_path, notice: 'Email sent successfully!'
   end
-  
-  def extraction
-    @q = Customer.ransack(params[:q])
-    @customers = @q.result
-    @customers = @customers.order("created_at DESC").where(extraction_count: nil).where(tel: nil).page(params[:page]).per(20)
-  end
 
   def calculate
     user = User.find(params[:user_id])
@@ -475,40 +459,7 @@ end
       redirect_to customers_path, alert: '無効なアクションです。'
     end
   end
-  
-  def infosends
-    #@q = Customer.where("TRIM(mail) IS NOT NULL AND TRIM(mail) != ''").where("business LIKE ?", "%食品%").group(:mail).ransack(params[:q])     
-    @q = Customer.where(mail:"mail@ri-plus.jp").ransack(params[:q])
-    @customers = @q.result.page(params[:page]).per(280)
-  end
-
-  def send_emails
-    default_query = { mail_eq: "mail@ri-plus.jp" } # 'mail_eq'で完全一致条件を設定
-    @q = Customer.ransack(params[:q].presence || default_query)
-  
-    page_number = params[:page].presence || 1
-    customers = @q.result.page(page_number).per(280)
-  
-    email_count = [params[:email_form][:email_count].to_i, 280].min
-    inquiry_id = params[:email_form][:inquiry_id]
-    from_email = params[:email_form][:from_email]
-  
-    inquiry = Inquiry.find(inquiry_id)
-  
-    # 送信対象の顧客を取得し、重複送信を防止
-    customers = customers.where.not(id: EmailHistory.where(inquiry_id: inquiry_id, status: "success").select(:customer_id)).limit(email_count)
-  
-    # メール送信
-    customers.each do |customer|
-      CustomerMailer.send_inquiry(customer, inquiry, from_email).deliver_now
-  
-      # 送信履歴を保存
-      EmailHistory.create(customer_id: customer.id, inquiry_id: inquiry_id, status: "success", sent_at: Time.current)
-    end
-  
-    redirect_to infosends_path, notice: 'メール送信を開始しました。'
-  end
-        
+          
   def update_all_status
     status = params[:status] || 'hidden'
     published_count = 0
