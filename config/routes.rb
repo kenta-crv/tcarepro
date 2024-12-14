@@ -113,6 +113,8 @@ Rails.application.routes.draw do
   post 'customers/:id/send_email', to: 'customers#send_email_send'
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'direct_mail_send/:id' => 'customers#direct_mail_send' #SFA
+  get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
+  get '/customers/analytics/thinreports_email', to: 'customers#thinreports_email', as: 'customers_thinreports_email'
   #get 'sender/:id/' => 'sender#show'
   scope :information do
     get '' => 'customers#information', as: :information #分析
