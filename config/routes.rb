@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   root to: 'customers#index'
   # 発信認証用ルーティング
   post 'notifications', to: 'notifications#create'
-  devise_for :staffs
   root to: 'customers#index'
   #管理者アカウント
   devise_for :admins, controllers: {
