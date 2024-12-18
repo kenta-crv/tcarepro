@@ -30,9 +30,5 @@ aside#sidebar
             = link_to '作業者マイページ', worker_path(current_worker)
          br
          li
-          - if sender_signed_in?
-            = link_to "取引先マイページ", sender_path
-         br
-         li
           - if admin_signed_in?
             = link_to '管理者マイページ', admin_path(current_admin)
