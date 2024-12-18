@@ -71,7 +71,7 @@ class CustomersController < ApplicationController
     @is_auto_call = (params[:is_auto_call] == 'true')
     @user = current_user
     @worker = current_worker
-    @sender = current_sender ?  current_sender : Sender.new
+    #@sender = current_sender ?  current_sender : Sender.new
   end
 
   def new
