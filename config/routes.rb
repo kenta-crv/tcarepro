@@ -53,28 +53,27 @@ Rails.application.routes.draw do
   resources :crowdworks
   resources :contacts, only: [:index, :edit, :update, :destroy]
 
-  resource :sender, only: [:show]
-  post 'senders/import' => 'senders#import'
+  #resource :sender, only: [:show]
   #センダーアカウント
-  devise_for :senders, controllers: {
-    registrations: 'senders/registrations'
-  }
+  #devise_for :senders, controllers: {
+  #  registrations: 'senders/registrations'
+  #}
 
   resources :inquiries, only: [:index, :show, :edit, :update, :destroy] 
 
   resources :senders, only: [:index, :show, :edit, :update] do
-    resources :inquiries, except: [:index, :show, :edit, :update, :destroy] do
-      put :default, to: 'inquiries#default'
-    end
-    get 'history', to: 'senders_history#index'
-    get 'sended', to: 'senders_history#sended'
-    get 'mail_app', to: 'senders_history#mail_app'
-    get 'tele_app', to: 'senders_history#tele_app'
-    get 'download_sended', to: 'senders_history#download_sended'
-    get 'download_callbacked', to: 'senders_history#download_callbacked'
-    get 'callbacked', to: 'senders_history#callbacked'
-    get 'users_callbacked', to: 'senders_history#users_callbacked'
-    get 'okurite/index01', to: 'okurite#index01'
+    #resources :inquiries, except: [:index, :show, :edit, :update, :destroy] do
+     # put :default, to: 'inquiries#default'
+    #end
+    #get 'history', to: 'senders_history#index'
+    #get 'sended', to: 'senders_history#sended'
+    #get 'mail_app', to: 'senders_history#mail_app'
+    #get 'tele_app', to: 'senders_history#tele_app'
+    #get 'download_sended', to: 'senders_history#download_sended'
+    #get 'download_callbacked', to: 'senders_history#download_callbacked'
+    #get 'callbacked', to: 'senders_history#callbacked'
+    #get 'users_callbacked', to: 'senders_history#users_callbacked'
+    #get 'okurite/index01', to: 'okurite#index01'
     post 'okurite/autosettings', to: 'okurite#autosettings'
     delete 'bulk_delete', to: 'okurite#bulk_delete'
     get 'resend', to: 'okurite#resend'
