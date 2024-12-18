@@ -392,14 +392,22 @@ class CustomersController < ApplicationController
     # 業種リストの初期化
     @industries = Customer::INDUSTRY_MAPPING&.keys || []
   
-    # ベースクエリ（全体で統一）
-    base_query = Customer.where(status: "draft")
+    # Adminを優先した条件分岐
+    @customers = case
+    when admin_signed_in? && params[:tel_filter] == "with_tel"
+      Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+    when admin_signed_in? && params[:tel_filter] == "without_tel"
+      Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    when worker_signed_in?
+      Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    else
+      Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+    end
   
-    # 件数計算（電話あり/なしを業種ごとに集計）
-    tel_with_counts = base_query.where.not(tel: [nil, '', ' ']).group(:industry).count
-    tel_without_counts = base_query.where(tel: [nil, '', ' ']).group(:industry).count
+    # 業種ごとの件数を計算
+    tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
+    tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
   
-    # 業種ごとの件数を集計
     @industry_counts = @industries.each_with_object({}) do |industry, hash|
       hash[industry] = {
         tel_with: tel_with_counts[industry] || 0,
@@ -407,45 +415,46 @@ class CustomersController < ApplicationController
       }
     end
   
-    # 顧客データと検索条件
-    @q = base_query.ransack(params[:q])
-    @customers = @q.result.page(params[:page]).per(200)
+    # ページネーション
+    @customers = @customers.page(params[:page]).per(200)
   end
-def filter_by_industry
-  # 業種リストの初期化
-  @industries = Customer::INDUSTRY_MAPPING&.keys || []
-
-  # パラメータの取得
-  industry_name = params[:industry_name]
-  tel_filter = params[:tel_filter]
-
-  # ベースクエリ（全体で統一）
-  base_query = Customer.where(status: "draft")
-  base_query = base_query.where(industry: industry_name) if industry_name.present?
-
-  # 電話番号の有無によるフィルタリング
-  if tel_filter == "with_tel"
-    base_query = base_query.where.not(tel: [nil, '', ' '])
-  elsif tel_filter == "without_tel"
-    base_query = base_query.where(tel: [nil, '', ' '])
+  def filter_by_industry
+    # 業種リストの初期化
+    @industries = Customer::INDUSTRY_MAPPING&.keys || []
+  
+    # 業種によるフィルタリング
+    industry_name = params[:industry_name]
+    base_query = Customer.where(status: "draft")
+    base_query = base_query.where(industry: industry_name) if industry_name.present?
+  
+    # Adminを優先した条件分岐
+    @customers = case
+    when admin_signed_in? && params[:tel_filter] == "with_tel"
+      base_query.where.not(tel: [nil, '', ' '])
+    when admin_signed_in? && params[:tel_filter] == "without_tel"
+      base_query.where(tel: [nil, '', ' '])
+    when worker_signed_in?
+      base_query.where(tel: [nil, '', ' '])
+    else
+      base_query.where.not(tel: [nil, '', ' '])
+    end
+  
+    # 業種ごとの件数を計算
+    tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
+    tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
+  
+    @industry_counts = @industries.each_with_object({}) do |industry, hash|
+      hash[industry] = {
+        tel_with: tel_with_counts[industry] || 0,
+        tel_without: tel_without_counts[industry] || 0
+      }
+    end
+  
+    # ページネーション
+    @customers = @customers.page(params[:page]).per(200)
+  
+    render :draft
   end
-
-  # 件数計算（draftと同一のロジックを使用）
-  tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
-  tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
-
-  @industry_counts = @industries.each_with_object({}) do |industry, hash|
-    hash[industry] = {
-      tel_with: tel_with_counts[industry] || 0,
-      tel_without: tel_without_counts[industry] || 0
-    }
-  end
-
-  # フィルタ後の顧客データ
-  @customers = base_query.page(params[:page]).per(200)
-
-  render :draft
-end
   
   
   def bulk_action
