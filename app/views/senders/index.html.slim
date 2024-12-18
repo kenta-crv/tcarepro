@@ -5,23 +5,15 @@
      col width="25%"
      col width="25%"
      col width="25%"
-     col width="25%"
-     /col width="20%"
     thead
       tr
         th 取引先企業名
-        th 全体月間送信件数
         th 新規送信
         th 再送信
-        th
-        /åth
     tbody
       - @senders.each do |sender|
         tr
-          td = link_to sender.user_name, "/senders/#{sender.id}"
-          /td = link_to sender.contact_trackings.where('created_at > ?', Time.current.beginning_of_month).where('created_at < ?', Time.current.end_of_month).where(status: '送信済').count,sendlist_path(id:sender.id)
-          td = sender.rate_limit
+          /td = link_to sender.user_name, "/senders/#{sender.id}"
+          td = sender.user_name
           td = link_to '送信業務開始', sender_okurite_index_path(sender), class: "btn btn-success"
           td = link_to '送信業務開始', sender_resend_path(sender), class: "btn btn-success"
-          -if admin_signed_in?
-           td = link_to '送信者情報編集', edit_sender_path(sender), class: 'btn btn-success'
