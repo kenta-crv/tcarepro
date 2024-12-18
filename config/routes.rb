@@ -101,7 +101,6 @@ Rails.application.routes.draw do
       post :import
       post :send_emails #info
       get :message
-      put 'update_all_status'
     end
   end
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
@@ -123,11 +122,6 @@ Rails.application.routes.draw do
   delete :customers, to: 'customers#destroy_all' #Mailer
 
   resources :contracts  do
-    resources :images, only: [:create, :destroy, :update, :download, :edit]
-    member do
-      get 'images/view'
-      get 'images/download/:id' => 'images#download' ,as: :images_pdf
-    end
     resources :scripts, except: [:index, :show]
   end
 

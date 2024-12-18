@@ -2,7 +2,7 @@ class WorkersController < ApplicationController
   def show
     # Retrieve worker and initialize a new contact
     @worker = Worker.find(params[:id])
-    @contact = @worker.contacts.new
+    #@contact = @worker.contacts.new
     
     # Retrieve customers related to the worker
     @customers = @worker.customers
