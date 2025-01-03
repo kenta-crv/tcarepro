@@ -81,7 +81,6 @@ Rails.application.routes.draw do
     resources :okurite, only: [:index, :show] do
       get :preview, to: 'okurite#preview'
       post :contact, to: 'okurite#create'
-
     end
   end
   get 'callback' => 'okurite#callback', as: :callback
