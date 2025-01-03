@@ -1,4 +1,23 @@
 .info-wrapper
+  h2.headline
+    | #{@worker.user_name}さんは現在以下の送信先が割り当てられています。
+  br/
+  br/
+  br/
+  table[width="90%" class="header-table space"]
+    colgroup
+      |
+    tr
+      - if @assigned_senders.empty?
+        th colspan="2"
+          | 現在割り当てられている送信先はありません。
+      - else
+        - @assigned_senders.each do |sender|
+          tr
+            th = sender.user_name
+            td  
+              = link_to "作業を花石", "/senders", class: "btn btn-success"
+.info-wrapper
  h2.headline
       | メール実施件数
  br/

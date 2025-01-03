@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   resources :admins do
     post 'assign_workers', on: :member
     post 'remove_worker', on: :member
+    post 'assign_senders', on: :member
+    post 'remove_sender', on: :member
     member do
       patch :assign_worker_crowdwork  # 各管理者に対するワーカーの割り当て
     end

@@ -50,6 +50,8 @@ class WorkersController < ApplicationController
     # Calculate total send counts for the day and week
     @send_count_day = @contact_trackings_day.count
     @send_count_week = @contact_trackings_week.count
+
+    @assigned_senders = @worker.senders
   end
   
 
