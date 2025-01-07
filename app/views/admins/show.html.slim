@@ -97,6 +97,7 @@
       th 先月支払額
       th 合計送信数
       th 登録日
+      th 契約
       th 支払
       th 契約終了
       th 削除
@@ -146,6 +147,11 @@
         td = @send_success_count_total_month
         td = worker.created_at.strftime("%-m月%-d日")
         td
+            - if worker.number_code.present?
+              = link_to "契約", "https://crowdworks.jp/proposals/#{worker.number_code}", class: "btn btn-success", target:"_blank"
+            - else
+              | 未登録
+        td
           - if worker.number_code.present?
             = link_to "支払", "https://crowdworks.jp/contracts/#{worker.number_code}", class: "btn btn-success", target: "_blank"
           - else
@@ -184,6 +190,7 @@
         th トータル件数
         th 先月支払額
         th 登録日
+        th 契約
         th 支払
         th 契約終了
         th 削除
@@ -213,6 +220,11 @@
           td = total_number
           td = count_month_price
           td = worker.created_at.strftime("%-m月%-d日")
+          td
+            - if worker.number_code.present?
+              = link_to "契約", "https://crowdworks.jp/proposals/#{worker.number_code}", class: "btn btn-success", target:"_blank"
+            - else
+              | 未登録
           td
             - if worker.number_code.present?
               = link_to "支払", "https://crowdworks.jp/contracts/#{worker.number_code}", class: "btn btn-success", target:"_blank"
