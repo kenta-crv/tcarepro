@@ -1,0 +1,5 @@
+class AddSenderToUrl < ActiveRecord::Migration[5.1]
+  def change
+    add_column :senders, :url, :string
+  end
+end

@@ -534,7 +534,7 @@ table
     - @detailCount = @detailcustomers.where("industry LIKE ?", "%ミライユ（警備）%").where.not("calls.statu":"再掲載").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).where("industry LIKE ?", "%ワーク（外国人）").count
     - @detailAppCount = @detailcalls.where("industry LIKE ?", "%ミライユ（警備）%").where("calls.statu": "APP").where("calls.created_at > ?", Time.current.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
     - @detailRemainCount = (@detailAppCount > 15) ? 0 : 15 - @detailAppCount
-    - @work1 = @detailAppCount * 275000
+    - @work1 = @detailAppCount * 27500
     th
       | ミライユ（警備）
     td
