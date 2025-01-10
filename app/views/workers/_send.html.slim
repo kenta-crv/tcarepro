@@ -14,9 +14,8 @@
       - else
         - @assigned_senders.each do |sender|
           tr
-            th = sender.user_name
             td  
-              = link_to "作業を開始", "/senders", class: "btn btn-success"
+              = link_to sender.user_name, sender.url, class: "btn btn-success"
 .info-wrapper
  h2.headline
       | メール実施件数
