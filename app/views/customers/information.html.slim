@@ -740,15 +740,19 @@ br/
 br/
 = form_with(url: all_import_customers_path, method: :post, local: true, multipart: true) do |f|
   table[width="100%"]
-      tbody
-        tr
-          th ファイル選択
-          th インポート実行
-        tr
-          td
-            = f.file_field :file
-          td
-            = f.submit 'インポート実行'
+    tbody
+      tr
+        th ファイル選択
+        th 転用件数をスキップ
+        th インポート実行
+      tr
+        td
+          = f.file_field :file
+        td
+          = f.check_box :skip_repurpose
+          = f.label :skip_repurpose, '転用件数をスキップ'
+        td
+          = f.submit 'インポート実行'
 
 br/
 br/
