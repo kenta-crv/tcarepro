@@ -55,11 +55,11 @@ Rails.application.routes.draw do
   resources :crowdworks
   resources :contacts, only: [:index, :edit, :update, :destroy]
 
-  #resource :sender, only: [:show]
+  resource :sender, only: [:show]
   #センダーアカウント
-  #devise_for :senders, controllers: {
-  #  registrations: 'senders/registrations'
-  #}
+  devise_for :senders, controllers: {
+    registrations: 'senders/registrations'
+  }
 
   resources :inquiries, only: [:index, :show, :edit, :update, :destroy] 
 

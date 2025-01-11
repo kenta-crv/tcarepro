@@ -30,7 +30,7 @@ class SendersController < ApplicationController
   private
 
   def sender_params
-    params.require(:sender).permit(:user_name, :rate_limit, :email)
+    params.require(:sender).permit(:user_name, :rate_limit, :email, :url)
   end
   # rate_limit delete
 
