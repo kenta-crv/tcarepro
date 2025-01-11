@@ -271,16 +271,23 @@ class CustomersController < ApplicationController
   def all_import
     # CSVファイルをインポートし、件数を取得
     save_count = Customer.import(params[:file])
+    
     # `call_import` を呼び出して再掲載件数を取得
     call_count = Customer.call_import(params[:file])
-    # `repurpose_import` を呼び出して再掲載件数を取得
-    repurpose_count = Customer.repurpose_import(params[:file])
-     # `draft_import` を呼び出してドラフト件数を取得
+    
+    # チェックボックスがオンの場合は `repurpose_count` をスキップ
+    repurpose_count = { repurpose_import_count: 0 }
+    unless params[:skip_repurpose]
+      repurpose_count = Customer.repurpose_import(params[:file])
+    end
+  
+    # `draft_import` を呼び出してドラフト件数を取得
     draft_count = Customer.draft_import(params[:file])
+  
     notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
     redirect_to customers_url, notice: notice_message
   end
-
+  
   def print
     report = Thinreports::Report.new layout: "app/reports/layouts/invoice.tlf"
     
