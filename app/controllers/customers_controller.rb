@@ -269,6 +269,9 @@ class CustomersController < ApplicationController
   end
 
   def all_import
+    # skip_repurposeの値をBoolean型に変換
+    skip_repurpose = ActiveModel::Type::Boolean.new.cast(params[:skip_repurpose])
+  
     # CSVファイルをインポートし、件数を取得
     save_count = Customer.import(params[:file])
     
@@ -277,13 +280,14 @@ class CustomersController < ApplicationController
     
     # チェックボックスがオンの場合は `repurpose_count` をスキップ
     repurpose_count = { repurpose_import_count: 0 }
-    unless params[:skip_repurpose]
+    unless skip_repurpose
       repurpose_count = Customer.repurpose_import(params[:file])
     end
   
     # `draft_import` を呼び出してドラフト件数を取得
     draft_count = Customer.draft_import(params[:file])
   
+    # 結果メッセージを作成
     notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
     redirect_to customers_url, notice: notice_message
   end

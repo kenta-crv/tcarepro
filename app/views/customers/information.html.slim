@@ -749,7 +749,7 @@ br/
         td
           = f.file_field :file
         td
-          = f.check_box :skip_repurpose
+          = f.check_box :skip_repurpose, { checked: false }, true, false
           = f.label :skip_repurpose, '転用件数をスキップ'
         td
           = f.submit 'インポート実行'
