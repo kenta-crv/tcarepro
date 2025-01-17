@@ -396,9 +396,9 @@ class CustomersController < ApplicationController
   end
 
   def draft
-    # 業種リストの初期化
-    @industries = Customer::INDUSTRY_MAPPING&.keys || []
-  
+    # crowdworkタイトルの初期化
+    @crowdworks = Crowdwork.all || []
+
     # Adminを優先した条件分岐
     @customers = case
     when admin_signed_in? && params[:tel_filter] == "with_tel"
@@ -410,30 +410,31 @@ class CustomersController < ApplicationController
     else
       Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
     end
-  
-    # 業種ごとの件数を計算
+
+    # タイトルごとの件数を計算
     tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
     tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
-  
-    @industry_counts = @industries.each_with_object({}) do |industry, hash|
-      hash[industry] = {
-        tel_with: tel_with_counts[industry] || 0,
-        tel_without: tel_without_counts[industry] || 0
+
+    @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
+      hash[crowdwork.title] = {
+        tel_with: tel_with_counts[crowdwork.title] || 0,
+        tel_without: tel_without_counts[crowdwork.title] || 0
       }
     end
-  
+
     # ページネーション
     @customers = @customers.page(params[:page]).per(200)
   end
+
   def filter_by_industry
-    # 業種リストの初期化
-    @industries = Customer::INDUSTRY_MAPPING&.keys || []
-  
-    # 業種によるフィルタリング
+    # crowdworkタイトルの初期化
+    @crowdworks = Crowdwork.all || []
+
+    # タイトルによるフィルタリング
     industry_name = params[:industry_name]
     base_query = Customer.where(status: "draft")
     base_query = base_query.where(industry: industry_name) if industry_name.present?
-  
+
     # Adminを優先した条件分岐
     @customers = case
     when admin_signed_in? && params[:tel_filter] == "with_tel"
@@ -445,24 +446,23 @@ class CustomersController < ApplicationController
     else
       base_query.where.not(tel: [nil, '', ' '])
     end
-  
-    # 業種ごとの件数を計算
+
+    # タイトルごとの件数を計算
     tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
     tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
-  
-    @industry_counts = @industries.each_with_object({}) do |industry, hash|
-      hash[industry] = {
-        tel_with: tel_with_counts[industry] || 0,
-        tel_without: tel_without_counts[industry] || 0
+
+    @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
+      hash[crowdwork.title] = {
+        tel_with: tel_with_counts[crowdwork.title] || 0,
+        tel_without: tel_without_counts[crowdwork.title] || 0
       }
     end
-  
+
     # ページネーション
     @customers = @customers.page(params[:page]).per(200)
-  
+
     render :draft
-  end
-  
+  end  
   
   def bulk_action
     @customers = Customer.where(id: params[:deletes].keys)

@@ -3,13 +3,13 @@
   h2.headline
     | ドラフトリスト
 .tops-wrapper
-  - if @industries.present?
-    - @industries.each do |industry|
-      = link_to industry, filter_by_industry_path(industry_name: industry), method: :get, class: "btn btn-default"
+  - if @crowdworks.present?
+    - @crowdworks.each do |crowdwork|
+      = link_to crowdwork.title, filter_by_industry_path(industry_name: crowdwork.title), method: :get, class: "btn btn-default"
       | (
-      = @industry_counts[industry][:tel_with]
+      = @industry_counts[crowdwork.title][:tel_with]
       | /
-      = @industry_counts[industry][:tel_without]
+      = @industry_counts[crowdwork.title][:tel_without]
       | )
 
 = form_tag({ controller: :customers, action: :bulk_action }, method: :post) do
