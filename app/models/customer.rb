@@ -464,6 +464,7 @@ scope :before_sended_at, ->(sended_at){
   
       # 新しい顧客を作成してバッチに追加
       customer = Customer.new(row.to_hash.slice(*updatable_attributes))
+      customer.status = "draft" 
       batch << customer
   
       # バッチサイズが一定を超えた場合、一括保存
