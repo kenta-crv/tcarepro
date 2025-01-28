@@ -724,21 +724,18 @@ scope :before_sended_at, ->(sended_at){
     required_businesses_array.any? { |required_business| customer_business.include?(required_business) }
   end
   
-  
   def valid_genre?(required_genre, customer_genre)
     if required_genre.blank?
       # required_genreが空の場合は無条件で通過
       true
     elsif customer_genre.present?
-      # required_genreに値がある場合は部分一致を確認
-      required_genre.split(/\s+/).any? { |required| customer_genre.include?(required.strip) }
+      # required_genreをカンマ区切りで分割して部分一致を確認
+      required_genre.split(',').any? { |required| customer_genre.include?(required.strip) }
     else
       # required_genreが存在し、customer_genreが空の場合はエラー
       false
     end
   end
-  
-  
   
   def valid_area?(required_area, customer_address)
     # required_area がJSON形式の文字列として渡されている場合、配列に変換
