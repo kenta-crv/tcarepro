@@ -118,6 +118,7 @@ class CustomersController < ApplicationController
     if params[:commit] == '対象外リストとして登録'
       @customer.skip_validation = true
       @customer.status = "hidden"
+      @customer.save(validate: false)
     end
   
   # admin または user がサインインしている場合、バリデーションをスキップ
