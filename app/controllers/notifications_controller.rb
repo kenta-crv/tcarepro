@@ -72,6 +72,9 @@ class NotificationsController < ApplicationController
                     # priority: "high",
                     # time_to_live: 1
                 },
+                android: {
+                    priority: "high"
+                },
                 data: {
                     "telephone": telephone,
                     "date": String(Time.now.to_i)
