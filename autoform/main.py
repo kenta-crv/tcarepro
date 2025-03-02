@@ -539,7 +539,8 @@ sched.start()
 
 m = Mother()
 
-
+# 配列を取得するべきでは？
+# これでは１レコードずつしかの処理しかできない。
 # データ投下
 @app.route("/api/v1/rocketbumb", methods=["POST"])
 def rocketbumb():
