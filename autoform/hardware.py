@@ -927,17 +927,26 @@ class Place_enter():
                 time.sleep(3)  # 送信後のページへの移動を待機
                 after = driver.title
                 page_source = driver.page_source
-                print("before",before)
-                print("after",after)
-                driver.close()
-                return 'OK'
-                if before != after or "ありがとう" in page_source or "完了" in page_source:  # タイトルが変わった場合、送信成功と判断
+                # "確認" または "送信" ボタンをクリック
+                if click_button(driver, ['確認']):
+                    print("Clicked the 'confirm' button")
+                    handle_alert(driver)
+                elif click_button(driver, ['送信']):
+                    print("Clicked the 'submit' button")
+                    handle_alert(driver)
+                else:
+                    print("Error: Could not find either 'confirm' or 'submit' button")
                     driver.close()
                     return 'OK'
-                else:
-                    driver.close()
-                    print("Error: Failed to submit form")
-                    return 'NG'
+                driver.close()
+                return 'OK'
+                # if before != after or "ありがとう" in page_source or "完了" in page_source:  # タイトルが変わった場合、送信成功と判断
+                #     driver.close()
+                #     return 'OK'
+                # else:
+                #     driver.close()
+                #     print("Error: Failed to submit form")
+                #     return 'NG'
 
             except Exception as e:
                 print(f"Error: {e}")
