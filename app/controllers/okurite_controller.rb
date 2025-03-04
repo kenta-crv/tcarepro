@@ -8,12 +8,21 @@ class OkuriteController < ApplicationController
   before_action :set_customers, only: [:index, :preview]
 
   def index
-    @q = Customer.ransack(params[:q])
-    ransack_results = @q.result.includes(:worker)
-    conditional_results = Customer.where(forever: nil)
-    @customers = ransack_results.merge(conditional_results).page(params[:page]).per(30)
+    # OK: contact_trackings もEagerLoadし、検索対象に含める
+    @q = Customer.includes(:contact_trackings).ransack(params[:q])
+  
+    # ransackで絞り込んだ結果
+    @customers = @q.result.distinct.page(params[:page]).per(30)
+  
+    # 既存の forever: nil 条件をどうしても追加したいなら、
+    # merge する書き方でもOK
+    # conditional_results = Customer.where(forever: nil)
+    # @customers = @customers.merge(conditional_results)
+  
+    # ContactTracking 一覧を取得
     @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
   end
+  
   
   def resend
     customers = Customer.joins(:contact_trackings)
@@ -99,7 +108,7 @@ class OkuriteController < ApplicationController
     Rails.logger.info( "count : " + params[:count].to_s)
     @q = Customer.ransack(params[:q])
     @customers = @q.result.distinct
-    @customers = @customers.where.not("url LIKE ? OR url_2 LIKE ?", "%xn--pckua2a7gp15o89zb.com%", "%indeed.com/%")
+    # @customers = @customers.where.not("url LIKE ? OR url_2 LIKE ?", "%xn--pckua2a7gp15o89zb.com%", "%indeed.com/%")
     save_cont = 0
     @sender = Sender.find(params[:sender_id])
     Rails.logger.info( "@sender : " + @sender.attributes.inspect)
@@ -111,7 +120,7 @@ class OkuriteController < ApplicationController
         cust.id,
         current_worker&.id,
         @sender.default_inquiry_id,
-        DateTime.parse(params[:date]),
+        Time.zone.parse(params[:date]),
         cust.get_search_url,
         "自動送信予定",
         cust.customers_code
