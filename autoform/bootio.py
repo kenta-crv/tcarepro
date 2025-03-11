@@ -411,7 +411,7 @@ def sql_reservation():
     print("-----------------------------------------")
 
 
-schedule.every(1).hours.do(sql_reservation)
+schedule.every(1).minutes.do(sql_reservation)
 schedule.every(1).days.do(score.graph_summary)
 
 sql_reservation()
