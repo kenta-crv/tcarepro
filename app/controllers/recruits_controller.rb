@@ -14,9 +14,9 @@ class RecruitsController < ApplicationController
     def create
       @recruit = Recruit.new(recruit_params)
       if @recruit.update(recruit_params)
-        RecruitMailer.received_email(@recruit).deliver_later
-        RecruitMailer.send_email(@recruit).deliver_later
-        redirect_to second_thanks_recruits_path
+        RecruitMailer.received_email(@recruit).deliver_now
+        RecruitMailer.send_email(@recruit).deliver_now
+        redirect_to thanks_recruits_path
       else
         flash[:error] = @recruit.errors.full_messages.to_sentence
         render 'edit'
@@ -54,8 +54,8 @@ class RecruitsController < ApplicationController
     def update
       @recruit = Recruit.find(params[:id])
       if @recruit.update(recruit_params) # Strong Parametersを使用
-        RecruitMailer.second_received_email(@recruit).deliver
-        RecruitMailer.second_send_email(@recruit).deliver
+        RecruitMailer.second_received_email(@recruit).deliver_now
+        RecruitMailer.second_send_email(@recruit).deliver_now
         redirect_to second_thanks_recruits_path
       else
         flash[:error] = @recruit.errors.full_messages.to_sentence
