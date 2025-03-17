@@ -39,12 +39,12 @@ class Score:
         cur = conn.cursor()
 
         # SQL検索
-        sql = "INSERT INTO autoform_shot (sender_id, worker_id, url, status, current_score, session_code) values (?,?,?,?,?,?)"
-        data = (sender_id, worker_id, url, status, sum, session_code)
-        cur.execute(sql, data)
+        # sql = "INSERT INTO autoform_shot (sender_id, worker_id, url, status, current_score, session_code) values (?,?,?,?,?,?)"
+        # data = (sender_id, worker_id, url, status, sum, session_code)
+        # cur.execute(sql, data)
 
-        conn.commit()
-        conn.close()
+        # conn.commit()
+        # conn.close()
 
         try:
             return str(sum) + "%"
@@ -239,8 +239,8 @@ def boot(url, sender_id, count, worker_id, session_code, unique_id):
     print(score.count - 1)
     print(count)
 
-    if count == score.count - 1:
-        score.graph_make(session_code)
+    # if count == score.count - 1:
+    #     score.graph_make(session_code)
 
 
 def sql_reservation():
@@ -412,7 +412,7 @@ def sql_reservation():
 
 
 schedule.every(1).minutes.do(sql_reservation)
-schedule.every(1).days.do(score.graph_summary)
+# schedule.every(1).days.do(score.graph_summary)
 
 sql_reservation()
 
