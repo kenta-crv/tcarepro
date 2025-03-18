@@ -155,9 +155,9 @@ class Reservation:
             }
         )
 
-    def check(self, url, sender_id):
+    def check(self, unique_id):
         for time in self.boottime:
-            if time["url"] == url and time["sender_id"] == sender_id:
+            if(unique_id == time["unique_id"]):
                 return True
 
         return False
@@ -269,34 +269,35 @@ def sql_reservation():
         score.time = gotime
 
         # すでに同じURLと送信元IDが予約リストに登録されているかをチェック
-        c = reservation.check(url, sender_id)
-        # if c == True:
-        #     print("This already exists")
-        #     pass
+        c = reservation.check(unique_id)
+        if c == True:
+            print("This already exists")
+            pass
         # URLが None（存在しない）なら、送信不能と判断
-        if url == None:
-            print("No URL!!")
-            # idけで一意に決まるのでロジック変更
-            # sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE callback_url = ? AND worker_id = ?"
-            # data = ("自動送信エラー", datetime.datetime.now(), callback, worker_id)
-            sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE id = ?"
-            data = ("自動送信エラー", datetime.datetime.now(), unique_id)
-            cur.execute(sql, data)
-        else:
-            # URLが http で始まる（正しい形式）の場合は、予約リストに追加し、score.count（登録件数）を1増やす
-            if url.startswith("http"):
-                reservation.add(gotime, url, sender_id, index, worker_id, unique_id)
-                score.count += 1
-            # URLが http で始まらない場合もエラーとみなしてDBの状態を更新
-            else:
-                print("Invaild URL!!")
-                # sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE callback_url = ? AND worker_id = ?"
-                print("自動送信エラー", datetime.datetime.now(), callback, worker_id)
-                # data = ("自動送信エラー", datetime.datetime.now(), callback, worker_id)
+        else :
+            if url == None:
+                print("No URL!!")
                 # idけで一意に決まるのでロジック変更
+                # sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE callback_url = ? AND worker_id = ?"
+                # data = ("自動送信エラー", datetime.datetime.now(), callback, worker_id)
                 sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE id = ?"
                 data = ("自動送信エラー", datetime.datetime.now(), unique_id)
                 cur.execute(sql, data)
+            else:
+                # URLが http で始まる（正しい形式）の場合は、予約リストに追加し、score.count（登録件数）を1増やす
+                if url.startswith("http"):
+                    reservation.add(gotime, url, sender_id, index, worker_id, unique_id)
+                    score.count += 1
+                # URLが http で始まらない場合もエラーとみなしてDBの状態を更新
+                else:
+                    print("Invaild URL!!")
+                    # sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE callback_url = ? AND worker_id = ?"
+                    print("自動送信エラー", datetime.datetime.now(), callback, worker_id)
+                    # data = ("自動送信エラー", datetime.datetime.now(), callback, worker_id)
+                    # idけで一意に決まるのでロジック変更
+                    sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE id = ?"
+                    data = ("自動送信エラー", datetime.datetime.now(), unique_id)
+                    cur.execute(sql, data)
     
     # DB接続を終了。
     conn.commit()
