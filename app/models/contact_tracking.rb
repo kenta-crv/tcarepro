@@ -1,5 +1,5 @@
 class ContactTracking < ApplicationRecord
-  #belongs_to :sender
+  belongs_to :sender
   belongs_to :customer
   belongs_to :inquiry
   belongs_to :worker, optional: true

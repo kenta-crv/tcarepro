@@ -8,21 +8,13 @@ class OkuriteController < ApplicationController
   before_action :set_customers, only: [:index, :preview]
 
   def index
-    # OK: contact_trackings もEagerLoadし、検索対象に含める
     @q = Customer.includes(:contact_trackings).ransack(params[:q])
-  
-    # ransackで絞り込んだ結果
-    @customers = @q.result.distinct.page(params[:page]).per(30)
-  
-    # 既存の forever: nil 条件をどうしても追加したいなら、
-    # merge する書き方でもOK
-    # conditional_results = Customer.where(forever: nil)
-    # @customers = @customers.merge(conditional_results)
-  
-    # ContactTracking 一覧を取得
-    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
+    @customers = @q.result.distinct.where(sender_id: @sender.id).page(params[:page]).per(30)
+    # sender_idでフィルタリングを追加
+    @contact_trackings = ContactTracking.latest(@sender.id)
+                                      .where(customer_id: @customers.select(:id))
+                                      .where(sender_id: @sender.id)
   end
-  
   
   def resend
     customers = Customer.joins(:contact_trackings)
