@@ -661,8 +661,15 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def validate_tel_format
-    errors.add(:tel, "電話番号には「半角数字」と「-」以外の文字を含めることはできません。いずれも該当しない場合、半角空白や全角空白が含まれている場合があります。") if tel !~ /\A[0-9\-]+\z/
-    errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません。いずれも該当しない場合、半角空白や全角空白が含まれている場合があります。") if tel !~ /\A[0-9\-]+\z/ || tel =~ /0120|0088/
+    # 半角数字とハイフンのみ、かつハイフンが含まれていないとエラー
+    unless tel =~ /\A[0-9\-]+\z/ && tel.include?('-')
+      errors.add(:tel, "電話番号は半角数字と「-」のみを使用し、「-」を必ず含めてください。")
+    end
+  
+    # 数字のみ、または()が含まれていたらエラー
+    if tel =~ /\A[0-9]+\z/ || tel.include?('(') || tel.include?(')')
+      errors.add(:tel, "電話番号に数字のみや「( )」を使用することはできません。")
+    end
   end
   
   def validate_address_format
