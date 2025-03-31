@@ -650,19 +650,26 @@ scope :before_sended_at, ->(sended_at){
   
   def validate_company_format
     # 基本のバリデーション
-    unless company =~ /株式会社|有限会社|社会福祉|合同会社|医療法人/
-      errors.add(:company, "会社名には「株式会社」、「有限会社」、「社会福祉」、「合同会社」、「医療法人」のいずれかを含める必要があります。")
+    unless company =~ /株式会社|有限会社|社会福祉|合同会社|医療法人|行政書士|一般社団法人|合資会社|法律事務所/
+      errors.add(:company, "会社名には「株式会社」、「有限会社」、「社会福祉」、「合同会社」、「医療法人」、「行政書士」、「一般社団法人」、「合資会社」、「法律事務所」のいずれかを含める必要があります。")
     end
   
-    # 店・営業所・カッコを含む場合のバリデーション
-    if company =~ /店|営業所|\(|\)|（|）/
-      errors.add(:company, "正しい会社名を入力してください。")
+    # 店・営業所・カッコ・半角空白・全角空白を含む場合のバリデーション
+    if company =~ /店|営業所|\(|\)|（|）|\s|　/
+      errors.add(:company, "正しい会社名を入力してください。支店・営業所・カッコ・半角空白・全角空白は使用できません")
     end
   end
   
   def validate_tel_format
-    errors.add(:tel, "電話番号には「半角数字」と「-」以外の文字を含めることはできません。いずれも該当しない場合、半角空白や全角空白が含まれている場合があります。") if tel !~ /\A[0-9\-]+\z/
-    errors.add(:tel, "電話番号には「0120」と「0088」を含むことはできません。いずれも該当しない場合、半角空白や全角空白が含まれている場合があります。") if tel !~ /\A[0-9\-]+\z/ || tel =~ /0120|0088/
+    # 半角数字とハイフンのみ、かつハイフンが含まれていないとエラー
+    unless tel =~ /\A[0-9\-]+\z/ && tel.include?('-')
+      errors.add(:tel, "電話番号は半角数字と「-」のみを使用し、「-」を必ず含めてください。")
+    end
+  
+    # 数字のみ、または()が含まれていたらエラー
+    if tel =~ /\A[0-9]+\z/ || tel.include?('(') || tel.include?(')')
+      errors.add(:tel, "電話番号に数字のみや「( )」を使用することはできません。")
+    end
   end
   
   def validate_address_format
@@ -688,6 +695,11 @@ scope :before_sended_at, ->(sended_at){
       errors.add(:genre, '未入力では登録できません')
     end
     
+    # businessとgenreが完全一致する場合のエラー
+    if business == genre
+       errors.add(:base, '業務内容を記載してください')
+    end
+
     # Crowdworkが一致した場合の他のバリデーション
     if matching_crowdwork
       # businessのバリデーション

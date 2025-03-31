@@ -39,12 +39,12 @@ class Score:
         cur = conn.cursor()
 
         # SQL検索
-        sql = "INSERT INTO autoform_shot (sender_id, worker_id, url, status, current_score, session_code) values (?,?,?,?,?,?)"
-        data = (sender_id, worker_id, url, status, sum, session_code)
-        cur.execute(sql, data)
+        # sql = "INSERT INTO autoform_shot (sender_id, worker_id, url, status, current_score, session_code) values (?,?,?,?,?,?)"
+        # data = (sender_id, worker_id, url, status, sum, session_code)
+        # cur.execute(sql, data)
 
-        conn.commit()
-        conn.close()
+        # conn.commit()
+        # conn.close()
 
         try:
             return str(sum) + "%"
@@ -155,9 +155,9 @@ class Reservation:
             }
         )
 
-    def check(self, url, sender_id):
+    def check(self, unique_id):
         for time in self.boottime:
-            if time["url"] == url and time["sender_id"] == sender_id:
+            if(unique_id == time["unique_id"]):
                 return True
 
         return False
@@ -239,8 +239,8 @@ def boot(url, sender_id, count, worker_id, session_code, unique_id):
     print(score.count - 1)
     print(count)
 
-    if count == score.count - 1:
-        score.graph_make(session_code)
+    # if count == score.count - 1:
+    #     score.graph_make(session_code)
 
 
 def sql_reservation():
@@ -269,12 +269,12 @@ def sql_reservation():
         score.time = gotime
 
         # すでに同じURLと送信元IDが予約リストに登録されているかをチェック
-        c = reservation.check(url, sender_id)
+        c = reservation.check(unique_id)
         if c == True:
             print("This already exists")
             pass
-        elif c == False:
-            # URLが None（存在しない）なら、送信不能と判断
+        # URLが None（存在しない）なら、送信不能と判断
+        else :
             if url == None:
                 print("No URL!!")
                 # idけで一意に決まるのでロジック変更
@@ -304,115 +304,48 @@ def sql_reservation():
     conn.close()
 
 
-    # sabun は調整用、fime は分の加算値として利用
-    sabun = 0
-    fime = 1
-
     # 予約リスト内の各予約データ（trigger）に対して処理を行う
-    for num, trigger in enumerate(reservation.alltime()):
-        strtime = trigger["time"]
-        datetimes = datetime.datetime.strptime(strtime, "%Y-%m-%d %H:%M:%S")
-        dtnow = datetime.datetime.now()
-        print("このデータは起動する準備ができています。")
+    # ループ回数を数えて、4件ごとに1分後ろへずらす
+    # sabun や fime は不要なケースが多いので省略
+    for i, trigger in enumerate(reservation.alltime()):
+        strtime = trigger["time"]  # "YYYY-MM-DD HH:MM:SS" 形式
+        # 予約日時をパース
+        scheduled_dt = datetime.datetime.strptime(strtime, "%Y-%m-%d %H:%M:%S")
 
-        # 予約日時の時刻部分を取得
-        hour = str(datetimes.hour)
-        minute = str(datetimes.minute + fime)
+        now = datetime.datetime.now()
 
-        # 「予約日が今日であるか」をチェック
-        if (
-            dtnow.year == datetimes.year
-            and dtnow.month == datetimes.month
-            and dtnow.day == datetimes.day
-        ):
-        #ロジックに問題あり
-        # 180分以上になった場合破綻する
-        # 日付型で管理すればほぼ解決
-            print(dtnow.hour, ":", dtnow.minute)
-            print(hour, ":", minute)
-            if (num - sabun) >= 4:
-                newminute = 0
-                if (num - sabun) == 5:
-                    sabun += 5
-                    fime += 1
+        # 「予約日が今日の日付」と一致するかチェック
+        # 元コードでは year,month,day を比較していたが、.date() でまとめて比較可能
+        if scheduled_dt.date() == now.date():
+            print(f"このデータは起動する準備ができています -> {strtime}")
 
-                if int(minute) > 59:
-                    if int(minute) > 119:
-                        newminute = str(120 - int(minute))
-                    else:
-                        newminute = str(60 - int(minute))
-                    print("new")
-                    schedule.every().day.at(
-                        str(int(hour) + 1).zfill(2)
-                        + ":"
-                        + str(int(newminute) * -1).zfill(2)
-                    ).do(
-                        boot,
-                        trigger["url"],
-                        trigger["sender_id"],
-                        num,
-                        trigger["worker_id"],
-                        session_code,
-                        trigger["unique_id"],
-                    )
-                else:
-                    schedule.every().day.at(hour.zfill(2) + ":" + minute.zfill(2)).do(
-                        boot,
-                        trigger["url"],
-                        trigger["sender_id"],
-                        num,
-                        trigger["worker_id"],
-                        session_code,
-                        trigger["unique_id"],
-                    )
-            else:
-                newminute = 0
-                print("0000000")
-                print(minute)
-                if int(minute) > 59:
-                    if int(minute) > 179:
-                        newminute = str(180 - int(minute))
-                        print(newminute)
-                    elif int(minute) > 119:
-                        newminute = str(120 - int(minute))
-                        print(newminute)
-                    else:
-                        newminute = str(60 - int(minute))
-                    print(int(newminute) * -1)
-                    print("new")
-                    print(str(int(hour) + 1).zfill(2) + ":" + str(int(newminute) * -1).zfill(2))
-                    schedule.every().day.at(
-                        str(int(hour) + 1).zfill(2) + ":" + str(int(newminute) * -1).zfill(2)
-                    ).do(
-                        boot,
-                        trigger["url"],
-                        trigger["sender_id"],
-                        num,
-                        trigger["worker_id"],
-                        session_code,
-                        trigger["unique_id"],
-                    )
-                    print("new")
-                else:
-                    schedule.every().day.at(hour.zfill(2) + ":" + minute.zfill(2)).do(
-                        boot,
-                        trigger["url"],
-                        trigger["sender_id"],
-                        num,
-                        trigger["worker_id"],
-                        session_code,
-                        trigger["unique_id"],
-                    )
+            # もし同じ日に複数の予約がある場合、4件ごとに1分後ろにずらす
+            # たとえば 0-3件目は同時刻, 4-7件目は +1分, 8-11件目は +2分 というイメージ
+            shift_minutes = (i // 4)
+            scheduled_dt += datetime.timedelta(minutes=shift_minutes)
 
+            # schedule ライブラリに渡すために "HH:MM" 形式の文字列を作成
+            schedule_str = scheduled_dt.strftime("%H:%M")
 
-    # 「送信予約として有効なレコードが○件ある」という意味
+            # 毎日 schedule_str の時刻に実行されるように登録
+            schedule.every().day.at(schedule_str).do(
+                boot,
+                trigger["url"],
+                trigger["sender_id"],
+                i,  # num に相当
+                trigger["worker_id"],
+                session_code,
+                trigger["unique_id"],
+            )
+            print(f"登録 -> {schedule_str} / shift={shift_minutes}分後ろ倒し")
+
     print("-----------------------------------------")
-    print("      " + str(score.count) + "件登録しました。        ")
+    print(f"      {score.count} 件登録しました。        ")
     print("-----------------------------------------")
 
 
 schedule.every(1).minutes.do(sql_reservation)
-schedule.every(1).days.do(score.graph_summary)
+# schedule.every(1).days.do(score.graph_summary)
 
 sql_reservation()
 

@@ -20,7 +20,7 @@ class OkuriteController < ApplicationController
     # @customers = @customers.merge(conditional_results)
   
     # ContactTracking 一覧を取得
-    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id))
+    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id)) # ここを追加
   end
   
   
