@@ -178,7 +178,7 @@ class CustomersController < ApplicationController
   end
 
   def information
-    @calls = Call.all
+    @calls = Call.joins(:customer)
     @customers =  Customer.all
     @admins = Admin.all
     @users = User.all
