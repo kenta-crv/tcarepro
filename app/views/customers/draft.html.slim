@@ -59,7 +59,7 @@
          td
            = check_box_tag "deletes[#{customer.id}]", customer.id
          td
-           = link_to (truncate(customer&.company.presence || customer.id.to_s, length: 15)), edit_customer_path(customer, industry_name: params[:industry_name]), class: 'command'
+           = link_to customer&.company, edit_customer_path(customer, industry_name: params[:industry_name]), class: 'command'
          td
            = customer&.tel
          td
