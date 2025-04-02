@@ -408,7 +408,8 @@ scope :before_sended_at, ->(sended_at){
           repurpose_customer_attributes.merge(
             existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
               'industry' => row['industry'],
-              'url_2' => row['url_2']
+              'url_2' => row['url_2'],
+              'status' => 'draft'
             )
           )
         )
