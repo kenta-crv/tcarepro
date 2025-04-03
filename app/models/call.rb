@@ -26,7 +26,7 @@ class Call < ApplicationRecord
   }
 
   scope :call_count_hour, -> {
-    where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG","受付NG","自己紹介NG","質問段階NG","日程調整NG"]).where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour)
+    where(statu: ["着信留守", "担当者不在","フロントNG","見込","APP","NG","クロージングNG","受付NG","自己紹介NG","質問段階NG","日程調整NG","リスト不備NG"]).where(created_at: Time.current.beginning_of_hour..Time.current.end_of_hour)
   }
 
   scope :basic_count_today, -> {
@@ -78,7 +78,8 @@ class Call < ApplicationRecord
     #"見込高",
     #"見込中",
     #"見込低",
-    #"再APP"
+    #"再APP",
+    "リスト不備NG"
   ]
   def self.StatuItems
     @@StatuItems

@@ -279,14 +279,18 @@ class CustomersController < ApplicationController
   end
 
   def all_import
-    # CSVファイルをインポートし、件数を取得
     save_count = Customer.import(params[:file])
-    # `call_import` を呼び出して再掲載件数を取得
     call_count = Customer.call_import(params[:file])
-    # `repurpose_import` を呼び出して再掲載件数を取得
-    repurpose_count = Customer.repurpose_import(params[:file])
-     # `draft_import` を呼び出してドラフト件数を取得
+    
+    # チェックが入っている場合、転用登録をスキップ
+    if params[:skip_repurpose] == "1"
+      repurpose_count = { repurpose_import_count: 0 }
+    else
+      repurpose_count = Customer.repurpose_import(params[:file])
+    end
+  
     draft_count = Customer.draft_import(params[:file])
+  
     notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
     redirect_to customers_url, notice: notice_message
   end
