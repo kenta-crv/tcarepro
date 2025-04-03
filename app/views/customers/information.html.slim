@@ -492,6 +492,8 @@ table
         | クロージングNG
       th
         | 永久NG
+      th 
+        | リスト不備NG
       th
         | 削除
   tbody
@@ -588,6 +590,12 @@ table
         = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "永久NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
         |)
       td
+        = user_calls_month.select { |call| call.statu == "リスト不備NG" }.count
+        br
+        |(
+        = number_to_percentage(user_app = user_calls_month.select { |call| call.statu == "リスト不備NG" }.count / user_calls_month.count.to_f * 100, precision: 1)
+        |)
+      td
         = link_to '削除', user_path(user),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}
 
 
@@ -631,18 +639,21 @@ table
 
 br/
 br/
-= form_with(url: all_import_customers_path, method: :post, local: true, multipart: true) do |f|
+= form_with(url: all_import_customers_path, method: :post, local: true, multipart: true, authenticity_token: true) do |f|
   table[width="100%"]
-      tbody
-        tr
-          th ファイル選択
-          th インポート実行
-        tr
-          td
-            = f.file_field :file
-          td
-            = f.submit 'インポート実行'
-
+    tbody
+      tr
+        th ファイル選択
+        th インポート実行
+        th 転用スキップ
+      tr
+        td
+          = f.file_field :file
+        td
+          = f.submit 'インポート実行'
+        td
+          = f.check_box :skip_repurpose
+          = f.label :skip_repurpose, '転用をスキップする'
 br/
 br/
 
