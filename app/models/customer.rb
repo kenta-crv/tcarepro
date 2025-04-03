@@ -285,6 +285,13 @@ scope :before_sended_at, ->(sended_at){
     CSV.foreach(file.path, headers: true) do |row|
       customer = find_or_initialize_by(id: row["id"])
       customer.attributes = row.to_hash.slice(*updatable_attributes)
+
+      # companyをstoreにも登録
+      if row["company"]
+        customer.company = row["company"]
+        customer.store = row["company"]  # 同じ値をstoreにも設定
+      end
+    
       next if customer.industry.nil?
       next if customer.tel.blank?  # 電話番号が空の場合はスキップ
       next if where(tel: customer.tel).where(industry: nil).count > 0
@@ -402,7 +409,8 @@ scope :before_sended_at, ->(sended_at){
             existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
               'industry' => row['industry'],
               'url_2' => row['url_2'],
-              'status' => 'draft'
+              'status' => 'draft',
+              'store' => row['company']  # CSVのcompanyをstoreにも設定
             )
           )
         )
@@ -451,6 +459,13 @@ scope :before_sended_at, ->(sended_at){
   
       # 新しい顧客を作成してバッチに追加
       customer = Customer.new(row.to_hash.slice(*updatable_attributes))
+
+          # companyをstoreにも登録
+      if row['company']
+       customer.company = row['company']
+       customer.store = row['company']  # 同じ値をstoreにも設定
+      end
+
       customer.status = "draft" 
       batch << customer
   

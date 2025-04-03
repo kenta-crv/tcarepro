@@ -430,7 +430,7 @@ class CustomersController < ApplicationController
     end
 
     # ページネーション
-    @customers = @customers.page(params[:page]).per(200)
+    @customers = @customers.page(params[:page]).per(100)
   end
 
   def filter_by_industry
@@ -466,7 +466,7 @@ class CustomersController < ApplicationController
     end
 
     # ページネーション
-    @customers = @customers.page(params[:page]).per(200)
+    @customers = @customers.page(params[:page]).per(100)
 
     render :draft
   end  
