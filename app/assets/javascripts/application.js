@@ -56,3 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+document.addEventListener("turbolinks:load", function() {
+    $('#worker').modal('show');
+  });

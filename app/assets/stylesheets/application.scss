@@ -1391,3 +1391,50 @@ iframe {
   }
 }
 
+
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;      /* 固定位置に表示 */
+  top: 0;               /* 画面上部に配置 */
+  left: 0;              /* 画面左端に配置 */
+  width: 100%;          /* 横幅を画面いっぱいに */
+  height: 100%;         /* 高さを画面いっぱいに */
+  background-color: rgba(0, 0, 0, 0.5);  /* 背景を薄く暗く */
+  display: flex;        /* 中央に配置するためにflexboxを使用 */
+  justify-content: center;  /* 横方向に中央揃え */
+  align-items: center;  /* 縦方向に中央揃え */
+  z-index: 9999;        /* 他の要素の上に表示 */
+}

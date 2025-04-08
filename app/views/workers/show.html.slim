@@ -34,6 +34,18 @@
  = link_to "アカウント情報編集", edit_worker_registration_path, class:"btn btn-success"
  = link_to "ログアウト", destroy_worker_session_path, method: :delete, class:"btn btn-success"
 
+#worker.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
+  .modal-dialog
+    .modal-content[style="width:900px; margin-left: -200px;"]
+      .modal-body
+        -if @worker.select == "リスト制作"
+         = image_tag "attend2.webp", width:"100%"
+         .center ※本作業に違反される抽出が複数発覚する場合、即時契約終了を行います。（お支払いもできません）
+        -else @worker.select == "メール送信"
+         = image_tag "attend1.webp", width:"100%"
+         .center ※送信率が65%を超える場合、営業不可の記載があるにも関わらずの送信によるクレームが発生、その他上記に該当する場合、即時契約終了を行います。（お支払いもできません）
+      button.close[type="button" data-dismiss="modal" aria-hidden="true"]
+        .btn.btn-danger 確認したので作業に進む
 
 
 /.tops-wrapper
