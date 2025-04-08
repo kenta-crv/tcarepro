@@ -415,8 +415,8 @@ scope :before_sended_at, ->(sended_at){
           )
         )
   
-        Rails.logger.info "Added to batch: #{repurpose_customer.company} - #{repurpose_customer.industry}"
         batch << repurpose_customer
+        registered_companies << company_name # ← 登録済みに追加
   
         if batch.size >= batch_size
           Customer.transaction { batch.each(&:save!) }
