@@ -366,9 +366,11 @@ scope :before_sended_at, ->(sended_at){
   end
   
   def self.repurpose_import(repurpose_file)
+    require 'set'
     repurpose_import_count = 0
     batch_size = 2500
     batch = []
+    registered_companies = Set.new  # ← 追加
   
     crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
       { 'title' => title, 'area' => area.split(',') }
@@ -376,25 +378,28 @@ scope :before_sended_at, ->(sended_at){
   
     CSV.foreach(repurpose_file.path, headers: true) do |row|
       Rails.logger.info "Processing row: #{row.to_hash}"
+      company_name = row['company']  # ← 追加
   
-      existing_customer = find_by(company: row['company'], industry: row['industry'])
+      next if registered_companies.include?(company_name)  # ← 重複会社名スキップ
+  
+      existing_customer = find_by(company: company_name, industry: row['industry'])
       if existing_customer
-        Rails.logger.info "Skipped existing customer: #{row['company']} - #{row['industry']}"
+        Rails.logger.info "Skipped existing customer: #{company_name} - #{row['industry']}"
         next
       end
   
-      existing_customer_with_same_company = find_by(company: row['company'])
+      existing_customer_with_same_company = find_by(company: company_name)
       if existing_customer_with_same_company
         crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
         if crowdwork
           if existing_customer_with_same_company.address.present?
             area_match = crowdwork['area'].any? { |area| existing_customer_with_same_company.address.include?(area) }
             unless area_match
-              Rails.logger.info "Skipped due to unmatched area: #{row['company']} - #{row['industry']}"
+              Rails.logger.info "Skipped due to unmatched area: #{company_name} - #{row['industry']}"
               next
             end
           else
-            Rails.logger.info "Skipped due to missing address: #{row['company']}"
+            Rails.logger.info "Skipped due to missing address: #{company_name}"
             next
           end
         end
@@ -410,13 +415,13 @@ scope :before_sended_at, ->(sended_at){
               'industry' => row['industry'],
               'url_2' => row['url_2'],
               'status' => 'draft',
-              'store' => row['company']  # CSVのcompanyをstoreにも設定
+              'store' => company_name
             )
           )
         )
   
         batch << repurpose_customer
-        registered_companies << company_name # ← 登録済みに追加
+        registered_companies << company_name  # ← ここで登録済みにする
   
         if batch.size >= batch_size
           Customer.transaction { batch.each(&:save!) }
@@ -425,7 +430,7 @@ scope :before_sended_at, ->(sended_at){
           batch.clear
         end
       else
-        Rails.logger.info "Skipped no matching company for transfer: #{row['company']}"
+        Rails.logger.info "Skipped no matching company for transfer: #{company_name}"
       end
     end
   
@@ -438,7 +443,7 @@ scope :before_sended_at, ->(sended_at){
     Rails.logger.info "Repurpose import completed. Total saved: #{repurpose_import_count}"
     { repurpose_import_count: repurpose_import_count }
   end
-    
+      
   def self.draft_import(draft_file)
     draft_count = 0
     batch_size = 2500
