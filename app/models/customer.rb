@@ -370,81 +370,76 @@ scope :before_sended_at, ->(sended_at){
     repurpose_import_count = 0
     batch_size = 2500
     batch = []
-    registered_pairs = Set.new  # company|industry のセット
+    registered_companies = Set.new
   
-    crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
-      { 'title' => title, 'area' => area.split(',') }
-    end
+    # 既存Customerを一括ロード・キャッシュ
+    existing_customers = Customer.all.group_by(&:company)
+  
+    # Crowdworkを高速参照用にハッシュ化
+    crowdwork_data = Crowdwork.all.index_by(&:title)
   
     CSV.foreach(repurpose_file.path, headers: true) do |row|
-      Rails.logger.info "Processing row: #{row.to_hash}"
       company_name = row['company']
       industry = row['industry']
-      pair_key = "#{company_name}|#{industry}"
+      next if registered_companies.include?(company_name)
   
-      next if registered_pairs.include?(pair_key)
+      customers_same_company = existing_customers[company_name] || []
   
-      existing_customer = find_by(company: company_name, industry: industry)
-      if existing_customer
-        Rails.logger.info "Skipped existing customer: #{company_name} - #{industry}"
+      # 同一業種の既存Customerがあればスキップ
+      if customers_same_company.any? { |c| c.industry == industry }
         next
       end
   
-      existing_customer_with_same_company = find_by(company: company_name)
-      if existing_customer_with_same_company
-        crowdwork = crowdwork_data.find { |cw| cw['title'] == industry }
-        if crowdwork
-          if existing_customer_with_same_company.address.present?
-            area_match = crowdwork['area'].any? { |area| existing_customer_with_same_company.address.include?(area) }
-            unless area_match
-              Rails.logger.info "Skipped due to unmatched area: #{company_name} - #{industry}"
-              next
-            end
-          else
-            Rails.logger.info "Skipped due to missing address: #{company_name}"
+      existing_customer_with_same_company = customers_same_company.first
+      unless existing_customer_with_same_company
+        next
+      end
+  
+      # areaチェック
+      crowdwork = crowdwork_data[industry]
+      if crowdwork
+        if existing_customer_with_same_company.address.present?
+          area_match = crowdwork.area.to_s.split(',').any? do |area|
+            existing_customer_with_same_company.address.include?(area.strip)
+          end
+          unless area_match
             next
           end
+        else
+          next
         end
+      end
   
-        repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
-          'industry' => industry,
-          'url_2' => row['url_2']
-        )
-  
-        repurpose_customer = Customer.new(
-          repurpose_customer_attributes.merge(
-            existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
-              'industry' => industry,
-              'url_2' => row['url_2'],
-              'status' => 'draft',
-              'store' => company_name
-            )
+      # 新しいCustomer作成（転用）
+      repurpose_customer = Customer.new(
+        existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
+          row.to_hash.slice(*self.updatable_attributes).merge(
+            'industry' => industry,
+            'url_2' => row['url_2'],
+            'status' => 'draft',
+            'store' => company_name
           )
         )
+      )
   
-        batch << repurpose_customer
-        registered_pairs << pair_key  # ここで company|industry を記録
+      batch << repurpose_customer
+      registered_companies << company_name
   
-        if batch.size >= batch_size
-          Customer.transaction { batch.each(&:save!) }
-          Rails.logger.info "Batch saved: #{batch.size} customers"
-          repurpose_import_count += batch.size
-          batch.clear
-        end
-      else
-        Rails.logger.info "Skipped no matching company for transfer: #{company_name}"
+      if batch.size >= batch_size
+        Customer.transaction { batch.each(&:save!) }
+        repurpose_import_count += batch.size
+        batch.clear
       end
     end
   
     unless batch.empty?
       Customer.transaction { batch.each(&:save!) }
-      Rails.logger.info "Final batch saved: #{batch.size} customers"
       repurpose_import_count += batch.size
     end
   
     Rails.logger.info "Repurpose import completed. Total saved: #{repurpose_import_count}"
     { repurpose_import_count: repurpose_import_count }
-  end
+  end  
         
   def self.draft_import(draft_file)
     draft_count = 0
