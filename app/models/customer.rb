@@ -640,17 +640,14 @@ scope :before_sended_at, ->(sended_at){
   # その他のコード
   
   private
-  
   def unique_industry_and_tel_or_company_for_same_worker
-    existing_customer = Customer.where(worker_id: worker_id)
-                                .where(industry: industry)
-                                .where("tel = ? OR company = ?", tel, company)
-  
+    existing_customer = Customer.where(industry: industry, company: company)
+
     if existing_customer.exists?
-      errors.add(:base, "過去に同一電話番号または会社名を登録しています。同一ワーカーでの重複登録はできません。")
+      errors.add(:company, "はすでに同じ業種で登録されています。")
     end
   end
-  
+
   def validate_company_format
     # 基本のバリデーション
     unless company =~ /株式会社|有限会社|社会福祉|合同会社|医療法人|行政書士|一般社団法人|合資会社|法律事務所/
@@ -660,6 +657,11 @@ scope :before_sended_at, ->(sended_at){
     # 店・営業所・カッコ・半角空白・全角空白を含む場合のバリデーション
     if company =~ /店|営業所|\(|\)|（|）|\s|　/
       errors.add(:company, "正しい会社名を入力してください。支店・営業所・カッコ・半角空白・全角空白は使用できません")
+    end
+  
+    # 全角アルファベット・数字・記号のバリデーション
+    if company =~ /[Ａ-Ｚａ-ｚ０-９！-～]/
+      errors.add(:company, "会社名に全角の英数字や記号は使用できません")
     end
   end
   
