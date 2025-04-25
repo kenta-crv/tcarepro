@@ -18,10 +18,11 @@ class WorkersController < ApplicationController
     @assigned_crowdworks = @worker.crowdworks
   
     # Calculate counts of customers updated today, this week, and this month
-    @count_day = @customers.where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count
-    @count_week = @customers.where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count
-    @count_month = @customers.where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count
-    @count_before_month = @customers.where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count
+# 今日、今週、今月、先月のカウント（削除された顧客は除外）
+    @count_day = @customers.where(deleted_at: nil).where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count
+    @count_week = @customers.where(deleted_at: nil).where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count
+    @count_month = @customers.where(deleted_at: nil).where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count
+    @count_before_month = @customers.where(deleted_at: nil).where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count
     @total_count = @customers.count
     
     # Retrieve contact trackings for the current and previous month, day, and week
