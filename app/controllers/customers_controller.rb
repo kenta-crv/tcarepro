@@ -500,9 +500,9 @@ class CustomersController < ApplicationController
                          .exists?
   
         if exists
-          # 重複削除される場合、対応する worker の deleted_customer_count をインクリメント
-          customer.worker.increment!(:deleted_customer_count)
-  
+          if customer.worker.present?
+            customer.worker.increment!(:deleted_customer_count) # ★追加
+          end
           customer.destroy
           deleted_count += 1
           next
@@ -522,8 +522,8 @@ class CustomersController < ApplicationController
   
     flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{deleted_count}件のドラフトが重複のため削除されました。"
     redirect_to customers_path
-  end
-    
+  end  
+  
   private
 
   def set_customers

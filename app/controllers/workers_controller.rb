@@ -18,13 +18,30 @@ class WorkersController < ApplicationController
     @assigned_crowdworks = @worker.crowdworks
   
     # Calculate counts of customers updated today, this week, and this month
-# 今日、今週、今月、先月のカウント（削除された顧客は除外）
-    @count_day = @customers.where(deleted_at: nil).where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count
-    @count_week = @customers.where(deleted_at: nil).where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count
-    @count_month = @customers.where(deleted_at: nil).where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count
-    @count_before_month = @customers.where(deleted_at: nil).where(status: nil).or(@customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count
-    @total_count = @customers.count
-    
+    @count_day = @customers.where(status: nil).or(@customers.where(status: "draft"))
+    .where.not(tel: nil)
+    .where('customers.updated_at >= ?', Time.current.beginning_of_day)
+    .where('customers.updated_at <= ?', Time.current.end_of_day)
+    .count + current_worker.deleted_customer_count
+
+@count_week = @customers.where(status: nil).or(@customers.where(status: "draft"))
+    .where.not(tel: nil)
+    .where('customers.updated_at >= ?', Time.current.beginning_of_week)
+    .where('customers.updated_at <= ?', Time.current.end_of_week)
+    .count + current_worker.deleted_customer_count
+
+@count_month = @customers.where(status: nil).or(@customers.where(status: "draft"))
+    .where.not(tel: nil)
+    .where('customers.updated_at >= ?', Time.current.beginning_of_month)
+    .where('customers.updated_at <= ?', Time.current.end_of_month)
+    .count + current_worker.deleted_customer_count
+
+@count_before_month = @customers.where(status: nil).or(@customers.where(status: "draft"))
+    .where.not(tel: nil)
+    .where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month)
+    .where('customers.updated_at <= ?', Time.current.prev_month.end_of_month)
+    .count + current_worker.deleted_customer_count
+@total_count = @customers.count
     # Retrieve contact trackings for the current and previous month, day, and week
     @contact_trackings_month = @worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
     @contact_trackings_before_month = @worker.contact_trackings.where(created_at: 1.month.ago.beginning_of_month..1.month.ago.end_of_month)
@@ -70,6 +87,12 @@ class WorkersController < ApplicationController
 
   def destroy
     @worker = Worker.find(params[:id])
+  
+    # 関連レコードのworker_idをnullにする
+    @worker.customers.update_all(worker_id: nil)
+    @worker.contacts.update_all(worker_id: nil)
+    @worker.contact_trackings.update_all(worker_id: nil)
+  
     @worker.destroy
     redirect_to admin_path(current_admin), notice: 'ワーカーを削除しました'
   end
