@@ -487,22 +487,39 @@ class CustomersController < ApplicationController
     status = params[:status] || 'hidden'
     published_count = 0
     hidden_count = 0
+    deleted_count = 0
+  
     @customers.each do |customer|
       customer.skip_validation = true
+  
+      # draftのみ重複チェック＆削除
+      if customer.status == 'draft'
+        exists = Customer.where(industry: customer.industry)
+                         .where.not(id: customer.id)
+                         .where("company = ? OR tel = ?", customer.company, customer.tel)
+                         .exists?
+  
+        if exists
+          customer.destroy
+          deleted_count += 1
+          next
+        end
+      end
+  
       if status == 'hidden'
-        if customer.update_columns(status: 'hidden')  # `updated_at` は自動更新されません
+        if customer.update_columns(status: 'hidden')
           hidden_count += 1
         end
       else
-        if customer.update_columns(status: nil)  # `updated_at` は自動更新されません
+        if customer.update_columns(status: nil)
           published_count += 1
         end
       end
     end
-    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされました。"
-    redirect_to customers_path
-  end
   
+    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{deleted_count}件のドラフトが重複のため削除されました。"
+    redirect_to customers_path
+  end  
   
   private
 
