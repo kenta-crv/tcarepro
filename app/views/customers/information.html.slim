@@ -648,7 +648,7 @@ br/
         th 転用スキップ
       tr
         td
-          = f.file_field :file
+          = f.file_field :file, required: true
         td
           = f.submit 'インポート実行'
         td
@@ -656,7 +656,7 @@ br/
           = f.label :skip_repurpose, '転用をスキップする'
 br/
 br/
-
+ 
 table
   thead
     tr
