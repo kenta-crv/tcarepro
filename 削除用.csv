@@ -1,572 +1,185 @@
-,id
-,683048
-,683050
-,683153
-,686807
-,686862
-,688771
-,688814
-,688824
-,688854
-,694728
-,694749
-,696586
-,710972
-,710974
-,710994
-,711110
-,722666
-,722777
-,722791
-,722869
-,722943
-,723217
-,723221
-,723226
-,723244
-,725281
-,725305
-,726294
-,726310
-,726335
-,726374
-,726395
-,726403
-,730626
-,736644
-,736702
-,736714
-,736761
-,737213
-,737218
-,737253
-,737269
-,737290
-,737328
-,737414
-,737500
-,737699
-,738672
-,815938
-,815996
-,816009
-,816048
-,816172
-,865300
-,866127
-,866961
-,897850
-,898549
-,899960
-,899983
-,900245
-,900320
-,900616
-,905684
-,905686
-,905688
-,905693
-,907554
-,907590
-,907822
-,907849
-,907889
-,907900
-,907992
-,908143
-,908148
-,908228
-,908257
-,908281
-,908295
-,908320
-,908349
-,908385
-,908419
-,908428
-,908429
-,997568
-,997583
-,997596
-,997605
-,997618
-,997624
-,997768
-,997873
-,998034
-,998053
-,998156
-,998158
-,998221
-,998238
-,998252
-,998256
-,998296
-,998346
-,998429
-,998522
-,998529
-,998619
-,998626
-,998785
-,998844
-,998851
-,998884
-,998902
-,998909
-,998920
-,998923
-,998929
-,998930
-,998952
-,998964
-,998967
-,998997
-,999021
-,999031
-,999037
-,999041
-,999045
-,999055
-,999056
-,999070
-,999100
-,999106
-,999129
-,999131
-,999180
-,999183
-,999248
-,999264
-,999266
-,999267
-,999268
-,999269
-,999284
-,999306
-,999315
-,999317
-,999322
-,999338
-,999341
-,999346
-,999589
-,999597
-,999610
-,999618
-,999623
-,999625
-,999627
-,999642
-,999663
-,999667
-,999670
-,999676
-,999685
-,999688
-,999706
-,999829
-,999837
-,999842
-,999879
-,999894
-,999915
-,999923
-,999932
-,999945
-,999964
-,1000008
-,1000092
-,1000104
-,1000117
-,1000122
-,1000131
-,1000135
-,1000140
-,1000149
-,1000153
-,1000154
-,1000161
-,1000164
-,1000170
-,1000220
-,1000224
-,1000236
-,1000238
-,1000239
-,1000240
-,1000250
-,1000303
-,1000360
-,1000365
-,1000408
-,1000492
-,1000517
-,1000553
-,1000588
-,1000634
-,1000638
-,1000656
-,1000659
-,1000704
-,1000741
-,1000778
-,1000822
-,1000852
-,1000853
-,1000854
-,1000859
-,1000862
-,1000871
-,1000872
-,1000881
-,1001052
-,1001066
-,1001110
-,1001141
-,1001145
-,1001203
-,1001209
-,1001231
-,1001246
-,1001332
-,1001356
-,1001373
-,1001388
-,1001494
-,1001546
-,1001558
-,1001582
-,1001607
-,1001664
-,1001721
-,1001734
-,1001737
-,1001741
-,1001745
-,1001775
-,1009906
-,1009924
-,1009930
-,1009942
-,1009958
-,1009964
-,1009987
-,1009989
-,1009999
-,1010001
-,1010045
-,1010046
-,1010061
-,1010082
-,1010083
-,1010085
-,1010096
-,1010108
-,1010124
-,1010147
-,1010161
-,1010192
-,1010196
-,1010197
-,1010208
-,1010226
-,1010241
-,1010242
-,1010251
-,1010257
-,1010266
-,1010298
-,1010341
-,1010342
-,1010345
-,1010347
-,1010354
-,1010356
-,1010361
-,1010375
-,1010377
-,1010387
-,1010404
-,1010405
-,1010411
-,1010415
-,1010416
-,1010418
-,1010444
-,1010462
-,1010474
-,1010480
-,1010482
-,1010484
-,1010489
-,1010496
-,1010502
-,1010517
-,1010524
-,1010535
-,1010540
-,1010545
-,1010552
-,1010553
-,1010554
-,1010556
-,1010569
-,1010572
-,1010576
-,1010580
-,1010582
-,1010584
-,1010598
-,1010602
-,1010603
-,1010608
-,1010611
-,1010615
-,1010630
-,1010636
-,1010643
-,1010655
-,1010657
-,1010665
-,1010676
-,1010677
-,1010685
-,1010687
-,1010702
-,1010710
-,1010713
-,1010715
-,1010716
-,1010717
-,1010720
-,1010722
-,1010728
-,1010730
-,1010733
-,1010734
-,1010737
-,1010739
-,1010740
-,1010742
-,1010743
-,1010755
-,1010759
-,1010772
-,1010775
-,1010776
-,1010782
-,1010790
-,1010792
-,1010799
-,1010809
-,1010817
-,1010827
-,1010828
-,1010832
-,1010833
-,1010834
-,1010836
-,1010839
-,1010841
-,1010844
-,1010845
-,1010848
-,1010850
-,1010851
-,1010853
-,1010855
-,1010857
-,1010858
-,1010859
-,1010860
-,1010861
-,1010864
-,1010865
-,1010866
-,1010869
-,1010870
-,1010873
-,1010874
-,1010876
-,1010886
-,1010890
-,1010891
-,1010895
-,1010908
-,1010917
-,1010919
-,1010921
-,1010923
-,1010924
-,1010925
-,1010927
-,1010928
-,1010937
-,1010941
-,1010957
-,1010968
-,1010978
-,1010993
-,1010999
-,1011011
-,1011018
-,1011024
-,1011025
-,1011068
-,1011083
-,1011085
-,1011094
-,1011099
-,1011111
-,1011117
-,1011118
-,1011122
-,1011123
-,1011127
-,1011134
-,1011135
-,1011140
-,1011142
-,1011143
-,1011144
-,1011152
-,1011156
-,1011158
-,1011159
-,1011160
-,1011163
-,1011164
-,1011165
-,1011166
-,1011178
-,1011185
-,1011196
-,1011199
-,1011207
-,1011208
-,1011224
-,1011227
-,1011231
-,1011255
-,1011257
-,1011265
-,1011268
-,1011280
-,1011285
-,1011292
-,1011298
-,1011300
-,1011301
-,1011316
-,1011323
-,1011324
-,1011328
-,1011329
-,1011330
-,1011335
-,1011336
-,1011345
-,1011346
-,1011351
-,1011352
-,1011371
-,1011376
-,1011387
-,1011397
-,1011432
-,1011451
-,1011453
-,1011459
-,1011468
-,1011470
-,1011475
-,1011480
-,1011486
-,1011490
-,1011492
-,1011511
-,1011517
-,1011532
-,1011534
-,1011535
-,1011539
-,1011543
-,1011551
-,1011557
-,1011570
-,1011579
-,1011596
-,1011602
-,1011605
-,1011610
-,1011631
-,1011641
-,1011647
-,1011656
-,1011683
-,1011763
-,1011767
-,1011789
-,1011795
-,1011817
-,1011818
-,1011827
-,1011828
-,1011835
-,1011838
-,1011843
-,1011850
-,1011853
-,1011858
-,1011863
-,1011870
-,1011880
-,1011896
-,1011909
-,1011910
-,1011914
-,1011917
-,1011919
-,1011920
-,1011922
-,1011923
-,1011924
-,1011927
-,1011929
-,1011930
-,1011958
-,1011960
-,1011964
-,1011972
-,1011981
-,1011990
-,1011996
-,1011997
-,1012001
-,1012012
-,1012029
-,1012032
-,1012034
-,1012065
-,1012069
-,1012089
-,1012092
-,1012099
-,1012116
-,1012128
-,1012141
-,1012157
-,1012173
-,1012180
-,1012181
-,1012182
-,1012183
-,1012191
-,1012194
-,1012201
-,1012206
-,1012216
-,1012224
-,1012225
-,1012384
+id,company,store,tel,address,url,url_2,title,industry,mail,first_name,postnumber,people,caption,business,genre,mobile,choice,inflow,other,history,area,target,meeting,experience,price,number,start,remarks,extraction_count,send_count
+749376,株式会社アソシオ,,0172-55-9463,青森県弘前市外崎5-2-2,https://www.associo.co.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=ld916956ab24ce946183cd171fb0fbcaf&p=t%2BAK7k0GmMUr0ZRss/MBmzG8E96S6AU6c3SA9DYwo9E73I/zvC%2B3Wxq4CZpvAmSjT0DBceQawT7lc%2BhWI9fF2WidAgfHqBQoe/89nqap1kdeZzjWUI/IPIPbHJ89TuZmg/x7/FImSa6cN5KZAcgjxoWniVAzDgzLLb%2BMJzKdyXevgbHQ9IQ2H2nDWBRa6XAQyV6j9fxcYhGphu3kM7g5wA9VLLaJc12IZd6%2Bwja4yO55S0itlh02JayN4LAJwo6gP3EWtDqXgKeOc63jGPIsOtJx8UQuow4A0q%2BrJEIdQr3S0E6YhAD2xk6dyeARLWHBn6zJW0r///HKy24GgUISLjRXxZGTtZFy0KPPSFg%2BVpjFgBWuQxtQxCnl28RvEab12OiVaCqZxjaIeYBd9pRMwjOGUM2X%2BmCFDNGGzBr%2Bh9k6XB7CXyv60hZjCQEtlsmI5fUEHzYJqprm3mz42NQbhw9ygdzjy1NUq/CNt6sDl147UMrYmwyCjO%2BiUh9vxGkbH6ATm9AvU5/r/Kzf/gs1B7CGG3HYmGYW8pn5Sj%2Bk6Qs%3D&ph=c9c5ac1ce8de&phv=1,info@associo.co.jp,光誠会（介護）,info@associo.co.jp,船水進也,,,,,,,,,船水進也,,,,,,,,,,,
+749616,株式会社オアシス,,072-881-2300,〒571-0017 大阪府門真市四宮３丁目１−３３,,https://xn--pckua2a7gp15o89zb.com/jb/92e803f5841a24745e1f6cb8401f8f1b,職種タクシー乗務員仕事内容タクシー乗務員・門真...大歓迎・二種免許養成あり【乗務して３ケ月間は総支給２５万円保障】当社在籍、養成実施後の乗務員の売上げ一例昼無線Ａ氏...,光誠会（介護）,,,571-0017,54,,運送業,ドライバー,,,,正社員,,,,,,,,,,,
+749703,有限会社ぬぐまるの家,,019-664-1790,岩手県盛岡市高松4丁目3-6,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lb230881146a6c0aca8e3bef4dd4cee85&p=t%2BAK7k0GmMUr0ZRss/MBmze57vWP2xgROcA%2B%2BQ8zia71fW/XVpPdJtMez8du5zlZwvVf7gr082n6HQ%2Bfpi/tiWCn/3XZP%2BeK6oLzFM2jSlSFQuvK4swTRQUmW82bBb7LbdHoTh/8u2VajTe2uFdD%2B6YilWMYB3GIExqwHszYaR3K8PLRQsPQbP%2BvqRecDYd7Au%2BOpweH%2BUDoGD0uEZ4W46%2BzG/ykmmGQt4KGNWc0xW6aWGZ1VBxrrcisQsOBY43dP3EWtDqXgKeOc63jGPIsOtJx8UQuow4A0q%2BrJEIdQr2UdYXaqk/KljFVDbsW7XXKh22eqwa8kxMI6N7FASZzdw%3D%3D&ph=f33c3e743c3a&phv=1,https://xn--pckua2a7gp15o89zb.com/jb/28cfb0fc3bf8eef95f61f192b4d574a3,介護職・ヘルパー／小規模多機能／介護職員実務者研修／経験者優遇,光誠会（介護）,,菊池　要子,020-0114,68,,,,,,,正社員,,,,,,,,,,,
+749845,株式会社グッドナース,,019-681-2800,岩手県盛岡市北飯岡2丁目22番47号,https://www.goodnurse-yuinote.com/page1,https://xn--pckua2a7gp15o89zb.com/jb/29af9a96338ee66b3d15c5f697c6f954,介護職・ヘルパー／有料老人ホーム,光誠会（介護）,,飯島　純一,,,,看護、介護,訪問介護、居住型支援事業,,,,正社員,,,,,,,,,,,
+749853,有限会社エムズ,,049-241-5117,埼玉県ふじみ野市緑ケ丘1-7-29,https://jp.indeed.com/rc/clk?jk=575fad742edddfc6&fccid=fc1246725f00ed63&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/97071b073fcd186cd919c18a53db60ee,会社情報会社名有限会社エムズ会社住所埼玉県ふじみ野市緑ケ丘１－７－２９キーワード正社員建築/土木/建設[正社員]経験を活かしたい方に！塗装職人,光誠会（介護）,,,,,,,,,,,正社員,,,,,,,,,,,
+772083,株式会社バリュー,,092-433-3114,福岡県福岡市博多区博多駅南1-3-8 4F,https://valueee.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/6f025df0751bc22b1043d7177e22f638,,光誠会（介護）,,大隣 佳太,812-0016,,,広告業,企業展示会・販促イベント業,,,,,,,,,,,,,,,
+773096,株式会社元気な介護,,011-708-3000,北海道札幌市北区北20条西4丁目2-15, https://genkinakaigo.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/3445b869feaa84392e6f6a45c88e1579,介護付有料老人ホームケアマネジャー,光誠会（介護）, , ,,,,介護,通所介護,,,,正社員,,,,,,,,,,,
+777128,有限会社ワコー,,052-809-1111,愛知県名古屋市天白区植田本町1-919 1F,https://jinzai.hellowork.mhlw.go.jp/JinzaiWeb/GICB102010.do?screenId=GICB102010&action=detail&detkey_Detail=%E6%B4%BE23-300594%2C1+++++,https://xn--pckua2a7gp15o89zb.com/jb/e24ab118bbbcf8f77c57a6ccc9a242c0,派23-300594,光誠会（介護）,,,,,,人材関連業,,,,,,,,,,,,,,,,
+780467,株式会社峯翔不動産,,0285-38-7921,栃木県小山市小山８９－１, http://houshou.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=labdceab5e1e4348943e90e8b9dc11ee5&p=t%2BAK7k0GmMUr0ZRss/MBmwo63yTOKZTittQsXcUwVEAaSEQGOKN/DCTns8Vctn0K/25KH%2BnAhCMpObad8tyze79E4gLHox6F/YfRYfRyvrEV1r4Hut0D5Ew77yma5K3wNvJYbf3veWGhmm5OoxF98uDKDJQ81MKkfdgT7mzXvsjY7CV/XjmbeDGukPODfCzZcLl3OuFMBhK06LSF/BNINsC4L3vTvyBleb9YSm1UBr59O10xnKgsyWIMhCxULuQX1c4nUiLnykUxIU/%2BXiqRsszL61h3Vp3KYCL4cMC0QgTPoTxie6x5h0rK1AUhw8toIhUvfu0AWbefMXl7vmv6EtErspU0uqKCKpmCAEMhVeJCWf9oGr9lr%2BsOCQrzmd3HKmuRzii8GJzJ6gfRBoNp6sKleOmnRcCyfznUHRGObp4h9j8A75ykgfz5H3I%2BPoWQx9JlVM%2Bj7nfhX7H/qDJOltDRfSLz%2BV7fWKZat8hk2KAX%2BCtwLHq3uCy2Wd3eONQar50jzGLSA4OTPy/lme37GA%3D%3D&ph=3b06af9fbc35&phv=1,介護福祉士／介護職・ヘルパー／グループホーム／交通費支給／再雇用制度有,光誠会（介護）, , ,,,,介護,グループホーム,,,,正社員,,,,,,,,,,,
+780507,有限会社ニッセンハウス,,0277-46-9704,群馬県桐生市境野町2-1435-2, https://nissen-house.net/,https://xn--pckua2a7gp15o89zb.com/jb/743e2d58f5e5958ef8a69e21f493616b,介護士,光誠会（介護）, , ,,,,介護,有料老人ホーム,,,,正社員,,,,,,,,,,,
+815685,社会福祉法人元気村,,048-544-0880,埼玉県鴻巣市東１－１－２５　フラワービル３階, https://www.genkimuragroup.jp/,https://xn--pckua2a7gp15o89zb.com/jb/846c6fd31cf1a59243736fa0c26761a1,介護福祉士／ショートステイ国見あおば翔裕園／ショートステイ国見あおば翔...,光誠会（介護）,, ,,,,介護,看護小規模多機能型居宅介護,,,, ,,,,,,,,,,,
+815955,株式会社峯翔不動産,,0285-38-7921,栃木県小山市小山８９－１, http://houshou.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l0ae8e605b682df9461c4c434b5805070&p=t%2BAK7k0GmMUr0ZRss/MBmzCN360CoSWS4dU7nuIGFYyFcSAxetZ/3Mf3G/FnicKWh5CBIXag21OAEaM77h2Nj1oPY481e97d7b9JnApOSqO7caKAN6gjD0YMA1HeMnreNvJYbf3veWGhmm5OoxF98uDKDJQ81MKkfdgT7mzXvsjY7CV/XjmbeDGukPODfCzZcLl3OuFMBhK06LSF/BNINsC4L3vTvyBleb9YSm1UBr59O10xnKgsyWIMhCxULuQX1c4nUiLnykUxIU/%2BXiqRsrgOQ9VPYsZ5nDMM3tuI/zzPoTxie6x5h0rK1AUhw8toIhUvfu0AWbefMXl7vmv6EtErspU0uqKCKpmCAEMhVeJCWf9oGr9lr%2BsOCQrzmd3HKJ%2BUwu05Q0AJGwlhrOis%2BCHyuByQjXo1MMBTXvWMnyHUB6aeFhBlapEpINXZ%2B7f2x9JlVM%2Bj7nfhX7H/qDJOltDRfSLz%2BV7fWKZat8hk2KAX%2BCtwLHq3uCy2Wd3eONQaCKZYLHIbVUTM1SeGxZS7oA%3D%3D&ph=36f9ca165631&phv=1,介護福祉士／介護職・ヘルパー／グループホーム／交通費支給／再雇用制度有,モンキークルー（介護）,, ,,,,介護,グループホーム,,,, ,,,,,,,,,,,
+815973,株式会社花の器,,0289-71-3939,栃木県鹿沼市北半田１４８９番地３, https://welfare-hananoki.net/,https://xn--pckua2a7gp15o89zb.com/jb/7a98ff367931d2b54f2a95a1094c5b3d,介護職員・ヘルパー／小規模多機能型居宅介護花の器,モンキークルー（介護）,, ,,,,介護,小規模多機能型居宅介護,,,, ,,,,,,,,,,,
+815986,株式会社在宅支援ネットワーク,,028-612-4047,栃木県宇都宮市下荒針町3612番地12, https://www.hanamizuki.icu/,https://xn--pckua2a7gp15o89zb.com/jb/13d79bb83b014f0687ecd42b2da9f72a,土・日・祝お休み施設での介護職／生活介護はなみずき,モンキークルー（介護）,, ,,,,介護,グループホーム,,,, ,,,,,,,,,,,
+815993,KAKINENASHI株式会社,,0287-48-7762,栃木県矢板市本町１２-４, https://kakinenashi.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/48d73ee6d967c7375d8099335136f5c1,介護職員・ヘルパー,モンキークルー（介護）,, ,,,,介護,生活介護,,,, ,,,,,,,,,,,
+815997,新西建材工業株式会社,,028-681-1201,栃木県さくら市馬場２９６番地２, ,https://xn--pckua2a7gp15o89zb.com/jb/7f25eace59728c15750ec22be3e21549,介護職員・ヘルパー,モンキークルー（介護）,, ,,,,介護,短期入所生活介護,,,, ,,,,,,,,,,,
+816003,株式会社iSC,,0284-22-3560,栃木県足利市福居町327ピアステージ足利103, https://pokapoka-group.com/,https://xn--pckua2a7gp15o89zb.com/jb/ffd05108eeabf5de32a89e5ce61a51d9,介護職員・ヘルパー,モンキークルー（介護）,, ,,,,介護,障がい児福祉事業・障がい者福祉事業,,,, ,,,,,,,,,,,
+816005,有限会社ひまわり,,0283-62-8270,栃木県佐野市小見町７５３, ,https://xn--pckua2a7gp15o89zb.com/jb/9832960518059ef29ae15c20b6c60e62,介護職・ヘルパー／その他／新着,モンキークルー（介護）,, ,,,,介護,居宅介護支援,,,, ,,,,,,,,,,,
+816080,関東メディカル株式会社,,0276-55-6888,群馬県太田市新田小金井町３１２, http://www.kanto-medical.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/5f13b96705d4efcbe7c76fc4ecb9cf77,土日祝休みレンタル介護・福祉用品の営業,モンキークルー（介護）,, ,,,,介護,,,,, ,,,,,,,,,,,
+816118,株式会社ジョブ,,0279-22-6434,群馬県渋川市八木原１３９３番地　ビーマークD-1, ,https://xn--pckua2a7gp15o89zb.com/jb/a2c37d602b2dfb2e4313f12d1940e08b,介護職員・ヘルパー,モンキークルー（介護）,, ,,,,介護,,,,, ,,,,,,,,,,,
+816152,株式会社高徳,,0278-72-3366,群馬県利根郡みなかみ町石倉198,https://koutoku-group.co.jp,https://xn--pckua2a7gp15o89zb.com/jb/45d0385d7c5047f57a827daab5bb54ee,有料老人ホーム川原湯温泉の介護職・ヘルパーの正社員,モンキークルー（介護）,, ,,,,介護,建物の改修工事、タイル、れんが、ブロック工事建物の内外装の塗装、建物の防水工事,,,, ,,,,,,,,,,,
+845389,社会福祉法人七葉会,,045-824-8407,神奈川県横浜市戸塚区柏尾町742,https://www.nanaha.net/,https://xn--pckua2a7gp15o89zb.com/jb/56493e808dc10a321120ed95b4031134,介護士／特別養護老人ホーム／賞与あり／月給25万以上,光誠会（介護）,,,,,,介護,特別養護老人ホーム　ショートステイ,,,,正社員,,,,,,,,,,,
+865275,株式会社TLC,,028-48-8118,栃木県矢板市片岡584-2,https://tenderlovingcare-tochinoki.jimdofree.com/,https://xn--pckua2a7gp15o89zb.com/jb/e56d75390be94981917787458c8450f3,介護職／日勤／日休み／正社員:デイサービスでの介護職員求人,モンキークルー（介護）, , ,,,,介護,介護施設運営,,,,正社員,,,,,,,,,,,
+868985,株式会社TLC,,0287-48-8118,栃木県矢板市片岡584-2, https://tenderlovingcare-tochinoki.jimdofree.com/,https://xn--pckua2a7gp15o89zb.com/jb/e56d75390be94981917787458c8450f3,介護職／日勤／日休み／正社員:デイサービスでの介護職員求人,光誠会（介護）, , ,,,,介護,デイサービス、ショートステイ、,,,,正社員,,,,,,,,,,,
+899016,株式会社京都スペーサー,,043-307-8261,千葉県千葉市花見川区千種町２８６,https://jp.indeed.com/rc/clk?jk=6390bff1d89627a0&fccid=96ae444d98c0f878&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/767ee601cfff5378358b8c99c648ad0e,ましょう。【製品が完成するまでの流れ】作業手順書を確認します。手順書の通りに、材料(金属、コンクリートなど)を切断・研磨します。仕様書に合わせて、半自動溶接機を使って溶接しま...,ミライユ（ドライバー）,,,,なし,"9,600万円",,,,,,正社員,,,,,,,,,,,
+899020,株式会社ワタリ,,042-369-8300,東京都府中市宮町1-40 KDX府中ビル12F,http://www.watari.com/recruit/list/office03.html,https://xn--pckua2a7gp15o89zb.com/jb/b115d701a1351be8a878cc7baf0331b7,北海道支店 | 拠点一覧 | 株式会社ワタリ 採用・求人サイト,ミライユ（ドライバー）,,,183-0023,745,"9,800万円",,,,,,,,,,,,,,,,,
+899023,TSUCHIYA株式会社,,022-227-8310,宮城県仙台市青葉区二日町6-26,https://xn--pckua2a7gp15o89zb.com/jb/9bba7041d9c851986673af562f06eec7,https://xn--pckua2a7gp15o89zb.com/jb/595b648220fe66ded9ac70ad5bbf52db,法人営業職～未経験歓迎／残業月平均15H／幅広い事業展開～｜TSUCHIYA株式会社,ミライユ（ドライバー）,,,,,,,,,,,[仕事内容]<仙台>法人営業職～未経験歓迎/残業月平均15H/幅広い事業展開業務内容:高層マンションや2020年国際スポーツ大会関連施設、新幹線新設工事等の建設を手掛ける同社の営業本部・営業部にて...,,,,,,,,,,,
+899025,戸田建設株式会社,,03-3535-1354,東京都中央区八丁堀二丁目8番5号,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l8f2601e8d8e3d7eb4632fa2240177d03&hier=search&st=&pg=4&ar=1&rk=2&ro=23&emp=&pay=&upd=&ext=&q1=%E6%96%BD%E5%B7%A5%E7%AE%A1%E7%90%86%20or%3A%E8%A8%AD%E8%A8%88&q2=%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C&actp=ls&fr=bz&frpgr=2&frro=21&pgr=2&ph=b9fe1c0f4d47&phv=1,https://xn--pckua2a7gp15o89zb.com/jb/4e7e012a06ae6f69de3c5abea25ae430,創業138年の歴史を持つ大手ゼネコンにて設備設計業務,ミライユ（ドライバー）,,,,230億円,,,,,,,電気主任技術者、一級電気工事施工管理技士、一級管工事施工管理技士などの有資格者<勤務地>...建築プロジェクトにおける設備設計関連業務です。仕事にこだわりを持ったプロフェッショナルたちが集結し...,,,,,,,,,,,
+899027,株式会社ブロードリーフ,,043-382-3210,千葉県千葉市中央区中央３丁目９−１６,https://jp.indeed.com/rc/clk?jk=2b980f91965bec5d&fccid=d8333be4d06fc326&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/159184e2a574f88cc689f3538997ff89,営業/自動車アフターマーケット事業者向けITソリューション【仕事内容(概要)】【千葉営業所】コンサルティング営業...の研修です。・中途営業研修…基本的な営業の手法などをまとめ...,ミライユ（ドライバー）,,大山　堅司,,943名,043-382-3211,,,,,,正社員,,,,,,,,,,,
+899029,株式会社ミライエ,,043-214-8008,千葉県千葉市若葉区 桜木7丁目 19-6-102,https://jp.indeed.com/company/%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE%E3%83%99%E3%82%B9%E3%83%88%E3%83%9E%E3%83%83%E3%83%81-%E7%B7%8F%E5%90%88%E4%BC%81%E7%94%BB%E9%83%A8/jobs/-8ab993b830d01229?fccid=63841c24a4ed7d30&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/5a0ce31469330f309b4a064b33417d6f,仲介営業 新築戸建て売買の仲介反響営業 未経験可新着,ミライユ（ドライバー）,,齋藤 貴徳,,,,,,,,,正社員,,,,,,,,,,,
+899032,株式会社コプロコンストラクション,,052-589-2939,愛知県名古屋市中村区名駅三丁目28番12号　大名古屋ビルヂング25F,https://www.copro-e.co.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lfcfcf75edb9bad1001a78cdb6b5e0dea&p=t%2BAK7k0GmMUr0ZRss/MBm3zEzXJ6LQ0RNpAxv/3/IVtURIRwB/L9axDdIYgBCmVCoRM0NRRGaOOVp%2BmDmf3G2lYtZ3Bbe2u8p1GqFeRxtPO3G%2Bke7is7AoZaHIn2MGCSfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Ie3tRoAqwBtnTCAUl%2BBKRBMtFR/C/x2gmFNe7sAvbeZ0wGYjmAkx0ss93EH%2B0W8bsC76nO9cKLwcDVv%2BJj0OB26httMXbcv129q6LpOgIRfOd1KfDB0HIQp2OLYnGDcqkvMgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdLPYlrrXA0RgrWzbO%2BT8kOAmCKf6obFxDsfdsVkz8rRJXnkNwR8EQ54sCuaPE9v97mcnjIXMHcvSipdL6R8j90OCajQHxVLd61TEMxapn76DdubwIKhjVr3mkK5nVmHpmgpEPH6unpIjOpIY9Lo8UD2GHb%2BmoQUdBGU21tqtBH3rrVNfQDfYBIfZ381tWkgCCo%3D&ph=815b6590e8c2&phv=1,プロジェクト事務管理スタッフ／年収450万円／土日休／b,ミライユ（ドライバー）,,清川甲介,,,,,,,,,正社員,,,,,,,,,,,
+899037,株式会社SHIFT,,03-6809-1128,東京都港区麻布台2-4-5 メソニック39MTビル,https://xn--pckua2a7gp15o89zb.com/jb/1f52a7880bc77f7ae9cd202e707fabd8,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l3f2f59e12f194da5a6915beb1dd29063&p=t%2BAK7k0GmMUr0ZRss/MBm0OfK8H6jqwJss9/fSsDSFlC/vbc0KgBhkI/9wP0ZHj4NwjKM/chdQn/puesrFjOTVYtZ3Bbe2u8p1GqFeRxtPNN6QqDKrqq%2BmhKrPNKVDesfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Ie3tRoAqwBtnTCAUl%2BBKRBMtFR/C/x2gmFNe7sAvbeZ0wGYjmAkx0ss93EH%2B0W8bsC76nO9cKLwcDVv%2BJj0OB26sJjHqrF%2BlQp2q7ADxMdaerGL9Dnhf/67UuhofTa%2BKxNBQxswlI0BvJSkBoOlWzDdbBJCNcjQ%2BpDiDrRbA%2BMt6bgHYrhAq%2BfY9TxgzLVfbGbHycYS/kNm9pjsM4cZpVUXOje3LKkNoAKXpOWlUPoxuT817BwzO7UDPo1N/SlUExS7mrlwSsvKQCMnwCLGPhG/HfwItVxg5eV2McIjOd%2Bqr8SJvcmMvHE3xK0SUTkEA3J&ph=cadaeb7b53c4&phv=1,ゲームディレクター／東京・大阪,ミライユ（ドライバー）,https://www.shiftinc.jp/contact/,丹下 大,,,,,,,,,正社員,,,,,,,,,,,
+899044,東北化学薬品株式会社,,022-345-4870,〒981-3627 宮城県黒川郡大和町吉岡東3丁目7-14,https://jp.indeed.com/rc/clk?jk=f48d4023d859991c&fccid=472a7083fafd87a8&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/39717bc13c771ae8cf9524ce51867eb4,た当社。市町村等の官庁関連、大規模病院、国・県などの試験研究機関、国公立大学、大手民間工場など、広範囲な職種、安定した得意先が多く、仕入先も大手メーカー、商社との取引をいただいて...,ミライユ（ドライバー）,,,,226名,,,,,,,正社員,,,,,,,,,,,
+899052,株式会社リクルートR&Dスタッフィング,,03-6253-7061,東京都中央区銀座8-4-17 リクルートGINZA8ビル,https://www.recruit-rds.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/42e6a5efd82012289a7bdd2e7112d069,,ミライユ（ドライバー）,,,,,,,,,,,,,,,,,,,,,,
+899053,サンコーテック株式会社,,0995-22-6488,鹿児島県伊佐市大口原田720,https://www.big-advance.site/c/189/1499,https://xn--pckua2a7gp15o89zb.com/jb/a46f55b5d579c57f5f7dd775d2276c74?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,鹿児島／転勤無全国TOPクラスの技術,ミライユ（ドライバー）,,,895-2506,135,,,,,,,正社員,,,,,,,,,,,
+899059,共同エンジニアリング株式会社,,03-3286-7878,東京都千代田区丸の内1-8-3丸の内トラストタワー本館7F,https://www.kyodo-engine.com/,https://xn--pckua2a7gp15o89zb.com/jb/be1df888f9b7067816e9b87a25f065b6,,ミライユ（ドライバー）,,,,"2,674名",,,,,,,,,,,,,,,,,,
+899073,第一電材株式会社,,042-440-1711,東京都調布市小島町3-66-9,https://xn--pckua2a7gp15o89zb.com/jb/af59a1eeed7e847a7d4d366acd8977e2,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lf35027d68b5addf1c9dc810f788bfaea&p=t%2BAK7k0GmMUr0ZRss/MBm3dMSoma6x1b6/Ii/Gb58VETTVXDWEwL%2B8J3ZOML3qY988LMszlPklYdgyQ4PeBLPGidAgfHqBQoe/89nqap1kedY%2BNiT0BTE6wrn1Xo6Z93V67M8nOKrx2x0feqUpaTGoWniVAzDgzLLb%2BMJzKdyXevgbHQ9IQ2H2nDWBRa6XAQh0JdjfuZyxfaVwgFSPnI8V67B/LbtcM228wTqWnnCiqaWGZ1VBxrrcisQsOBY43dP3EWtDqXgKeOc63jGPIsOtJx8UQuow4A0q%2BrJEIdQr2o1muTUPfTDyZPIK74cs15VBAZMe94rfplYPoYKd3%2BAtPvP4SriofN2gjZsOoMErb5QPxQMSXz5ZKgPZ3IplqAt9QaLPLjlHbS0yU6WFhIH8EYj7rSh/21BYSqHfZM8PqydQumL9J%2BsYEGOUQU51oh74GNQykxK4PJEKZaGoedVpBKfjcGVVH3VrzwC7iyAXjBcmPF75nWCVy/uKkGSqvGS692GwRE3qiSXHeaUTmUqQ%3D%3D&ph=abd31dae48a1&phv=1,営業事務スタッフ,ミライユ（ドライバー）,,梅澤 拓也,,96,,,,,,,アルバイト・パート,,,,,,,,,,,
+899074,株式会社FROMJAPAN,,03-6262-8720,東京都,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lfa6692ad55ddd81cfede91ef3b8b8048&hier=search&st=&pg=30&ar=1&rk=2&ro=196&emp=&pay=&upd=&ext=&q1=%E6%B3%95%E4%BA%BA%E5%96%B6%E6%A5%AD&q2=%E6%9D%B1%E4%BA%AC%E9%83%BD&actp=ls&fr=bz&frpgr=2&frro=196&pgr=2&ph=0240b52140bb&phv=1,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lbf70f9eaf5fc25263b6e72fc61f99088&p=t%2BAK7k0GmMUr0ZRss/MBm7ARYrFiqpQ8bpMxaKI3wCUmDQQkQ%2B0pkxRssaBuz%2BdYX5AuGzh6rR3a265oikWCB2idAgfHqBQoe/89nqap1kd/qGffM3CHVrZO2d7tgv7aV67M8nOKrx2x0feqUpaTGoWniVAzDgzLLb%2BMJzKdyXevgbHQ9IQ2H2nDWBRa6XAQh0JdjfuZyxfaVwgFSPnI8V67B/LbtcM228wTqWnnCiqaWGZ1VBxrrcisQsOBY43dP3EWtDqXgKeOc63jGPIsOtJx8UQuow4A0q%2BrJEIdQr126ECLfq3MhbIbdXlN7QOCL9EHCgH784GY7vIo1zYrvqH148qrFhwf2W5gmuQVbHf5QPxQMSXz5ZKgPZ3IplqAqWiYWjuRkJivdhrpWtdrGsyRLYtnFtH08nGY2uKS985Lva/JEgbY/wMmbIvDghz0l6lBhVCRPSSvkRuOCPMU4nW/rSQEMn/mrwV6emTzmQu8Ecp9om5uq%2BG1wUF%2BDlCY9gQhhXwuMEwq2bnYSaxw9qjdn37rBWnMyK%2BxEoe3LsMmQEaQPCxCP13X7LKPSLUA&ph=dd46e6832858&phv=1,法人営業マネージャー／海外在住者向けの日本商品購買代行サービス｜株式会社FROMJAPAN,ミライユ（ドライバー）,,,,100名,,,,,,,<仕事内容><海外出張あり>法人営業マネージャー/海外在住者向けの日本商品購買代行サービス外国人に人...<必要業務経験>必須条件:・法人営業経験6年以上・ビジネスレベル以上の英語力...,,,,,,,,,,,
+899079,プランゼージャパン株式会社,,03-3568-2451,東京都港区六本木１丁目９,https://jp.indeed.com/rc/clk?jk=14a0d13301098328&fccid=b36dcca3aa7f9cc7&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/f06ef0d5054ac1e9044460bdd128f464,生産技術職加工仕様の決定レアメタルに属し、金属の中で最も...加工品を扱います。加工仕様、加工方法を立案し、製品を完成させる業務を担当していただきます。行程設計加工方法、加工...,ミライユ（ドライバー）,,,,なし,なし,,,,,,正社員・新卒,,,,,,,,,,,
+899086,株式会社ジェイ・ステップ,,028-633-5112,栃木県宇都宮市東簗瀬１丁目５番３１,http://j-step.co.jp/index.html,https://xn--pckua2a7gp15o89zb.com/jb/37e9e04707aecf03e15185a00846617d,総合エンジニアリング事業約2ヶ月間の研修後、法人企業様へのプレゼンテーション、技術者人材紹介、技術社員への面談フォロー及び状況管理等の業務を補佐していただきます。【応募資格...,ミライユ（ドライバー）,,,,,,,,,,,新卒,,,,,,,,,,,
+899087,株式会社七栄,,022-336-7813,〒989-2311 宮城県亘理郡亘理町荒浜東木倉55−29,https://jp.indeed.com/rc/clk?jk=6c8a39f1e9f1c644&fccid=40bb50d4f3dfd9dc&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/60315e0a9c4a5b9421eb2718187aedc2,ベートの時間」を設けることができるのも魅力「運転する車は・・・」設備環境は提携の整備工場が近くにあります。ディーラーも近郊の仙南エリアにあるので、定期整備やトラブルなどはス...,ミライユ（ドライバー）,,,,,,,,,,,正社員,,,,,,,,,,,
+900486,株式会社創世,,024-535-8000,福島県福島市旭町9-7,https://sosei.org/publics/index/71/,https://xn--pckua2a7gp15o89zb.com/jb/4883695dfd433419a04ae4593f6e08cb,無料駐車あり／賞与3.0ヶ月分!アットホームな介護付き有料老ホームの介...,モンキークルー（介護）, , ,,,,介護,デイケア・デイサービス・グループホーム・特別養護老人ホーム・老人保健施設,,,,正社員,,,,,,,,,,,
+900567,有限会社ホテル松多屋,,0427-26-1885,福島県石川郡石川町字長久保92-1,http://www.matsutaya-kaigo.com/,https://xn--pckua2a7gp15o89zb.com/jb/55ac3cd3bbc740f1b425ce371627697f,年間休日120日!残業は月平均5時間と少なめ!無資格・未経験でも安心の介護職,モンキークルー（介護）, , ,,,,介護,デイケア・デイサービス,,,,正社員,,,,,,,,,,,
+952094,セコムスタティック北海道株式会社,,011-210-6591,北海道札幌市中央区大通西3丁目7番地　北洋大通センター13F, https://www.secom-statichokkaido.co.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=18d8a63897ffdeb257c4e82c13f1049c&p=t%2BAK7k0GmMUr0ZRss/MBm%2B9UaIPiexVIzrpcNPfj74MIO8Vwu8wOM0EwUJlX3LD%2BxoOh571mlqjuexRodqIDy2idAgfHqBQoe/89nqap1kc3qYOmry0M9KFMu83WT9awV67M8nOKrx2x0feqUpaTGoWniVAzDgzLLb%2BMJzKdyXevgbHQ9IQ2H2nDWBRa6XAQT%2BQQU%2BlENqOgjDfCj7Oy8S/yCqfceIJKFqDx7VhroTw%2BxPT1ui7Xla52XyP6jqNh1WnYLsk9RgF8e7hVSXXBWKtYwaUCocGnXw5lxoMEHs4K6cW88sQQ%2BaZSb9hvPpNqTyaFMqbmG19erhN2sv/Qok7ZN5idHD9KHdSYXRVUdCq72tQ0iLssO9hF9J7eY0DLlNXQUQ/VGqiYMH2qUkolj4jMPiHqoAVuDfOP3bWxFbVz7HCt3EjAk9Pq5Uh0E/n4n9aIDg17fwj7UCJSfC6lBtycTQlZmUfh6uzq6sQ9Wgs49VyXcj1YzNWeJqVi9D6F&ph=8eaf5131fd04&phv=1,セキュリティ警備スタッフ・休み充実、総合職扱いのため本部へのキャリアア...,ミライユ（警備）, , ,,,,警備,施設警備、,,,,正社員,,,,,,,,,,,
+953239,道南いさりび鉄道株式会社,,0138-83-1977,北海道函館市若松町12番5号,https://www.shr-isaribi.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l84740afaaff7b550a2772ddcf5a27394&p=t%2BAK7k0GmMUr0ZRss/MBm0N%2BO489n8BczWtAhiM2IN1Plh6wDuAi44hcKdrP8QW7yEAuRESnanP3RLo8sIOl2w/PRXX0j1EvMIxYtrtJfJuKlmfUcD0NQMQUa3/WiJC9oftjdNyTVdLGR2pfgAM6JLjDbgKRX3aJBUKeioCL1rmRdMFeNupzviu4HD%2Bt5p2mGxxPweIAbOEmxZj3RdSCu/Ym9GZ1G2wQvlqCKJrqii5Ouy1uPtr5eLl6qK5ziWEpN4dVWatp51aquZvjC7FD1Mi3vWN6FfNGlSpl0NRx6kC7ZhS8qKnfLV5DCTqDj7nXq5/8Dy4VQYncB32/hpR5CqGjlzhUmn35QkO/BrggWRi4kzAnhbziWKlKo8p/jBSyqOxCguvvrzJZyTqa4ssNzyag331tQH8U/5K%2BSWaxEHgU5g7B7A71ftMPAo/tTOkaxZJ5dk81cWuusnoI91A7FAwFKYlhioJqRy21KpaoRLiBoHazuzo2KrwexSfAYpFOPHF96094KBtSOttdEJBGpogvKIqiak9j5xBKNXPLUEWfhdNMpeQYiGrn%2B3r7YPvA7zcd0D5xzfeJ10FUeoe71dL7/qV0cOO%2BuzDdiiAgnxnw5qBQsaD7tFp%2B/1iuo3fGKRDx%2Brp6SIzqSGPS6PFA9rk8rVuvA52o/CYpbANLbxT1pjm8/Ip1TIie843FayIf&ph=5363a106f036&phv=1,五稜郭～木古内をつなぐ「運輸系総合職」,ミライユ（ドライバー）, , ,,,,ドライバー,運輸,,,,正社員,,,,,,,,,,,
+953302,三栄急送株式会社,,0172-39-1618,青森県青森県黒石市大字浅瀬石字稲村34－5, ,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lac2abe9c5cd031f80047e81f2cad04a6&p=t%2BAK7k0GmMUr0ZRss/MBmyWWpl2L1KyeoUMQU4e3RMMRHicouQ6H637AgvnxqP7/hoQ2nFwplQvXo7FuUHcYsmidAgfHqBQoe/89nqap1kcbLsuKk/EWhmecSYbnvS88V67M8nOKrx2x0feqUpaTGoWniVAzDgzLLb%2BMJzKdyXevgbHQ9IQ2H2nDWBRa6XAQa/xA/fmEs%2BA6eQ17a8mLRrCIwH3RNI9kwkhjVw8zIE9bUlIDUaCWUKVnDbWs2VbWqxIOzkjBRiDqo9arpXTCSiJBSvO/t%2BlMEi8g%2BZLMrU3AHV7KeaLut5MQBei4EHEsvJ4YP7%2BRFJAgz2NVHPauWhaTCCyZcCeDxNWX5hsDA4Uemk8Q9pkrX0ib6vg%2BPEOpNPKRreoZ3q8bZok6IP/ECeeIKJC/rUL4QwYCzOFkY28zUlJtSjajf1ZJZQng1L22YkPkOusLKpGliwRw5/ZC9Vp4TnR2Y7W7q8Lq8TR6l0q72tQ0iLssO9hF9J7eY0DLlNXQUQ/VGqiYMH2qUkolj4jMPiHqoAVuDfOP3bWxFbViq6jMdrnqKTHqOtIoc/gpSx27oJsJhUlNVFyr6Ap2eRHSsSuCpamlc1eSivf/G2GBwtUxeRhP8%2BZTD4VPiDvKg1RNGJPv%2Bobuiy1tcTRQTSADLUSHxAm4O/jm//GiqC8%3D&ph=d25c2b77259d&phv=1,青森県黒石市／大型トラック運転手自社車両のみのため業務調整がしやすい...,ミライユ（ドライバー）, , ,,,,ドライバー,運輸,,,,正社員,,,,,,,,,,,
+953309,株式会社八洲陸運,,0178-21-8400,青森県八戸市桔梗野工業団地2丁目7-13,https://yashima-group.jp/,https://xn--pckua2a7gp15o89zb.com/jb/722e552a2b4b195d25d13e728a936bee,八洲陸運・八戸営業所中型ドライバー正社員,ミライユ（ドライバー）, , ,,,,ドライバー,運輸,,,,正社員,,,,,,,,,,,
+979973,株式会社北海道輸送サービス,,0133-72-8004,北海道石狩市新港西1丁目701番地5,http://www.smile-kankou.co.jp/ ,https://xn--pckua2a7gp15o89zb.com/jb/c4b23f7a424b1bc8cf8901675aae0c0b,大型トラックドライバー今なら入社金30万円,ミライユ（ドライバー）, , ,,,,ドライバー,運送業,,,,正社員,,,,,,,,,,,
+980521,双葉重機リース株式会社,,0237-86-2145,山形県寒河江市中央工業団地169-5, https://futabajuukiri-su.com/,https://xn--pckua2a7gp15o89zb.com/jb/c85ed8ed7a0637843a7aeb81542d0839,建設機械・資材運搬ドライバー,ミライユ（ドライバー）, , ,,,,ドライバー,運送業,,,,正社員,,,,,,,,,,,
+981208,株式会社オーエーテクニカ,,048-797-9916,埼玉県さいたま市岩槻区飯塚７５２,https://www.oa-technica.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/3da2145337540b118cf6de5cfa8965b7,メンテナンス工具や機械いじりが好きな方、ホームセンターに一日中居れる...,ミライユ（ドライバー）, , ,,,,ドライバー,運送業,,,,正社員,,,,,,,,,,,
+987934,株式会社コバヨウ,,076-238-1185,石川県金沢市大野町4丁目ソ-6,https://kobayou.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/b719b3561b2c716a7b7b1f06414fc74e,LPガス入出荷・設置点検LPガス入出荷・設置点検,ミライユ（ドライバー）, , ,,,,ドライバー,一般貨物自動車運送・貨物運送取扱,,,,正社員,,,,,,,,,,,
+988048,株式会社armabianca,,058-216-6266,岐阜県羽島市舟橋町字江北 西２６６−１, https://armabianca.com/,https://xn--pckua2a7gp15o89zb.com/jb/c30fbd91c142207ce994678db17a27c5,人気作品の「公式」グッズを届ける物流スタッフ完全週休2日,ミライユ（ドライバー）, , ,,,,ドライバー,運送,,,,正社員,,,,,,,,,,,
+989066,モロゾフ株式会社,,06-6345-1201,大阪府大阪市此花区北港２丁目４−３５, ,https://xn--pckua2a7gp15o89zb.com/jb/5f0146709cb63d5fed3838ccabfa1c18,北港／物流管理・企画はたらきやすさ完全週休2日制残業少／定着性高,ミライユ（ドライバー）, , ,,,,ドライバー,運送,,,,正社員,,,,,,,,,,,
+989070,株式会社エーアイテイーbyアイ・メディカ,,06-6260-3450,大阪府大阪市中央区本町２丁目１−６ 堺筋本町センタービル 15F, https://www.ait-jp.com/,https://xn--pckua2a7gp15o89zb.com/jb/95bbcbf7bbc70b11327ae2ae5bf14cae,社内SEローコード開発の国際物流企業プライム上場,ミライユ（ドライバー）, , ,,,,ドライバー,運送,,,,正社員,,,,,,,,,,,
+990141,株式会社林運送,,082-235-4000,広島県広島市南区,http://hayashi-c.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/df22a28b6aa00fd3132e33ff66e213f9,大型ドライバー,ミライユ（ドライバー）, , ,,,,ドライバー,一般貨物自動車運送業,,,,正社員,,,,,,,,,,,
+990412,鳥飼機工有限会社,,092-962-3400,福岡県糟屋郡新宮町大字原上1734-3,https://www.jet-line.co.jp/torikai.php,https://xn--pckua2a7gp15o89zb.com/jb/aff4d0a03122ab80a441413067a6f5a9,未経験OK!4tトラック運転手,ミライユ（ドライバー）, , ,,,,ドライバー,一般貨物自動車運送事業,,,,正社員,,,,,,,,,,,
+990419,翔輝トランスポート株式会社,,092-410-6332,福岡県糟屋郡篠栗町大字尾仲586ｰ1,https://sato-unso.co.jp/publics/index/40/,https://xn--pckua2a7gp15o89zb.com/jb/4e66df9ff7c298292fddd432bf050edb,10tトラックの配送ドライバー,ミライユ（ドライバー）, , ,,,,ドライバー,一般貨物自動車運送事業,,,,正社員,,,,,,,,,,,
+990440,藤原運輸株式会社若松,,093-771-2700,福岡県北九州市若松区響町1丁目69番地,https://fujiwaraunyu.com/company/map_25.html,https://xn--pckua2a7gp15o89zb.com/jb/0ff07181cd7add52cc7322e5f56e9725,トレーラー運転手／平均年齢52歳／地場／日勤／月休8日／経験者歓迎,ミライユ（ドライバー）, , ,,,,ドライバー,陸上運送,,,,正社員,,,,,,,,,,,
+996899,社会福祉法人笑風会,,024-959-2929,福島県郡山市喜久田町前田沢字小室山5-45,https://syoufuukai.or.jp/,https://xn--pckua2a7gp15o89zb.com/jb/64a73d111022e0467d7df5281c28d451,日常生活支援,SND（介護）,,渡部 明義,963-0543,,,介護　保育,,,,,,,,,,,,,,,,
+998935,医療法人誠励会,,0247-55-3333,福島県石川郡平田村上蓬田字清水内4,https://www.seireikai.net/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lde19c4abfe6fc9007bcb1f3959748005&p=t%2BAK7k0GmMUr0ZRss/MBm3bHuj%2BXMiAbZ50jYV0JBF0pqovcYVhXTvxoiDxLydVp39jqJxLRI4o2pGX14kIa/WCn/3XZP%2BeK6oLzFM2jSlQCktEHaS1zADewZKHgQpgKoftjdNyTVdLGR2pfgAM6JLjDbgKRX3aJBUKeioCL1rmRdMFeNupzviu4HD%2Bt5p2mZPPWAwzxIkDsI4wxyTGNnHhqYcULZHgHN4nTYhcKElgjLbdN8lijgDbao0kcSJPwB2cem2qmqFDrMTJ%2BYhnGw8Cb6lguCEpTkN1hmq8NwkTnql7nxFgE%2BjhTlEeuR3Am0HVmvSPRCVPg9OrHkzQfa9ErspU0uqKCKpmCAEMhVeJCWf9oGr9lr%2BsOCQrzmd3HusaTbXqCOnj%2BP8Xqz%2BBYzCKlHFCpogBDvYDuJAzS/JsEpHkpg9%2BE0Fx9eRWtls87D1zIg56uhuOq7CJzjfABR8oy4n%2BMTFVP77vHVHC%2B/B1IWkI5/TneJxR32D59EYpxVXaDsyEUwlAAn2Kd5y33kQ%3D%3D&ph=99abe780a843&phv=1,介護職員・ヘルパー／介護老人保健施設／実務者研修／日勤・夜勤,モンキークルー（介護）, , ,,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+999418,株式会社ロジトラ倉庫,,027-386-2631,〒370-0024 群馬県高崎市八幡原町1258,https://logitra.net/,https://xn--pckua2a7gp15o89zb.com/jb/b96f8394a25c55c001b4b51d0228a8d0,近距離の2tドライバー月給23万円以上／天然温泉施設が無料入浴可能／普通免許でOK,ミライユ（警備）, , ,,,,警備,一般貨物自動車運送事業  ・自動車の販売及び整備  ・第一種利用運送事業,,,,正社員,,,,,,,,,,,
+1000162,社会福祉法人慈久福祉会,,024-368-2115,福島県安達郡大玉村玉井字台９番地１,https://xn--pckua2a7gp15o89zb.com/jb/b158974d7e9c55f8cb36e0f086798170,https://xn--pckua2a7gp15o89zb.com/jb/0370e9bfaf93b249a9ca62b028af077f,社会保険完備の職場で介護職／ヘルパー,モンキークルー（介護）,,,969-1302,,,,,,,,契約社員,,,,,,,,,,,
+1000174,株式会社うさぎ薬局,,0557-33-6110,静岡県伊東市富戸字先原１３１７番地５７２３,,https://xn--pckua2a7gp15o89zb.com/jb/62ddcbf73bb0cdcd70d3076f032fa134?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,英語、中国語、タガログ語、モンゴル語,モンキークルー（介護）,,白石誠一郎,4140038,,,人材関連業,登録支援機関,,,,21登-006013,,,,,,,,,,,
+1000185,東洋ガス株式会社,,053-478-2221,静岡県浜松市中区曳馬五丁目２３番４０号,,https://xn--pckua2a7gp15o89zb.com/jb/dc896ed9674070a9b9304d6118aec324,介護職員初任者研修サービス付き高齢者専用住宅常勤,モンキークルー（介護）,,,430-0901,,,介護,サービス付き高齢者向け住宅　訪問介護　ガス,,,,正社員,,,,,,,,,,,
+1002019,株式会社あんしんネットあいち,,052-209-8400,454-0012 愛知県名古屋市中川区尾頭橋４丁目１０−７, https://www.tsubame-taxi.or.jp/care/top.html,https://xn--pckua2a7gp15o89zb.com/jb/bfc9eb6a3e0637d2f0570902696e0ef6,予約専属の生活密着サポートドライバー,ミライユ（警備）, , ,,,,警備,ホームセキュリティ、マンションセキュリティ,,,,正社員,,,,,,,,,,,
+1002246,株式会社にしけいメンテナンス,,092-283-7030,福岡県福岡市博多区店屋町5番10号（2F）,https://www.nisik-g.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/90dcf2bd607344a6deb89d3b8d6c3152,営業賞与年2回,ミライユ（警備）, , ,,,,警備,施設警備業務,,,,正社員,,,,,,,,,,,
+1002284,有限会社大和警備保障,,013-834-3144,〒041-0808 北海道函館市桔梗５丁目36番１号,https://yamato-keibi.com/,https://xn--pckua2a7gp15o89zb.com/jb/59287ab84d742fcd48842fa1fa83b464,交通誘導警備スタッフ,ミライユ（警備）, , ,,,,警備,交通誘導警備,,,,正社員,,,,,,,,,,,
+1002296,極東警備保障株式会社グループホーム大空2,,016-647-2636,〒079-8451 北海道旭川市 永山北１条10丁目11番19号,http://www.k2h.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/34fa26fd93c1521dc7e0cc469110921a,管理職,ミライユ（警備）, , ,,,,警備,交通誘導警備、常駐警備、雑踏警備,,,,正社員,,,,,,,,,,,
+1002349,東武ビルマネジメント株式会社,,033-623-2194,東京都墨田区押上2-12-7（セトル中之郷1F）, https://www.tobu-bm.co.jp/index.html,https://xn--pckua2a7gp15o89zb.com/jb/20f2398712cafeec80fc0d435ce597ae,大学病院の常駐設備管理,ミライユ（警備）, , ,,,,警備,中央監視センター・防災センター常駐監視 設備機器の保守点検と整備 受変電設備、昇降機設備、給排水設備、空調設備、防災設備等の操作運転・監視・点検整備,,,,正社員,,,,,,,,,,,
+1002410,株式会社和心,,042-748-1161,〒193-0942 東京都八王子市椚田町592-16, https://www.ishin-takeo.net/index.html,https://xn--pckua2a7gp15o89zb.com/jb/dea28f0f0402454970919378ec48fde1?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,営業・業務スタッフ／顧客管理,ミライユ（警備）, , ,,,,警備,警備、駐車場管理,,,,正社員,,,,,,,,,,,
+1002429,One'sLife.株式会社,,018-827-3557,〒160-0023 東京都新宿区西新宿７丁目７番２６号 ワコーレ新宿第一ビル２階, https://www.ones--life.com/,https://xn--pckua2a7gp15o89zb.com/jb/0da5c92d8fb26eb519b1de1e849d16d5,新規立ち上げの経営幹部／2号警備員指導教育責任者,ミライユ（警備）, , ,,,,警備,警備事業,,,,正社員,,,,,,,,,,,
+1002431,株式会社神近管財,,033-945-6491,東京都板橋区弥生町37-1-601, https://kamichikakz.com/,https://xn--pckua2a7gp15o89zb.com/jb/30be0d3872506390c1188912a65f1792?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,大手出版社での施設警備業務,ミライユ（警備）, , ,,,,警備,施設警備業務,,,,正社員,,,,,,,,,,,
+1002465,日本クリーン株式会社,,033-291-0711,〒101-0054 東京都千代田区神田錦町2-5-4 第二亀谷ビル 6F, https://www.nclean.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/7853d30568397c6ac3bdcd2125c9ae3f,ビル設備管理スタッフ／駅近徒歩1分!第二種電気工事士!残業少なめ,ミライユ（警備）, , ,,,,警備,施設警備業務、機械警備業務、駐車場管理業務,,,,正社員,,,,,,,,,,,
+1002527,太陽技研株式会社,,035-436-8760,〒141‐0031 東京都品川区西五反田2-29-5 日幸五反田ビル7階,https://www.taiyougiken.jp/index.html,https://xn--pckua2a7gp15o89zb.com/jb/6e5f16786e0e2e2e98e2c344dbe52329,建物管理業務スタッフ,ミライユ（警備）, , ,,,,警備,監視業務、巡回業務、受付業務など,,,,正社員,,,,,,,,,,,
+1002579,株式会社大阪ガスファシリティーズ,,066-978-5850,〒537-0025 大阪府大阪市東成区中道1丁目4番2号 森之宮スカイガーデンハウス4階, https://www.ogfa.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/9b9ea708daf61c9942c45c6efff3ceb3,公共施設やオフィスビルの設備管理スタッフ40歳以下限定,ミライユ（警備）, , ,,,,警備,建物・設備管理,,,,正社員,,,,,,,,,,,
+1002582,コウノイケ・コーポレートサービス株式会社,,066-463-8110,〒554-0024大阪府大阪市此花区島屋3丁目10番29号, https://konoike-cs.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l089cc037229fc3a497480f4b16c27e1a&p=t%2BAK7k0GmMUr0ZRss/MBm%2BRu0BuRqIwY%2BznVSKadqFQcR/u73R9xUgkpEFHmExLYeYMp7mIUkGiwXAWBc8hPxA/PRXX0j1EvMIxYtrtJfJtndjvqKPwl10zpB7QXkEYtfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8IeHlNacxyNIObwQajEquPmMB8dI3w5MAtjTPFSi4GOYFYvivF9fQA%2BdFC%2BGrzDOMF8Py/2%2BaCDUUKy7ns4CBONVpuRSkjGke35Tfk5nsmqH2tuo9VU0IzS15epNmWfJqDfJYbpbVIN4YpSeF3PNBwQay5rgczYOPYVra2HOsGX9eaAlRS9Q2OBjX1eWEaNhM94KVIII65MIwSZNc9yUCmSXTvWMWRgAyTAbtUaWaZ8b6e9WBLJ6exoqDydUhdOa6zhfKr6NYiRGn8Px30bu7gxWHvOVeERnDz7mq22/dlnprJYs7hv33w7ENprcchNnzMxx9JlVM%2Bj7nfhX7H/qDJOllyGfybW7TPo8BKInBNA6lCJVtrewUrGXkeL8Zq9CXNnNSnnTzB477%2BcnRN2z4kw%2BR2sWWNWnSCd2CxPGafYEqE%3D&ph=dc4c963da51f&phv=1,「総合職／営業・清掃・ビル管理／」土日祝休み／学歴不問,ミライユ（警備）, , ,,,,警備,機械警備、施設警備など,,,,正社員,,,,,,,,,,,
+1002599,OS共栄ビル管理株式会社,,066-361-3608,大阪府大阪市北区小松原町3番3号　ＯＳビル7階,https://www.osgroup.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/82b5993e7e4185f4d71795a3cad16f2c,販売・営業・旅行・サービス系／未経験者OK建物管理／ビル管理阪急阪神東宝グループ,ミライユ（警備）, , ,,,,警備,館内外巡回・監視・非常時対応・駐車場管理,,,,正社員,,,,,,,,,,,
+1002604,日本安全警備株式会社,,078-391-1101,〒650-0034 兵庫県神戸市中央区京町71番地　山本ビル5F, https://www.ankei.co.jp/index.html,https://xn--pckua2a7gp15o89zb.com/jb/9939940502752c5d47e703adfae5f03f,輸送警備スタッフ,ミライユ（警備）, , ,,,,警備,機械警備サービス 常駐警備サービス 輸送警備サービス ビルメンテナンス サービス,,,,正社員,,,,,,,,,,,
+1002626,株式会社中央ビルサービス,,085-321-4013,〒693-0023 　島根県出雲市塩冶有原町60番地60,https://www.chuou-bs.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/8ba1ddc7460041c1d75cb810f164a530,施設管理スタッフ・資格取得を目指す,ミライユ（警備）, , ,,,,警備,警備業務、防火防災業務、駐車場管理業務　,,,,正社員,,,,,,,,,,,
+1002628,株式会社さんびる,,0852-26-0335,〒690-0045　岡山県松江市乃白町薬師前３番地３,https://www.sanbg.com/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=le36e62bff7b7769b815661cc4af9154d&p=t%2BAK7k0GmMUr0ZRss/MBmwBEcLTgwftk4ivXu5u/00bB3iIBjgiFApOlTDDLH1AJ2G0eNTEO5ef%2Bzc4M7eXdmWidAgfHqBQoe/89nqap1kfJxFSqYpJvRWhymiPriHolV67M8nOKrx2x0feqUpaTGoWniVAzDgzLLb%2BMJzKdyXevgbHQ9IQ2H2nDWBRa6XAQT%2BQQU%2BlENqOgjDfCj7Oy8S/yCqfceIJKFqDx7VhroTw%2BxPT1ui7Xla52XyP6jqNhaTeWldLc/yASsELJa0ANLoFBuKbep0SqP5j0JFgwq1UzUlJtSjajf1ZJZQng1L222DfDRH7MetwkNUx1DsQPwiz1EeCCx1zaxO6nn7Yuqma72tQ0iLssO9hF9J7eY0DL6sUd52FT8VMcHqkaIUAIoLEj%2BhC9oQbBDI9O3n0qgziUwD5B%2BXxcTUmeNXEIKYhAdhA69BzGJ26swTBoo1LnaP%2BfS53UxH%2BlQ6MBb3nOAlts%2BKtyH/sL2DVXePy1VuFHPz8hY/piGjbzxT8zehTt2I4Rp9Ms5nD8LQpXCb%2BIHYsD0yJLsvb9Kzs9VL/beT387WjIAUPlVvnjfCtxUl2kaQ%3D%3D&ph=51e5528abfa5&phv=1,「総合職」土日祝休み／”人の良さ”が社員投票1位の環境,ミライユ（警備）, , ,,,,警備,施設警備、巡回警備,,,,正社員,,,,,,,,,,,
+1002646,株式会社共栄ビル・パートナーズ,,092-562-7070,〒815-0035 福岡県福岡市南区向野2丁目11番10号, https://www.kyoei-bms.co.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l51dc5f74690e8dd907787c5ca908ac35&p=t%2BAK7k0GmMUr0ZRss/MBm%2BQr8I63JLe4rbsAyGdVhp38kUYn3HGbVJDWHOBSHs%2BDroFfBgVi9Xv4pnjEnpIGIFYtZ3Bbe2u8p1GqFeRxtPOKS0qfoW0EGdiMpIVfSM5kfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8IeHlNacxyNIObwQajEquPmMB8dI3w5MAtjTPFSi4GOYFYvivF9fQA%2BdFC%2BGrzDOMF8XHJVkXiuvj%2BBujW54Q1AiU/e%2BMZF7a73TfnHEErxNM5uo9VU0IzS15epNmWfJqDfSYYsVKHOifhGhY5CV4hHQcHaz8TpYuylW5JsLnjMKphzm9%2BNXtkU1Y0IFBv9WsWLshFbV5rvlCyHYyDGy1ihKnEGvvSan9qMuGjOH3BXm7HmXGVIdbtb2QyV%2BpCFkxIxuMGHbFwcevVBvZWXzpUWkjYsAk8/nuuojyvG7yd9K3qLn139zg6q1DULy6yMf5pizi8KxEZ3yUs7rfiu52wuDXRgfsTMwgMPTQtnPFB9uA5tJUe3aMuZHIoLsMy1/ipCJkBGkDwsQj9d1%2Byyj0i1AA%3D%3D&ph=7a66ffb94f1d&phv=1,土日祝休みの年間休日120日以上「経理事務職」,ミライユ（警備）, , ,,,,警備,巡回業務、門衛業務,,,,正社員,,,,,,,,,,,
+1004195,東武物流サービス株式会社,,0282-22-5211,栃木県栃木市大平町横堀842-1,https://www.tobuunyu.co.jp/company/group/group03.html,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l49c61411ec7f5f0ca4c8a3fe81e81913&p=t%2BAK7k0GmMUr0ZRss/MBm9I4fw7cxWvVnZICZEB3d7kwR%2B2Odlh9c9Kh4LH72D8JEDImxLL9iMsijCyR4Wk0PQ%2Bf6DkuB%2BuBT466X1tsR7NEM9e7fqNdsw7vg6FR8V2Ufoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8IezodT6CInqdYMg%2BlY7Ru04O/DRhqK9W08hXM6gQ6cBMiEcAKGk936VPjo52bcde%2B/cOBioZbk2qnwpxQYrH14ejjHNpuUK7ZN7uWU2ejKiiz7HlA/r7cnpaG/kgB1JSMvqtgKGjR0FXLCV82Lc09ur0QJnhmMjVQx0ym49IjPXijWjrWWvspGeeXpC0zn8Ky3lBWUlWPpewXgXnoDEq%2BLnE/e%2BMZF7a73TfnHEErxNM5uo9VU0IzS15epNmWfJqDfU0AGaIM9qDsrtG0QAU%2BZgS5rgczYOPYVra2HOsGX9ebzWEiHKu3atyyETn3%2BtLN/KVIII65MIwSZNc9yUCmSXTvWMWRgAyTAbtUaWaZ8b6cPry0VkwPy54bJ2JZJHDt%2BTLha76u4pmAo2e5c0ECp4GR3AnSqIV/1Qwkf9awSSYuUkn0jYz3WpYMG2QwRCCVu&ph=9ec77ff9ffd0&phv=1,配達4tドライバーブランクアリOK日祝休み安定性ピカイチ,ミライユ（ドライバー）, , ,,,,ドライバー,一般貨物自動車運送業,,,,正社員,,,,,,,,,,,
+1004979,株式会社虹,株式会社虹,0172-55-5551,青森県弘前市湯口字一ノ細川49－1,,https://xn--pckua2a7gp15o89zb.com/jb/3310d829bdd52d1388ac171d50634692,介護職・ヘルパー／有料老人ホーム,光誠会（介護）,,五戸　拓巳,036-1501,,,介護,,,,,正社員,,,,,,,,,,,
+1004999,株式会社いきいき,株式会社いきいき,017-757-8937,青森県青森市桂木3-18-2,https://iki-iki.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/789d626a5ca188a7707c7d4c13bdd435,介護職員・ヘルパー新着,光誠会（介護）,,櫻井　雅子,038-0031,40名,,介護,デイケア・デイサービス,,,,正社員,,,,,,,,,,,
+1005006,株式会社アンビス,株式会社アンビス,03-6262-5105,東京都中央区京橋1丁目6番1号 三井住友海上テプコビル7階,https://www.amvis.com/,https://xn--pckua2a7gp15o89zb.com/jb/de691890063425b5debd790b28613cdd,介護職｜株式会社アンビス,光誠会（介護）,,,,"1,004名",,介護,デイケア,,,,(3日必要資格・ライセンス介護福祉士、実務者研修(ヘルパー1級)、初任者研修(ヘルパー2級)...サービス残業はありません)介護職員評価制度医心館の介護職員として求める介護能力をレベル別に設定し...,,,,,,,,,,,
+1005019,日建リース工業株式会社,日建リース工業株式会社,045-330-6800,神奈川県横浜市港北区新横浜2-5-5　住友不動産新横浜ビル6階,https://xn--pckua2a7gp15o89zb.com/jb/ce093df993825c4a43442166594a7754,https://xn--pckua2a7gp15o89zb.com/jb/8232418d49d4f53f4c2aa8233fec6c0b,第二新卒歓迎法人へのルート営業職,光誠会（介護）,,,,,045-330-6802,,,,,,[仕事内容]法人へのルート営業・提案営業をお任せします。「シェア」のご提案を通して...<ルート営業>老舗企業の安定と、成長企業の勢い。“レンタル”から広がる無限の可能性を追求しています...,,,,,,,,,,,
+1005024,社会福祉法人幸生会,社会福祉法人幸生会特別養護老人ホームさくら,0197-47-6100,岩手県奥州市胆沢小山字道場251番,https://kouseikai-iwate.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l2616ca43adf652f0a18a70e198850165&p=t%2BAK7k0GmMUr0ZRss/MBm/PtlhqKx81lV3yV4dMQ6aDgFVMuH1u9d2hya14oJTKFnuYjjt8S2DeJelu%2BC3GHyFYtZ3Bbe2u8p1GqFeRxtPNN6QqDKrqq%2BmhKrPNKVDesfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNgspBlSmxHrwIEkfoNrNCDMomEYb3jedZEsEDQQ9gChPj76nO9cKLwcDVv%2BJj0OB26sJjHqrF%2BlQp2q7ADxMdaeruk9mkr%2BVAqCali92AMHIoBQxswlI0BvJSkBoOlWzDdbBJCNcjQ%2BpDiDrRbA%2BMt6asPIrYUynS6NvjgU5KazmA%2BxWkvpsQofHAvtf4LcFhswpP57Rc1Rww68I4IAW24BPb69CpDdUOraany4CqVzeTDo/UQT6f/MCPItBQJ4a%2Bjf1%2BqjmKS7y2ZRSeECimxfCJv4TIQ87vIoTcUsvxNvrp0elfNLS5q29A4ySdg0xeDs2gaAf8CkL3jtpxsDmMI1A%3D&ph=66be2a8c4c4c&phv=1,介護職員・ヘルパー特別養護老人ホーム介護福祉士夜勤手当あり,光誠会（介護）, , ,,,,介護,地域包括支援センター・特別養護老人ホーム,,,,正社員,,,,,,,,,,,
+1005037,社会福祉法人杏林会,社会福祉法人杏林会,03-3792-3111,青森県八戸市小中野一丁目１番１４号,https://www.kyourinkai.com/,https://xn--pckua2a7gp15o89zb.com/jb/e852966b13a0f7031c152c3ee78884ac,介護支援専門員,光誠会（介護）,,石山 貞,031-0802,100,,介護,デイケア・デイサービス・グループホーム・特別養護老人ホーム,,,,,,,,,,,,,,,
+1005071,株式会社トライトキャリア,株式会社トライトキャリア,03-5436-7670,東京都品川区大崎1-2-2アートヴィレッジ大崎セントラルタワー17階,https://tryt-group.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/6a73e894b60c9909303f434c7da8bf20,介護サービスの正看護師(正職員)<秋田県>日・祝日休み日勤のみ未経験・ブランクのある方も歓迎定年70歳デイサービ...新着,光誠会（介護）,,笹井英孝,100-0006,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+1005087,株式会社タイヨウ,株式会社タイヨウ,06-6607-1581,大阪府 大阪市住吉区 山之内２丁目５－１５,なし,https://xn--pckua2a7gp15o89zb.com/jb/3fad8880684af9c1474120e7efec4129,すよ！工業用ゴムやベルト、プラスチック製品など産業を支える...正社員【仕事内容】工業用搬送ベルトの製作・加工ゴム・樹脂などの加工※シンナーや接着剤を使うので、多少のにおい...,光誠会（介護）,なし,,,,,,,,,,正社員,,,,,,,,,,,
+1005409,医療法人ほがらか会,介護老人保健施設サンホーム,0198-23-5138,岩手県花巻市東宮野目13-1-1,http://hogaraka.gr.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/b2ecdeeabf415f42a5fcec3aa4b53312,介護職・ヘルパー／介護老人保健施設／年間休日125日とお休み多め,光誠会（介護）, , ,,,,介護,ショートステイ・老人保健施設,,,,正社員,,,,,,,,,,,
+1005479,社団医療法人康生会,医療法人康生会介護老人保健施設清水苑,0197-84-2121,岩手県和賀郡西和賀町湯本29地割66-4,https://www.kouseikai2.jp/,https://xn--pckua2a7gp15o89zb.com/jb/6efeb4fc42c7c804c0de93cc97b2746d,介護老人保健施設の介護職員,光誠会（介護）, , ,,,,介護,デイケア・ショートステイ・老人保健施設,,,,正社員,,,,,,,,,,,
+1005553,株式会社さわやか俱楽部,さわやかサンメイトきらら,093-551-5555,福岡県北九州市小倉北区熊本2丁目10番10号内山第20ビル,https://sawayakaclub.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/6323e18a9725dd32c0ddc0193848d82d,オープニング募集!高齢者のサポート介護職／経験者優遇,光誠会（介護）, , ,,,,介護,デイケア・デイサービス・グループホーム・ショートステイ・有料老人ホーム・障害者支援,,,,正社員,,,,,,,,,,,
+1005767,アイディアリズム株式会社,アイディアリズム株式会社デイサービスプラスワ古川,0223-23-9537,宮城県登米市迫町佐沼字光ケ丘166,https://purasuwa.com/,https://xn--pckua2a7gp15o89zb.com/jb/dfc7e96ed62c71510b85c1b225d3d319,介護職員・介護福祉士／デイサービス,光誠会（介護）, , ,,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+1005768,株式会社ほの花,株式会社ほの花,022-290-9855,宮城県仙台市宮城野区栄4-6-22,,https://xn--pckua2a7gp15o89zb.com/jbn/aa74bdf4c3c5453cb45262f0eeb73df3,デイサービスセンターにて介護職｜株式会社ほの花,光誠会（介護）,,,,,,介護,デイサービス,,,,デイサービスや訪問介護、居宅介護支援等の事業を行われています。市町村...デイサービスセンターにおける介護業務全般食事の配膳や下膳、入浴、トイレ等の生活援助、介助業務...,,,,,,,,,,,
+1005787,医療法人社団健育会,医療法人社団健育会介護老人保健施設しおん,03-3233-1055,東京都千代田区神田錦町3-18 寿ビル8F,https://shion.or.jp/,https://xn--pckua2a7gp15o89zb.com/jb/ae50aa4b5d2883d56e79558487c261df,介護職・ヘルパー／住宅手当あり／年間休日110日以上／高給与／賞与あり,光誠会（介護）, , ,,,,介護,デイケア・デイサービス・ショートステイ・老人保健施設,,,,正社員,,,,,,,,,,,
+1005789,株式会社シグマ,株式会社シグマさくらハウス西花苑,022-226-0444,宮城県仙台市青葉区西花苑１丁目３９番７号,https://sigmainc.site/,https://xn--pckua2a7gp15o89zb.com/jb/a19fa232f7bd1e802b1f4b1b09d57986,介護職員・ヘルパー有料老人ホーム介護福祉士夜勤手当あり,光誠会（介護）, , ,,,,介護,デイサービス・有料老人ホーム,,,,正社員,,,,,,,,,,,
+1005912,株式会社ベストスマイル,株式会社ベストスマイル,03-5817-7255,東京都台東区上野六丁目７番１６号 古谷ビル５階,https://jinzai.hellowork.mhlw.go.jp/JinzaiWeb/GICB102010.do?screenId=GICB102010&action=detail&detkey_Detail=%E6%B4%BE13-305099%2C1+++++,https://xn--pckua2a7gp15o89zb.com/jb/672db1bb9bb8be6faf10f4151c20f13b,派13-305099,光誠会（介護）,,,,,,人材関連業,,,,,,,,,,,,,,,,
+1006040,社会福祉法人愛正会,社会福祉法人愛正会介護老人保健施設田尻ヶ丘ヘ...,0294-43-6343,茨城県日立市田尻町2-8-11,https://healthy-care.org/,https://xn--pckua2a7gp15o89zb.com/jbn/ebee1bdb7f180f95a4c6de835ea5af5a,介護職・ヘルパー／介護老人保健施設／介護福祉士歓迎／残業ほぼなし,光誠会（介護）, , ,,,,介護,デイケア・デイサービス・ショートステイ・老人保健施設,,,,正社員,,,,,,,,,,,
+1006083,株式会社あらた,株式会社あらた,022-345-6555,宮城県黒川郡大衡村桔梗平5番地2,https://xn--pckua2a7gp15o89zb.com/jb/8f7cb47849e0f1922bc50330bc80de19,https://xn--pckua2a7gp15o89zb.com/jb/c8dcce349001964ca0ee0ac0e70e5e26,入荷・検品業務仙台LC｜株式会社あらた,光誠会（介護）,,,,"3,016人",,,,,,,家庭用品にいたるまで、およそ14万を超える商品を取り扱う日用品卸商社です。北海道から九州まで、均質なサービスを提供するとともに、各地域の特性に合った...,,,,,,,,,,,
+1006215,社会医療法人康陽会,社会医療法人康陽会,022-291-2611,宮城県仙台市宮城野区清水沼3-7-8,https://www.kouyoukai-swc.jp/,https://xn--pckua2a7gp15o89zb.com/jb/aafc85fe37d82e4b3ebab6fb7afff463,介護老人保健施設での介護職員／介護老人保健施設けやき,光誠会（介護）, , ,,,,介護,デイサービス・ショートステイ・グループホーム・特別養護老人ホーム・有料老人ホーム,,,,正社員,,,,,,,,,,,
+1006242,医療法人聖生会,介護老人保健施設安純の里,0282-55-2000,栃木県栃木市岩舟町古江405,https://azumi.s-y.gr.com/,https://xn--pckua2a7gp15o89zb.com/jbn/28761abad036a9612bd2129125cec7d1,介護職・ヘルパー／通所リハ／デイケア／賞与4.1ヵ月／残業ほとんどナシ,光誠会（介護）, , ,,,,介護,デイケア・ショートステイ・老人保健施設,,,,正社員,,,,,,,,,,,
+1006275,社会福祉法人愛泉会,ケアプランセンター愛泉,0288-70-3120,栃木県日光市高徳６１９番地３, ,https://xn--pckua2a7gp15o89zb.com/jbn/70f40339a62f583d3e422ab29de5a5f4,介護職・ヘルパー／居宅介護支援事業所／居宅ケアマネ／マイカー通勤OK,光誠会（介護）, , ,,,,介護,居宅介護支援,,,,正社員,,,,,,,,,,,
+1006295,社会福祉法人長寿栄光会,社会福祉法人長寿栄光会ふじおか,0287-652-8122,栃木県宇都宮市田野町666-2,http://miyanosato.net/,https://xn--pckua2a7gp15o89zb.com/jb/81275120f2d83a6f2e6f5cab6c46eec6,小規模多機能型居宅介護での介護福祉士,光誠会（介護）, , ,,,,介護,デイケア,,,,正社員,,,,,,,,,,,
+1006301,株式会社足南シルバーサービス,株式会社足南シルバーサービスデイサービスセンタ...,0284-64-8444,栃木県足利市堀込町 1648－1, ,https://xn--pckua2a7gp15o89zb.com/jbn/e64f84804af6036a3f1a18c4e0a81e88,介護職・ヘルパー／通所介護／デイサービス／介護福祉士歓迎／年間休日11...,光誠会（介護）, , ,,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+1006326,株式会社楽笑,らくらくホームあゆの郷,0484-70-1101,栃木県足利市福居町1168-7,https://raku-raku-home.com/,https://xn--pckua2a7gp15o89zb.com/jb/9db33ea4021e299384fef0174a6456a7?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,介護職,光誠会（介護）, , ,,,,介護,デイサービス・有料老人ホーム,,,,正社員,,,,,,,,,,,
+1006393,社会福祉法人鹿島会,社会福祉法人鹿島会特別養護老人ホーム湯の里長寿苑,0284-91-3939,栃木県足利市大沼田町2163-1,https://yunosato2003.com/,https://xn--pckua2a7gp15o89zb.com/jb/e15c4efe12cde591cabbf8bec3da6fcf,特別養護老人ホームでの介護福祉士,光誠会（介護）, , ,,,,介護,デイケア・デイサービス・地域包括支援センター・特別養護老人ホーム,,,,正社員,,,,,,,,,,,
+1006477,株式会社千葉薬品,ヤックスデイサービス新利根,043-248-0089,千葉県千葉市中央区問屋町1-35 ポートサイドタワー28階,https://yacs.jp/,https://xn--pckua2a7gp15o89zb.com/jb/bf834132ddd6f4252728051c3145fa39,通所介護・デイサービス勤務の生活相談員,光誠会（介護）, , ,,,,介護,デイケア・デイサービス・地域包括支援センター,,,,正社員,,,,,,,,,,,
+1006710,株式会社SEED,株式会社SEED,052-825-4032,愛知県名古屋市昭和区鶴舞２丁目７－６,https://xn--pckua2a7gp15o89zb.com/jb/7795c81e20e5f70145c1728592d6a6f8,https://xn--pckua2a7gp15o89zb.com/jbn/d87ecae8b2ef7712811aa91a29de82e6,事務,光誠会（介護）,,寺島　眞徳,〒466-0064,,,,,,,,アルバイト・パート,,,,,,,,,,,
+1006754,社会福祉法人ほたか会,介護付有料老人ホームまえばし上泉の里,027-212-5020,群馬県前橋市昭和町三丁目１２番２１号,https://hotakakai.or.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/fc2abcea197eb8c4395335316d8f715f,介護職・ヘルパー／有料老人ホーム／無資格未経験OK／資格取得支援あり,光誠会（介護）, , ,,,,介護,デイサービス・ショートステイ・グループホーム・老人保健施設・軽費老人ホーム,,,,正社員,,,,,,,,,,,
+1006759,医療法人弘和会,ケアホーム愛の家,027-285-2273,群馬県前橋市粕川町新屋246-2,https://www.mananoie.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/09512d1c83624e0aec386c6cc5d96cab,介護職・ヘルパー／通所介護／デイサービス／日勤のみで日曜日休み,光誠会（介護）, , ,,,,介護,デイケア・デイサービス,,,,正社員,,,,,,,,,,,
+1006806,グリーンライフ株式会社,グリーンライフ前橋敷島デイサービスセンター,06-6369-0120,大阪府吹田市春日三丁目20番8号,http://www.greenlife-inc.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/b25525ac3e92319f9d98be9ea6538364,介護職／デイサービス・デイケア,光誠会（介護）, , ,,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+1006858,医療法人社団永生会,介護老人保健施設マイウェイ四谷,042-661-4108,東京都八王子市椚田町583-15,https://www.eisei.or.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l6f806ca6d431fa0ff75f23451f3364b5&p=t%2BAK7k0GmMUr0ZRss/MBm/BHvoks7GTk5j3ZLkZNunAXYDGDPWaQQGx%2BxzoX7ASqYsj0UOTODQjyf5FNiqi2klYtZ3Bbe2u8p1GqFeRxtPPUimFjPDTtIKQp53Z1zD9qoftjdNyTVdLGR2pfgAM6JLjDbgKRX3aJBUKeioCL1rmRdMFeNupzviu4HD%2Bt5p2mZPPWAwzxIkDsI4wxyTGNnKdS/K/aWW1zZT4thmSv23Etx6rdxbILG6yvv9VdYhyeB2cem2qmqFDrMTJ%2BYhnGw4ej8pFP6xGeK0OwGYwmcURYUClQECI2h1F8E/r6nH8GEZy/mLutWl9vDNksIpZDt9ErspU0uqKCKpmCAEMhVeJCWf9oGr9lr%2BsOCQrzmd3H2GE7D6fACTT9jpmkVIQ5GcKi/d4dPpM8NTXrkV6kO8PSemRWXqyyjOxD43NyJQKf7mrlwSsvKQCMnwCLGPhG/GjfzCWXF0qR/4edJbQXYDpM%2BE5HDFdldtBLeoU6TcypUWF/Vxhy4TAykGbiXIo%2BhR2sWWNWnSCd2CxPGafYEqE%3D&ph=2e0d3b2dd3bd&phv=1,介護職員／介護福祉士／介護老人保健施設／デイサービス／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,デイケア・グループホーム・老人保健施設,,,,正社員,,,,,,,,,,,
+1006860,株式会社ソラストケア,介護付有料老人ホームゆうらいふ世田谷,03-5316-5629,東京都世田谷区粕谷2-8-3,https://www.youlife-home.com/solastocare/,https://xn--pckua2a7gp15o89zb.com/jbn/75cfa4040311a1fdb31dd7851f2587d1,介護職・ヘルパー／有料老人ホーム／世田谷区の有料老人ホームで介護スタッ...,光誠会（介護）, , ,,,,介護,有料老人ホーム,,,,正社員,,,,,,,,,,,
+1006866,医療法人社団心身会,複合介護施設愉楽,042-442-9153,東京都調布市布田6丁目51番地1,https://www.shinshinkai.com/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l81719a70e33a4954b141469a13734310&p=t%2BAK7k0GmMUr0ZRss/MBm/2dokftYjcN85iPx847Fo7bdeonFJsKzHXI74A35do3eybun9gOywr0LKir3qquew/PRXX0j1EvMIxYtrtJfJvPNs6xpbojgoifaIxy1hz9foss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNglsvHyay0cysxoEulah5BjtUEnnXXRT6dn4ZF2uy3bYX76nO9cKLwcDVv%2BJj0OB26httMXbcv129q6LpOgIRfOciR51bJMlzjzLZFHMHGkH6MgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fbf90/zLUitTHU0z/Vd/DLevWi637UMt8wIeSFj/2s32wOj9RBPp/8wI8i0FAnhr6NTwnZCVuF5Vg5X%2BrzQ0h1zGn9Yjlr8LEk/tBbVcr4HrbIto3Kno3Siav2QYtyabLbS692GwRE3qiSXHeaUTmUqQ%3D%3D&ph=c085efefc7a4&phv=1,介護職員／介護福祉士／グループホーム／デイサービス／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,デイケア・デイサービス・グループホーム,,,,正社員,,,,,,,,,,,
+1006868,医療法人社団龍岡会,龍岡介護老人保健施設,03-3811-0088,東京都文京区湯島4－9－8,https://www.mct.or.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l4979ba378c843d997418bfae60bf991b&p=t%2BAK7k0GmMUr0ZRss/MBm54kCARXqJn6MsIWrz2k7pjHYVKpUTTmUFXOxgUKmbgW/cFfq4Cj3MlnL9ZIZZu8ug/PRXX0j1EvMIxYtrtJfJtMs5QAIc0AzpK/wYJ9i59mfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNglsvHyay0cysxoEulah5BjtUEnnXXRT6dn4ZF2uy3bYX76nO9cKLwcDVv%2BJj0OB26r0hf18s74NfT1Wr2wbq9ncF0W3W4v5qeN5yKLZOJ2SHMgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fb0c4BhHsTAI9yA1gc7h7rz%2BeKV5Vc1CFNS8llm1YGJHUDpaWVO3vtSm49GbRmno1TyjLif4xMVU/vu8dUcL78HWkjC7Af8Nujzu1/zon/dsL%2BZT2CeYVAkmp3eTNA9pnDCKZYLHIbVUTM1SeGxZS7oA%3D%3D&ph=c1c0b41d73e1&phv=1,介護職員／介護福祉士／介護老人保健施設／デイサービス／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,ショートステイ・老人保健施設,,,,正社員,,,,,,,,,,,
+1006913,パナソニックエイジフリー株式会社,エイジフリーハウス府中栄町,0120-874-872,大阪府門真市大字門真1048番地, https://panasonic.co.jp/paf/,https://xn--pckua2a7gp15o89zb.com/jb/dc08743ec58eaf407225e923dd149951,介護職サービス付き高齢者向け住宅／日数時間応相談／9852,光誠会（介護）, , ,,,,介護,サービス付き高齢者向け住宅,,,,正社員,,,,,,,,,,,
+1007017,株式会社ノエ,株式会社ノエ,042-794-6151,東京都町田市図師町1332番15号,http://hanekobo.jp/,https://xn--pckua2a7gp15o89zb.com/jb/6f891c55f739834cae8502d9e8dec0cd,介護福祉士,光誠会（介護）, , ,,,,介護,グループホーム,,,,正社員,,,,,,,,,,,
+1007065,株式会社ウインズインターナショナル,株式会社ウインズインターナショナルみのりの里,3-3695-7535,東京都葛飾区東新小岩5丁目17番11号マリオンウィンズ新小岩4階,https://www.fukushijinzai.metro.tokyo.lg.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/3bc4dcfe2d6e25abb7b33935702f6042,介護職・ヘルパー／グループホーム／高給与／残業少なめ／「新小岩駅」駅徒...,光誠会（介護）, , ,,,,介護,デイケア・デイサービス・グループホーム,,,,正社員,,,,,,,,,,,
+1007549,株式会社まち・ナース,まちのナースステーション八千代むすんでひらいて,047-455-3640,千葉県八千代市ゆりのき台5-2-3,https://www.machi-nurse.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/2547cfb6879555d6f2c3d27e9c03de89?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,ヘルパー・介護福祉士,光誠会（介護）, , ,,,,介護,デイケア・障害者支援,,,,正社員,,,,,,,,,,,
+1007584,社会福祉法人宏仁会,地域密着型特別養護老人ホーム清風荘うらやす,017-755-5531,青森県東津軽郡平内町大字小湊字薬師堂63番地23,https://koujinkai-seifu.com/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l10b4face1e351aa18657c2521a2b68ba&p=t%2BAK7k0GmMUr0ZRss/MBmyxZWvaSwGCaSgHPURdtUFwmz3Xe3GatXAbx7TwmfJbexhzdbfzWRXBTgqCIe5fLWg%2Bf6DkuB%2BuBT466X1tsR7ObLxdmTglqkqd0Z6/GuDwBoftjdNyTVdLGR2pfgAM6JLjDbgKRX3aJBUKeioCL1rmRdMFeNupzviu4HD%2Bt5p2mZPPWAwzxIkDsI4wxyTGNnIscHa8c37ZZXLZvKewL76e%2BPWRkzNfhsQWKU7psuZy9B2cem2qmqFDrMTJ%2BYhnGw%2BQYXd%2BUpSkj1btvbgewB4YWst3xFEYretRsd%2BcEBD8rEZy/mLutWl9vDNksIpZDt9ErspU0uqKCKpmCAEMhVeJCWf9oGr9lr%2BsOCQrzmd3HtGTCfYwcO1PfwjXSBYlUyj4Qgll9cA7RxSl/Z3CoPwkWl67nUhMlB1cHKqQLhbAN2lcbvVpUTUC7f9WdUUrxavotrdsNIHRWZWDz9tSmKN2NS9YH2ojmQK2rymXvvEZTVXaDsyEUwlAAn2Kd5y33kQ%3D%3D&ph=90c37c2a4dd6&phv=1,介護職員／介護福祉士／特別養護老人ホーム／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,デイケア・デイサービス・ショートステイ・特別養護老人ホーム,,,,正社員,,,,,,,,,,,
+1007596,株式会社カンケイ舎,フルール・ガーデン市原,0436-63-3283,東京都中央区東日本橋2-8-5　東日本橋グリーンビルアネックス７F,https://www.ainoie.net/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l0afcf009a8a7cec4bc6b10e3fa030ace&p=t%2BAK7k0GmMUr0ZRss/MBm/%2BB88%2BaonGPSReRIlb1HVSo2lf/GRhDhqWXEsO1QRGYcsiKeacPd9Pkgxj8w36rxgYG0AP8nj3uEmbPeSNblsAv9KBCVcMcrq/KHA1is1uhfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNgrGzKxqnCZRAEs1iIW60Ycm%2B/6GUMYP7C0QGMOZSs1ac76nO9cKLwcDVv%2BJj0OB26sJjHqrF%2BlQp2q7ADxMdaeqzjkVCZYvCrV9zFGk0iAfcBQxswlI0BvJSkBoOlWzDdbBJCNcjQ%2BpDiDrRbA%2BMt6asPIrYUynS6NvjgU5KazmAZHsebOE6fEqNP%2B9JMqV9GznBVli30ZUe0bwQiXxgoO3McGDve5Rh8BrzxIfr8eAf1r2S6fFRM24hdUE3SxQXTqFfY8crI%2BJiMWUfdUshZZaI5Mbm23uc0Rsl%2BEW5dco0NQ2C/sEk8Lon7CNrzi2mc29RQlU4Hb4gOw1Apc8KD0o%3D&ph=8c73d164f362&phv=1,介護職員／介護福祉士／有料老人ホーム／デイサービス／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,デイケア・デイサービス,,,,正社員,,,,,,,,,,,
+1007632,医療法人社団白金会,白金整形外科病院,0436-22-2748,千葉県市原市白金町1-75-1,https://shirogane-hp.com/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lc5810ffbcb6e4ae8fe8cdbfbf0860878&p=t%2BAK7k0GmMUr0ZRss/MBm4NlWVT%2BmPEk2gQuQwpn1i3ZCjBlk/Mtcq0BjDVwVVC2b2%2Bv6uWVu1WHDa%2BHSGFKAKyEqhwHBfRIWevdSKLwAHEjGJ0evtSgJuGXi3toQBYYfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNgrGzKxqnCZRAEs1iIW60Ycm%2B/6GUMYP7C0QGMOZSs1ac76nO9cKLwcDVv%2BJj0OB26sngo5QUX35eku9c5n5MOEMQ8Rp0cbBf1aWLdaOVnqVPMgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fbj7AqNapgbuidQSkVOQWQ5zhI/Wi7CFtysxaknxgZyOPvgY1DKTErg8kQploah51WXBIFGVZoYPqaP8YKlBoNnvgpNWn7R/Q10MfS7dyDD3IgAy1Eh8QJuDv45v/xoqgv&ph=9fd2c86d8a22&phv=1,介護職員／実務者研修／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,デイケア,,,,正社員,,,,,,,,,,,
+1007682,株式会社OA総研,juju八千代緑が丘,03-5909-2003,東京都千代田区神田駿河台4-6 御茶ノ水ソラシティ,https://oa-soken.co.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/30a376335612712f25a610f8d715967b,介護職・ヘルパー／サービス付き高齢者向け住宅,光誠会（介護）, , ,,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+1007819,株式会社アスティ,株式会社アスティ,03-3780-7016,東京都渋谷区恵比寿西2丁目2番6号,https://jp.indeed.com/rc/clk?jk=060b4fbedb0f70a4&fccid=f30f42a7b0835eb3&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/dbe2d62ae1f00376b5ed9984666800c3,職種警備業仕事内容建築現場等の交通誘導警備文京区小...万円労働組合なし事業内容交通誘導・雑踏警備・施設警備イベント警備・要人警護会社の特長元警察関係者の経...,光誠会（介護）,,,,,,,,,,,正社員,,,,,,,,,,,
+1007837,株式会社INNOVELHEALTHCARE,株式会社恵,052-829-1477,愛知県名古屋市緑区鎌倉台一丁目211番地,https://innovel-healthcare.jp/,https://xn--pckua2a7gp15o89zb.com/jb/22b23e045fdfe7ea61c2cfa73e499139,介護職新着,光誠会（介護）,,,,12人,,介護,グループホーム,,,,正社員,,,,,,,,,,,
+1007906,株式会社ヤマシタ,株式会社ヤマシタ,0284-41-6481,栃木県足利市山川町777,https://jp.indeed.com/rc/clk?jk=9d81315285780d36&fccid=741172b477427387&vjs=3,https://xn--pckua2a7gp15o89zb.com/jb/f501b9e60be7b901b56ef31fb2c6106e,職種]【足利市/正社員(工務)】未経験OK 設備機械の保全(修理)予防[仕事内容] お願いしたいのは...感じることができます機械設備保全管理経験者優遇ですが未...,光誠会（介護）,,,,,,,,,,,正社員,,,,,,,,,,,
+1008133,株式会社福祉の街,グループホームふくしのまち鶴ヶ岡,048-645-943,埼玉県さいたま市大宮区桜木町１丁目１２番地５, ,https://xn--pckua2a7gp15o89zb.com/jb/6c868d5aa5e22eaae2118605a134e16f,グループホームでの介護スタッフ,光誠会（介護）, , ,,,,介護,グループホーム,,,,正社員,,,,,,,,,,,
+1008151,社会福祉法人永寿荘,扇の森,048-625-5000,埼玉県さいたま市西区高木602,https://eijuso.com/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l12192228326dac6cefa69ae4742f2fb8&p=t%2BAK7k0GmMUr0ZRss/MBmwk3PnSQJaYfqk3lN4j2il9rV0gSaVrHdQmPWID7ANjXTjfT7p6BqplvDDQ8ykgTiQ/PRXX0j1EvMIxYtrtJfJu1B6AjIypXd3sBqnRWfB75foss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNgguE3RPxkuNqLprvMhez6hDyyeNF5WaUH5jTrs2vjpkp76nO9cKLwcDVv%2BJj0OB26qlCkn6bHcYDVnX7XCkV9sfLT8mO4iwlygieQqMOuvySMgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fbGKeeYBULx1YbD2SbkAImekntuDT57LTCNVbWzH4dxaz6KGSFHo6yYX8EkHzMXI7bEdKxK4KlqaVzV5KK9/8bYUYnberX3etDo3kZQjRZA2WUxVHjC4MHXh%2BY2VS5ljul%2BVctY6WXAAxzdjzwX3HtQw%3D%3D&ph=e9bf1e4a5cd7&phv=1,介護職員／初任者研修／特別養護老人ホーム／デイサービス／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,デイサービス・ショートステイ・特別養護老人ホーム,,,,正社員,,,,,,,,,,,
+1008165,医療法人仁和会,ケアパーク江南,03-3751-3235,東京都大田区池上７丁目１０−５,https://jinwakai.or.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l44e28dbde26e6d6b9b6ed4a28cc382c7&p=t%2BAK7k0GmMUr0ZRss/MBm7fQVtVYXJgQMCZpZS1ajfCYp3Trm4uWrBrOHZeRjo9l0zisMJB/HsspnQ9hCGLgJw/PRXX0j1EvMIxYtrtJfJsujjyyiiXxwMsWs7pthUxAoftjdNyTVdLGR2pfgAM6JLjDbgKRX3aJBUKeioCL1rmRdMFeNupzviu4HD%2Bt5p2mZPPWAwzxIkDsI4wxyTGNnDAZa4YmXd7hgyhGqVADyFshhQd7L212xtBfK9wyT3C/B2cem2qmqFDrMTJ%2BYhnGw8Cb6lguCEpTkN1hmq8NwkTT8pI6JDS1uUA5Csn2bIbr0HVmvSPRCVPg9OrHkzQfa9ErspU0uqKCKpmCAEMhVeJCWf9oGr9lr%2BsOCQrzmd3HDB6sQbHLGwh/FDLkOOOjHfpTEAk6G6TVPFeDr7bDTsey5vWKPqqutQLliXXxLDkf7mrlwSsvKQCMnwCLGPhG/GjfzCWXF0qR/4edJbQXYDpM%2BE5HDFdldtBLeoU6TcypUWF/Vxhy4TAykGbiXIo%2BhR2sWWNWnSCd2CxPGafYEqE%3D&ph=22f12e4273ee&phv=1,介護職員／介護福祉士／介護老人保健施設／デイサービス／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,デイケア・地域包括支援センター,,,,正社員,,,,,,,,,,,
+1008240,社会福祉法人清光会,介護老人保健施設虹の園,0480-70-2388,埼玉県加須市上崎２０３７番地１,https://nijino-sono.sakura.ne.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/49967489746df5d3b4e6bf7177660c87,介護職・ヘルパー／介護老人保健施設／賞与4ヶ月分／マイカー通勤OK,光誠会（介護）, , ,,,,介護,デイケア・ショートステイ・老人保健施設,,,,正社員,,,,,,,,,,,
+1008253,株式会社メディカルライフケア,ショートステイ幸せふくろう所沢,0463-37-3366,神奈川県平塚市南原2丁目1番12号,https://www.ml-care.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/b274fa88375ba09ce69d6258f43d1ed4,ショートステイの介護福祉士kaigo,光誠会（介護）, , ,,,,介護,デイサービス・居宅介護・ショートステイ・グループホーム・有料老人ホーム,,,,正社員,,,,,,,,,,,
+1008301,メディカル・ケアプラニング株式会社,ケアタウンつどい大沢,03-6663-6036,東京都江戸川区北葛西1-22-17,https://mcp-net.jp/,https://xn--pckua2a7gp15o89zb.com/jb/ab3c6ff08c53c973ca28cd87c2d6ed83?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,介護スタッフ・実務者研修修了者旧ヘルパー1級,光誠会（介護）, , ,,,,介護,デイケア・居宅介護・ショートステイ・グループホーム・障害者支援,,,,正社員,,,,,,,,,,,
+1008331,医療法人財団聖蹟会,医療法人財団聖蹟会ハートランド浦和,048-837-8810,埼玉県さいたま市南区鹿手袋3-15-13,https://heartlandurawa.wixsite.com/mysite,https://xn--pckua2a7gp15o89zb.com/jbn/520d37c7fb80f22f82e808071ceaee44,介護職・ヘルパー／居宅介護支援事業所／年間休日110日以上,光誠会（介護）, , ,,,,介護,居宅介護・地域包括支援センター,,,,正社員,,,,,,,,,,,
+1008342,株式会社アズパートナーズ,アズハイム東浦和,03-5577-6510,東京都千代田区神田駿河台2丁目2番地 御茶ノ水杏雲ビル11階,https://www.as-partners.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/f3fcd2fd73f27901b49297927dd330d6,介護職員／介護付きホーム,光誠会（介護）, , ,,,,介護,デイサービス・ショートステイ・有料老人ホーム,,,,正社員,,,,,,,,,,,
+1008343,社会福祉法人元気村,介護老人保健施設栗橋ナーシングホーム翔裕園,048-631-0070,埼玉県久喜市南栗橋駅,https://www.genkimuragroup.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/31c45dd8ae41d23b164a7b37f5e1d6df,介護職・ヘルパー／介護老人保健施設介護職・ヘルパー正社員,光誠会（介護）, , ,,,,介護,デイケア・居宅介護・デイサービス・ショートステイ・グループホーム・有料老人ホーム・特別養護老人ホーム・養護老人ホーム・軽費老人ホーム・障害者支援,,,,正社員,,,,,,,,,,,
+1008345,株式会社アズパートナーズ,アズハイム南浦和,03-5577-6510,東京都千代田区神田駿河台2丁目2番地 御茶ノ水杏雲ビル11階,https://as-heim.com/,https://xn--pckua2a7gp15o89zb.com/jb/82fdea95f1776d04aa4ebd45ceb1d553,介護スタッフ／介護付きホーム,光誠会（介護）, , ,,,,介護,デイサービス・ショートステイ・有料老人ホーム,,,,正社員,,,,,,,,,,,
+1008353,ケアサポート株式会社,ケアサポートかわぐち,048-64-1765,埼玉県さいたま市大宮区土手町1-2JA共済埼玉ビル7階,https://www.care-support.biz/,https://xn--pckua2a7gp15o89zb.com/jbn/0b75e6416a0f22d0bdd85d2a0d605944,介護職・ヘルパー／車通勤歓迎／介護の経験が活かせる少人数の個室ショート...,光誠会（介護）, , ,,,,介護,デイサービス・ショートステイ・グループホーム・有料老人ホーム,,,,正社員,,,,,,,,,,,
+1008360,メディカル・ケア・プランニング株式会社,ハーモニーライフ東松山駅前,03-6663-6036,東京都江戸川区北葛西1-22-17,https://mcp-net.jp/,https://xn--pckua2a7gp15o89zb.com/jb/38c0f9c90515d02258b929bc12add464?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,介護スタッフ,光誠会（介護）, , ,,,,介護,デイサービス・居宅介護・ショートステイ・グループホーム・障害者支援,,,,正社員,,,,,,,,,,,
+1008371,むさしの未来パートナーズ株式会社,レッツ倶楽部川口北園益子,048-641-8150,埼玉県さいたま市大宮区桜木町１丁目１０-８ 武蔵野銀行本店ビル７階,https://www.mmp-mbkg.co.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/643bd16007f5fb54f8ec5024f03c6ea9,介護職・ヘルパー／通所介護／デイサービス／未経験OK!年間休日110日,光誠会（介護）, , ,,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+1008373,株式会社川島コーポレーション,東川口やわらぎ苑,0439-37-3600,千葉県君津市東猪原248-2,https://www.sunnylife-group.co.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/75fddc643e6f802c55b6047afa5d70cb,介護職・ヘルパー／有料老人ホーム／駅チカ徒歩5分／各種手当充実,光誠会（介護）, , ,,,,介護,有料老人ホーム,,,,正社員,,,,,,,,,,,
+1008378,メディカル・ケア・プラニング株式会社,グループホームつどい東所沢家,03-6663-6036,東京都江戸川区北葛西1-22-17,https://mcp-net.jp/,https://xn--pckua2a7gp15o89zb.com/jb/d7af1fa002a208cafce8b6cfac1431ce?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,介護スタッフ・介護福祉士,光誠会（介護）, , ,,,,介護,グループホーム,,,,正社員,,,,,,,,,,,
+1008550,医療法人社団葵会,介護老人保健施設葵の園・なんと,04-7136-8008,千葉県柏市小青田1-3-12,https://www.aoikai.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=la8429070cf42c82f8c1e947959b80994&p=t%2BAK7k0GmMUr0ZRss/MBm%2B9wJWxwA/dtht0/NxrH7Ek3YRtkb0T2Z6slXbC3Cbx/qtaOMwpvoN27xyVkLaESgGidAgfHqBQoe/89nqap1kcJYaRgz1LbJG8KvUthOICPg/x7/FImSa6cN5KZAcgjxoWniVAzDgzLLb%2BMJzKdyXevgbHQ9IQ2H2nDWBRa6XAQyV6j9fxcYhGphu3kM7g5wA9VLLaJc12IZd6%2Bwja4yO61BnFEAiAL5WVnjA4D75S6P3EWtDqXgKeOc63jGPIsOtJx8UQuow4A0q%2BrJEIdQr2jbhzZS9PDfRNnPebqax8gVzNiAVX39f3d7D6%2B6QeVzaTN4fKJhV4zrBG8GdULNl7FgBWuQxtQxCnl28RvEab1NUaQEoH0ajFE3rFevEzJFbrF7KPkwcsOcVbHKscNWqHc289CjMIB6zNde022uO/uD3KB3OPLU1Sr8I23qwOXXjtQytibDIKM76JSH2/EaRuIpfL%2B%2Bnk2FNh6Ra8eJS10diCPFi7bukcrbeUFR5ZpVR5doZwnRcRapWnOP3jehJs%3D&ph=3d1cb3fcaa27&phv=1,介護職員／介護福祉士／介護老人保健施設／グループホーム／デイサービス,光誠会（介護）, , ,,,,介護,デイサービス・グループホーム・老人保健施設,,,,正社員,,,,,,,,,,,
+1008602,医療法人社団高陵クリニック,医療法人社団高陵クリニック在宅介護総合支援センタ...,0766-26-6220,富山県高岡市野村23-1,https://www.ko-cli.com/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l9a7394d646903c21898ceb0be14b5f3f&p=t%2BAK7k0GmMUr0ZRss/MBm89swklj2KKHkEn0fzjiRkZHby1Y2WHZWzVXwnH77yKYMtbZO3euXStgSXXKWIXh/WCn/3XZP%2BeK6oLzFM2jSlTMLM6gUbGipgcW95zA5CNWfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNguHNNN4Gem5x/pQpPVoyAe2WOnGiNE8%2BeZZsmrqxemNK76nO9cKLwcDVv%2BJj0OB26ir0oGmA235N2fKkL6JwIOMRhX0mr5nJJwcfz7slt1oMMgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fbyc%2Biqcpu0W/U6NjgVK5/Mh%2B9eOY/YpX7wqPFA5Cg4OQ/PyFj%2BmIaNvPFPzN6FO3YjhGn0yzmcPwtClcJv4gdi5Xq5dTk78KcZi%2BgzugfV4hLr3YbBETeqJJcd5pROZSp&ph=1bb6a0634a44&phv=1,介護職員・ヘルパー／デイサービス事業所／介護福祉士／日勤のみ,光誠会（介護）, , ,,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+1008603,社会福祉法人みとし会,特別養護老人ホームすみれ苑,076-437-6225,富山県富山市横越180番地,http://www.sumireen.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l112c39b7b4c900d803324a451a8eab8e&p=t%2BAK7k0GmMUr0ZRss/MBm0HjsFvoSVbAVqZsl5khn29XU8GHhisajPSzD1dZrei2LuYYV22C/Vvs62ip6BNxC2Cn/3XZP%2BeK6oLzFM2jSlSWqBvWw4jr9HJ7JhypqceJfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNguHNNN4Gem5x/pQpPVoyAe2WOnGiNE8%2BeZZsmrqxemNK76nO9cKLwcDVv%2BJj0OB26trHFeaxT9P8SnBctKJg5Crfh0OD5ufNZ5O/TDTTf9%2B1MgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fbYQK2wjaNsg82rt1FcHMAGhQaf/zuUh/Eq5WdKPYvEGUni%2BmJnpoCW62basmna2pD2lcbvVpUTUC7f9WdUUrxavotrdsNIHRWZWDz9tSmKN2NS9YH2ojmQK2rymXvvEZTVXaDsyEUwlAAn2Kd5y33kQ%3D%3D&ph=01fad2d49a09&phv=1,介護職員／介護福祉士／特別養護老人ホーム／日勤・夜勤両方,光誠会（介護）, , ,,,,介護,デイサービス・居宅介護・特別養護老人ホーム,,,,正社員,,,,,,,,,,,
+1008608,サンケアホールディングス株式会社,イエローガーデン作道,076-218-6677,石川県金沢市入江3丁目160番地1,https://www.suncare-life.com/,https://xn--pckua2a7gp15o89zb.com/jbn/69c9d904559cdf5495bee717cfce8170,介護職・ヘルパー／グループホーム／無資格の方のご応募も歓迎!,光誠会（介護）, , ,,,,介護,デイサービス・居宅介護・ショートステイ・グループホーム・老人保健施設・有料老人ホーム,,,,正社員,,,,,,,,,,,
+1008686,株式会社ウェブインテリジェンス,株式会社ウェブインテリジェンス小規模多機能ホー...,076-494-9070,富山県富山市安野屋町3丁目4-20,https://www.webintelligence.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/945b63ec29a127f90731a76d2a80c87a,ブランクある方も大歓迎職場見学OK／小規模多機能ホームでの介護業務,光誠会（介護）, , ,,,,介護,デイサービス・居宅介護・グループホーム,,,,正社員,,,,,,,,,,,
+1008703,株式会社ウェブインテリジェンス,株式会社ウェブインテリジェンスかたかごの郷,076-494-9070,富山県富山市安野屋町3丁目4-20,https://www.webintelligence.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/35f151f312cf88b7429d2d06917a426f,ブランクある方も大歓迎職場見学OK／居宅介護支援事業所でのケアマネ業...,光誠会（介護）, , ,,,,介護,デイサービス・居宅介護・グループホーム,,,,正社員,,,,,,,,,,,
+1010368,社会福祉法人まあれ愛恵会,特別養護老人ホームたいようの杜,048-813-6036,埼玉県さいたま市南浦和2-12-17, https://taiyounomori.marehoikuen.com/,https://xn--pckua2a7gp15o89zb.com/jbn/aff991080966181e6a462d10c8228294,介護職／特養,モンキークルー（介護）, , ,,,,介護,ショートステイ,,,,正社員,,,,,,,,,,,
+1010407,HITOWAケアサービス株式会社,HITOWAケアサービス株式会社介護付き有料...,03-6632-7702,埼玉県さいたま市西区三橋6-1235-1,https://www.hitowa.com/care-service/,https://xn--pckua2a7gp15o89zb.com/jbn/c7979128bb3ebb435c1e82af18214fa7,介護職／ヘルパー／介護付き有料老人ホーム／介護付有料／退職金あり,モンキークルー（介護）, , ,,,,介護,有料老人ホーム、デイサービス,,,,正社員,,,,,,,,,,,
+1010410,株式会社大起エンゼルヘルプ,小規模多機能ホーム芝西,048-263-0100,埼玉県川口市芝富士1-9-25,,https://xn--pckua2a7gp15o89zb.com/jbn/4137e7cde160d03019d6199c9dbe54a2,介護職員／未経験・無資格OK／即戦力は求めてません,モンキークルー（介護）, , ,,,,介護,小規模多機能型居宅介護,,,,正社員,,,,,,,,,,,
+1010567,医療法人瑞穂会,医療法人瑞穂会介護老人保健施設みさと,027-350-6080,群馬県高崎市箕郷町上芝628-1, http://mizuhokai-misato.or.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/860204a1ca908a225e64d2ea4dec3183,介護職・ヘルパー／介護老人保健施設／高額求人／マイカー通勤OK!,モンキークルー（介護）, , ,,,,介護,介護老人保健施設,,,,正社員,,,,,,,,,,,
+1010590,株式会社わむくる,デイサービスべにばな,0279-26-3000,群馬県渋川市半田字沼辺1861-1,https://warmcle.com/,https://xn--pckua2a7gp15o89zb.com/jbn/3763077587551ef0d3692c7f40707774,介護職・ヘルパー／通所介護／デイサービス／嬉しい昇給／賞与あり,モンキークルー（介護）, , ,,,,介護,通所介護,,,,正社員,,,,,,,,,,,
+1010600,株式会社シーユーシー・ホスピス,ReHOPE高崎,027-386-6552,群馬県高崎市福島町773−4,https://cuc-hospice.com/rehope/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l1abce4392e4f230224fc6ac55d96b830&p=t%2BAK7k0GmMUr0ZRss/MBm52W/PDCr2Dxq4b0JMLokTojBYNABiq46pGJHnxelfXFqQdVEGU9f4A686ejnDypZI19Vc4o0oBwTZqoe9u0cK/wtjeWlJMCZtk1b/3JvkTWfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNgmk7xdt6u3bQKJ9S/rlwv0CTgsBts0P9JJj70WrgEdo076nO9cKLwcDVv%2BJj0OB26oyyrDwahSekzzUfL41cXeQ%2B0J4JP9i7PLI1d0E2D3/YMgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fbNFYWlDsCSg9dc/4ndHW41SfyAcqx5oNlg4XpjdU6pjZ52rk1Txq7ElUx4ry62nIisJjTUIxl%2BPsrs6nMlw2hg40wNJ4R1yEhoLASFQK94AzKMuJ/jExVT%2B%2B7x1RwvvwdSFpCOf053icUd9g%2BfRGKcVV2g7MhFMJQAJ9inect95E%3D&ph=daa7358150ce&phv=1,介護職員／介護福祉士／交通費支給／定年65歳／年休110日以上,モンキークルー（介護）, , ,,,,介護,住宅型有料老人ホーム,,,,正社員,,,,,,,,,,,
+1010856,株式会社市川建設,株式会社市川建設ケアセンターいちかわ大槻,024-944-2125,福島県郡山市昭和二丁目11番34号,https://care-itikawa.com/,https://xn--pckua2a7gp15o89zb.com/jb/acae34c1accf8781a4ebfbfdfe84d1cc,小規模多機能型居宅の介護スタッフ,モンキークルー（介護）, , ,,,,介護,デイサービスセンター・グループホーム,,,,正社員,,,,,,,,,,,
+1010889,医療法人生愛会,医療法人生愛会,024-555-2244,福島県福島市大笹生字向平１３－１,http://www.seiaikai.jp/index.html,https://xn--pckua2a7gp15o89zb.com/jb/b6f6745cd5d255fcc37d5feccbbcf369,受付・事務／医療法人生愛会附属介護老人保健施設生愛会ナーシングケアセンター,モンキークルー（介護）,,,,,,介護,デイサービス・グループホーム,,,,,,,,,,,,,,,
+1010892,株式会社クオリティーライフ,株式会社クオリティーライフ,0244-36-1127,福島県相馬市新沼字坪ヶ迫11-1,https://tsubasa.hp.gogo.jp/pc/index.html,https://xn--pckua2a7gp15o89zb.com/jb/99ce6ca6f60728e7ebe982c52c245ed4,,モンキークルー（介護）,,,,,,介護,老人ホーム・訪問看護,,,,,,,,,,,,,,,
+1010934,セントケア静岡株式会社,セントケア浜松中央居宅介護支援／セントケア静岡...,053-450-7311,静岡県浜松市中央区鴨江3－73－23,https://www.saint-care.com/center/813/,https://xn--pckua2a7gp15o89zb.com/jb/e189a54ad98d6064971046d8c0938cb3,居宅介護のケアマネージャー,モンキークルー（介護）, , ,,,,介護,ケアマネジメント,,,,正社員,,,,,,,,,,,
+1010975,株式会社健弘会,株式会社健弘会い〜な豊田デイサービスセンター,0538-21-2088,静岡県磐田市見付1596-1, https://kenkokai-care.com/,https://xn--pckua2a7gp15o89zb.com/jb/10c4b07451eebc7942f26b447e11b630,デイサービスの介護職員,モンキークルー（介護）, , ,,,,介護,デイサービス、,,,,正社員,,,,,,,,,,,
+1010988,株式会社ウィルプランニング,複合施設一休,054-258-6011,静岡県静岡市駿河区みずほ１丁目３５番地の２, ,https://xn--pckua2a7gp15o89zb.com/jbn/c811d85a5d9397d98590ab7a6b4fa098,介護職員／介護福祉士／デイサービス／日勤・夜勤両方,モンキークルー（介護）, , ,,,,介護,デイサービス、,,,,正社員,,,,,,,,,,,
+1011017,株式会社日本ケアクオリティ,グループホーム徳倉,055-999-0123,静岡県駿東郡長泉町中土狩391-6, https://www.carequality.co.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/5ab3e67f463e181e7aebaf224ba83c14,介護職・ヘルパー／グループホーム／無資格・未経験の方もOK,モンキークルー（介護）, , ,,,,介護,グループホーム・介護付き有料老人ホーム,,,,正社員,,,,,,,,,,,
+1011137,株式会社サポートホームりぼん,デイサービスセンターりぼん筑縄,027-395-0130,群馬県高崎市筑縄町22-1　SUビル1F,http://www.s-ribbon.co.jp/,https://xn--pckua2a7gp15o89zb.com/jbn/ec68856e607cc9b10f87c0e0d7ec3772,介護職・ヘルパー／通所介護／デイサービス／デイ／常勤／経験不問,モンキークルー（介護）, , ,,,,介護,通所介護,,,,正社員,,,,,,,,,,,
+1011148,医療法人緑陽会,ショート／デイセンターこまち,0274-89-1215,群馬県富岡市七日市761-10,https://ryokuyou.jp/,https://xn--pckua2a7gp15o89zb.com/jb/31fa2ff7544c614f785e42fbba5f82bf,年2回3ヶ月分以上の賞与ありのショート／デイセンターの介護職,モンキークルー（介護）, , ,,,,介護,通所介護,,,,正社員,,,,,,,,,,,
+1011168,医療法人原会,医療法人原会原病院,027-074-0633,群馬県伊勢崎市境上武士898-1, http://hara-hospital.jp/,https://xn--pckua2a7gp15o89zb.com/jb/883e7c55e5ca3ba73bd3c077069929dc,年間休日111日・残業なしの病院の介護職,モンキークルー（介護）, , ,,,,介護,介護医療院,,,,正社員,,,,,,,,,,,
+1011200,株式会社介護支援センターふじの里,ショートステイふじの里,024-592-2220,福島県福島市在庭坂字檀ノ前９番地の１, https://fuji-sato.com/,https://xn--pckua2a7gp15o89zb.com/jbn/495c8f73177cb638a6e2e28e518e63d7,介護職・ヘルパー／無資格・未経験可能／最長75歳まで勤務可能,モンキークルー（介護）, , ,,,,介護,グループホーム・デイサービス,,,,正社員,,,,,,,,,,,
+1011523,社会福祉法人大須賀苑,社会福祉法人大須賀苑特別養護老人ホームおおすか苑,0537-48-5365,静岡県掛川市大渕4895番地, https://www.oosukaen.or.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l5a934deab42cb11de8455dbe1936af92&p=t%2BAK7k0GmMUr0ZRss/MBmxMQkil36jqmgLnHO8Eypkds0Tj0vOa4FemKYKC0UoikW9Swj2IGCoCQDSkPlv18i2Cn/3XZP%2BeK6oLzFM2jSlSLnnDYahFiLgURgzK5Op15oftjdNyTVdLGR2pfgAM6JLjDbgKRX3aJBUKeioCL1rmRdMFeNupzviu4HD%2Bt5p2mZPPWAwzxIkDsI4wxyTGNnOyDkMGpZvdFU7SBrPsILdNXtusO1Fy9u6/WqRZMbO9HB2cem2qmqFDrMTJ%2BYhnGw4ej8pFP6xGeK0OwGYwmcUQ0%2BgP/xQQ/yy2HRBn6fP3oIhUvfu0AWbefMXl7vmv6EtErspU0uqKCKpmCAEMhVeJCWf9oGr9lr%2BsOCQrzmd3H9tjE/fe8nNaGAOiN998waKUuA88G%2B%2B3z4NyUhA/Bx0KPFfoNTH5CQFCvuuvlOplq9WpuVwCv2QwtQV%2BDkFdzGQ6P1EE%2Bn/zAjyLQUCeGvo2fnkQkwa9LPBP4NAyWw51nUWF/Vxhy4TAykGbiXIo%2BhR2sWWNWnSCd2CxPGafYEqE%3D&ph=0dd3d3369a50&phv=1,介護職員・ヘルパー／特別養護老人ホーム／介護福祉士／日勤・夜勤,モンキークルー（介護）, , ,,,,介護,特別養護老人ホーム、ショートステイ、デイサービス、グループホーム、小規模多機能型居宅介護、,,,,正社員,,,,,,,,,,,
+1011762,社会福祉法人東伊豆町社会福祉協議会,社会福祉法人東伊豆町社会福祉協議会,055-722-1294,静岡県賀茂郡東伊豆町白田306, https://www.higashiizu.net/index.htm,https://xn--pckua2a7gp15o89zb.com/jbn/c9d0ba3629f4a82b80eb583cf6d13904,介護職・ヘルパー／居宅介護支援事業所／残業／夜勤ナシ／育児休業取得実績...,モンキークルー（介護）, , ,,,,介護,デイサービス,,,,正社員,,,,,,,,,,,
+1011830,医療法人社団竹山会,医療法人社団竹山会介護老人保健施設いこいの郷,028-634-2100,栃木県宇都宮市元今泉１－３－１１, https://takeyamakai.jp/,https://xn--pckua2a7gp15o89zb.com/jb/54b3119606db32b228bc31294dca1b12,介護職員・ヘルパー,モンキークルー（介護）, , ,,,,介護,介護老人保健施設,,,,正社員,,,,,,,,,,,
+1011893,医療法人信誠会,医療法人信誠会,0285-41-1111,栃木県小山市大字南飯田317番地8,https://oyama-shinseikai.or.jp/ ,https://xn--pckua2a7gp15o89zb.com/jb/06e6ee0135d632e5498236d7ab53ccbd,介護職・ヘルパー／介護医療院／介護医療院苅部太陽の家,モンキークルー（介護）, , ,,,,介護,介護医療院 ,,,,正社員,,,,,,,,,,,
+1011926,医療法人櫻美会,医療法人櫻美会,028-583-1733,栃木県真岡市高勢町1-205, https://www.sakurai-naika.jp/index.html,https://xn--pckua2a7gp15o89zb.com/jb/e8541e1131e91564b162790c9b8528c4,介護職・ヘルパー／介護老人保健施設／介護老人保健施設ナーシングホーム青...,モンキークルー（介護）, , ,,,,介護,ショートステイ・リハビリテーション,,,,正社員,,,,,,,,,,,
+1012057,社会福祉法人かすみがうら四季会特別養護老人ホーム...,社会福祉法人かすみがうら四季会特別養護老人ホーム...,029-822-1863,茨城県土浦市真鍋２丁目１０番２３号, https://kasumigaurashikikai.com/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=l151119a8d8e965780834e0dcebd8494a&p=t%2BAK7k0GmMUr0ZRss/MBm9xVC%2BWkX%2BTYArUcdd0rhIMfWq1YHsApl/A/67irkWHgelzH2kEi98z/ECjGu3boX6yEqhwHBfRIWevdSKLwAHH5VZnptwQxt/JbyZTaNAZefoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNgocrCutsZTHL6moXUYHqpRn%2BXpkGVMyfxGX3iUZhFT/T76nO9cKLwcDVv%2BJj0OB26qlCkn6bHcYDVnX7XCkV9sf1LcudA46K%2BJkqJlj0xxe3MgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fbInhSV5LikPqqMbhYh7QAqaO9XVXtaweyNNGF8homm/G1mvK0/%2BziQawbHXIE8bq12lcbvVpUTUC7f9WdUUrxasIVJeOFqaWgV2DnHhC/rHsmQEaQPCxCP13X7LKPSLUA&ph=b3f432aec546&phv=1,介護職員・ヘルパー／特別養護老人ホーム／実務者研修／日勤・夜勤,モンキークルー（介護）, , ,,,,介護,特別養護老人ホーム、ショートステイ、デイサービス、,,,,正社員,,,,,,,,,,,
+1012219,医療法人社団拓己会,介護老人保健施設長鶴の郷デイケア,053-441-8880,静岡県浜松市南区中田島町４４４番地, ,https://xn--pckua2a7gp15o89zb.com/jb/9ae5430bcb5d085e3bf8524005cbb028,介護職・ヘルパー,モンキークルー（介護）, , ,,,,介護,介護老人保健施設,,,,正社員,,,,,,,,,,,
+1012229,株式会社スマイル,スマイル住まいる清水興津,046-820-1211,神奈川県横須賀市小川町14-1, https://smile-kaigo.net/,https://xn--pckua2a7gp15o89zb.com/jbn/b2d0f7e53874dbbd4ce726fbdc6b2770,介護度低め「介護職」／好待遇／未経験歓迎／高定着率,モンキークルー（介護）, , ,,,,介護,デイサービス、グループホーム、,,,,正社員,,,,,,,,,,,
+1012233,株式会社日本ケアクオリティ,グループホーム草薙織音,055-999-0123,静岡県駿東郡長泉町中土狩391-6, https://www.carequality.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/5214b596d94004e61b21a5cb11499753,介護士／グループホーム／賞与あり／月給25万以上可,モンキークルー（介護）, , ,,,,介護,グループホーム、,,,,正社員,,,,,,,,,,,
+1012407,一般社団法人栃木県老人保健施設協会,介護老人保健施設看清坊,028-622-0051,栃木県宇都宮市若草1-10-6 栃木県社会福祉協議会内, https://www.tochigi-roken.jp/index.html,https://xn--pckua2a7gp15o89zb.com/jb/db77127f5c1c75bb3a843148d807cb32,栄養士／介護施設,モンキークルー（介護）, , ,,,,介護,介護老人保健施設,,,,正社員,,,,,,,,,,,
+1012491,特別養護老人ホーム元気の里,特別養護老人ホーム元気の里,028-470-6200,栃木県足利市福居町９７９番地１, ,https://xn--pckua2a7gp15o89zb.com/jb/86102e46fb772758cdaecf9b58c0ac16,介護士／特別養護老人ホーム／賞与あり,モンキークルー（介護）, , ,,,,,,,,,正社員,,,,,,,,,,,
+1012576,医療法人社団みなみつくば会,医療法人社団みなみつくば会介護老人保健施設プレミ...,029-838-1919,茨城県つくば市谷田部6107-1, https://secure.imagawa-gp.jp/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=ldc69bb6fcb3a771b3177fe4cbce37123&p=t%2BAK7k0GmMUr0ZRss/MBm3PUpHMI/Hm9UkeZpiL3enCMDHDtHC/R10Du1nMEXoWc8CNpcigGMPkRIt/dHu9vWwYG0AP8nj3uEmbPeSNblsCjL56mbBHCKppikfR/KYZRfoss7pY3eEsvOV/uYD5ByRuO%2BXtD0zbMZYBxH%2BKw91yAMu1sU9R3cTjgA1OyV8Iec8UOZ918fvr81gB7cqpNgocrCutsZTHL6moXUYHqpRn%2BXpkGVMyfxGX3iUZhFT/T76nO9cKLwcDVv%2BJj0OB26qlCkn6bHcYDVnX7XCkV9sconp9ocSQ2jRr1YCpXLgSHMgDm%2BqAXCKya13trRip00tv3wwcccxplOdleeQ/FcdIDalGyQf57bOx2mGrUV0fbHQwJboxPlmpkQPrkhpuMvd%2BAqfVre%2BEH0eyXve%2BEGRrnGozn%2BuzIdPNYeu4lMGwtT/eqyMqn5iaWSYFUGtS9LBHSsSuCpamlc1eSivf/G2Fe9/CBB0IFpgzUJM0wlJSSb1FCVTgdviA7DUClzwoPSg%3D%3D&ph=0863abf97594&phv=1,介護職員・ヘルパー／介護老人保健施設／介護福祉士／日勤・夜勤,モンキークルー（介護）, , ,,,,介護,ショートステイ・デイサービス,,,,正社員,,,,,,,,,,,
+1012619,医療法人社団竹恵会,介護老人保健施設けんちの苑水海道,029-724-5511,茨城県常総市豊岡町字谷津丙３２６４番地, ,https://xn--pckua2a7gp15o89zb.com/jbn/73523e164b01374d3145f32f88643d9f,介護職・ヘルパー／介護老人保健施設／高額求人／嬉しい賞与計4ヶ月分,モンキークルー（介護）, , ,,,,介護,リハビリテーション・ショートステイ・デイサービス,,,,正社員,,,,,,,,,,,
+1012655,医療法人晴生会,医療法人晴生会介護老人保健施設葵の園・常総,0299-82-79-7911,茨城県鹿嶋市大字宮中１９９５番地の２４, ,https://xn--pckua2a7gp15o89zb.com/jbn/146ae89371c2322e8c6aa7f346e916d9,ケアマネージャー介護老人保健施設,モンキークルー（介護）, , ,,,,介護,通所リハビリテーション,,,,正社員,,,,,,,,,,,
+1012696,社会福祉法人滴翠会,特別養護老人ホーム明翠苑,0299-24-2871,茨城県石岡市半ノ木１１４６１番地, http://tekisuikai.or.jp/,https://xn--pckua2a7gp15o89zb.com/jb/68d438ac1502d4b68e03c8c3f8703a23,介護士／特別養護老人ホーム／賞与あり,モンキークルー（介護）, , ,,,,介護,特別養護老人ホーム、ショートステイ、デイサービス、グループホーム、,,,,正社員,,,,,,,,,,,
+1015037,広野運輸株式会社,広野運輸,011-662-4456,北海道札幌市西区西野2条9丁目2-12,https://www.hirono-unyu.com/blank-1,https://xn--pckua2a7gp15o89zb.com/jb/f8b7f6ae9c28a7de5cc9610ab71aa713,4tトラックドライバー,ミライユ（ドライバー）, , ,,,,ドライバー,一般貨物自動車運送事業,,,,正社員,,,,,,,,,,,
+1015040,真栄建設運輸株式会社,真栄建設運輸株式会社,011-882-4126,北海道札幌市清田区真栄3条2丁目9番7号,http://www.okamotogroup.co.jp/company_shineikensetsu/,https://xn--pckua2a7gp15o89zb.com/rd/?uaid=lb4ae6f190032b80e84be3c503c7f951e&p=t%2BAK7k0GmMUr0ZRss/MBmzxZvPuz%2BqOCpl227UkhIFbdXfkBveilRgKnrGxzwrF6Di0ZKOK3gHURGj2hc3n11w/PRXX0j1EvMIxYtrtJfJuW74ST0HiNTkMjJQYI7DpZoftjdNyTVdLGR2pfgAM6JLjDbgKRX3aJBUKeioCL1rmRdMFeNupzviu4HD%2Bt5p2mGxxPweIAbOEmxZj3RdSCu/Ym9GZ1G2wQvlqCKJrqii5Ouy1uPtr5eLl6qK5ziWEpN4dVWatp51aquZvjC7FD1Mi3vWN6FfNGlSpl0NRx6kC7ZhS8qKnfLV5DCTqDj7nXq5/8Dy4VQYncB32/hpR5CqGjlzhUmn35QkO/BrggWRi4kzAnhbziWKlKo8p/jBSyqOxCguvvrzJZyTqa4ssNzyag331tQH8U/5K%2BSWaxEHgU5g7B7A71ftMPAo/tTOkaCQ/j%2B5Y37ktAmVcslbe0cf2H%2BjadfCKQMUftGFkPfUl6Ql8YRTcSmX/prEeaBmrxWrvNRkZN6mSDxt2EeguMv/mi5L2Aob3urH2XOfbZKRHDXUfv7tTU9REggpVXbAPu6fx46QjK8Uuk4VBP4JtmQVG6AXuMzq2keZR/KCzZ5SpTZFz/TiKtZGGwpD8mBIdfFYsCWBfrZAP1MmxsjDOTfMl0s7hLoQtOorpfIlE4emg%3D&ph=710c7bad8731&phv=1,工事現場の現場作業員,ミライユ（ドライバー）, , ,,,,ドライバー,一般貨物自動車運送,,,,正社員,,,,,,,,,,,
+1015055,株式会社真和建機運輸,株式会社真和建機運輸,011-377-1001,北海道北広島市輪厚303-5,https://shinwa-kenki.tokkyu-group.jp/,https://xn--pckua2a7gp15o89zb.com/jb/c63f8c406b1354e4dbd9eba84505fc0e,トッキュウグループ大型トラックドライバー募集／職場見学OK,ミライユ（ドライバー）, , ,,,,ドライバー,運送業,,,,正社員,,,,,,,,,,,
+1015569,日本瓦斯運輸整備株式会社,日本瓦斯運輸整備株式会社シリンダー管理者,044-396-2482,神奈川県川崎市川崎区浮島町11-4,http://nicigas-unyu.co.jp/,https://xn--pckua2a7gp15o89zb.com/jb/11629d6f56bde12163f02063e89fb7c4?utm_source=%E6%B1%82%E4%BA%BA%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9.com&utm_medium=referral,配送管理者,ミライユ（ドライバー）, , ,,,,ドライバー,トレーラードライバー,,,,正社員,,,,,,,,,,,

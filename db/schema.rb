@@ -238,7 +238,6 @@ ActiveRecord::Schema.define(version: 20250425071248) do
     t.integer "worker_update_count_day"
     t.integer "worker_update_count_week"
     t.integer "worker_update_count_month"
-    t.integer "sender_id"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end

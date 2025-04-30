@@ -90,7 +90,6 @@ class WorkersController < ApplicationController
   
     # 関連レコードのworker_idをnullにする
     @worker.customers.update_all(worker_id: nil)
-    @worker.contacts.update_all(worker_id: nil)
     @worker.contact_trackings.update_all(worker_id: nil)
   
     @worker.destroy
