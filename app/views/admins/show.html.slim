@@ -200,7 +200,8 @@
         - count_day = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count + worker.deleted_customer_count
         - count_week = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count + worker.deleted_customer_count
         - count_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count + worker.deleted_customer_count
-        - count_before_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count + worker.deleted_customer_count        - total_number = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).count
+        - count_before_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count + worker.deleted_customer_count        
+        - total_number = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).count
         - count_month_price = count_before_month * 3
         - assigned_crowdwork = @assigned_crowdworks[worker.id]
 
