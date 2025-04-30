@@ -285,12 +285,6 @@ scope :before_sended_at, ->(sended_at){
     CSV.foreach(file.path, headers: true) do |row|
       customer = find_or_initialize_by(id: row["id"])
       customer.attributes = row.to_hash.slice(*updatable_attributes)
-
-      # companyをstoreにも登録
-      if row["company"]
-        customer.company = row["company"]
-        customer.store = row["company"]  # 同じ値をstoreにも設定
-      end
     
       next if customer.industry.nil?
       next if customer.tel.blank?  # 電話番号が空の場合はスキップ
@@ -369,26 +363,47 @@ scope :before_sended_at, ->(sended_at){
     repurpose_import_count = 0
     batch_size = 2500
     batch = []
-  
+    
+    # Crowdworkのデータを準備
     crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
       { 'title' => title, 'area' => area.split(',') }
     end
   
+    # 処理済みのcompanyとindustryの組み合わせを記録するためのセット
+    processed_combinations = Set.new
+  
+    # CSVファイルを処理
     CSV.foreach(repurpose_file.path, headers: true) do |row|
+      company_industry_key = "#{row['company']}_#{row['industry']}"
+  
+      # 同じcompanyとindustryの組み合わせが既に処理済みの場合はスキップ
+      if processed_combinations.include?(company_industry_key)
+        Rails.logger.info "Skipped duplicate combination: #{row['company']} - #{row['industry']}"
+        next
+      else
+        processed_combinations.add(company_industry_key)
+      end
+  
       Rails.logger.info "Processing row: #{row.to_hash}"
   
-      # 同一会社・業種が存在するならスキップ
+      # 同一会社・業種が既に存在する場合はスキップ
       if Customer.exists?(company: row['company'], industry: row['industry'])
         Rails.logger.info "Skipped existing customer: #{row['company']} - #{row['industry']}"
         next
       end
   
-      existing_customer_with_same_company = find_by(company: row['company'])
+      # 同じ会社が既存のレコードに存在するかを確認
+      existing_customer_with_same_company = Customer.find_by(company: row['company'])
+      
       if existing_customer_with_same_company
+        # 一致する業種がある場合
         crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
+        
         if crowdwork
+          # 既存顧客に住所があるか確認
           if existing_customer_with_same_company.address.present?
             area_match = crowdwork['area'].any? { |area| existing_customer_with_same_company.address.include?(area) }
+            
             unless area_match
               Rails.logger.info "Skipped due to unmatched area: #{row['company']} - #{row['industry']}"
               next
@@ -399,18 +414,18 @@ scope :before_sended_at, ->(sended_at){
           end
         end
   
+        # 新規顧客データをマージして新しいCustomerオブジェクトを作成
         repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
           'industry' => row['industry'],
           'url_2' => row['url_2']
         )
-  
+        
+        # 既存顧客の属性をコピーして新しい顧客を作成
         repurpose_customer = Customer.new(
           repurpose_customer_attributes.merge(
             existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
               'industry' => row['industry'],
-              'url_2' => row['url_2'],
-              'status' => 'draft',
-              'store' => row['company']
+              'status' => 'draft'
             )
           )
         )
@@ -418,27 +433,38 @@ scope :before_sended_at, ->(sended_at){
         Rails.logger.info "Added to batch: #{repurpose_customer.company} - #{repurpose_customer.industry}"
         batch << repurpose_customer
   
+        # バッチサイズに達したら保存
         if batch.size >= batch_size
-          Customer.transaction { batch.each(&:save!) }
-          Rails.logger.info "Batch saved: #{batch.size} customers"
-          repurpose_import_count += batch.size
-          batch.clear
+          begin
+            Customer.transaction { batch.each(&:save!) }
+            Rails.logger.info "Batch saved: #{batch.size} customers"
+            repurpose_import_count += batch.size
+            batch.clear
+          rescue StandardError => e
+            Rails.logger.error "Error while saving batch: #{e.message}"
+            next
+          end
         end
       else
         Rails.logger.info "Skipped no matching company for transfer: #{row['company']}"
       end
     end
   
+    # 最後のバッチを保存
     unless batch.empty?
-      Customer.transaction { batch.each(&:save!) }
-      Rails.logger.info "Final batch saved: #{batch.size} customers"
-      repurpose_import_count += batch.size
+      begin
+        Customer.transaction { batch.each(&:save!) }
+        Rails.logger.info "Final batch saved: #{batch.size} customers"
+        repurpose_import_count += batch.size
+      rescue StandardError => e
+        Rails.logger.error "Error while saving final batch: #{e.message}"
+      end
     end
   
     Rails.logger.info "Repurpose import completed. Total saved: #{repurpose_import_count}"
     { repurpose_import_count: repurpose_import_count }
   end
-  
+    
         
   def self.draft_import(draft_file)
     draft_count = 0

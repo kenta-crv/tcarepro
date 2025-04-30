@@ -8,7 +8,6 @@ class CustomersController < ApplicationController
   protect_from_forgery with: :exception, prepend: true
   
   def index
-    last_call_customer_ids = nil
     Rails.logger.debug("params :" + params.to_s)
     @last_call_params = {}
     if params[:last_call] && !params[:last_call].values.all?(&:blank?)
@@ -31,9 +30,8 @@ class CustomersController < ApplicationController
     # 最後の呼び出しの条件に一致する顧客をフィルタリング
     @customers = @customers.where(id: last_call) if last_call
   
-    # 電話番号が存在する顧客のみをフィルタリング
-    @customers = @customers.where.not(tel: [nil, "", " "])
-    #@customers = @customers.where(status: [nil, "", " "])
+    # 電話番号が存在し、かつstatusがnilの顧客のみをフィルタリング
+    @customers = @customers.where.not(tel: [nil, "", " "]).where(status: nil)
   
     @csv_customers = @customers.distinct.preload(:calls)
     @customers = @customers.distinct.preload(:calls).page(params[:page]).per(100) #エクスポート総数
