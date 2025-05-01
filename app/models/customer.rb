@@ -471,14 +471,13 @@ scope :before_sended_at, ->(sended_at){
     { repurpose_import_count: repurpose_import_count }
   end
     
+  EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社"]
         
   def self.draft_import(draft_file)
     draft_count = 0
     batch_size = 2500
     batch = []
-  
-    EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社"]
-  
+    
     def self.normalized_name(name)
       EXCLUDE_WORDS.each { |word| name = name.gsub(word, "") }
       name.strip
