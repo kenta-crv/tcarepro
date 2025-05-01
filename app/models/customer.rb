@@ -286,6 +286,12 @@ scope :before_sended_at, ->(sended_at){
       customer = find_or_initialize_by(id: row["id"])
       customer.attributes = row.to_hash.slice(*updatable_attributes)
     
+
+            # companyをstoreにも登録
+      if row["company"]
+              customer.company = row["company"]
+              customer.store = row["company"]  # 同じ値をstoreにも設定
+      end
       next if customer.industry.nil?
       next if customer.tel.blank?  # 電話番号が空の場合はスキップ
       next if where(tel: customer.tel).where(industry: nil).count > 0
@@ -471,54 +477,83 @@ scope :before_sended_at, ->(sended_at){
     batch_size = 2500
     batch = []
   
+    EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社"]
+  
+    def self.normalized_name(name)
+      EXCLUDE_WORDS.each { |word| name = name.gsub(word, "") }
+      name.strip
+    end
+  
+    def self.has_common_substring?(name1, name2, min_length = 4)
+      (0..name1.length - min_length).each do |i|
+        substr = name1[i, min_length]
+        return true if name2.include?(substr)
+      end
+      false
+    end
+  
     CSV.foreach(draft_file.path, headers: true) do |row|
-      # 既存データの重複チェック（repurpose_import で登録されたデータも含む）
-      if Customer.where(company: row['company'], industry: row['industry']).exists?
-        Rails.logger.info "Skipped already imported (existing in DB): #{row['company']} - #{row['industry']}"
-        next
+      company = row['company']
+      industry = row['industry']
+      next if company.blank? || industry.blank?
+  
+      normalized_current = normalized_name(company)
+  
+      # DB上の同一industry内で重複チェック（除外語除去＆4文字一致）
+      Customer.where(industry: industry).find_each do |existing|
+        existing_normalized = normalized_name(existing.company)
+        if has_common_substring?(normalized_current, existing_normalized)
+          Rails.logger.info "Skipped due to 4+ character match in same industry: #{company} - #{industry}"
+          next row
+        end
       end
   
       # バッチ内の重複チェック
-      if batch.any? { |c| c.company == row['company'] && c.industry == row['industry'] }
-        Rails.logger.info "Skipped duplicate in batch: #{row['company']} - #{row['industry']}"
+      skip_in_batch = batch.any? do |c|
+        c.industry == industry &&
+        has_common_substring?(normalized_current, normalized_name(c.company))
+      end
+      if skip_in_batch
+        Rails.logger.info "Skipped duplicate in batch (4+ char match): #{company} - #{industry}"
         next
       end
   
-      # 新しい顧客を作成してバッチに追加
-      customer = Customer.new(row.to_hash.slice(*updatable_attributes))
-
-          # companyをstoreにも登録
-      if row['company']
-       customer.company = row['company']
-       customer.store = row['company']  # 同じ値をstoreにも設定
+      # DBに完全一致チェック（既存処理）
+      if Customer.where(company: company, industry: industry).exists?
+        Rails.logger.info "Skipped already imported (exact match): #{company} - #{industry}"
+        next
       end
-
-      customer.status = "draft" 
+  
+      # バッチ内の完全一致チェック（既存処理）
+      if batch.any? { |c| c.company == company && c.industry == industry }
+        Rails.logger.info "Skipped duplicate in batch (exact match): #{company} - #{industry}"
+        next
+      end
+  
+      # 顧客追加
+      customer = Customer.new(row.to_hash.slice(*updatable_attributes))
+      customer.company = company
+      customer.store = company
+      customer.status = "draft"
       batch << customer
   
-      # バッチサイズが一定を超えた場合、一括保存
       if batch.size >= batch_size
-        Customer.transaction do
-          batch.each(&:save!)
-        end
+        Customer.transaction { batch.each(&:save!) }
         Rails.logger.info "Batch saved: #{batch.size} customers"
         draft_count += batch.size
         batch.clear
       end
     end
   
-    # 残りのバッチを保存
     unless batch.empty?
-      Customer.transaction do
-        batch.each(&:save!)
-      end
+      Customer.transaction { batch.each(&:save!) }
       Rails.logger.info "Final batch saved: #{batch.size} customers"
       draft_count += batch.size
     end
   
     { draft_count: draft_count }
   end
-        
+          
   #customer_export
   def self.generate_csv
     CSV.generate(headers:true) do |csv|
