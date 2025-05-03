@@ -471,7 +471,7 @@ scope :before_sended_at, ->(sended_at){
     { repurpose_import_count: repurpose_import_count }
   end
     
-  EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社"]
+  EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社", "協同組合", "医療法人", "一般社団法人"]
         
   def self.draft_import(draft_file)
     draft_count = 0
@@ -479,6 +479,7 @@ scope :before_sended_at, ->(sended_at){
     batch = []
     
     def self.normalized_name(name)
+      name = name.to_s  # nilでも空文字になる
       EXCLUDE_WORDS.each { |word| name = name.gsub(word, "") }
       name.strip
     end
@@ -701,10 +702,12 @@ scope :before_sended_at, ->(sended_at){
   
   private
   def unique_industry_and_tel_or_company_for_same_worker
-    existing_customer = Customer.where(industry: industry, company: company)
-
+    existing_customer = Customer.where(worker_id: worker_id)
+                                .where(industry: industry)
+                                .where("tel = ? OR company = ?", tel, company)
+  
     if existing_customer.exists?
-      errors.add(:company, "はすでに同じ業種で登録されています。")
+      errors.add(:base, "過去に同一電話番号または会社名を登録しています。同一ワーカーでの重複登録はできません。")
     end
   end
 
