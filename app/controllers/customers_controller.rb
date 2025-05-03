@@ -486,24 +486,42 @@ class CustomersController < ApplicationController
     published_count = 0
     hidden_count = 0
     deleted_count = 0
+    reposted_count = 0
   
     @customers.each do |customer|
       customer.skip_validation = true
   
-      # draftのみ重複チェック＆削除
+      # draftのみ重複チェック＆処理
       if customer.status == 'draft'
-        exists = Customer.where(industry: customer.industry)
-                         .where.not(id: customer.id)
-                         .where("company = ? OR tel = ?", customer.company, customer.tel)
-                         .exists?
+        existing_customer = Customer.where(industry: customer.industry)
+                                     .where.not(id: customer.id)
+                                     .where("company = ? OR tel = ?", customer.company, customer.tel)
+                                     .first
   
-        if exists
-          if customer.worker.present?
-            customer.worker.increment!(:deleted_customer_count) # ★追加
+        if existing_customer
+          latest_call = existing_customer.calls.order(created_at: :desc).first
+  
+          if latest_call && latest_call.created_at <= 2.months.ago
+            # 2ヶ月以上前なら再掲載として新しい call を追加
+            existing_customer.calls.create(statu: '再掲載')
+  
+            if customer.worker.present?
+              customer.worker.increment!(:deleted_customer_count)
+            end
+  
+            customer.destroy
+            reposted_count += 1
+            next
+          else
+            # callがない or 最新が2ヶ月以内 → 従来通り削除
+            if customer.worker.present?
+              customer.worker.increment!(:deleted_customer_count)
+            end
+  
+            customer.destroy
+            deleted_count += 1
+            next
           end
-          customer.destroy
-          deleted_count += 1
-          next
         end
       end
   
@@ -518,10 +536,10 @@ class CustomersController < ApplicationController
       end
     end
   
-    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{deleted_count}件のドラフトが重複のため削除されました。"
+    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{reposted_count}件を再掲載に登録しました。#{deleted_count}件のドラフトが重複のため削除されました。"
     redirect_to customers_path
-  end  
-  
+  end
+    
   private
 
   def set_customers
