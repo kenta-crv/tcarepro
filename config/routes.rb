@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
   root to: 'customers#index'
   # 発信認証用ルーティング
   post 'notifications', to: 'notifications#create'
@@ -15,6 +16,9 @@ Rails.application.routes.draw do
     member do
       patch :assign_worker_crowdwork  # 各管理者に対するワーカーの割り当て
     end
+  end
+  authenticate :admin do
+    mount Sidekiq::Web => '/sidekiq'
   end
   #ユーザーアカウント
   devise_for :users, controllers: {

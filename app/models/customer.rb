@@ -268,16 +268,22 @@ scope :before_sended_at, ->(sended_at){
   def self.call_attributes
     ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
   end
-
+  
   def self.all_import(file, skip_repurpose: false)
     save_count = import(file)
     call_count = call_import(file)[:save_count]
     repurpose_count = skip_repurpose ? 0 : repurpose_import(file)[:repurpose_import_count]
     draft_count = draft_import(file)[:draft_count]
   
-    { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
+    {
+      save_count: save_count,
+      call_count: call_count,
+      repurpose_count: repurpose_count,
+      draft_count: draft_count
+    }
+
   end
-  
+
   def self.import(file)
     save_count = 0
     batch_size = 2500
