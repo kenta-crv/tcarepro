@@ -42,5 +42,15 @@ class CustomerMailer < ActionMailer::Base
       subject: '請求書発行のご案内'
     )
   end
+
+  def upload_process_complete(email, message)
+    mail(
+      to: email,
+      from: "info@ri-plus.jp",
+      subject: '顧客業種のインポート完了',
+      body: message,
+      content_type: "text/plain"
+    )
+  end
 end
 
