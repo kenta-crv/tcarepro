@@ -1,7 +1,7 @@
 class Count < ApplicationRecord
   belongs_to :customer#, foreign_key: :tel, primary_key: :tel
   belongs_to :admin, optional: true
-  belongs_to :sender, optional: true
+  # belongs_to :sender, optional: true
 
   scope :times_last_count, -> {
     last_time = "SELECT sub_count.customer_id, MAX(sub_count.time) as last_time FROM counts as sub_count GROUP BY sub_count.customer_id";

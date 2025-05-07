@@ -24,7 +24,7 @@ class Contactor
 
       if name_mapping
         if name_mapping.key == 'content'
-          value = inquiry.parse_content(sender, customer_id)
+          value = inquiry.parse_content(customer_id)
         else
           value = inquiry.attributes[name_mapping.key]
         end

@@ -20,71 +20,13 @@
   = link_to "アカウント情報編集", edit_admin_registration_path, class:"btn btn-success"
   = link_to "ログアウト", destroy_admin_session_path, method: :delete, class:"btn btn-success"
 
-
-
-  .headline
-    | 取引先送信状況一覧
-  br
-  br
-  table[width="90%"  class="header-table space"]
-      colgroup
-      tr
-        th
-          | 企業名
-        th
-          | 一日の送信数
-        th
-          | 直近一週間の送信数
-        th
-          | 月間送信上限件数
-        th
-          | 月間送信件数
-        th
-          | 送信数 (率)
-        th
-          | URLアクセス数 (率)
-      - @senders.each do |sender|
-       - @daily_contact_trackings = sender.contact_trackings.where(created_at: Date.today...(Date.today + 1.day))
-       - @weekly_contact_trackings = sender.contact_trackings.where(created_at: (Date.today - 6.days)...(Date.today + 1.day))
-       - @monthly_contact_trackings = sender.contact_trackings.where(created_at: Time.current.all_month)
-       - @sended_contact_trackings = @monthly_contact_trackings.where(status: '送信済').order(sended_at: :desc)
-       - @sended_rate = @sended_contact_trackings.count / @monthly_contact_trackings.count.to_f * 100
-       - @callbacked_contact_trackings =  @monthly_contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
-       - @callbacked_rate = @callbacked_contact_trackings.count / @sended_contact_trackings.count.to_f * 100
-
-       tr
-        td.hover_color
-          = link_to sender.user_name, sender_path(sender)
-        td
-          = @daily_contact_trackings.count
-        td
-          = @weekly_contact_trackings.count
-        td
-          = sender.rate_limit
-        td
-          /= link_to sender_history_path(sender_id: sender.sender.id, year: sender.year, month: sender.month) do
-          = @monthly_contact_trackings.count
-        td
-          /= link_to sender_sended_path(sender_id: sendersender.id, year: senderyear, month: sendermonth) do
-          = @sended_contact_trackings.count
-          /- if @sendersended_rate
-          = " (#{number_to_percentage(@sended_rate, precision: 1)})"
-        td
-          /= link_to sender_callbacked_path(sender_id: sender.sender.id, year: sender.year, month: sender.month) do
-          = @callbacked_contact_trackings.count
-          /- if sender.callbacked_rate
-          = " (#{number_to_percentage(@callbacked_rate, precision: 1)})"
-
   h2.headline
    | メール送信のワーカー
   br
   br
-  = form_with url: assign_senders_admin_path, method: :post, local: true do
-   table[width="90%" class="header-table space"]
+  table[width="90%" class="header-table space"]
     tr
-      th チェック
       th ワーカー名
-      th 配置先
       th 月間送信完了件数
       th 月間送信不可件数
       th 月間営業NG件数
@@ -101,7 +43,6 @@
       th 支払
       th 契約終了
       th 削除
-      th 解除
     - @workers.select { |worker| worker.select == "メール送信" }.each do |worker|
       - @contact_trackings_month = worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
       - @contact_trackings_before_month = worker.contact_trackings.where(created_at: Time.current.prev_month.beginning_of_month..Time.current.prev_month.end_of_month)
@@ -120,20 +61,9 @@
       - @send_count_yesterday = @contact_trackings_yesterday.count
       - @send_count_2yesterday = @contact_trackings_2yesterday.count
       - @send_success_count_week = @contact_trackings_week.where(status: '送信済').count.to_i
-      - assigned_sender = worker.senders.first # 割り当てられている最初の送信先
       
       tr
-        td
-            = select_tag "sender_ids[#{worker.id}]", 
-                         options_for_select(Sender.all.map { |sender| [sender.user_name, sender.id] }, assigned_sender&.id),
-                         prompt: "送信先を選択", 
-                         id: "sender_select_#{worker.id}"
         td = worker.user_name
-        td
-            - if assigned_sender
-              = link_to assigned_sender.user_name, "/senders/#{assigned_sender.id}", target: "_blank", class: "btn btn-success"
-            - else
-              | なし
         td = @send_success_count_month
         td = @send_error_count_month
         td = @send_ng_count_month
@@ -162,83 +92,58 @@
           - else
             | 未登録
         td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
-        td
-          - if assigned_sender
-           = button_to '解除', remove_sender_admin_path(@admin, sender_id: assigned_sender.id, worker_id: worker.id), method: :post, data: { confirm: '本当に解除しますか？' }
-          - else
-           | なし
-   = submit_tag '割り当てを保存'
   br
  
   h2.headline
     | リスト制作のワーカー
   br/
   br/
-  = form_with url: assign_workers_admin_path(@admin), method: :post, local: true do |f|
-    table[width="90%" class="header-table space"]
-      colgroup
-        |
-      tr
-        th
-          | チェック
-        th Worker
-        th 配置先
-        th 本日の件数
-        th 今週の件数
-        th 今月の件数
-        th 先月の件数
-        th トータル件数
-        th 先月支払額
-        th 登録日
-        th 契約
-        th 支払
-        th 契約終了
-        th 削除
-        th 解除
-      = form_with url: assign_workers_admin_path(@admin), method: :post do
-       - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
-        - count_day = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count
-        - count_week = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count
-        - count_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count
-        - count_before_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count
-        - total_number = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).count
-        - count_month_price = count_before_month * 3
-        - assigned_crowdwork = @assigned_crowdworks[worker.id]
+  table[width="90%" class="header-table space"]
+    colgroup
+      |
+    tr
+      th Worker
+      th 本日の件数
+      th 今週の件数
+      th 今月の件数
+      th 先月の件数
+      th トータル件数
+      th 先月支払額
+      th 登録日
+      th 契約
+      th 支払
+      th 契約終了
+      th 削除
+    - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
+      - count_day = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count
+      - count_week = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count
+      - count_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count
+      - count_before_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count
+      - total_number = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).count
+      - count_month_price = count_before_month * 3
 
-        tr 
-          td
-            = select_tag "crowdwork_ids[#{worker.id}]", options_for_select(Crowdwork.all.map { |cw| [cw.title, cw.id] }, assigned_crowdwork&.id), prompt: "Crowdworkを選択", id: "crowdwork_select_#{worker.id}"
-          td = worker.user_name
-          td
-            - if assigned_crowdwork
-              = link_to assigned_crowdwork.title, "/draft/filter_by_industry?industry_name=#{assigned_crowdwork.title}", target: "_blank", class: "btn btn-success"
-            - else
-              | なし
-          td = count_day
-          td = count_week
-          td = count_month
-          td = count_before_month
-          td = total_number
-          td = count_month_price
-          td = worker.created_at.strftime("%-m月%-d日")
-          td
-            - if worker.number_code.present?
-              = link_to "契約", "https://crowdworks.jp/proposals/#{worker.number_code}", class: "btn btn-success", target:"_blank"
-            - else
-              | 未登録
-          td
-            - if worker.number_code.present?
-              = link_to "支払", "https://crowdworks.jp/contracts/#{worker.number_code}", class: "btn btn-success", target:"_blank"
-            - else
-              | 未登録
-          td
-            - if worker.number_code.present?
-              = link_to "終了", "https://crowdworks.jp/contracts/#{worker.number_code}/termination_requests/new", class: "btn btn-success", target:"_blank"
-            - else
-              | 未登録
-          td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
-          td
-            - if assigned_crowdwork
-              = button_to '解除', remove_worker_admin_path(@admin, crowdwork_id: assigned_crowdwork.id, worker_id: worker.id), method: :post, data: { confirm: '本当に解除しますか？' }  
-    .field
-      = f.submit "割り当てる"
+      tr 
+        td = worker.user_name
+        td = count_day
+        td = count_week
+        td = count_month
+        td = count_before_month
+        td = total_number
+        td = count_month_price
+        td = worker.created_at.strftime("%-m月%-d日")
+        td
+          - if worker.number_code.present?
+            = link_to "契約", "https://crowdworks.jp/proposals/#{worker.number_code}", class: "btn btn-success", target:"_blank"
+          - else
+            | 未登録
+        td
+          - if worker.number_code.present?
+            = link_to "支払", "https://crowdworks.jp/contracts/#{worker.number_code}", class: "btn btn-success", target:"_blank"
+          - else
+            | 未登録
+        td
+          - if worker.number_code.present?
+            = link_to "終了", "https://crowdworks.jp/contracts/#{worker.number_code}/termination_requests/new", class: "btn btn-success", target:"_blank"
+          - else
+            | 未登録
+        td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"

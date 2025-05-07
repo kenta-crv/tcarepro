@@ -9,8 +9,6 @@ class Worker < ApplicationRecord
   has_many :contacts
   has_many :tests, dependent: :destroy
   has_many :crowdworks, through: :assignments
-  has_many :sender_assignments, dependent: :destroy
-  has_many :senders, through: :sender_assignments
   
     def self.import_customers(file)
       save_count = 0

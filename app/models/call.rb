@@ -18,7 +18,7 @@ class Call < ApplicationRecord
   }
 
   scope :last_call_notification, ->(sender_id){
-    includes(customer: :contact_trackings).where(contact_trackings: { id: ContactTracking.latest(sender_id).select(:id) })
+    includes(customer: :contact_trackings).where(contact_trackings: { id: ContactTracking.latest().select(:id) })
   }
 
   scope :call_count_today, -> {

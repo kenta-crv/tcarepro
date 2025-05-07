@@ -11,8 +11,6 @@ Rails.application.routes.draw do
   resources :admins do
     post 'assign_workers', on: :member
     post 'remove_worker', on: :member
-    post 'assign_senders', on: :member
-    post 'remove_sender', on: :member
     member do
       patch :assign_worker_crowdwork  # 各管理者に対するワーカーの割り当て
     end
@@ -59,39 +57,7 @@ Rails.application.routes.draw do
   resources :crowdworks
   resources :contacts, only: [:index, :edit, :update, :destroy]
 
-  resource :sender, only: [:show]
-  #センダーアカウント
-  devise_for :senders, controllers: {
-    registrations: 'senders/registrations'
-  }
-
   resources :inquiries, only: [:index, :show, :edit, :update, :destroy] 
-
-  resources :senders, only: [:index, :show, :edit, :update] do
-    #resources :inquiries, except: [:index, :show, :edit, :update, :destroy] do
-     # put :default, to: 'inquiries#default'
-    #end
-    #get 'history', to: 'senders_history#index'
-    #get 'sended', to: 'senders_history#sended'
-    #get 'mail_app', to: 'senders_history#mail_app'
-    #get 'tele_app', to: 'senders_history#tele_app'
-    #get 'download_sended', to: 'senders_history#download_sended'
-    #get 'download_callbacked', to: 'senders_history#download_callbacked'
-    #get 'callbacked', to: 'senders_history#callbacked'
-    #get 'users_callbacked', to: 'senders_history#users_callbacked'
-    #get 'okurite/index01', to: 'okurite#index01'
-    post 'okurite/autosettings', to: 'okurite#autosettings'
-    delete 'bulk_delete', to: 'okurite#bulk_delete'
-    get 'resend', to: 'okurite#resend'
-    # okurite
-    resources :okurite, only: [:index, :show] do
-      get :preview, to: 'okurite#preview'
-      post :contact, to: 'okurite#create'
-    end
-  end
-  get 'callback' => 'okurite#callback', as: :callback
-  get 'direct_mail_callback' => 'okurite#direct_mail_callback', as: :direct_mail_callback
-
 
   resources :customers do
     post 'exclude', on: :member
@@ -118,7 +84,6 @@ Rails.application.routes.draw do
   get 'direct_mail_send/:id' => 'customers#direct_mail_send' #SFA
   get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'
   get '/customers/analytics/thinreports_email', to: 'customers#thinreports_email', as: 'customers_thinreports_email'
-  #get 'sender/:id/' => 'sender#show'
   scope :information do
     get '' => 'customers#information', as: :information #分析
   end

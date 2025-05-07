@@ -17,7 +17,7 @@ class SendersHistoryController < ApplicationController
   end
 
   def tele_app
-    @contact_trackings =  Customer.includes(:calls).where.not(calls: {id: nil}).last_contact_trackings( @sender,'送信済') &
+    @contact_trackings =  Customer.includes(:calls).where.not(calls: {id: nil}).last_contact_trackings('送信済') &
     contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
 
   end

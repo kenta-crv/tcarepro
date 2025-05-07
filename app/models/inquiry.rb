@@ -2,7 +2,7 @@ require 'contactor'
 
 class Inquiry < ApplicationRecord
   has_many :contact_trackings
-
+  # belongs_to :sender
   validates :headline, presence: true
   validates :from_company, presence: true
   validates :person, presence: true

@@ -20,17 +20,17 @@ class OkuriteController < ApplicationController
     # @customers = @customers.merge(conditional_results)
   
     # ContactTracking 一覧を取得
-    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id)) # ここを追加
+    @contact_trackings = ContactTracking.latest().where(customer_id: @customers.select(:id)) # ここを追加
   end
   
   
   def resend
     customers = Customer.joins(:contact_trackings)
-                        .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
+                        .where(contact_trackings: {status: '送信済' })
                         .distinct
     @q = customers.ransack(params[:q])
     @customers = @q.result.page(params[:page]).per(30)
-    @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
+    @contact_trackings = ContactTracking.latest().where(customer_id: @customers.pluck(:id))
   end
   
   def show

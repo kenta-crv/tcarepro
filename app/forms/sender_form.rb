@@ -22,7 +22,7 @@ class SenderForm
   end
 
   def teleapp_contact_trackings
-    Customer.includes(:calls).where.not(calls: {id: nil}).last_contact_trackings(sender,'送信済') &
+    Customer.includes(:calls).where.not(calls: {id: nil}).last_contact_trackings('送信済') &
     monthly_contact_trackings.where.not(callbacked_at: nil).order(callbacked_at: :desc)
   end
 

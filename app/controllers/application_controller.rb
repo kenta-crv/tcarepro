@@ -64,13 +64,6 @@ class ApplicationController < ActionController::Base
          customers_path
       when Worker
         worker_path(current_worker)
-      when Sender
-        if current_sender.inquiries.empty?
-          flash[:notice] = "案件の内容を登録してください"
-          new_sender_inquiry_path(current_sender)
-        else
-          sender_path
-        end
       else
         super
       end
@@ -84,8 +77,6 @@ class ApplicationController < ActionController::Base
         new_user_session_path
       when Worker, :worker, :workers
         new_worker_session_path
-      when Sender, :sender, :senders
-        new_sender_session_path
       else
         super
       end
@@ -100,8 +91,6 @@ class ApplicationController < ActionController::Base
         "users"
     elsif devise_controller? && resource_name == :worker
         "workers"
-    elsif devise_controller? && resource_name == :sender
-        "senders"
     else
       "application"
     end

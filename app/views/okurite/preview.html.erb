@@ -189,7 +189,7 @@ $(function () {
           <dt class="col-12">件名</dt>
           <dd class="col-12"><pre><%= @inquiry.title %></pre></dd>
           <dt class="col-12">本文</dt>
-          <dd class="col-12"><pre><%= @inquiry.parse_content(@sender, @callback_code) %></pre></dd>
+          <dd class="col-12"><pre><%= @inquiry.parse_content(@callback_code) %></pre></dd>
         </dl>
       <% else %>
         <div class="alert alert-danger" role="alert">

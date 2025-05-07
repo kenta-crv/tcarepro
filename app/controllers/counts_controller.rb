@@ -62,6 +62,5 @@ class CountsController < ApplicationController
     :time,
     :comment
     )
-     &.merge(sender: current_sender)
  	end
 end

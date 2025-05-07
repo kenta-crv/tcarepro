@@ -1,6 +1,6 @@
 class InquiriesController < ApplicationController
-  before_action :authenticate_admin_or_worker_or_sender!
-  before_action :set_sender, except: [:index, :show, :edit, :update, :destroy]
+  before_action :authenticate_admin_or_worker!
+  # before_action :set_sender, except: [:index, :show, :edit, :update, :destroy]
 
   def index 
     @inquiry = Inquiry.all
@@ -83,13 +83,13 @@ class InquiriesController < ApplicationController
     end
   end
 
-  def authenticate_admin_or_worker_or_sender!
-    unless admin_signed_in? || worker_signed_in? || sender_signed_in?
-       redirect_to new_sender_session_path, alert: 'error'
+  def authenticate_admin_or_worker!
+    unless admin_signed_in? || worker_signed_in? 
+       redirect_to new_worker_session_path, alert: 'error'
     end
   end
 
-  def set_sender
-    @sender = current_sender || Sender.find(params[:sender_id])
-  end
+  # def set_sender
+  #   @sender = current_sender || Sender.find(params[:sender_id])
+  # end
 end
