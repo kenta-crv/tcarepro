@@ -281,7 +281,6 @@ scope :before_sended_at, ->(sended_at){
       repurpose_count: repurpose_count,
       draft_count: draft_count
     }
-
   end
 
   def self.import(file)
