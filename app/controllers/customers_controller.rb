@@ -490,18 +490,28 @@ class CustomersController < ApplicationController
     @customers.each do |customer|
       customer.skip_validation = true
   
-      # draftのみ重複チェック＆処理
       if customer.status == 'draft'
+        normalized_company = Customer.normalized_name(customer.company)
+        normalized_tel = customer.tel.to_s.delete('-')
+  
         existing_customer = Customer.where(industry: customer.industry)
-                                     .where.not(id: customer.id)
-                                     .where("company = ? OR tel = ?", customer.company, customer.tel)
-                                     .first
+                                    .where.not(id: customer.id)
+                                    .find do |c|
+          # 電話番号比較（ハイフン無視）
+          c_tel = c.tel.to_s.delete('-')
+          tel_match = normalized_tel.present? && c_tel.present? && normalized_tel == c_tel
+  
+          # 会社名比較（法人格除去後、3文字以上一致）
+          c_company = Customer.normalized_name(c.company)
+          name_match = name_similarity?(normalized_company, c_company)
+  
+          tel_match || name_match
+        end
   
         if existing_customer
           latest_call = existing_customer.calls.order(created_at: :desc).first
   
           if latest_call && latest_call.created_at <= 2.months.ago
-            # 2ヶ月以上前なら再掲載として新しい call を追加
             existing_customer.calls.create(statu: '再掲載')
   
             if customer.worker.present?
@@ -512,7 +522,6 @@ class CustomersController < ApplicationController
             reposted_count += 1
             next
           else
-            # callがない or 最新が2ヶ月以内 → 従来通り削除
             if customer.worker.present?
               customer.worker.increment!(:deleted_customer_count)
             end
@@ -525,20 +534,16 @@ class CustomersController < ApplicationController
       end
   
       if status == 'hidden'
-        if customer.update_columns(status: 'hidden')
-          hidden_count += 1
-        end
+        hidden_count += 1 if customer.update_columns(status: 'hidden')
       else
-        if customer.update_columns(status: nil)
-          published_count += 1
-        end
+        published_count += 1 if customer.update_columns(status: nil)
       end
     end
   
     flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{reposted_count}件を再掲載に登録しました。#{deleted_count}件のドラフトが重複のため削除されました。"
     redirect_to customers_path
   end
-    
+      
   private
 
   def set_customers
