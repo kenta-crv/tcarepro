@@ -60,19 +60,20 @@ class OkuriteController < ApplicationController
   end
 
   def preview
-    Rails.logger.debug "Received params[:q]: #{params[:q].inspect}"
-    Rails.logger.debug "Received params[:okurite_id]: #{params[:okurite_id].inspect}"
-    
     @customer = Customer.find(params[:okurite_id])
     @inquiry = @sender.default_inquiry
+    @q = Customer.ransack(params[:q])
+    @customers = @q.result(distinct: true)
+  
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
     @contact_tracking = @sender.contact_trackings.where(customer: @customer).order(created_at: :desc).first
+  
     contactor = Contactor.new(@inquiry, @sender)
     @contact_url = @customer.contact_url
     @callback_code = @sender.generate_code
     gon.typings = contactor.try_typings(@contact_url, @customer.id)
-  end  
+  end
   
   def callback
     @contact_tracking = ContactTracking.find_by!(code: params[:t])

@@ -141,6 +141,8 @@ $(function () {
 
       <% if @sender.rate_limit > @sender.contact_trackings.count %>
         <%= form_tag sender_okurite_contact_url(okurite_id: @customer), method: :post do %>
+          <%= hidden_field_tag 'q[name_cont]', params.dig(:q, :name_cont) %>
+          <%= hidden_field_tag 'q[status_eq]', params.dig(:q, :status_eq) %>
           <%= hidden_field_tag :contact_url, @contact_url %>
           <%= hidden_field_tag :inquiry_id, @inquiry.id %>
           <%= hidden_field_tag :callback_code, @callback_code %>
