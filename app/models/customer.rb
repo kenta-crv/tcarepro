@@ -273,7 +273,7 @@ scope :before_sended_at, ->(sended_at){
     begin
       save_count = import(file)
       call_count = call_import(file)[:save_cnt]
-      repurpose_count = skip_repurpose ? 0 : repurpose_import(file)[:repurpose_import_count]
+      repurpose_count = skip_repurpose.to_i == 1 ? 0 : repurpose_import(file)[:repurpose_import_count]
       draft_count = draft_import(file)[:draft_count]
   
       notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count}件　転用件数: #{repurpose_count}件　ドラフト件数: #{draft_count}件"
