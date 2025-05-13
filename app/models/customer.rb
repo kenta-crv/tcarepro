@@ -479,24 +479,33 @@ scope :before_sended_at, ->(sended_at){
     
   EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社", "協同組合", "医療法人", "一般社団法人"]
         
+  def self.normalized_name(name)
+    name = name.to_s  # nilでも空文字になる
+    EXCLUDE_WORDS.each { |word| name = name.gsub(word, "") }
+    name.strip
+  end
+
+  def self.has_common_substring?(name1, name2, min_length = 4)
+    return false if name1.blank? || name2.blank?
+    (0..name1.length - min_length).each do |i|
+      return true if name2.include?(name1[i, min_length])
+    end
+    (0..name2.length - min_length).each do |i|
+      return true if name1.include?(name2[i, min_length])
+    end
+    false
+  end
+
+  def self.name_similarity?(name1, name2)
+    return false if name1.blank? || name2.blank?
+    common = name1.chars.each_cons(3).map(&:join) & name2.chars.each_cons(3).map(&:join)
+    common.any?
+  end
+
   def self.draft_import(draft_file)
     draft_count = 0
     batch_size = 2500
     batch = []
-    
-    def self.normalized_name(name)
-      name = name.to_s  # nilでも空文字になる
-      EXCLUDE_WORDS.each { |word| name = name.gsub(word, "") }
-      name.strip
-    end
-  
-    def self.has_common_substring?(name1, name2, min_length = 4)
-      (0..name1.length - min_length).each do |i|
-        substr = name1[i, min_length]
-        return true if name2.include?(substr)
-      end
-      false
-    end
   
     CSV.foreach(draft_file.path, headers: true) do |row|
       company = row['company']
@@ -506,13 +515,17 @@ scope :before_sended_at, ->(sended_at){
       normalized_current = normalized_name(company)
   
       # DB上の同一industry内で重複チェック（除外語除去＆4文字一致）
+      skip = false
       Customer.where(industry: industry).find_each do |existing|
         existing_normalized = normalized_name(existing.company)
         if has_common_substring?(normalized_current, existing_normalized)
           Rails.logger.info "Skipped due to 4+ character match in same industry: #{company} - #{industry}"
-          next row
+          skip = true
+          break
         end
       end
+      next if skip
+
   
       # バッチ内の重複チェック
       skip_in_batch = batch.any? do |c|
