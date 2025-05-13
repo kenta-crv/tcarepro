@@ -491,7 +491,7 @@ class CustomersController < ApplicationController
       customer.skip_validation = true
   
       if customer.status == 'draft'
-        normalized_company = Customer.normalized_name(customer.company)
+        normalized_company = customer.normalized_name
         normalized_tel = customer.tel.to_s.delete('-')
   
         existing_customer = Customer.where(industry: customer.industry)
@@ -502,7 +502,7 @@ class CustomersController < ApplicationController
           tel_match = normalized_tel.present? && c_tel.present? && normalized_tel == c_tel
   
           # 会社名比較（法人格除去後、3文字以上一致）
-          c_company = Customer.normalized_name(c.company)
+          c_company = c.normalized_name
           name_match = name_similarity?(normalized_company, c_company)
   
           tel_match || name_match
