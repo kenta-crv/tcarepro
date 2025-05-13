@@ -498,7 +498,7 @@ scope :before_sended_at, ->(sended_at){
 
   def self.name_similarity?(name1, name2)
     return false if name1.blank? || name2.blank?
-    common = name1.chars.each_cons(3).map(&:join) & name2.chars.each_cons(3).map(&:join)
+    common = name1.chars.each_cons(5).map(&:join) & name2.chars.each_cons(3).map(&:join)
     common.any?
   end
 
