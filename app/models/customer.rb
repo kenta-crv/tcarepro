@@ -368,7 +368,7 @@ scope :before_sended_at, ->(sended_at){
       save_cnt += batch.size
     end
     
-    { save_cnt: save_cnt }
+    { save_count: save_cnt }
   end
   
   def self.repurpose_import(repurpose_file)
