@@ -287,7 +287,9 @@ class CustomersController < ApplicationController
     end
   
     # Enqueue background job
-    CustomerImportJob.perform_later(temp_file_path.to_s, skip_repurpose)
+    skip_repurpose_flag = params[:skip_repurpose] == "1"
+    CustomerImportJob.perform_later(temp_file_path.to_s, skip_repurpose: skip_repurpose_flag)
+
   
     redirect_to customers_url, notice: 'インポート処理をバックグラウンドで実行しています。完了までしばらくお待ちください。'
   end
