@@ -47,7 +47,7 @@ class CustomerMailer < ActionMailer::Base
     mail(
       to: email,
       from: "info@ri-plus.jp",
-      subject: '顧客業種のインポート完了',
+      subject: message,
       body: message,
       content_type: "text/plain"
     )
