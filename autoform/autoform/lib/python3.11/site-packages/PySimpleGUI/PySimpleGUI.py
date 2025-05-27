@@ -1,0 +1,14 @@
+
+def main():
+    print("PySimpleGUI is now located on a private PyPI server.  Please add to your pip command: -i https://PySimpleGUI.net/install")
+    print("\nThe version you just installed should uninstalled:")
+    print("   python -m pip uninstall PySimpleGUI")
+    print("   python -m pip cache purge")
+    print("Then install the latest from the private server:")
+    print("   python -m pip install --upgrade --extra-index-url https://PySimpleGUI.net/install PySimpleGUI")
+    print("You can also force a reinstall using this command and it'll install the latest regardless of what you have installed currently")
+    print("   python -m pip install --force-reinstall --extra-index-url https://PySimpleGUI.net/install PySimpleGUI")
+    print("\nUse python3 command if you're running on the Mac or Linux")
+
+main()
+

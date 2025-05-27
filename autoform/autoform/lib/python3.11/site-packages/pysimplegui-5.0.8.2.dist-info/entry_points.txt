@@ -1,0 +1,2 @@
+[console_scripts]
+post_install = PySimpleGUI:main

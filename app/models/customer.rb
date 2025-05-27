@@ -871,5 +871,10 @@ scope :before_sended_at, ->(sended_at){
   def scraping
     @scraping ||= Scraping.new
   end
+
+  def get_search_url
+    # Example: return self.url or self.url_2, or more complex logic
+    self.url || self.url_2 # Replace with your actual logic
+  end
   
 end
