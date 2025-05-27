@@ -1,5 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver import ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -9,7 +8,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoAlertPresentException, UnexpectedAlertPresentException
+from selenium.common.exceptions import NoAlertPresentException, UnexpectedAlertPresentException, TimeoutException, NoSuchElementException, ElementNotInteractableException
 import requests
 from bs4 import BeautifulSoup
 import time
@@ -287,13 +286,37 @@ class Place_enter():
                         self.address_thin = olist["name"]
                     elif "電話番号" in name:
                         self.phone = olist["name"]
-                    elif ("メールアドレス" in name or "mail" in name) and "確認" not in name:
-                        if(self.mail):
-                            self.mail_c = olist["name"]
-                        else:
-                            self.mail = olist["name"]
-                    elif ("メールアドレス" in name or "mail" in name) and "確認" in name:
-                        self.mail_c = olist["name"]
+                    elif (name.startswith("メールアドレス") or "mail" in name.lower()):
+                            is_confirm_by_name = "確認" in name
+                            
+                            if is_confirm_by_name:
+                                # This field is identified as a CONFIRMATION email field by its label
+                                if name.startswith("メールアドレス"): # Strong match for confirmation
+                                    # If self.mail was mistakenly set to this field's name (e.g., by a weak name match earlier)
+                                    # and this label clearly marks it as confirmation, clear self.mail.
+                                    if self.mail == olist["name"]:
+                                        self.mail = '' 
+                                    self.mail_c = olist["name"] # Set/overwrite self.mail_c
+                                elif not self.mail_c: # Weaker "mail" in label match for confirmation
+                                    # Only set if self.mail_c hasn't been set by a stronger match (name or label)
+                                    self.mail_c = olist["name"]
+                            else:
+                                # This field is identified as a PRIMARY email field candidate by its label
+                                if label.startswith("メールアドレス"): # Strong match for primary email
+                                    # If self.mail_c was mistakenly set to this field's name, clear it.
+                                    if self.mail_c == olist["name"]:
+                                        self.mail_c = ''
+                                    self.mail = olist["name"] # Set/overwrite self.mail with this strong match
+                                elif "mail" in label.lower(): # Weaker "mail" in label match for primary
+                                    # Only set self.mail if it's not already set by a strong label match
+                                    # or a previous name match.
+                                    if not self.mail:
+                                        self.mail = olist["name"]
+                                    # If self.mail is already set (by name or strong label) and self.mail_c is not,
+                                    # and this current field (olist["name"]) is different from self.mail,
+                                    # this weakly matched primary field could be an unlabeled confirmation.
+                                    elif not self.mail_c and self.mail != olist["name"]:
+                                        self.mail_c = olist["name"]
                     elif "用件" in name or "お問い合わせ" in name or "本文" in name or "内容" in name:
                         self.subjects = olist["name"]
                     elif olist["type"] == "radio":
@@ -331,14 +354,37 @@ class Place_enter():
                         self.address_thin = olist["name"]
                     elif "電話番号" in label:
                         self.phone = olist["name"]
-                    elif ("メールアドレス" in label or "mail" in label) and "確認" not in label:
-                        if(self.mail):
-                            self.mail_c = olist["name"]
+                    elif (label.startswith("メールアドレス") or "mail" in label.lower()):
+                        is_confirm_by_label = "確認" in label
+                        
+                        if is_confirm_by_label:
+                            # This field is identified as a CONFIRMATION email field by its label
+                            if label.startswith("メールアドレス"): # Strong match for confirmation
+                                # If self.mail was mistakenly set to this field's name (e.g., by a weak name match earlier)
+                                # and this label clearly marks it as confirmation, clear self.mail.
+                                if self.mail == olist["name"]:
+                                    self.mail = '' 
+                                self.mail_c = olist["name"] # Set/overwrite self.mail_c
+                            elif not self.mail_c: # Weaker "mail" in label match for confirmation
+                                # Only set if self.mail_c hasn't been set by a stronger match (name or label)
+                                self.mail_c = olist["name"]
                         else:
-                            self.mail = olist["name"]
-                        self.mail = olist["name"]
-                    elif ("メールアドレス" in label or "mail" in label) and "確認" in label:
-                        self.mail_c = olist["name"]
+                            # This field is identified as a PRIMARY email field candidate by its label
+                            if label.startswith("メールアドレス"): # Strong match for primary email
+                                # If self.mail_c was mistakenly set to this field's name, clear it.
+                                if self.mail_c == olist["name"]:
+                                    self.mail_c = ''
+                                self.mail = olist["name"] # Set/overwrite self.mail with this strong match
+                            elif "mail" in label.lower(): # Weaker "mail" in label match for primary
+                                # Only set self.mail if it's not already set by a strong label match
+                                # or a previous name match.
+                                if not self.mail:
+                                    self.mail = olist["name"]
+                                # If self.mail is already set (by name or strong label) and self.mail_c is not,
+                                # and this current field (olist["name"]) is different from self.mail,
+                                # this weakly matched primary field could be an unlabeled confirmation.
+                                elif not self.mail_c and self.mail != olist["name"]:
+                                    self.mail_c = olist["name"]
                     elif "用件" in label or "お問い合わせ" in label or "本文" in label or "内容" in label:
                         self.subjects = olist["name"]
                     elif olist["type"] == "radio":
@@ -356,646 +402,412 @@ class Place_enter():
 
 
     def go_selenium(self):
-        # webdriver.Chrome(...) を呼び出して、あらかじめ用意されたサービスオブジェクト（serv）とオプション（ヘッドレスなどの設定）を利用してブラウザを起動
-        driver = webdriver.Chrome(service=serv,options=options)
-        driver.get(self.endpoint)
-        time.sleep(3)
-
-        def input_text_field(driver, field_name, value):
-            """テキストフィールドに値を入力するための関数"""
-            print(f"Field Name: {field_name}, Value: {value}")
-            if field_name and value:
-                try:
-                    driver.find_element(By.NAME, field_name).send_keys(value)
-                except Exception as e:
-                    print(f"Error inputting into {field_name}: {e}")
-
-        def select_radio_button(driver, radio_name):
-            """ラジオボタンを選択するための関数"""
-            try:
-                radian = driver.find_elements(By.XPATH, f"//input[@type='radio' and @name='{radio_name}']")
-                if radian:
-                    if not radian[0].is_selected():
-                        radian[0].click()
-            except Exception as e:
-                print(f"Error clicking radio button {radio_name}: {e}")
-
-        def select_checkbox(driver, checkbox_name):
-            """チェックボックスを選択するための関数"""
-            try:
-                checkboxes = driver.find_elements(By.XPATH, f"//input[@type='checkbox' and @name='{checkbox_name}']")
-                for checkbox in checkboxes:
-                    if not checkbox.is_selected():
-                        checkbox.click()
-            except Exception as e:
-                print(f"Error clicking checkbox {checkbox_name}: {e}")
-
-        
-        def fill_all_fields(driver, formdata):
-            """
-            すべての <input> フィールドに formdata['company'] を入力し、
-            すべての <textarea> フィールドに formdata['subjects'] を入力する。
-            """
-            try:
-                # すべての <input> タグに `company` を入力
-                input_fields = driver.find_elements(By.TAG_NAME, "input")
-                for input_field in input_fields:
-                    input_type = input_field.get_attribute("type")
-
-                    # `hidden` や `submit` タイプのものはスキップ
-                    if input_type not in ["hidden", "submit", "button", "reset"]:
-                        input_field.clear()
-                        input_field.send_keys(formdata['company'])
-                        print(f"Filled input field: {input_field.get_attribute('name')} with {formdata['company']}")
-
-                # すべての <textarea> タグに `subjects` を入力
-                textarea_fields = driver.find_elements(By.TAG_NAME, "textarea")
-                for textarea in textarea_fields:
-                    textarea.clear()
-                    textarea.send_keys(formdata['subjects'])
-                    print(f"Filled textarea field: {textarea.get_attribute('name')} with {formdata['subjects']}")
-
-            except Exception as e:
-                print(f"Error filling fields: {e}")
-
-        # Webページ内に別のWebページを埋め込む機能（iframe）が使われている場合、iframe内に移動する
-        if self.iframe_mode == True:
-            try:
-                iframe = driver.find_element(By.TAG_NAME,'iframe')
-            except Exception as e:
-                print("iframe not found")
-                print(e)
-            driver.switch_to.frame(iframe)
-            fill_all_fields(driver, self.formdata)
-            # bootioから送信されたフォーム内容を入力
-            input_text_field(driver, self.company, self.formdata['company'])
-            input_text_field(driver, self.company_kana, self.formdata['company_kana'])
-            input_text_field(driver, self.manager, self.formdata['manager'])
-            input_text_field(driver, self.manager_kana, self.formdata['manager_kana'])
-            input_text_field(driver, self.phone, self.formdata['phone'])
-            input_text_field(driver, self.fax, self.formdata['fax'])
-            input_text_field(driver, self.address, self.formdata['address'])
-            input_text_field(driver, self.mail, self.formdata['mail'])
-            input_text_field(driver, self.mail_c, self.formdata['mail'])
-
-            for radio_info in self.radio:
-                select_radio_button(driver, radio_info['radioname'])
-
-            for checkbox_info in self.chk:
-                select_checkbox(driver, checkbox_info['checkname'])
-
-
-            #分割用電話番号
-            # 怪しい
-            # <input type="text" name="phone_part1" placeholder="市外局番">
-            # <input type="text" name="phone_part2" placeholder="市内局番">
-            # <input type="text" name="phone_part3" placeholder="加入者番号">
-            # ここで、self.phone0 に "phone_part1" という値が設定されていると仮定します。
-            # コード内の
-            # python
-            # driver.find_element(By.NAME, self.phone0)
-            # は、実際には
-            # python
-            # driver.find_element(By.NAME, "phone_part1")
-            try:
-                if self.phone0 != '' and self.phone1 != '' and self.phone2 != '':
-                    phonesplit = self.formdata['phone'].split('-')
-                    driver.find_element(By.NAME,self.phone0).send_keys(phonesplit[0])
-                    driver.find_element(By.NAME,self.phone1).send_keys(phonesplit[1])
-                    driver.find_element(By.NAME,self.phone2).send_keys(phonesplit[2])
-            except Exception as e:
-                print("Error: Failed to submit form")
-                print(e)
-
-            # 指定のAPIにアクセスして、住所に基づいた郵便番号を取得し、入力
-            if self.zip != '':
-                r = requests.get("https://api.excelapi.org/post/zipcode?address=" + self.formdata['address'])
-                postman = r.text
-                try:
-                    driver.find_element(By.NAME,self.zip).send_keys(postman[:3]+ "-" + postman[3:])
-                except Exception as e:
-                    print("Error: Failed to submit form")
-                    print(e)
-
-            # 都道府県・市区町村の自動選択
-            if self.pref != '':
-                pref_data = ''
-                pref = [
-                    "北海道","青森県","岩手県","宮城県","秋田県","山形県","福島 県",
-                    "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈 川県",
-                    "新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜 県",
-                    "静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫 県",
-                    "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山 口県",
-                    "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎 県",
-                    "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
-                ]
-
-                address = self.formdata['address']
-
-                try:
-                    element = driver.find_element(By.NAME, self.pref)
-                    for p in pref:
-                        if p in address:
-                            if element.tag_name == "select":
-                                s = Select(element)
-                                s.select_by_visible_text(p)
-                                pref_data = p
-                            else:
-                                pref_data = p
-
-                        
-                    # Geo API を利用して市区町村・町名を取得し、入力欄にセット
-                    r = requests.get("https://geoapi.heartrails.com/api/json?method=getTowns&prefecture=" + pref_data)
-                    cityjs = r.json()
-                    city = cityjs["response"]["location"]
-                    print("cityjs")
-                    for c in city:
-                        if c["city"] in address and c["town"] in address:
-                            driver.find_element(By.NAME,self.address_city).send_keys(c["city"])
-                            driver.find_element(By.NAME,self.address_thin).send_keys(c["town"])
-
-                except Exception as e:
-                    print("Error: Failed to submit form")
-                    print(e)
-
-            # 用件・本文の入力
-            try:
-                if self.subjects != '':
-                    matching = False
-                    if self.subjects_radio_badge == True:
-                        print(self.chk)
-                        for c in self.chk:
-                            # c['value'] が "お問い合わせ内容" や "お問い合わせ" などの場合に条件を満たす
-                            if 'お問い合わせ' in c['value']:
-                                # XPath の式 "//input[@name='...']" によって、name 属性が c['name'] と一致し、かつ value 属性が c['value'] と一致する <input> 要素を取得し
-                                checking = driver.find_element(By.XPATH,"//input[@name='" + c['checkname']+"' and @value='" + c['value']+"']")
-                                if not checking.is_selected():
-                                    # driver.execute_script("arguments[0].click();", checking) を用いる理由は、通常の click() メソッドではクリックできない場合や、表示上の問題がある場合に、JavaScript を利用して確実にクリックイベントを発火させるため
-                                    driver.execute_script("arguments[0].click();", checking)
-
-                    # 用件（お問い合わせ内容）を入力する処理
-                    # 対象がドロップダウン（select 要素）の場合は、候補の中から一致する項目を選択
-                    # それ以外の場合は、入力欄に直接入力
-                    if driver.find_element(By.NAME,self.subjects).tag_name == 'select':
-                        select = Select(driver.find_element(By.NAME,self.subjects))
-                        for opt in select.options:
-                            if self.formdata['subjects'] == opt:
-                                matching = True
-                                select.select_by_visible_text(opt)
-
-                        if matching == False:
-                            select.select_by_index(len(select.options)-1)
-
-                    else:
-                        driver.find_element(By.NAME,self.subjects).send_keys(self.formdata['subjects'])
-            except Exception as e:
-                print(f"Error encountered: {e}")
-                # ここに追加のエラー処理を書くことができます。
-
-            try:
-                # フォームの本文欄に、フォームデータから取得した内容を入力
-                if self.body != '':
-                    driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
-            except Exception as e:
-                print(f"Error encountered: {e}")
-                # ここに追加のエラー処理を書くことができます。
-
-            # 複数の候補テキスト（例：「確認」、「送信」）を用いて、該当するボタンを XPath で探索し、見つかり次第クリックします。
-            # タイムアウトまで待機する仕組み（WebDriverWait）を用いることで、要素が現れるのを待つ。
-            def click_button(driver, button_texts):
-                for text in button_texts:
-                    xpaths = [
-                        f"//button[contains(text(), '{text}')]",
-                        f"//input[contains(@value, '{text}')]"
-                    ]
-                    for xpath in xpaths:
-                        try:
-                            button = WebDriverWait(driver, 10).until(
-                                EC.presence_of_element_located((By.XPATH, xpath))
-                            )
-                            button.click()
-                            return True
-                        except:
-                            continue
-                return False
-
-            try:
-                before = driver.title
-
-                # "確認" または "送信" ボタンをクリック
-                if click_button(driver, ['確認']):
-                    print("Clicked the 'confirm' button")
-                elif click_button(driver, ['送信']):
-                    print("Clicked the 'submit' button")
-                else:
-                    print("Error: Could not find either 'confirm' or 'submit' button")
-                    driver.close()
-                    return 'NG'
-
-                # 送信が成功したかどうかの確認（タイトルの変更を確認）
-                time.sleep(3)  # 送信後のページへの移動を待機
-                after = driver.title
-                page_source = driver.page_source
-                if before != after or "ありがとう" in page_source or "完了" in page_source:  # タイトルが変わった場合、送信成功と判断
-                    driver.close()
-                    return 'OK'
-                else:
-                    driver.close()
-                    print("Error: Failed to submit form")
-                    return 'NG'
-
-            except Exception as e:
-                print(f"Error: {e}")
-                print("submit false")
-                driver.close()
-                return 'NG'
-
-
-            """
-            ##　規約 プライバシーポリシーチェック
-            try:
-                print(self.kiyakucheck)
-                if self.kiyakucheck != {}:
-                    checking = driver.find_element(By.XPATH,"//input[@name='" + self.kiyakucheck['name']+"']")
-                    if not checking.is_selected():
-                        driver.execute_script("arguments[0].click();", checking)
-            except Exception as e:
-                print("同意エラー")
-                print(e)
-
-            ## 連絡方法
-            try:
-                if self.response_contact != []:
-                    for radioarray in self.response_contact:
-                        radian = driver.find_elements(By.XPATH, "//input[@type='radio' and @name='"+ radioarray['name']+"']")
-                        for radio in radian:
-                            r = radio.get_attribute(("value"))
-                            if "どちらでも" in r:
-                                radio.click()
-
-            except Exception as e:
-                print("押せない")
-                print(e)
-
-            try:
-                print(self.industry)
-                if self.industry != []:
-                    for radioarray in self.industry:
-                        radian = driver.find_elements(By.XPATH, "//input[@type='radio' and @name='"+ radioarray['name']+"']")
-                        for radio in radian:
-                            r = radio.get_attribute(("value"))
-                            if 'メーカー' in r:
-                                driver.execute_script("arguments[0].click();", radio)
-            except Exception as e:
-                print(traceback.format_exc())
-
-            time.sleep(2)
-            """
-
-        else:
-            fill_all_fields(driver, self.formdata)
-            input_text_field(driver, self.company, self.formdata['company'])
-            print("company:"+self.company)
-            input_text_field(driver, self.company_kana, self.formdata['company_kana'])
-            input_text_field(driver, self.manager, self.formdata['manager'])
-            print("manager:"+self.manager)
-            input_text_field(driver, self.manager_kana, self.formdata['manager_kana'])
-            input_text_field(driver, self.phone, self.formdata['phone'])
-            print("phone:"+self.phone)
-            input_text_field(driver, self.fax, self.formdata['fax'])
-            input_text_field(driver, self.address, self.formdata['address'])
-            print("address:"+self.address)
-            input_text_field(driver, self.mail, self.formdata['mail'])
-            print("mail:"+self.mail)
-            input_text_field(driver, self.mail_c, self.formdata['mail'])
-
-            for radio_info in self.radio:
-                select_radio_button(driver, radio_info['radioname'])
-
-            for checkbox_info in self.chk:
-                select_checkbox(driver, checkbox_info['checkname'])
-
-            #分割用電話番号
-            try:
-                if self.phone0 != '' and self.phone1 != '' and self.phone2 != '':
-                    phonesplit = self.formdata['phone'].split('-')
-                    driver.find_element(By.NAME,self.phone0).send_keys(phonesplit[0])
-                    driver.find_element(By.NAME,self.phone1).send_keys(phonesplit[1])
-                    driver.find_element(By.NAME,self.phone2).send_keys(phonesplit[2])
-            except Exception as e:
-                print("Error: Failed to submit form")
-                print(e)
-
-
-            try:
-                if self.zip != '':
-                    r = requests.get("https://api.excelapi.org/post/zipcode?address=" + self.formdata['address'])
-                    postman = r.text
-                    driver.find_element(By.NAME,self.zip).send_keys(postman[:3]+ "-" + postman[3:])
-            except Exception as e:
-                print("Error: Failed to submit form")
-                print(e)
-
-            try:
-                if self.pref != '':
-                    pref_data = ''
-                    pref = [
-                        "北海道","青森県","岩手県","宮城県","秋田県","山形県"," 福島県",
-                        "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都"," 神奈川県",
-                        "新潟県","富山県","石川県","福井県","山梨県","長野県"," 岐阜県",
-                        "静岡県","愛知県","三重県","滋賀県","京都府","大阪府"," 兵庫県",
-                        "奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県",
-                        "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県"," 長崎県",
-                        "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
-                    ]
-
-                    address = self.formdata['address']
-
-                    element = driver.find_element(By.NAME, self.pref)
-                    for p in pref:
-                        if p in address:
-                            if element.tag_name == "select":
-                                s = Select(element)
-                                s.select_by_visible_text(p)
-                                pref_data = p
-                            else:
-                                pref_data = p
-
-                    if self.address_city != '' and  self.address_thin != '':
-                        r = requests.get("https://geoapi.heartrails.com/api/json?method=getTowns&prefecture=" + pref_data)
-                        cityjs = r.json()
-                        city = cityjs["response"]["location"]
-                        print("cityjs")
-                        for c in city:
-                            print(c["city"])
-                            if c["city"] in address and c["town"] in address:
-                                driver.find_element(By.NAME,self.address_city).send_keys(c["city"])
-                                driver.find_element(By.NAME,self.address_thin).send_keys(c["town"])
-            except Exception as e:
-                print("Error: Failed to submit form")
-                print(e)
-
-
-            try:
-                if self.subjects != '':
-                    matching = False
-                    if self.subjects_radio_badge == True:
-                        print(self.chk)
-                        for c in self.chk:
-                            if 'お問い合わせ' in c['value']:
-                                checking = driver.find_element(By.XPATH,"//input[@name='" + c['checkname']+"' and @value='" + c['value']+"']")
-                                if not checking.is_selected():
-                                    driver.execute_script("arguments[0].click();", checking)
-
-                    if driver.find_element(By.NAME,self.subjects).tag_name == 'select':
-                        select = Select(driver.find_element(By.NAME,self.subjects))
-                        for opt in select.options:
-                            if self.formdata['subjects'] == opt:
-                                matching = True
-                                select.select_by_visible_text(opt)
-
-                        if matching == False:
-                            select.select_by_index(len(select.options)-1)
-
-
-                    else:
-                        driver.find_element(By.NAME,self.subjects).send_keys(self.formdata['subjects'])
-            except Exception as e:
-                print(f"Error encountered: {e}")
-                # ここに追加のエラー処理を書くことができます。
-
-            try:
-                if self.body != '':
-                    driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
-            except Exception as e:
-                print(f"Error encountered: {e}")
-                # ここに追加のエラー処理を書くことができます。
-
-
-            def click_button(driver, button_texts):
-                """
-                トライするテキスト(button_texts)ごとに、
-                1) //button[contains(text(), 'xxx')]
-                2) //input[contains(@value, 'xxx')]
-                の二種類のXPathを試し、見つかったらクリック。
-                見つからなければFalseを返す。
-                
-                ログをたくさん仕込んでデバッグしやすくした。
-                """
-                print(f"[click_button] Trying button_texts = {button_texts}")
-
-                for text in button_texts:
-                    print(f"[click_button] Checking text: {text}")
-                    xpaths = [
-                        f"//button[contains(text(), '{text}')]",
-                        f"//input[contains(@value, '{text}')]"
-                    ]
-
-                    for xpath in xpaths:
-                        print(f"  [click_button] Trying XPath: {xpath}")
-                        try:
-                            # 要素が「DOM上に存在」するだけでなく、「クリック可能」になるまで待機
-                            button = WebDriverWait(driver, 10).until(
-                                EC.element_to_be_clickable((By.XPATH, xpath))
-                            )
-                            print(f"    [click_button] Found element. Attempting to click. (tag_name={button.tag_name}, text={button.text}")
-                            print(f"    Value Attribute: {button.get_attribute('value')}")
-                            print(f"    Outer HTML:\n{button.get_attribute('outerHTML')}")
-                            print(f"    [click_button] Found element. Attempting to click. {button}")
-
-                            print(f"    [click_button] Found element. Checking properties...")
-
-                            # 1️⃣ 表示されているか確認
-                            if not button.is_displayed():
-                                print("    [click_button] Button is NOT visible. Forcing display...")
-                                driver.execute_script("arguments[0].style.display = 'block';", button)
-                                time.sleep(1)
-
-                            # 2️⃣ `disabled` になっていないかチェック
-                            if button.get_attribute("disabled"):
-                                print("    [click_button] Button is DISABLED. Enabling it...")
-                                driver.execute_script("arguments[0].removeAttribute('disabled');", button)
-                                time.sleep(1)
-
-                            # 3️⃣ `scrollIntoView()` を試す
-                            print("    [click_button] Scrolling into view...")
-                            driver.execute_script("arguments[0].scrollIntoView();", button)
-                            time.sleep(1)
-
-                            # 4️⃣ 通常の `click()` を試す
-                            print("    [click_button] Attempting normal click...")
-                            try:
-                                button.click()
-                                print(f"    [click_button] Click succeeded on XPath: {xpath}")
-                                return True
-                            except Exception as e:
-                                print(f"    [click_button] Normal click failed: {type(e).__name__}, {str(e)}")
-
-                            # 5️⃣ JavaScript click() を試す
-                            print("    [click_button] Trying JavaScript click()...")
-                            driver.execute_script("arguments[0].click();", button)
-                            print("    [click_button] JavaScript click succeeded!")
-                            print(f"    [click_button] Click succeeded on XPath: {xpath}")
-                            return True
-
-                        except Exception as e:
-                            # 例外が発生してもループを続け、別のXPathを試す
-                            print(f"    [click_button] Exception while searching/clicking element for XPath: {xpath}")
-                            # print(f"    [click_button] Exception: {type(e).__name__}, {str(e)}")
-                            # print(traceback.format_exc())
-
-                # すべてのパターンを試しても成功しなかった場合
-                print("[click_button] No matching button found or no clickable state.")
-                return False
-
-            try:
-                before = driver.title
-                def handle_alert(driver):
-                    """アラートが表示されたらOKを押す"""
+        options = Options() # Use Options from selenium.webdriver.chrome.options
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-gpu')
+        options.add_argument("window-size=1280x800") # Adjusted window size
+        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
+
+        # Consider making chromedriver path configurable or rely on webdriver_manager
+        try:
+            serv = Service(ChromeDriverManager().install())
+        except Exception as e:
+            print(f"Failed to install/initialize ChromeDriver: {e}")
+            return {"status": "NG", "reason": "chromedriver_initialization_failed"}
+
+        driver = None
+        try:
+            driver = webdriver.Chrome(service=serv, options=options)
+            driver.get(self.endpoint)
+            time.sleep(3) # Allow initial page load
+
+            initial_url = driver.current_url
+            initial_title = driver.title.lower()
+
+            # --- Helper Functions within go_selenium ---
+            def click_button_by_text(driver_instance, button_texts_list, exact_match=False):
+                for text_val in button_texts_list:
                     try:
-                        WebDriverWait(driver, 3).until(EC.alert_is_present())  # 3秒間アラートが出るのを待つ
-                        alert = driver.switch_to.alert  # アラートを取得
-                        print(f"[handle_alert] Alert detected: {alert.text}")  # アラートの内容を表示
-                        alert.accept()  # OKを押す
-                        print("[handle_alert] Alert accepted.")
-                        return True
-                    except NoAlertPresentException:
-                        print("[handle_alert] No alert detected.")
-                        return False
-                    except UnexpectedAlertPresentException as e:
-                        print(f"[handle_alert] Unexpected alert: {str(e)}")
-                        return False                    
-                    except Exception as e:
-                        print(f"[handle_alert] Error in confirm_and_submit: {e}")
-                        return False
-                def confirm_and_submit(driver):
-                    """
-                    1. 「確認」ボタンを押す
-                    2. 確認画面に遷移したら、もう一度「送信」ボタンを探して押す
-                    """
-                    try:
-                        before_title = driver.title  # 現在のページタイトルを取得
-
-                        # 「確認」ボタンをクリック
-                        if click_button(driver, ['確認']):
-                            print("Clicked the 'confirm' button")
-                            time.sleep(2)  # ページ遷移を待つ
-
-                            # ページタイトルが変わったか（確認画面に遷移したか）チェック
-                            after_title = driver.title
-                            if before_title != after_title:
-                                print("[confirm_and_submit] Confirm page detected, proceeding to submission...")
-
-                                # もう一度「送信」ボタンを探してクリック
-                                if click_button(driver, ['送信']):
-                                    print("Clicked the 'submit' button")
-                                    return "OK"
-                                else:
-                                    print("Error: Could not find 'submit' button after confirm.")
-                                    return "NG"
-                            else:
-                                print("[confirm_and_submit] No page transition detected, '送信' button might be on the same page.")
-
-                                # そのまま「送信」ボタンがある可能性もあるので、試す
-                                if click_button(driver, ['送信']):
-                                    print("Clicked the 'submit' button")
-                                    return "OK"
-                                else:
-                                    print("Error: Could not find 'submit' button even on the same page.")
-                                    return "NG"
-
+                        if exact_match:
+                            xpath_query = f"//button[normalize-space()='{text_val}'] | //input[@type='submit' and normalize-space(@value)='{text_val}'] | //input[@type='button' and normalize-space(@value)='{text_val}'] | //a[normalize-space()='{text_val}' and (contains(concat(' ', normalize-space(@class), ' '), ' btn ') or contains(concat(' ', normalize-space(@class), ' '), ' button ')]"
                         else:
-                            print("Error: Could not find 'confirm' button.")
-                            return "NG"
+                            xpath_query = f"//button[contains(normalize-space(), '{text_val}')] | //input[@type='submit' and contains(normalize-space(@value), '{text_val}')] | //input[@type='button' and contains(normalize-space(@value), '{text_val}')] | //a[contains(normalize-space(), '{text_val}') and (contains(concat(' ', normalize-space(@class), ' '), ' btn ') or contains(concat(' ', normalize-space(@class), ' '), ' button ')]"
+                        
+                        buttons = driver_instance.find_elements(By.XPATH, xpath_query)
+                        if buttons:
+                            for button in buttons:
+                                if button.is_displayed() and button.is_enabled():
+                                    driver_instance.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)
+                                    time.sleep(0.5)
+                                    button.click()
+                                    print(f"Clicked button with text/value containing: '{text_val}'")
+                                    return True
+                    except (NoSuchElementException, ElementNotInteractableException) as e_click:
+                        print(f"Could not click button '{text_val}': {e_click}")
+                    except Exception as e_general:
+                        print(f"Error finding/clicking button '{text_val}': {e_general}")
+                print(f"No clickable button found for texts: {button_texts_list}")
+                return False
 
-                    except Exception as e:
-                        print(f"Error in confirm_and_submit: {e}")
-                        return "NG"
-                # "確認" または "送信" ボタンをクリック
-                if click_button(driver, ['確認']):
-                    print("Clicked the 'confirm' button")
-                    handle_alert(driver)
-                elif click_button(driver, ['送信']):
-                    print("Clicked the 'submit' button")
-                    handle_alert(driver)
-                else:
-                    print("Error: Could not find either 'confirm' or 'submit' button")
-                    driver.close()
-                    return 'NG'
+            def check_success_messages(driver_instance, initial_url_val, initial_title_val):
+                time.sleep(3) # Wait for potential redirects or dynamic content
+                current_url = driver_instance.current_url
+                current_title = driver_instance.title.lower()
+                page_source = driver_instance.page_source.lower()
 
-                # 送信が成功したかどうかの確認（タイトルの変更を確認）
-                time.sleep(3)  # 送信後のページへの移動を待機
-                after = driver.title
-                page_source = driver.page_source
-                # "確認" または "送信" ボタンをクリック
-                if click_button(driver, ['確認']):
-                    print("Clicked the 'confirm' button")
-                    handle_alert(driver)
-                elif click_button(driver, ['送信']):
-                    print("Clicked the 'submit' button")
-                    handle_alert(driver)
-                else:
-                    print("Error: Could not find either 'confirm' or 'submit' button")
-                    driver.close()
-                    return 'OK'
-                driver.close()
-                return 'OK'
-                # if before != after or "ありがとう" in page_source or "完了" in page_source:  # タイトルが変わった場合、送信成功と判断
-                #     driver.close()
-                #     return 'OK'
-                # else:
-                #     driver.close()
-                #     print("Error: Failed to submit form")
-                #     return 'NG'
+                # Check 1: Significant URL change (and not an error page)
+                if initial_url_val != current_url and not any(err_kw in current_url.lower() for err_kw in ["error", "fail", "エラー", "失敗", "contact", "inquiry"]): # Avoid counting reload of contact page as success
+                    if not any(kw in current_url.lower() for kw in ["confirm", "check", "preview"]): # Ensure it's not just a confirmation page
+                        print(f"Success: URL changed from '{initial_url_val}' to '{current_url}'")
+                        return True
+                
+                # Check 2: Title change (less reliable, but can be an indicator)
+                # if initial_title_val != current_title and not any(err_kw in current_title for err_kw in ["error", "fail", "エラー", "失敗"]):
+                #     print(f"Success: Title changed from '{initial_title_val}' to '{current_title}'")
+                #     return True
 
-            except Exception as e:
-                print(f"Error: {e}")
-                print("submit false")
-                driver.close()
-                return 'NG'
+                success_keywords = [
+                    "ありがとうございます", "有難う", "完了しました", "送信しました", "受け付けました", "お問い合わせいただき",
+                    "thank you", "complete", "submitted", "success", "received your message"
+                ]
+                for keyword in success_keywords:
+                    if keyword in page_source:
+                        # Further check: ensure the keyword is visible
+                        try:
+                            elements_with_keyword = driver_instance.find_elements(By.XPATH, f"//*[contains(translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '{keyword}') and string-length(normalize-space(text())) > 0]")
+                            if any(el.is_displayed() for el in elements_with_keyword):
+                                print(f"Success: Found visible keyword '{keyword}' in page source.")
+                                return True
+                        except:
+                            pass # Ignore if elements can't be checked
+                return False
+
+            def check_error_messages(driver_instance):
+                page_source = driver_instance.page_source.lower()
+                # More specific error keywords
+                error_keywords = [
+                    "エラーが発生しました", "必須項目です", "入力してください", "正しくありません", "入力に誤りがあります",
+                    "is required", "please enter", "invalid format", "error occurred", "failed"
+                ]
+                # Check for visible error messages associated with inputs or general error areas
+                common_error_xpaths = [
+                    "//*[contains(@class, 'error') and string-length(normalize-space(text())) > 0]",
+                    "//*[contains(@class, 'alert') and string-length(normalize-space(text())) > 0]",
+                    "//p[contains(translate(normalize-space(text()), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'エラー')]",
+                    "//span[contains(translate(normalize-space(text()), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '必須')]"
+                ]
+                for xpath in common_error_xpaths:
+                    try:
+                        error_elements = driver_instance.find_elements(By.XPATH, xpath)
+                        if any(el.is_displayed() for el in error_elements):
+                            for el in error_elements:
+                                if el.is_displayed():
+                                    print(f"Failure: Found visible error message by XPath '{xpath}': {el.text[:100]}")
+                                    return True
+                    except: pass
+                
+                for keyword in error_keywords:
+                    if keyword in page_source:
+                         try: # Check for visible error messages
+                            error_elements = driver_instance.find_elements(By.XPATH, f"//*[(self::p or self::span or self::div or self::li) and (contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '{keyword}')) and string-length(normalize-space(text())) > 0]")
+                            if any(el.is_displayed() for el in error_elements):
+                                print(f"Failure: Found visible error message with keyword '{keyword}'.")
+                                return True
+                         except: pass
+                # Check for input fields marked with error classes or aria-invalid
+                error_inputs = driver_instance.find_elements(By.XPATH, "//input[@aria-invalid='true' or contains(@class, 'error') or contains(@class, 'invalid')] | //textarea[@aria-invalid='true' or contains(@class, 'error') or contains(@class, 'invalid')]")
+                if any(el.is_displayed() for el in error_inputs):
+                    print("Failure: Found input fields marked with error classes or aria-invalid.")
+                    return True
+                return False
+
+            def check_for_captcha(driver_instance):
+                captcha_indicators_xpath = [
+                    "//iframe[contains(@src, 'recaptcha') or contains(@title, 'reCAPTCHA')]",
+                    "//*[contains(@class, 'g-recaptcha') or contains(@id, 'recaptcha') or contains(@data-sitekey, '')]", # Check for data-sitekey
+                    "//img[contains(@src, 'captcha') or contains(@id, 'captcha')]",
+                    "//input[contains(@name, 'captcha') or contains(@id, 'captcha') or contains(@placeholder, '画像認証')]"
+                ]
+                page_source_lower = driver_instance.page_source.lower()
+                captcha_keywords_text = ["captcha", "画像認証", "認証コード", "ロボットではない", "security check", "verify you are human"]
+
+                for xpath_query in captcha_indicators_xpath:
+                    try:
+                        if driver_instance.find_elements(By.XPATH, xpath_query):
+                            print(f"CAPTCHA detected by XPath: {xpath_query}")
+                            return True
+                    except: pass
+                
+                for keyword in captcha_keywords_text:
+                    if keyword in page_source_lower:
+                        print(f"CAPTCHA detected by keyword in page source: '{keyword}'")
+                        return True
+                return False
+
+            # --- CAPTCHA Check Before Filling ---
+            if check_for_captcha(driver):
+                print("CAPTCHA detected on initial page load.")
+                return {"status": "NG", "reason": "captcha_detected_on_load"}
+
+            # --- Iframe Handling ---
+            if self.iframe_mode:
+                try:
+                    iframes = driver.find_elements(By.TAG_NAME, 'iframe')
+                    if iframes:
+                        # Try to find a form-like iframe
+                        found_form_iframe = False
+                        for idx, iframe_el in enumerate(iframes):
+                            try:
+                                driver.switch_to.frame(iframe_el)
+                                if driver.find_elements(By.XPATH, "//form"): # Check if form exists in this iframe
+                                    print(f"Switched to iframe (index {idx}) containing a form.")
+                                    found_form_iframe = True
+                                    break 
+                                else:
+                                    driver.switch_to.parent_frame() # Switch back if no form
+                            except Exception as e_iframe_switch:
+                                print(f"Error switching to or checking iframe {idx}: {e_iframe_switch}")
+                                driver.switch_to.default_content() # Ensure back to main if error
+                        if not found_form_iframe and iframes: # Fallback to first iframe if specific one not found
+                             driver.switch_to.default_content()
+                             driver.switch_to.frame(iframes[0])
+                             print("Switched to the first iframe as a fallback.")
+                    else:
+                        print("iframe_mode is true, but no iframe found.")
+                        # return {"status": "NG", "reason": "iframe_not_found"} # Decide if this is critical
+                except Exception as e:
+                    print(f"Error switching to iframe: {e}")
+                    return {"status": "NG", "reason": f"iframe_switch_error: {str(e)}"}
+            
+            # --- Field Filling ---
+            # Map your formdata keys to the instance variables that hold field names
+            field_data_map = {
+                self.company: self.formdata.get('company'),
+                self.company_kana: self.formdata.get('company_kana'),
+                self.manager: self.formdata.get('manager'),
+                self.manager_kana: self.formdata.get('manager_kana'),
+                self.manager_first: self.formdata.get('manager_first'), # Assuming formdata has these if split
+                self.manager_last: self.formdata.get('manager_last'),
+                self.manager_first_kana: self.formdata.get('manager_first_kana'),
+                self.manager_last_kana: self.formdata.get('manager_last_kana'),
+                self.phone: self.formdata.get('phone'),
+                self.fax: self.formdata.get('fax'),
+                self.address: self.formdata.get('address'), # For a single address field
+                self.zip: self.formdata.get('zip'), # For a single zip field
+                self.mail: self.formdata.get('mail'),
+                self.mail_c: self.formdata.get('mail'), # Email confirmation, use same email
+                self.subjects: self.formdata.get('subjects'), # For subject line / inquiry type (if text)
+                self.body: self.formdata.get('body'),
+                self.url: self.formdata.get('url') # If there's a URL field
+            }
+
+            for field_html_name, value_to_fill in field_data_map.items():
+                if field_html_name and value_to_fill:
+                    try:
+                        # Try input and textarea. Selects are handled separately.
+                        elements = driver.find_elements(By.NAME, field_html_name)
+                        if not elements: # Fallback to ID if name not found
+                             elements = driver.find_elements(By.ID, field_html_name)
+                        
+                        for element in elements: # Iterate if multiple elements share a name (e.g. radio group)
+                            if element.is_displayed() and element.is_enabled():
+                                if element.tag_name == "input" and element.get_attribute("type") not in ["radio", "checkbox", "submit", "button", "hidden", "file"]:
+                                    element.clear()
+                                    element.send_keys(value_to_fill)
+                                    print(f"Filled input '{field_html_name}' with '{value_to_fill[:30]}...'")
+                                elif element.tag_name == "textarea":
+                                    element.clear()
+                                    element.send_keys(value_to_fill)
+                                    print(f"Filled textarea '{field_html_name}' with '{value_to_fill[:30]}...'")
+                                break # Assuming first interactable element is the target
+                    except (NoSuchElementException, ElementNotInteractableException):
+                        print(f"Field '{field_html_name}' not found or not interactable.")
+                    except Exception as e_fill:
+                        print(f"Error filling field '{field_html_name}': {e_fill}")
+            
+            # Specific handling for split phone numbers (if self.phone0,1,2 are set by logicer)
+            if self.phone0 and self.phone1 and self.phone2 and self.formdata.get('phone'):
+                try:
+                    phone_parts = self.formdata['phone'].replace('‐', '-').replace('ー', '-').split('-')
+                    if len(phone_parts) == 3:
+                        driver.find_element(By.NAME, self.phone0).send_keys(phone_parts[0])
+                        driver.find_element(By.NAME, self.phone1).send_keys(phone_parts[1])
+                        driver.find_element(By.NAME, self.phone2).send_keys(phone_parts[2])
+                        print("Filled split phone number.")
+                except Exception as e_phone_split:
+                    print(f"Error filling split phone number: {e_phone_split}")
+
+            # Specific handling for select dropdowns (Prefecture, Subject if it's a select)
+            # Prefecture
+            if self.pref and self.formdata.get('address'): # self.pref is the name of the select tag
+                try:
+                    pref_element = driver.find_element(By.NAME, self.pref)
+                    if pref_element.tag_name == "select" and pref_element.is_displayed() and pref_element.is_enabled():
+                        select_obj = Select(pref_element)
+                        address_lower = self.formdata['address'].lower()
+                        # Iterate through options to find a match (partial or full)
+                        found_pref = False
+                        for option in select_obj.options:
+                            option_text_lower = option.text.lower()
+                            if option_text_lower and option_text_lower in address_lower: # Simple substring match
+                                select_obj.select_by_visible_text(option.text)
+                                print(f"Selected prefecture '{option.text}'")
+                                found_pref = True
+                                break
+                        if not found_pref: print(f"Could not auto-select prefecture for '{self.pref}'")
+                except Exception as e_pref:
+                    print(f"Error selecting prefecture '{self.pref}': {e_pref}")
+            
+            # Subject if it's a select (self.subjects might be input or select)
+            if self.subjects and self.formdata.get('subjects'):
+                try:
+                    subject_element = driver.find_element(By.NAME, self.subjects)
+                    if subject_element.tag_name == "select" and subject_element.is_displayed() and subject_element.is_enabled():
+                        select_obj = Select(subject_element)
+                        subject_value = self.formdata['subjects']
+                        found_subject_option = False
+                        for option in select_obj.options: # Try exact match first
+                            if option.text == subject_value or option.get_attribute('value') == subject_value:
+                                select_obj.select_by_visible_text(option.text) # or select_by_value
+                                print(f"Selected subject option: '{option.text}'")
+                                found_subject_option = True
+                                break
+                        if not found_subject_option and len(select_obj.options) > 1: # Fallback: select a common default or last
+                             # Avoid selecting the "Please select" option if value is empty or placeholder
+                            for opt_idx in range(len(select_obj.options) -1, 0, -1): # Iterate backwards, skip first if it's placeholder
+                                if select_obj.options[opt_idx].get_attribute('value') != "":
+                                    select_obj.select_by_index(opt_idx)
+                                    print(f"Selected fallback subject option: '{select_obj.options[opt_idx].text}'")
+                                    break
+                except (NoSuchElementException, ElementNotInteractableException):
+                     pass # If it's not a select, it would have been handled by the general input filler
+                except Exception as e_subj_select:
+                    print(f"Error selecting subject from dropdown '{self.subjects}': {e_subj_select}")
 
 
-            """
-            ## 規約 プライバシーポリシーチェック
-            try:
-                print(self.kiyakucheck)
-                if self.kiyakucheck != {}:
-                    checking = driver.find_element(By.XPATH,"//input[@name='" + self.kiyakucheck['name']+"']")
-                    if not checking.is_selected():
-                        driver.execute_script("arguments[0].click();", checking)
-            except Exception as e:
-                print("同意エラー")
-                print(e)
+            # Handle Radio Buttons (self.radio is a list of {"radioname": name, "value": value_to_select_if_known})
+            for radio_group_info in self.radio: # self.radio should contain {'radioname': 'name_of_group'}
+                radio_name = radio_group_info.get('radioname')
+                # value_to_select = radio_group_info.get('value') # Your logicer seems to store all values, not a specific one to pick
+                if radio_name:
+                    try:
+                        radio_buttons = driver.find_elements(By.NAME, radio_name)
+                        if radio_buttons:
+                            # Default: select the first available radio button if no specific value is targeted
+                            # Or, if your formdata has a key that matches radio_name, use that value
+                            selected_a_radio = False
+                            for radio_btn in radio_buttons:
+                                if radio_btn.is_displayed() and radio_btn.is_enabled():
+                                    # Add logic here if you want to select a specific value based on self.formdata
+                                    # For now, clicking the first one that's interactable.
+                                    radio_btn.click()
+                                    print(f"Clicked radio button from group '{radio_name}' (value: {radio_btn.get_attribute('value')})")
+                                    selected_a_radio = True
+                                    break 
+                            if not selected_a_radio:
+                                print(f"No interactable radio button found for group '{radio_name}'")
+                    except Exception as e_radio:
+                        print(f"Error with radio button group '{radio_name}': {e_radio}")
+            
+            # Handle Checkboxes (self.chk is a list of {"checkname": name, "value": value_if_specific})
+            # This includes the agreement/kiyaku checkbox
+            checkboxes_to_tick = []
+            if self.kiyakucheck and self.kiyakucheck.get('name'):
+                 checkboxes_to_tick.append(self.kiyakucheck.get('name'))
+            
+            for chk_info in self.chk: # self.chk from logicer
+                chk_name = chk_info.get('checkname')
+                if chk_name and chk_name not in checkboxes_to_tick: # Avoid double-adding kiyaku
+                    # Add logic here if you need to decide whether to check it based on 'value' or formdata
+                    # For now, assume all identified checkboxes (other than kiyaku) should be checked if found
+                    checkboxes_to_tick.append(chk_name)
 
-            ## 連絡方法
-            try:
-                if self.response_contact != []:
-                    for radioarray in self.response_contact:
-                        radian = driver.find_elements(By.XPATH, "//input[@type='radio' and @name='"+ radioarray['name']+"']")
-                        for radio in radian:
-                            r = radio.get_attribute(("value"))
-                            if "どちらでも" in r:
-                                radio.click()
+            for chk_name_to_tick in list(set(checkboxes_to_tick)): # Use set to ensure unique names
+                try:
+                    checkboxes = driver.find_elements(By.NAME, chk_name_to_tick)
+                    if not checkboxes: checkboxes = driver.find_elements(By.ID, chk_name_to_tick) # Fallback to ID
 
-            except Exception as e:
-                print("押せない")
-                print(e)
+                    for checkbox in checkboxes:
+                        if checkbox.is_displayed() and checkbox.is_enabled() and not checkbox.is_selected():
+                            # driver.execute_script("arguments[0].scrollIntoView(true);", checkbox)
+                            # time.sleep(0.2)
+                            checkbox.click() # JavaScript click can be more reliable: driver.execute_script("arguments[0].click();", checkbox)
+                            print(f"Clicked checkbox: '{chk_name_to_tick}'")
+                            break # Assume one checkbox per name is sufficient
+                except Exception as e_chk:
+                    print(f"Error with checkbox '{chk_name_to_tick}': {e_chk}")
 
-            try:
-                print(self.industry)
-                if self.industry != []:
-                    for radioarray in self.industry:
-                        radian = driver.find_elements(By.XPATH, "//input[@type='radio' and @name='"+ radioarray['name']+"']")
-                        for radio in radian:
-                            r = radio.get_attribute(("value"))
-                            if 'メーカー' in r:
-                                driver.execute_script("arguments[0].click();", radio)
-            except Exception as e:
-                print(traceback.format_exc())
+            time.sleep(1) # Brief pause after filling form
 
-            time.sleep(2)
-            """
+            # --- CAPTCHA Check Before Submission ---
+            if check_for_captcha(driver):
+                print("CAPTCHA detected before attempting submission.")
+                return {"status": "NG", "reason": "captcha_detected_before_submit"}
 
+            # --- Submission Process ---
+            # Common texts for confirm buttons (Japanese and English)
+            confirm_button_texts = ['確認画面へ', '確認する', '内容確認', '次へ', '進む', '入力内容の確認', 'Confirm', 'Next', 'Continue', 'Preview']
+            # Common texts for final submit buttons
+            submit_button_texts = ['送信する', '登録する', '申し込む', 'この内容で送信', '上記内容で送信', 'Submit', 'Send', 'Register', 'Complete', '送信']
+
+            clicked_confirm = click_button_by_text(driver, confirm_button_texts)
+            
+            if clicked_confirm:
+                print("On confirmation page (assumed after clicking confirm-like button).")
+                time.sleep(2) # Wait for confirmation page to load
+                if check_error_messages(driver):
+                    return {"status": "NG", "reason": "error_on_confirmation_page"}
+                if check_for_captcha(driver): # Check for CAPTCHA on confirmation page
+                    return {"status": "NG", "reason": "captcha_on_confirmation_page"}
+                
+                clicked_final_submit = click_button_by_text(driver, submit_button_texts)
+                if not clicked_final_submit:
+                    # If no explicit submit, sometimes the confirm button itself is the final step
+                    # or the page auto-submits. We rely on check_success_messages.
+                    print("No distinct final submit button found/clicked after confirm. Will check for success messages.")
+                    # return {"status": "NG", "reason": "final_submit_button_not_found_after_confirm"}
+            else:
+                # No confirm button found, try direct submission
+                print("No confirm button found, attempting direct submission.")
+                clicked_direct_submit = click_button_by_text(driver, submit_button_texts)
+                if not clicked_direct_submit:
+                    return {"status": "NG", "reason": "submit_button_not_found_on_form"}
+
+            # --- Final Success/Failure Check ---
+            if check_success_messages(driver, initial_url, initial_title):
+                return {"status": "OK", "reason": "submission_successful_message_detected"}
+            elif check_error_messages(driver): # Check for errors again after final submit attempt
+                return {"status": "NG", "reason": "error_message_after_final_submission_attempt"}
+            else:
+                # Fallback: if URL changed significantly and no explicit errors, consider it a potential success
+                current_url_final = driver.current_url
+                if initial_url != current_url_final and not any(err_kw in current_url_final.lower() for err_kw in ["error", "fail", "contact", "inquiry"]):
+                     if not any(kw in current_url_final.lower() for kw in ["confirm", "check", "preview"]): # Ensure it's not stuck on a confirm page
+                        print(f"URL changed from '{initial_url}' to '{current_url_final}' with no explicit errors. Assuming success.")
+                        return {"status": "OK", "reason": "url_changed_no_errors_detected"}
+
+                return {"status": "NG", "reason": "submission_outcome_unclear_no_success_or_error_message"}
+
+        except TimeoutException:
+            print("TimeoutException occurred during Selenium operation.")
+            traceback.print_exc()
+            return {"status": "NG", "reason": "selenium_timeout"}
+        except Exception as e:
+            print(f"General error in go_selenium: {e}")
+            traceback.print_exc()
+            # Try to get current URL if driver is available
+            current_url_on_error = "unknown"
+            if driver:
+                try:
+                    current_url_on_error = driver.current_url
+                except: pass
+            return {"status": "NG", "reason": f"exception_in_go_selenium: {str(e)[:100]} at {current_url_on_error}"}
+        finally:
+            if driver:
+                driver.quit()
+                
 #switch = 1 #debug mode
 switch = 0
 
@@ -1009,11 +821,46 @@ elif switch == 1:
         "manager_kana":"タマガワ フラン",
         "phone":"090-3795-5760",
         "fax":"",
-        "address":"東京都目黒区中目黒",
+        "address":"東京都目黒区中目黒", # Consider adding a prefecture for self.pref testing
         "mail":"info@tamagawa.com",
-        "subjects":"システム開発！Webデザインは、YSMT製作所へ！",
-        "body":"はじめまして。 たまがわです。この度、Webデザインを始めてみました。"
+        "subjects":"システム開発のご相談", # Test subject
+        "body":"はじめまして。 たまがわと申します。\nこの度、貴社のウェブサイトを拝見し、システム開発についてご相談させて頂きたくご連絡いたしました。\nよろしくお願いいたします。" # Test body
     }
-    url = "https://ri-plus.jp/contact"
-    #url = "https://www.amo-pack.com/contact/index.html"
+    # url = "https://ri-plus.jp/contact"
+    # url = "https://www.amo-pack.com/contact/index.html"
 
+    print(f"--- Debug Mode Activated for URL: {url} ---")
+    try:
+        # Instantiate Place_enter with the debug data
+        # This assumes your Place_enter.__init__ is ready to parse the form
+        # and logicer correctly identifies fields.
+        automation_instance = Place_enter(url, form_data)
+
+        # Check if form parsing was successful (optional, depends on your __init__)
+        if not automation_instance.form:
+            print("DEBUG: Place_enter failed to find or initialize the form. Exiting debug run.")
+        else:
+            print(f"DEBUG: Place_enter initialized. Identified field names (examples):")
+            print(f"  Company field name: {automation_instance.company}")
+            print(f"  Manager field name: {automation_instance.manager}")
+            print(f"  Email field name: {automation_instance.mail}")
+            print(f"  Email Confirm field name: {automation_instance.mail_c}")
+            print(f"  Body field name: {automation_instance.body}")
+            print(f"  Kiyaku checkbox name: {automation_instance.kiyakucheck.get('name') if automation_instance.kiyakucheck else 'Not identified'}")
+            # print(f"  Namelist from logicer: {automation_instance.namelist}") # Can be very verbose
+
+            # Call the go_selenium method
+            print("DEBUG: Calling go_selenium...")
+            result = automation_instance.go_selenium()
+
+            # Print the result
+            print(f"--- Debug Mode Selenium Result ---")
+            print(f"Status: {result.get('status')}")
+            print(f"Reason: {result.get('reason')}")
+
+    except Exception as e_debug:
+        print(f"--- Debug Mode Error ---")
+        print(f"An error occurred during the debug run: {e_debug}")
+        traceback.print_exc()
+
+    print(f"--- Debug Mode Finished ---")
