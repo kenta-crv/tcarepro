@@ -133,3 +133,5 @@ gem 'dotenv-rails', groups: [:development, :test]
 
 gem 'sidekiq'
 gem 'sidekiq-cron' # 必要に応じてスケジュール管理用
+
+gem 'open3'

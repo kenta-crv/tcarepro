@@ -72,4 +72,34 @@ class Sender < ApplicationRecord
 
     contact_tracking.save!
   end
+
+  def default_inquiry_id
+    # Example: if you have a direct association or a setting
+    # self.primary_inquiry_id 
+    # Or if you have a default_inquiry association:
+    # self.default_inquiry&.id
+    # For now, ensure this returns an Integer ID.
+    # Replace with your actual logic. If it's an attribute, no method needed.
+    # If it's an association `belongs_to :default_inquiry, class_name: 'Inquiry'`, then use default_inquiry.id
+    # This is a placeholder, update with your logic:
+    Inquiry.first&.id # !!! Replace this with your actual logic for default inquiry ID
+  end
+
+  # Used by the worker to generate a unique code for each tracking attempt
+  def generate_code
+    # Example: SecureRandom.hex(10) or a more structured code
+    "gen_#{Time.now.to_i}_#{SecureRandom.hex(6)}"
+  end
+
+  # Used by the worker to set the callback URL on ContactTracking
+  # This URL is where Python *would* call back if it were to report on individual submission attempts.
+  # Note: Your current Python /api/v1/rocketbumb just acknowledges scheduling.
+  # If Python's actual form submission part later needs to call back to Rails with success/failure
+  # for a *specific generation_code*, this URL would be used.
+  def callback_url(generation_code)
+    # Example: using Rails URL helpers. Ensure you have a route for this.
+    # Rails.application.routes.url_helpers.api_v1_submission_update_url(host: ENV['APP_BASE_URL'], code: generation_code)
+    # For now, a placeholder structure:
+    "#{ENV.fetch('APP_BASE_URL', 'http://localhost:3000')}/callbacks/autoform/#{generation_code}"
+  end
 end
