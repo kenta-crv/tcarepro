@@ -27,7 +27,7 @@ gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 gem 'gon'
@@ -65,7 +65,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'bootstrap', '~> 4.1.1'
+gem 'bootstrap', '~> 4.0.0'
 gem 'jquery-rails'
 
 gem 'devise'
@@ -76,11 +76,11 @@ gem 'meta-tags'
 gem 'thinreports'
 
 gem 'slim-rails'
-gem 'redis'
-gem 'redis-rails'
+# gem 'redis'
+# gem 'redis-rails'
 gem 'pry-rails'
 
-gem 'bootstrap-sass'
+# gem 'bootstrap-sass', '~> 3.0.0'
 
 gem 'carrierwave'
 
@@ -95,7 +95,7 @@ gem 'haml-rails'
 
 gem 'ransack'
 
-gem 'dotenv-rails'
+
 gem 'faker'
 gem 'roo'
 
@@ -124,14 +124,12 @@ gem 'httparty'
 
 gem 'audiojs-rails'
 
-gem 'thinreports'
-
 gem 'rails_autolink'
 
 gem 'rails-html-sanitizer', '1.4.3'
 gem 'dotenv-rails', groups: [:development, :test]
 
-gem 'sidekiq'
+gem 'sidekiq', '~> 5.2'
 gem 'sidekiq-cron' # 必要に応じてスケジュール管理用
 
 gem 'open3'
