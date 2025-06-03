@@ -269,20 +269,29 @@ scope :before_sended_at, ->(sended_at){
     ["customer_id" ,"statu", "time", "comment", "created_at","updated_at"]
   end
   
-  def self.all_import(file, skip_repurpose: false)
-    begin
-      save_count = import(file)
-      call_count = call_import(file)[:save_count]
-      repurpose_count = skip_repurpose ? 0 : repurpose_import(file)[:repurpose_import_count]
-      draft_count = draft_import(file)[:draft_count]
+  #def self.all_import(file, skip_repurpose: false)
+   # begin
+   #   save_count = import(file)
+   #   call_count = call_import(file)[:save_count]
+   #   repurpose_count = skip_repurpose ? 0 : repurpose_import(file)[:repurpose_import_count]
+   #   draft_count = draft_import(file)[:draft_count]
   
-      notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count}件　転用件数: #{repurpose_count}件　ドラフト件数: #{draft_count}件"
-      CustomerMailer.upload_process_complete('okuyama@ri-plus.jp', notice_message).deliver_now
-    rescue => e
-      error_message = "ファイルインポート中にエラーが発生しました。\n\nエラー内容: #{e.message}\n\nバックトレース:\n#{e.backtrace.join("\n")}"
-      CustomerMailer.upload_process_failed('okuyama@ri-plus.jp', error_message).deliver_now
-    end
+   #   notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count}件　転用件数: #{repurpose_count}件　ドラフト件数: #{draft_count}件"
+   #   CustomerMailer.upload_process_complete('okuyama@ri-plus.jp', notice_message).deliver_now
+   # rescue => e
+   #   error_message = "ファイルインポート中にエラーが発生しました。\n\nエラー内容: #{e.message}\n\nバックトレース:\n#{e.backtrace.join("\n")}"
+   #   CustomerMailer.upload_process_failed('okuyama@ri-plus.jp', error_message).deliver_now
+   # end
+  #end
+  def self.all_import(file, skip_repurpose: false)
+    save_count = import(file)
+    call_count = call_import(file)[:save_count]
+    repurpose_count = skip_repurpose ? 0 : repurpose_import(file)[:repurpose_import_count]
+    draft_count = draft_import(file)[:draft_count]
+  
+    { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
   end
+
 
   def self.import(file)
     save_count = 0

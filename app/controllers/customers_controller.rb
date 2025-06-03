@@ -276,21 +276,38 @@ class CustomersController < ApplicationController
     @customers =  Customer.all
   end
 
-  def all_import
-    skip_repurpose = params[:skip_repurpose]
+  #def all_import
+   # skip_repurpose = params[:skip_repurpose]
   
     # Save uploaded file temporarily
-    uploaded_file = params[:file]
-    temp_file_path = Rails.root.join('tmp', "#{SecureRandom.uuid}_#{uploaded_file.original_filename}")
-    File.open(temp_file_path, 'wb') do |file|
-      file.write(uploaded_file.read)
-    end
+  #  uploaded_file = params[:file]
+  #  temp_file_path = Rails.root.join('tmp', "#{SecureRandom.uuid}_#{uploaded_file.original_filename}")
+  #  File.open(temp_file_path, 'wb') do |file|
+  #    file.write(uploaded_file.read)
+  #  end
   
     # Enqueue background job
-    skip_repurpose_flag = params[:skip_repurpose] == "1"
-    CustomerImportJob.perform_later(temp_file_path.to_s,{ 'skip_repurpose' => skip_repurpose_flag } )
+  #  skip_repurpose_flag = params[:skip_repurpose] == "1"
+   # CustomerImportJob.perform_later(temp_file_path.to_s,{ 'skip_repurpose' => skip_repurpose_flag } )
   
-    redirect_to customers_url, notice: 'インポート処理をバックグラウンドで実行しています。完了までしばらくお待ちください。'
+   # redirect_to customers_url, notice: 'インポート処理をバックグラウンドで実行しています。完了までしばらくお待ちください。'
+  #end
+
+  def all_import
+    save_count = Customer.import(params[:file])
+    call_count = Customer.call_import(params[:file])
+    
+    # チェックが入っている場合、転用登録をスキップ
+    if params[:skip_repurpose] == "1"
+      repurpose_count = { repurpose_import_count: 0 }
+    else
+      repurpose_count = Customer.repurpose_import(params[:file])
+    end
+  
+    draft_count = Customer.draft_import(params[:file])
+  
+    notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
+    redirect_to customers_url, notice: notice_message
   end
       
   def print
