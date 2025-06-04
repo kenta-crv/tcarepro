@@ -1,7 +1,18 @@
-import trio
+from __future__ import annotations
+
 import ssl
+from typing import TYPE_CHECKING, NoReturn, TypeVar
+
+import trio
 
 from ._highlevel_open_tcp_stream import DEFAULT_DELAY
+
+T = TypeVar("T")
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
+    from ._highlevel_socket import SocketStream
 
 
 # It might have been nice to take a ssl_protocols= argument here to set up
@@ -14,13 +25,13 @@ from ._highlevel_open_tcp_stream import DEFAULT_DELAY
 # So... let's punt on that for now. Hopefully we'll be getting a new Python
 # TLS API soon and can revisit this then.
 async def open_ssl_over_tcp_stream(
-    host,
-    port,
+    host: str | bytes,
+    port: int,
     *,
-    https_compatible=False,
-    ssl_context=None,
-    happy_eyeballs_delay=DEFAULT_DELAY,
-):
+    https_compatible: bool = False,
+    ssl_context: ssl.SSLContext | None = None,
+    happy_eyeballs_delay: float | None = DEFAULT_DELAY,
+) -> trio.SSLStream[SocketStream]:
     """Make a TLS-encrypted Connection to the given host and port over TCP.
 
     This is a convenience wrapper that calls :func:`open_tcp_stream` and
@@ -48,7 +59,9 @@ async def open_ssl_over_tcp_stream(
 
     """
     tcp_stream = await trio.open_tcp_stream(
-        host, port, happy_eyeballs_delay=happy_eyeballs_delay
+        host,
+        port,
+        happy_eyeballs_delay=happy_eyeballs_delay,
     )
     if ssl_context is None:
         ssl_context = ssl.create_default_context()
@@ -57,13 +70,21 @@ async def open_ssl_over_tcp_stream(
             ssl_context.options &= ~ssl.OP_IGNORE_UNEXPECTED_EOF
 
     return trio.SSLStream(
-        tcp_stream, ssl_context, server_hostname=host, https_compatible=https_compatible
+        tcp_stream,
+        ssl_context,
+        server_hostname=host,
+        https_compatible=https_compatible,
     )
 
 
 async def open_ssl_over_tcp_listeners(
-    port, ssl_context, *, host=None, https_compatible=False, backlog=None
-):
+    port: int,
+    ssl_context: ssl.SSLContext,
+    *,
+    host: str | bytes | None = None,
+    https_compatible: bool = False,
+    backlog: int | None = None,
+) -> list[trio.SSLListener[SocketStream]]:
     """Start listening for SSL/TLS-encrypted TCP connections to the given port.
 
     Args:
@@ -85,16 +106,18 @@ async def open_ssl_over_tcp_listeners(
 
 
 async def serve_ssl_over_tcp(
-    handler,
-    port,
-    ssl_context,
+    handler: Callable[[trio.SSLStream[SocketStream]], Awaitable[object]],
+    port: int,
+    ssl_context: ssl.SSLContext,
     *,
-    host=None,
-    https_compatible=False,
-    backlog=None,
-    handler_nursery=None,
-    task_status=trio.TASK_STATUS_IGNORED,
-):
+    host: str | bytes | None = None,
+    https_compatible: bool = False,
+    backlog: int | None = None,
+    handler_nursery: trio.Nursery | None = None,
+    task_status: trio.TaskStatus[
+        list[trio.SSLListener[SocketStream]]
+    ] = trio.TASK_STATUS_IGNORED,
+) -> NoReturn:
     """Listen for incoming TCP connections, and for each one start a task
     running ``handler(stream)``.
 
@@ -150,5 +173,8 @@ async def serve_ssl_over_tcp(
         backlog=backlog,
     )
     await trio.serve_listeners(
-        handler, listeners, handler_nursery=handler_nursery, task_status=task_status
+        handler,
+        listeners,
+        handler_nursery=handler_nursery,
+        task_status=task_status,
     )

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-Commonly useful filters for `attr.asdict`.
+Commonly useful filters for `attrs.asdict` and `attrs.astuple`.
 """
 
 from ._make import Attribute
@@ -13,39 +13,60 @@ def _split_what(what):
     """
     return (
         frozenset(cls for cls in what if isinstance(cls, type)),
+        frozenset(cls for cls in what if isinstance(cls, str)),
         frozenset(cls for cls in what if isinstance(cls, Attribute)),
     )
 
 
 def include(*what):
     """
-    Include *what*.
+    Create a filter that only allows *what*.
 
-    :param what: What to include.
-    :type what: `list` of `type` or `attrs.Attribute`\\ s
+    Args:
+        what (list[type, str, attrs.Attribute]):
+            What to include. Can be a type, a name, or an attribute.
 
-    :rtype: `callable`
+    Returns:
+        Callable:
+            A callable that can be passed to `attrs.asdict`'s and
+            `attrs.astuple`'s *filter* argument.
+
+    .. versionchanged:: 23.1.0 Accept strings with field names.
     """
-    cls, attrs = _split_what(what)
+    cls, names, attrs = _split_what(what)
 
     def include_(attribute, value):
-        return value.__class__ in cls or attribute in attrs
+        return (
+            value.__class__ in cls
+            or attribute.name in names
+            or attribute in attrs
+        )
 
     return include_
 
 
 def exclude(*what):
     """
-    Exclude *what*.
+    Create a filter that does **not** allow *what*.
 
-    :param what: What to exclude.
-    :type what: `list` of classes or `attrs.Attribute`\\ s.
+    Args:
+        what (list[type, str, attrs.Attribute]):
+            What to exclude. Can be a type, a name, or an attribute.
 
-    :rtype: `callable`
+    Returns:
+        Callable:
+            A callable that can be passed to `attrs.asdict`'s and
+            `attrs.astuple`'s *filter* argument.
+
+    .. versionchanged:: 23.3.0 Accept field name string as input argument
     """
-    cls, attrs = _split_what(what)
+    cls, names, attrs = _split_what(what)
 
     def exclude_(attribute, value):
-        return value.__class__ not in cls and attribute not in attrs
+        return not (
+            value.__class__ in cls
+            or attribute.name in names
+            or attribute in attrs
+        )
 
     return exclude_
