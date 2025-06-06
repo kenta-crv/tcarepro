@@ -1,5 +1,5 @@
 # ParkingLot provides an abstraction for a fair waitqueue with cancellation
-# and requeueing support. Inspiration:
+# and requeuing support. Inspiration:
 #
 #    https://webkit.org/blog/6161/locking-in-webkit/
 #    https://amanieu.github.io/parking_lot/
@@ -69,22 +69,74 @@
 # unpark is called.
 #
 # See: https://github.com/python-trio/trio/issues/53
+from __future__ import annotations
 
-import attr
+import inspect
+import math
 from collections import OrderedDict
+from typing import TYPE_CHECKING
+
+import attrs
+import outcome
 
 from .. import _core
-from .._util import Final
+from .._util import final
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from ._run import Task
 
 
-@attr.s(frozen=True, slots=True)
-class _ParkingLotStatistics:
-    tasks_waiting = attr.ib()
+GLOBAL_PARKING_LOT_BREAKER: dict[Task, list[ParkingLot]] = {}
 
 
-@attr.s(eq=False, hash=False, slots=True)
-class ParkingLot(metaclass=Final):
-    """A fair wait queue with cancellation and requeueing.
+def add_parking_lot_breaker(task: Task, lot: ParkingLot) -> None:
+    """Register a task as a breaker for a lot. See :meth:`ParkingLot.break_lot`.
+
+    raises:
+      trio.BrokenResourceError: if the task has already exited.
+    """
+    if inspect.getcoroutinestate(task.coro) == inspect.CORO_CLOSED:
+        raise _core._exceptions.BrokenResourceError(
+            "Attempted to add already exited task as lot breaker.",
+        )
+    if task not in GLOBAL_PARKING_LOT_BREAKER:
+        GLOBAL_PARKING_LOT_BREAKER[task] = [lot]
+    else:
+        GLOBAL_PARKING_LOT_BREAKER[task].append(lot)
+
+
+def remove_parking_lot_breaker(task: Task, lot: ParkingLot) -> None:
+    """Deregister a task as a breaker for a lot. See :meth:`ParkingLot.break_lot`"""
+    try:
+        GLOBAL_PARKING_LOT_BREAKER[task].remove(lot)
+    except (KeyError, ValueError):
+        raise RuntimeError(
+            "Attempted to remove task as breaker for a lot it is not registered for",
+        ) from None
+    if not GLOBAL_PARKING_LOT_BREAKER[task]:
+        del GLOBAL_PARKING_LOT_BREAKER[task]
+
+
+@attrs.frozen
+class ParkingLotStatistics:
+    """An object containing debugging information for a ParkingLot.
+
+    Currently, the following fields are defined:
+
+    * ``tasks_waiting`` (int): The number of tasks blocked on this lot's
+      :meth:`trio.lowlevel.ParkingLot.park` method.
+
+    """
+
+    tasks_waiting: int
+
+
+@final
+@attrs.define(eq=False)
+class ParkingLot:
+    """A fair wait queue with cancellation and requeuing.
 
     This class encapsulates the tricky parts of implementing a wait
     queue. It's useful for implementing higher-level synchronization
@@ -98,13 +150,14 @@ class ParkingLot(metaclass=Final):
 
     # {task: None}, we just want a deque where we can quickly delete random
     # items
-    _parked = attr.ib(factory=OrderedDict, init=False)
+    _parked: OrderedDict[Task, None] = attrs.field(factory=OrderedDict, init=False)
+    broken_by: list[Task] = attrs.field(factory=list, init=False)
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Returns the number of parked tasks."""
         return len(self._parked)
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """True if there are parked tasks, False otherwise."""
         return bool(self._parked)
 
@@ -113,28 +166,43 @@ class ParkingLot(metaclass=Final):
     # line (for false wakeups), then we could have it return a ticket that
     # abstracts the "place in line" concept.
     @_core.enable_ki_protection
-    async def park(self):
+    async def park(self) -> None:
         """Park the current task until woken by a call to :meth:`unpark` or
         :meth:`unpark_all`.
 
+        Raises:
+          BrokenResourceError: if attempting to park in a broken lot, or the lot
+            breaks before we get to unpark.
+
         """
+        if self.broken_by:
+            raise _core.BrokenResourceError(
+                f"Attempted to park in parking lot broken by {self.broken_by}",
+            )
         task = _core.current_task()
         self._parked[task] = None
         task.custom_sleep_data = self
 
-        def abort_fn(_):
+        def abort_fn(_: _core.RaiseCancelT) -> _core.Abort:
             del task.custom_sleep_data._parked[task]
             return _core.Abort.SUCCEEDED
 
         await _core.wait_task_rescheduled(abort_fn)
 
-    def _pop_several(self, count):
-        for _ in range(min(count, len(self._parked))):
+    def _pop_several(self, count: int | float) -> Iterator[Task]:  # noqa: PYI041
+        if isinstance(count, float):
+            if math.isinf(count):
+                count = len(self._parked)
+            else:
+                raise ValueError("Cannot pop a non-integer number of tasks.")
+        else:
+            count = min(count, len(self._parked))
+        for _ in range(count):
             task, _ = self._parked.popitem(last=False)
             yield task
 
     @_core.enable_ki_protection
-    def unpark(self, *, count=1):
+    def unpark(self, *, count: int | float = 1) -> list[Task]:  # noqa: PYI041
         """Unpark one or more tasks.
 
         This wakes up ``count`` tasks that are blocked in :meth:`park`. If
@@ -142,7 +210,7 @@ class ParkingLot(metaclass=Final):
         are available and then returns successfully.
 
         Args:
-          count (int): the number of tasks to unpark.
+          count (int | math.inf): the number of tasks to unpark.
 
         """
         tasks = list(self._pop_several(count))
@@ -150,12 +218,17 @@ class ParkingLot(metaclass=Final):
             _core.reschedule(task)
         return tasks
 
-    def unpark_all(self):
+    def unpark_all(self) -> list[Task]:
         """Unpark all parked tasks."""
         return self.unpark(count=len(self))
 
     @_core.enable_ki_protection
-    def repark(self, new_lot, *, count=1):
+    def repark(
+        self,
+        new_lot: ParkingLot,
+        *,
+        count: int | float = 1,  # noqa: PYI041
+    ) -> None:
         """Move parked tasks from one :class:`ParkingLot` object to another.
 
         This dequeues ``count`` tasks from one lot, and requeues them on
@@ -185,7 +258,7 @@ class ParkingLot(metaclass=Final):
 
         Args:
           new_lot (ParkingLot): the parking lot to move tasks to.
-          count (int): the number of tasks to move.
+          count (int|math.inf): the number of tasks to move.
 
         """
         if not isinstance(new_lot, ParkingLot):
@@ -194,7 +267,7 @@ class ParkingLot(metaclass=Final):
             new_lot._parked[task] = None
             task.custom_sleep_data = new_lot
 
-    def repark_all(self, new_lot):
+    def repark_all(self, new_lot: ParkingLot) -> None:
         """Move all parked tasks from one :class:`ParkingLot` object to
         another.
 
@@ -203,7 +276,36 @@ class ParkingLot(metaclass=Final):
         """
         return self.repark(new_lot, count=len(self))
 
-    def statistics(self):
+    def break_lot(self, task: Task | None = None) -> None:
+        """Break this lot, with ``task`` noted as the task that broke it.
+
+        This causes all parked tasks to raise an error, and any
+        future tasks attempting to park to error. Unpark & repark become no-ops as the
+        parking lot is empty.
+
+        The error raised contains a reference to the task sent as a parameter. The task
+        is also saved in the parking lot in the ``broken_by`` attribute.
+        """
+        if task is None:
+            task = _core.current_task()
+
+        # if lot is already broken, just mark this as another breaker and return
+        if self.broken_by:
+            self.broken_by.append(task)
+            return
+
+        self.broken_by.append(task)
+
+        for parked_task in self._parked:
+            _core.reschedule(
+                parked_task,
+                outcome.Error(
+                    _core.BrokenResourceError(f"Parking lot broken by {task}"),
+                ),
+            )
+        self._parked.clear()
+
+    def statistics(self) -> ParkingLotStatistics:
         """Return an object containing debugging information.
 
         Currently the following fields are defined:
@@ -212,4 +314,4 @@ class ParkingLot(metaclass=Final):
           :meth:`park` method.
 
         """
-        return _ParkingLotStatistics(tasks_waiting=len(self._parked))
+        return ParkingLotStatistics(tasks_waiting=len(self._parked))
