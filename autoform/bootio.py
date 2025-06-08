@@ -1,355 +1,189 @@
 import sqlite3
-import sched, time
-import hardware
-import schedule
 import datetime
-import pandas
+import time
 import os
-from matplotlib import pyplot
 import random
 import string
-import pandas as pd
 import traceback
+import argparse
 
-print(os.getcwd())
+import hardware
 
-dbname = "../db/development.sqlite3"
-s = sched.scheduler()
+print(f"bootio.py CWD: {os.getcwd()}")
 
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'db', 'development.sqlite3')
+print(f"Using DB_PATH: {DB_PATH}")
 
+# The Score class is not strictly necessary here if hardware.py returns detailed status
+# and boot() updates the DB directly. Keeping it minimal.
 class Score:
     def __init__(self):
-        self.score = 0
-        self.count = 0
-        self.rimes = []
-        self.sumdic = []
-        self.time = ""
+        pass # No state needed for this simplified version
 
-    def result(self, sender_id, worker_id, url, status, session_code):
-        truecount = 0
-        for tuc in self.rimes:
-            if tuc == True:
-                truecount += 1
+score = Score() # Instantiate if any part of hardware.py or future logic might expect it
 
-        sum = int(int((truecount / len(self.rimes)) * 100))
-        self.sumdic.append(sum)
+def randomname(n): # This function is not used in the current flow but kept from original
+    return "".join(random.choices(string.ascii_letters + string.digits, k=n))
 
-        # 統計システム入れる
-        conn = sqlite3.connect(dbname)
-        cur = conn.cursor()
-
-        # SQL検索
-        # sql = "INSERT INTO autoform_shot (sender_id, worker_id, url, status, current_score, session_code) values (?,?,?,?,?,?)"
-        # data = (sender_id, worker_id, url, status, sum, session_code)
-        # cur.execute(sql, data)
-
-        # conn.commit()
-        # conn.close()
-
-        try:
-            return str(sum) + "%"
-        except ZeroDivisionError as e:
-            return "0%"
-
-    def graph_make(self, session_code):
-        # DB接続
-        conn = sqlite3.connect(dbname)
-        cur = conn.cursor()
-
-        # SQL検索（パラメータ化も検討してください）
-        cur.execute('SELECT * FROM autoform_shot WHERE session_code = "' + session_code + '"')
-        print("グラフを作成します。")
-
-        success = 0
-        error = 0
-
-        # SQL抽出：各レコードのステータスを集計
-        for curs in cur.fetchall():
-            if curs[3] == "送信済":
-                success += 1
-            elif curs[3] == "送信エラー":
-                error += 1
-
-        total = success + error
-        if total == 0:
-            print("送信データがありません。グラフは作成されません。")
-            conn.close()
-            return
-
-        # DataFrame作成（行ラベル：送信済、送信エラー、1列目を送信率）
-        df = pd.DataFrame(data=[success, error], index=["送信済", "送信エラー"], columns=["送信率"])
-
-        # 日本語フォントの設定
-        pyplot.rcParams["font.family"] = "Hiragino sans"
-        cd = os.path.abspath(".")
-        tdatetime = datetime.datetime.now()
-
-        # パイチャート作成
-        df["送信率"].plot.pie(autopct="%.f%%")
-
-        strings = tdatetime.strftime("%Y%m%d-%H%M%S")
-        pyplot.title(self.time + "に" + str(self.count) + "回実行したグラフ", fontname="Hiragino sans")
-        pyplot.savefig(cd + "/autoform/graph_image/shot/" + strings + ".png")
-
-        conn.commit()
-        conn.close()
-
-
-    def graph_summary(self):
-        conn = sqlite3.connect(dbname)
-        cur = conn.cursor()
-
-        # SQL検索
-        cur.execute("SELECT * FROM autoform_shot")
-
-        print("グラフサマリーを作成します。")
-
-        sqldata = []
-
-        frame = {"score": []}
-
-        # SQL抽出
-        success = 0
-        error = 0
-        for curs in cur.fetchall():
-            if curs[3] == "送信済":
-                success += 1
-            elif curs[3] == "送信不可":
-                error += 1
-
-        df = pd.DataFrame(frame, columns=["score"])
-        df.columns = ["Score"]
-
-
-        df["status"].plot.pie(autopct="%.f%%")
-
-        df.plot()
-        cd = os.path.abspath(".")
-        tdatetime = datetime.datetime.now()
-
-        date = tdatetime.strftime("%Y-%m-%d")
-
-        pyplot.title(date + "今まで実行したグラフ", fontname="Hiragino sans")
-        pyplot.rcParams["font.family"] = "Hiragino sans"
-
-        strings = tdatetime.strftime("%Y%m%d-%H%M%S")
-        pyplot.savefig(cd + "/autoform/graph_image/day/" + strings + ".png")
-        conn.commit()
-        conn.close()
-
-
-class Reservation:
-    def __init__(self):
-        self.boottime = []
-
-    def add(self, time, url, sender_id, priority, worker_id, unique_id):
-        print("New Records!! [", time, url, sender_id, priority, "]")
-        self.boottime.append(
-            {
-                "time": time,
-                "url": url,
-                "sender_id": sender_id,
-                "worker_id": worker_id,
-                "priority": priority,
-                "unique_id": unique_id,
-            }
-        )
-
-    def check(self, unique_id):
-        for time in self.boottime:
-            if(unique_id == time["unique_id"]):
-                return True
-
-        return False
-
-    def alltime(self):
-        return self.boottime
-
-
-score = Score()
-reservation = Reservation()
-
-
-def randomname(n):
-    randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
-    return "".join(randlst)
-
-
-def boot(url, sender_id, count, worker_id, session_code, unique_id):
-    conn = sqlite3.connect(dbname)
-    # sqliteを操作するカーソルオブジェクトを作成
-    cur = conn.cursor()
-    id = sender_id
-    form = {}
-    print(id)
-    cur.execute('SELECT * FROM inquiries WHERE sender_id = "' + str(id) + '"')
-    for index, item in enumerate(cur.fetchall()):
-        form = {
-            "company": item[1],
-            "company_kana": "kakasi",
-            "manager": item[3],
-            "manager_kana": item[4],
-            "phone": item[5],
-            "fax": item[6],
-            "address": item[9],
-            "mail": item[7],
-            "subjects": item[10],
-            "body": item[11],
-        }
+# Modified boot function to use hardware.py
+def boot(db_connection, url, unique_id, formdata_for_hardware, session_code="N/A", sender_id="N/A", worker_id="N/A"):
+    # unique_id is contact_tracking.id
+    # formdata_for_hardware is the dictionary prepared from command-line args
+    print(f"Booting for: unique_id='{unique_id}', url='{url}', session_code='{session_code}'")
+    
+    status_to_set = "自動送信エラー" # Default to error
+    submission_notes = "" # To store reason from hardware.py
 
     try:
-        hard = hardware.Place_enter(url, form)
-        go = hard.go_selenium()
-        print(go)
-    except Exception as e:
-        go = "NG"
-        print("system error")
-        print(e)
-        traceback.print_exc()  # エラー発生箇所や行番号が表示されます
-
-    if go == "OK":
-        print("正常に送信されました。")
-        score.rimes.append(True)
-        sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE contact_url = ? AND worker_id = ?"
-        sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE id = ?"
-        data = ("送信済", datetime.datetime.now(), unique_id)
-        cur.execute(sql, data)
-        conn.commit()
-        conn.close()
-        s = score.result(sender_id, worker_id, url, "送信済", session_code)
-        print("---------------------------------")
-        print("送信精度：", s)
-        print("---------------------------------")
-    elif go == "NG":
-        print("送信エラー。。。")
-        score.rimes.append(False)
-        sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE contact_url = ? AND worker_id = ?"
-        sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE id = ?"
-        data = ("自動送信エラー", datetime.datetime.now(), unique_id)
-        cur.execute(sql, data)
-        conn.commit()
-        conn.close()
-        s = score.result(sender_id, worker_id, url, "送信エラー", session_code)
-        print("unique_id", unique_id)
-        print("---------------------------------")
-        print("---------------------------------")
-        print("送信精度：", s)
-        print("---------------------------------")
-
-    print(score.count - 1)
-    print(count)
-
-    # if count == score.count - 1:
-    #     score.graph_make(session_code)
-
-
-def sql_reservation():
-    print("Reservation Check!!!")
-    conn = sqlite3.connect(dbname)
-    score.count = 0
-    # sqliteを操作するカーソルオブジェクトを作成
-    cur = conn.cursor()
-    # 自動送信予定のデータを取得
-    cur.execute(
-        'SELECT contact_url,sender_id,scheduled_date,callback_url,worker_id,id FROM contact_trackings WHERE status = "自動送信予定"'
-    )
-    #  送信セッションを識別するためのランダムな16文字のコードを生成
-    session_code = randomname(16)
-
-    # 取得した全レコードを順に処理
-    for index, item in enumerate(cur.fetchall()):
-        url = item[0]
-        gotime = item[2]
-        callback = item[3]
-        worker_id = item[4]
-        sender_id = item[1]
-        unique_id = item[5]
-
-        # 現在処理中の予約の送信予定日時を score オブジェクトにセットしています（後続のグラフ作成などで利用）。
-        score.time = gotime
-
-        # すでに同じURLと送信元IDが予約リストに登録されているかをチェック
-        c = reservation.check(unique_id)
-        if c == True:
-            print("This already exists")
-            pass
-        # URLが None（存在しない）なら、送信不能と判断
-        else :
-            if url == None:
-                print("No URL!!")
-                # idけで一意に決まるのでロジック変更
-                # sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE callback_url = ? AND worker_id = ?"
-                # data = ("自動送信エラー", datetime.datetime.now(), callback, worker_id)
-                sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE id = ?"
-                data = ("自動送信エラー", datetime.datetime.now(), unique_id)
-                cur.execute(sql, data)
+        if not formdata_for_hardware:
+            print(f"Error: Form data not provided for unique_id {unique_id}.")
+            submission_notes = "Form data missing"
+            # Fall through to finally to update DB
+        else:
+            print(f"Attempting submission to: {url} with provided form data.")
+            # Instantiate Place_enter from hardware.py
+            automation_instance = hardware.Place_enter(url, formdata_for_hardware)
+            
+            # Check if the form was found by hardware.py's init (optional, based on hardware.py's behavior)
+            if not automation_instance.form and not automation_instance.iframe_mode: # if form is 0 and not iframe mode
+                print(f"hardware.py's Place_enter could not find a form on {url} for unique_id {unique_id}")
+                submission_notes = "No form found by hardware.py parser"
+                # Fall through to finally
             else:
-                # URLが http で始まる（正しい形式）の場合は、予約リストに追加し、score.count（登録件数）を1増やす
-                if url.startswith("http"):
-                    reservation.add(gotime, url, sender_id, index, worker_id, unique_id)
-                    score.count += 1
-                # URLが http で始まらない場合もエラーとみなしてDBの状態を更新
+                # Call go_selenium to perform the submission
+                result_dict = automation_instance.go_selenium()
+                print(f"Selenium outcome for unique_id {unique_id}: {result_dict}")
+
+                if result_dict.get("status") == "OK":
+                    status_to_set = "送信済"
                 else:
-                    print("Invaild URL!!")
-                    # sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE callback_url = ? AND worker_id = ?"
-                    print("自動送信エラー", datetime.datetime.now(), callback, worker_id)
-                    # data = ("自動送信エラー", datetime.datetime.now(), callback, worker_id)
-                    # idけで一意に決まるのでロジック変更
-                    sql = "UPDATE contact_trackings SET status = ?, sended_at = ? WHERE id = ?"
-                    data = ("自動送信エラー", datetime.datetime.now(), unique_id)
-                    cur.execute(sql, data)
-    
-    # DB接続を終了。
-    conn.commit()
-    conn.close()
+                    status_to_set = "自動送信エラー"
+                submission_notes = result_dict.get("reason", "No reason provided by hardware.py")
 
-
-    # 予約リスト内の各予約データ（trigger）に対して処理を行う
-    # ループ回数を数えて、4件ごとに1分後ろへずらす
-    # sabun や fime は不要なケースが多いので省略
-    for i, trigger in enumerate(reservation.alltime()):
-        strtime = trigger["time"]  # "YYYY-MM-DD HH:MM:SS" 形式
-        # 予約日時をパース
-        scheduled_dt = datetime.datetime.strptime(strtime, "%Y-%m-%d %H:%M:%S")
-
-        now = datetime.datetime.now()
-
-        # 「予約日が今日の日付」と一致するかチェック
-        # 元コードでは year,month,day を比較していたが、.date() でまとめて比較可能
-        if scheduled_dt.date() == now.date():
-            print(f"このデータは起動する準備ができています -> {strtime}")
-
-            # もし同じ日に複数の予約がある場合、4件ごとに1分後ろにずらす
-            # たとえば 0-3件目は同時刻, 4-7件目は +1分, 8-11件目は +2分 というイメージ
-            shift_minutes = (i // 4)
-            scheduled_dt += datetime.timedelta(minutes=shift_minutes)
-
-            # schedule ライブラリに渡すために "HH:MM" 形式の文字列を作成
-            schedule_str = scheduled_dt.strftime("%H:%M")
-
-            # 毎日 schedule_str の時刻に実行されるように登録
-            schedule.every().day.at(schedule_str).do(
-                boot,
-                trigger["url"],
-                trigger["sender_id"],
-                i,  # num に相当
-                trigger["worker_id"],
-                session_code,
-                trigger["unique_id"],
+    except Exception as e:
+        status_to_set = "自動送信エラー"
+        submission_notes = f"Exception during boot: {str(e)[:200]}"
+        print(f"Exception during boot process for unique_id {unique_id}:")
+        print(e)
+        traceback.print_exc()
+    finally:
+        # Update the contact_trackings table
+        try:
+            cursor = db_connection.cursor()
+            sql_update = """
+                UPDATE contact_trackings 
+                SET status = ?, sended_at = ?
+                WHERE id = ?
+            """
+            cursor.execute(
+                sql_update,
+                (status_to_set, datetime.datetime.now(), unique_id),
             )
-            print(f"登録 -> {schedule_str} / shift={shift_minutes}分後ろ倒し")
+            db_connection.commit()
+            print(f"DB updated for unique_id {unique_id}: status='{status_to_set}'")
+        except Exception as db_e:
+            print(f"Failed to update database for unique_id {unique_id}: {db_e}")
+            traceback.print_exc()
+            
+    return status_to_set, submission_notes
 
-    print("-----------------------------------------")
-    print(f"      {score.count} 件登録しました。        ")
-    print("-----------------------------------------")
+def main():
+    parser = argparse.ArgumentParser(description="Process a single autoform submission task using hardware.py.")
+    parser.add_argument("--url", required=True, help="Contact form URL")
+    parser.add_argument("--unique_id", required=True, type=int, help="Unique ID of the contact_tracking record (PK)")
+    
+    # Arguments for data that might be logged or used for context, but not directly for form fields yet
+    parser.add_argument("--sender_id", help="Sender ID (for context/logging)")
+    parser.add_argument("--worker_id", help="Worker ID (for context/logging, optional)")
+    parser.add_argument("--session_code", help="Session code (auto_job_code, for context/logging)")
 
+    # Based on hardware.py's self.formdata.get('key') usage.
+    parser.add_argument("--company", help="Company Name")
+    parser.add_argument("--company_kana", help="Company Name Kana")
+    parser.add_argument("--manager", help="Manager Full Name")
+    parser.add_argument("--manager_kana", help="Manager Full Name Kana")
+    parser.add_argument("--manager_first", help="Manager First Name")
+    parser.add_argument("--manager_last", help="Manager Last Name")
+    parser.add_argument("--manager_first_kana", help="Manager First Name Kana")
+    parser.add_argument("--manager_last_kana", help="Manager Last Name Kana")
+    parser.add_argument("--pref", help="Prefecture (used by hardware.py if select, or part of address)") 
+    parser.add_argument("--phone", help="Telephone Number (e.g., 090-1234-5678)")
+    parser.add_argument("--phone0", help="Telephone Number Part 1 (if split)")
+    parser.add_argument("--phone1", help="Telephone Number Part 2 (if split)")
+    parser.add_argument("--phone2", help="Telephone Number Part 3 (if split)")
+    parser.add_argument("--fax", help="Fax Number")
+    parser.add_argument("--address", help="Full Address (or main part if split)")
+    parser.add_argument("--address_pref", help="Address Prefecture (if split)")
+    parser.add_argument("--address_city", help="Address City (if split)")
+    parser.add_argument("--address_thin", help="Address Street/番地 (if split)")
+    parser.add_argument("--zip", help="Zip Code")
+    parser.add_argument("--mail", help="Email Address")
+    parser.add_argument("--form_url", help="Website URL (if there's a field for it on the form)")
+    parser.add_argument("--subjects", help="Inquiry Subject/Title")
+    parser.add_argument("--body", help="Inquiry Body/Message")
 
-schedule.every(1).minutes.do(sql_reservation)
-# schedule.every(1).days.do(score.graph_summary)
+    args = parser.parse_args()
 
-sql_reservation()
+    # --- Assemble the formdata dictionary for hardware.Place_enter ---
+    formdata_for_hardware = {}
+    # List all keys that hardware.py might .get() from self.formdata
+    possible_formdata_keys = [
+        'company', 'company_kana', 'manager', 'manager_kana', 
+        'manager_first', 'manager_last', 'manager_first_kana', 'manager_last_kana',
+        'pref', 'phone', 'phone0', 'phone1', 'phone2', 'fax', 
+        'address', 'address_pref', 'address_city', 'address_thin', 'zip', 
+        'mail', 'url', 'subjects', 'body'
+    ]
 
-while True:
-    schedule.run_pending()
-    time.sleep(2)
-    print("running")
+    for key in possible_formdata_keys:
+        value = getattr(args, key, None)
+        if value is not None: # Only add if the argument was provided
+            formdata_for_hardware[key] = value
+    
+    print(f"Formdata prepared for hardware.py: {formdata_for_hardware}")
+
+    conn = None
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        print(f"Connected to database: {DB_PATH}")
+        
+        if not args.url or not args.url.startswith("http"):
+            print(f"Invalid or missing URL: {args.url}. Marking as error for unique_id {args.unique_id}.")
+            cursor = conn.cursor()
+            sql_update_invalid_url = """
+                UPDATE contact_trackings SET status = ?, sended_at = ?, notes = ? WHERE id = ?
+            """
+            cursor.execute(
+                sql_update_invalid_url,
+                ("自動送信エラー", datetime.datetime.now(), "Invalid or missing URL provided to bootio.py", args.unique_id),
+            )
+            conn.commit()
+            return
+
+        boot(conn, args.url, args.unique_id, formdata_for_hardware,
+             session_code=args.session_code, sender_id=args.sender_id, worker_id=args.worker_id)
+
+    except Exception as e:
+        print(f"Unhandled error in main execution for unique_id {args.unique_id}: {e}")
+        traceback.print_exc()
+        if conn and args.unique_id:
+            try:
+                cursor = conn.cursor()
+                sql_update_main_error = """
+                    UPDATE contact_trackings SET status = ?, sended_at = ?, notes = ? WHERE id = ?
+                """
+                cursor.execute(
+                    sql_update_main_error,
+                    ("自動送信システムエラー", datetime.datetime.now(), f"bootio.py main error: {str(e)[:200]}", args.unique_id),
+                )
+                conn.commit()
+            except Exception as final_db_e:
+                 print(f"Failed to mark final error in DB for unique_id {args.unique_id}: {final_db_e}")
+    finally:
+        if conn:
+            conn.close()
+            print("Database connection closed.")
+
+if __name__ == "__main__":
+    print("bootio.py executed as command-line script.")
+    main()

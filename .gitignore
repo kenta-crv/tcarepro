@@ -45,3 +45,7 @@ node_modules
 /vendor/bundle
 .env
 config/smart-edee0-firebase-adminsdk-m74sr-92f564d81e.json
+
+#Python venv files
+
+./autoform/autoform

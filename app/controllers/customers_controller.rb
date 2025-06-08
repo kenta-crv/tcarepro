@@ -493,6 +493,8 @@ class CustomersController < ApplicationController
       update_all_status
     elsif params[:commit] == '一括削除'
       destroy_all
+    elsif params[:commit] == '一括削除（社名）'
+      destroy_all_by_company
     else
       redirect_to customers_path, alert: '無効なアクションです。'
     end
@@ -559,6 +561,21 @@ class CustomersController < ApplicationController
     end
   
     flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{reposted_count}件を再掲載に登録しました。#{deleted_count}件のドラフトが重複のため削除されました。"
+    redirect_to customers_path
+  end
+
+  def destroy_all_by_company
+    all_ids = @customers.flat_map do |customer|
+      Customer.where(company: customer.company).pluck(:id)
+    end.uniq
+  
+    customers_to_destroy = Customer.where(id: all_ids)
+  
+    customers_to_destroy.each do |customer|
+      customer.destroy
+    end
+  
+    flash[:notice] = "#{customers_to_destroy.size}件の顧客（同社名を含む）を削除しました。"
     redirect_to customers_path
   end
       
