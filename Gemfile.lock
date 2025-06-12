@@ -209,7 +209,7 @@ GEM
     minitest (5.25.5)
     multi_json (1.15.0)
     multi_xml (0.6.0)
-    net-imap (0.4.22)
+    net-imap (0.3.9)
       date
       net-protocol
     net-pop (0.1.2)
