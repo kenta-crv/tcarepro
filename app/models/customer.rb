@@ -292,6 +292,7 @@ scope :before_sended_at, ->(sended_at){
     { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
   end
 
+
   def self.import(file)
     save_count = 0
     batch_size = 2500
