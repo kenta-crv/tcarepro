@@ -5,7 +5,7 @@ class AutoformSchedulerWorker
   sidekiq_options queue: 'default'
 
   PYTHON_SCRIPT_PATH = Rails.root.join('autoform', 'bootio.py').to_s
-  PYTHON_VENV_PATH = Rails.root.join('autoform/autoform', 'bin', 'python')
+  PYTHON_VENV_PATH = Rails.root.join('autoform', 'venv', 'bin', 'python')
   PYTHON_EXECUTABLE = File.exist?(PYTHON_VENV_PATH) ? PYTHON_VENV_PATH.to_s : (ENV['PYTHON_EXECUTABLE'] || %w[python3 python].find { |cmd| system("which #{cmd} > /dev/null 2>&1") } || 'python')
 
 
