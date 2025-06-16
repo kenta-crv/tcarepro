@@ -37,7 +37,7 @@ def boot(db_connection, url, unique_id, formdata_for_hardware, session_code="N/A
     try:
         if not formdata_for_hardware:
             print(f"Error: Form data not provided for unique_id {unique_id}.")
-            status_to_set = "Form data missing for hardware.py"
+            status_to_set = "Form data missing"
             # Fall through to finally to update DB
         else:
             print(f"Attempting submission to: {url} with provided form data.")
@@ -45,13 +45,13 @@ def boot(db_connection, url, unique_id, formdata_for_hardware, session_code="N/A
             
             if not automation_instance.form and not automation_instance.iframe_mode:
                 print(f"hardware.py's Place_enter could not find a form on {url} for unique_id {unique_id}")
-                status_to_set = "No form found by hardware.py parser"
+                status_to_set = "No form found by parser on url"
                 # Fall through to finally
             else:
                 result_dict = automation_instance.go_selenium()
                 print(f"Selenium outcome for unique_id {unique_id}: {result_dict}")
 
-                detailed_reason_from_hardware = result_dict.get("reason", "No reason provided by hardware.py")
+                detailed_reason_from_hardware = result_dict.get("reason", "No reason provided")
 
                 if result_dict.get("status") == "OK":
                     status_to_set = "送信済"
@@ -60,7 +60,7 @@ def boot(db_connection, url, unique_id, formdata_for_hardware, session_code="N/A
                     status_to_set = detailed_reason_from_hardware 
 
     except Exception as e:
-        status_to_set = f"Exception during bootio.py processing: {str(e)[:200]}" # Store exception in status
+        status_to_set = f"Exception during processing: {str(e)[:200]}" # Store exception in status
         print(f"Exception during boot process for unique_id {unique_id}:")
         print(e)
         traceback.print_exc()
