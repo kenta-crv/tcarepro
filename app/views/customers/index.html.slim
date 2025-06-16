@@ -75,11 +75,11 @@
           /- if admin_signed_in?
           /  = customer.special_number_for_index
           /- else
-          = customer.industry
+          = customer.mail
         td
           = customer.last_call.try(:statu)
         td
-          = customer.calls.last&.user&.user_name
+          = customer.first_name
         td
           = customer.last_call.try(:created_at)&.strftime("%Y年%m月%d日 %H時%M分%S秒")
         td

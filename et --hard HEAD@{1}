@@ -1,0 +1,273 @@
+[33m669cafff[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m HEAD@{0}: reset: moving to ORIG_HEAD
+[33m43fc916d[m HEAD@{1}: pull origin master: Merge made by the 'ort' strategy.
+[33m669cafff[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m HEAD@{2}: pull origin master: Merge made by the 'ort' strategy.
+[33mdc45c8ec[m HEAD@{3}: pull origin master: Merge made by the 'ort' strategy.
+[33mddf5a80a[m HEAD@{4}: commit (merge): fix
+[33m4f97e487[m HEAD@{5}: commit (merge): fix
+[33m0362eb83[m HEAD@{6}: commit (merge): fix
+[33me57450ce[m HEAD@{7}: commit: fix
+[33mcd6ff94b[m HEAD@{8}: commit (merge): Merge branch 'master' of github.com:kenta-crv/tcarepro
+[33m16b6f37d[m HEAD@{9}: commit (merge): fix
+[33m8e3520ff[m HEAD@{10}: commit (merge): fix
+[33me8bc436f[m HEAD@{11}: commit: fix
+[33m2446a5fd[m HEAD@{12}: commit (merge): fix
+[33md6ef158d[m HEAD@{13}: commit (merge): fix
+[33m677a7cb5[m HEAD@{14}: pull origin master: Merge made by the 'ort' strategy.
+[33m97b2d9cb[m HEAD@{15}: pull origin master: Merge made by the 'ort' strategy.
+[33mbaca147c[m HEAD@{16}: pull origin master: Merge made by the 'ort' strategy.
+[33m224654b9[m HEAD@{17}: pull origin master: Merge made by the 'ort' strategy.
+[33medfa0df8[m HEAD@{18}: commit: fix
+[33m2d538d26[m HEAD@{19}: pull origin master: Merge made by the 'ort' strategy.
+[33mc7cc894b[m HEAD@{20}: commit: fix
+[33m9461eb0d[m HEAD@{21}: pull origin master: Merge made by the 'ort' strategy.
+[33mbb8d1ff7[m HEAD@{22}: commit: fix
+[33m21756935[m HEAD@{23}: pull origin master: Merge made by the 'ort' strategy.
+[33mc37fa4ce[m HEAD@{24}: commit: fix
+[33m2ac9be42[m HEAD@{25}: pull origin master: Merge made by the 'ort' strategy.
+[33m6af1727e[m HEAD@{26}: pull origin master: Merge made by the 'ort' strategy.
+[33m32237913[m HEAD@{27}: commit: fix
+[33mc903dfb5[m HEAD@{28}: pull origin master: Merge made by the 'ort' strategy.
+[33mca24d5ae[m HEAD@{29}: commit: fix
+[33mb168e992[m HEAD@{30}: pull origin master: Merge made by the 'ort' strategy.
+[33me08bd0ab[m HEAD@{31}: pull origin master: Merge made by the 'ort' strategy.
+[33md0a0bdbb[m HEAD@{32}: commit: fix
+[33mb28d0efc[m HEAD@{33}: pull origin master: Merge made by the 'ort' strategy.
+[33m45c11bbf[m HEAD@{34}: pull origin master: Merge made by the 'ort' strategy.
+[33m32775ba6[m HEAD@{35}: commit: fix
+[33ma08f0cd3[m HEAD@{36}: commit (merge): Resolved merge conflict by keeping remote changes
+[33m6bfc72ce[m HEAD@{37}: commit: fix
+[33mb5a2544e[m HEAD@{38}: pull origin master: Fast-forward
+[33mf8a40650[m HEAD@{39}: commit: fix
+[33m572cc655[m HEAD@{40}: pull origin master: Merge made by the 'ort' strategy.
+[33m527bc96e[m HEAD@{41}: commit: fix
+[33mae07f233[m HEAD@{42}: pull origin master: Merge made by the 'ort' strategy.
+[33m952e2129[m HEAD@{43}: commit: fix
+[33m6c41cb7b[m HEAD@{44}: pull origin master: Merge made by the 'ort' strategy.
+[33mc1697da7[m HEAD@{45}: commit: fix
+[33m5d177577[m HEAD@{46}: pull origin master: Merge made by the 'ort' strategy.
+[33m9ecb391b[m HEAD@{47}: pull origin master: Merge made by the 'ort' strategy.
+[33m88d806d9[m HEAD@{48}: pull origin master: Merge made by the 'ort' strategy.
+[33m62e8e442[m HEAD@{49}: pull origin master: Merge made by the 'ort' strategy.
+[33m3071a6ae[m HEAD@{50}: pull origin master: Merge made by the 'ort' strategy.
+[33mae026912[m HEAD@{51}: pull origin master: Merge made by the 'ort' strategy.
+[33me74d6930[m HEAD@{52}: pull origin master: Merge made by the 'ort' strategy.
+[33m37b22472[m HEAD@{53}: pull origin master: Merge made by the 'ort' strategy.
+[33mc62e87d8[m HEAD@{54}: pull origin master: Merge made by the 'ort' strategy.
+[33m3ffa3b17[m HEAD@{55}: pull origin master: Merge made by the 'ort' strategy.
+[33m798b240b[m HEAD@{56}: commit (merge): fix
+[33m4645af71[m HEAD@{57}: pull origin master: Merge made by the 'ort' strategy.
+[33m04c80a3a[m HEAD@{58}: commit: fix
+[33m65c3a673[m HEAD@{59}: pull origin master: Merge made by the 'ort' strategy.
+[33m888bbfe2[m HEAD@{60}: commit (merge): gix
+[33m15fe8711[m HEAD@{61}: pull origin master: Merge made by the 'ort' strategy.
+[33m5dce7b2b[m HEAD@{62}: pull origin master: Merge made by the 'ort' strategy.
+[33mcf18089f[m HEAD@{63}: pull origin master: Merge made by the 'ort' strategy.
+[33m4d6d0f5e[m HEAD@{64}: pull origin master: Merge made by the 'ort' strategy.
+[33m1a67688a[m HEAD@{65}: commit: fix
+[33m774d9022[m HEAD@{66}: pull origin master: Merge made by the 'ort' strategy.
+[33m6289a039[m HEAD@{67}: commit: fix
+[33me6ff18f8[m HEAD@{68}: commit (merge): gix
+[33m5778e70b[m HEAD@{69}: pull origin master: Merge made by the 'ort' strategy.
+[33mf35bece9[m HEAD@{70}: commit: fix
+[33me8abaa96[m HEAD@{71}: pull origin master: Merge made by the 'ort' strategy.
+[33m7e72e620[m HEAD@{72}: commit: fix
+[33me0c4a951[m HEAD@{73}: pull origin master: Merge made by the 'ort' strategy.
+[33m0b85580f[m HEAD@{74}: commit: fix
+[33m618b6669[m HEAD@{75}: pull origin master: Merge made by the 'ort' strategy.
+[33mc47e0caf[m HEAD@{76}: commit: fix
+[33mee86a2f4[m HEAD@{77}: pull origin master: Merge made by the 'ort' strategy.
+[33medb23fdd[m HEAD@{78}: commit: fx
+[33m94d483fc[m HEAD@{79}: pull origin master: Merge made by the 'ort' strategy.
+[33m76043505[m HEAD@{80}: commit (merge): fix
+[33mc823e73c[m HEAD@{81}: pull origin master: Merge made by the 'ort' strategy.
+[33m244a18e3[m HEAD@{82}: pull origin master: Merge made by the 'ort' strategy.
+[33ma436a747[m HEAD@{83}: pull origin master: Merge made by the 'ort' strategy.
+[33m4bb5b81f[m HEAD@{84}: pull origin master: Merge made by the 'ort' strategy.
+[33m6f9e767f[m HEAD@{85}: commit (merge): fix
+[33mc4145c24[m HEAD@{86}: pull origin master: Merge made by the 'ort' strategy.
+[33m7603cc67[m HEAD@{87}: pull origin master: Merge made by the 'ort' strategy.
+[33m8c5dac7f[m HEAD@{88}: pull origin master: Merge made by the 'ort' strategy.
+[33me1dfae99[m HEAD@{89}: pull origin master: Merge made by the 'ort' strategy.
+[33m1f546d6a[m HEAD@{90}: pull origin master: Merge made by the 'ort' strategy.
+[33me70ea6b4[m HEAD@{91}: pull origin master: Merge made by the 'ort' strategy.
+[33ma234a568[m HEAD@{92}: pull origin master: Merge made by the 'ort' strategy.
+[33m0b035612[m HEAD@{93}: pull origin master: Merge made by the 'ort' strategy.
+[33m3875debb[m HEAD@{94}: pull origin master: Merge made by the 'ort' strategy.
+[33m4ceeb1b5[m HEAD@{95}: pull origin master: Merge made by the 'ort' strategy.
+[33m27ee61e0[m HEAD@{96}: pull origin master: Merge made by the 'ort' strategy.
+[33mc7c7fbd1[m HEAD@{97}: pull origin master: Merge made by the 'ort' strategy.
+[33m2de772f0[m HEAD@{98}: pull origin master: Merge made by the 'ort' strategy.
+[33ma59018c6[m HEAD@{99}: pull origin master: Merge made by the 'ort' strategy.
+[33m7ffb083e[m HEAD@{100}: pull origin master: Merge made by the 'ort' strategy.
+[33mf79e0fe0[m HEAD@{101}: pull origin master: Merge made by the 'ort' strategy.
+[33mf04ba2ce[m HEAD@{102}: pull origin master: Merge made by the 'ort' strategy.
+[33m5e067566[m HEAD@{103}: commit (merge): fix
+[33m6d630da0[m HEAD@{104}: commit: fix
+[33m2d06aee8[m HEAD@{105}: pull origin master: Merge made by the 'ort' strategy.
+[33m4dd5b3e3[m HEAD@{106}: pull origin master: Merge made by the 'ort' strategy.
+[33m41a3b737[m HEAD@{107}: commit: fix
+[33m95db487b[m HEAD@{108}: pull origin master: Merge made by the 'ort' strategy.
+[33md49b566a[m HEAD@{109}: commit: fix
+[33m3f3a9de9[m HEAD@{110}: pull origin master: Merge made by the 'ort' strategy.
+[33m6c601ead[m HEAD@{111}: commit (merge): fix
+[33m398ed661[m HEAD@{112}: commit: fix
+[33m5d8c11aa[m HEAD@{113}: pull origin master: Merge made by the 'ort' strategy.
+[33md2c9ef3e[m HEAD@{114}: pull origin master: Merge made by the 'ort' strategy.
+[33mf748c005[m HEAD@{115}: commit (merge): fix
+[33md2ef98ba[m HEAD@{116}: pull origin master: Merge made by the 'ort' strategy.
+[33m52795800[m HEAD@{117}: pull origin master: Merge made by the 'ort' strategy.
+[33m9628d450[m HEAD@{118}: pull origin master: Merge made by the 'ort' strategy.
+[33mafcee8e5[m HEAD@{119}: commit (merge): fix
+[33md4ba2e88[m HEAD@{120}: pull origin master: Merge made by the 'ort' strategy.
+[33maef352a8[m HEAD@{121}: commit: fix
+[33mf5ce73b9[m HEAD@{122}: commit (merge): complete
+[33md1a21349[m HEAD@{123}: commit: fix
+[33mcdeae2a8[m HEAD@{124}: pull origin master: Merge made by the 'ort' strategy.
+[33mdf2a3da9[m HEAD@{125}: commit: fix
+[33m6573c50a[m HEAD@{126}: pull origin master: Merge made by the 'ort' strategy.
+[33me14491b4[m HEAD@{127}: pull origin master: Merge made by the 'ort' strategy.
+[33m7f79e4d0[m HEAD@{128}: pull origin master: Merge made by the 'ort' strategy.
+[33md9066bc2[m HEAD@{129}: pull origin master: Merge made by the 'ort' strategy.
+[33m2005f5fd[m HEAD@{130}: pull origin master: Merge made by the 'ort' strategy.
+[33m732263ec[m HEAD@{131}: pull origin master: Merge made by the 'ort' strategy.
+[33m3851860b[m HEAD@{132}: commit (merge): fix
+[33ma53eb556[m HEAD@{133}: commit: fix
+[33m7e8823a3[m HEAD@{134}: reset: moving to origin/master
+[33m283d1bd4[m HEAD@{135}: checkout: moving from master to master
+[33m283d1bd4[m HEAD@{136}: commit (merge): production
+[33mfd842641[m HEAD@{137}: commit: fix
+[33m58abf947[m HEAD@{138}: rebase (abort): returning to refs/heads/master
+[33maa08f9f9[m HEAD@{139}: rebase (continue): fix
+[33m9b8b21a4[m HEAD@{140}: rebase (continue): fix
+[33m398e2387[m HEAD@{141}: rebase (pick): fix
+[33m9607b181[m HEAD@{142}: rebase (pick): fix
+[33mc820431d[m HEAD@{143}: rebase (continue): fix
+[33me149559e[m HEAD@{144}: rebase (pick): fix
+[33me9957753[m HEAD@{145}: rebase (continue): fix
+[33mfa4458e5[m HEAD@{146}: rebase (continue): fix
+[33md318cf80[m HEAD@{147}: rebase (pick): fix
+[33m325434bc[m HEAD@{148}: rebase (continue): fix
+[33m944066d3[m HEAD@{149}: pull origin master --rebase (start): checkout 944066d3a50d3b0c52375827c2beb9a3b676eb41
+[33m58abf947[m HEAD@{150}: reset: moving to ORIG_HEAD
+[33m58abf947[m HEAD@{151}: reset: moving to ORIG_HEAD
+[33m58abf947[m HEAD@{152}: commit: fix
+[33m59ac1107[m HEAD@{153}: pull origin master: Merge made by the 'ort' strategy.
+[33mdce8a72c[m HEAD@{154}: commit: fix
+[33m441451dd[m HEAD@{155}: pull origin master: Merge made by the 'ort' strategy.
+[33m896febdc[m HEAD@{156}: commit (merge): fix
+[33m1c56147a[m HEAD@{157}: commit: fix
+[33m92ea372c[m HEAD@{158}: pull origin master: Merge made by the 'ort' strategy.
+[33m0c64d66c[m HEAD@{159}: commit (merge): fix
+[33m300804da[m HEAD@{160}: commit (merge): fix
+[33md62c4758[m HEAD@{161}: commit: fix
+[33mb97638a9[m HEAD@{162}: commit: fix
+[33md763ce14[m HEAD@{163}: commit (merge): fix
+[33m7803e500[m HEAD@{164}: pull origin master: Merge made by the 'ort' strategy.
+[33m3ef4a2d1[m HEAD@{165}: pull origin master: Merge made by the 'ort' strategy.
+[33m4d65663e[m HEAD@{166}: pull origin master: Merge made by the 'ort' strategy.
+[33m02ba2e52[m HEAD@{167}: commit (merge): fix
+[33m219c50cd[m HEAD@{168}: pull origin master: Merge made by the 'ort' strategy.
+[33mc2939ae9[m HEAD@{169}: commit (merge): fix
+[33mdc745710[m HEAD@{170}: commit: fix
+[33m92b7398e[m HEAD@{171}: pull origin master: Merge made by the 'ort' strategy.
+[33mfab0ed66[m HEAD@{172}: commit (merge): fix
+[33m47cd2f11[m HEAD@{173}: commit: fix
+[33mfe657958[m HEAD@{174}: pull origin master: Merge made by the 'ort' strategy.
+[33mcf52a16d[m HEAD@{175}: pull origin master: Merge made by the 'ort' strategy.
+[33m077f47f2[m HEAD@{176}: pull origin master: Merge made by the 'ort' strategy.
+[33m1b5a13bb[m HEAD@{177}: pull origin master: Merge made by the 'ort' strategy.
+[33mb1877e11[m HEAD@{178}: pull origin master: Merge made by the 'ort' strategy.
+[33m73040196[m HEAD@{179}: reset: moving to HEAD
+[33m73040196[m HEAD@{180}: commit: fix
+[33m4368aa84[m HEAD@{181}: pull origin master: Merge made by the 'ort' strategy.
+[33m541ae346[m HEAD@{182}: pull origin master: Merge made by the 'ort' strategy.
+[33m197744e3[m HEAD@{183}: pull origin master: Merge made by the 'ort' strategy.
+[33m01f29386[m HEAD@{184}: pull origin master: Merge made by the 'ort' strategy.
+[33mae16e68e[m HEAD@{185}: commit: fix
+[33m5589cd05[m HEAD@{186}: commit: fix
+[33m7eb78e81[m HEAD@{187}: pull origin master: Merge made by the 'ort' strategy.
+[33m846474a5[m HEAD@{188}: commit (merge): fix
+[33m45f369ce[m HEAD@{189}: commit: fix
+[33mf20a73e2[m HEAD@{190}: reset: moving to HEAD@{1}
+[33m3a57dfb4[m HEAD@{191}: commit: fix
+[33mf20a73e2[m HEAD@{192}: pull origin master: Merge made by the 'ort' strategy.
+[33m66b0faeb[m HEAD@{193}: commit: fix
+[33mc4c988a4[m HEAD@{194}: pull origin master: Merge made by the 'ort' strategy.
+[33m373cfe71[m HEAD@{195}: pull origin master: Merge made by the 'ort' strategy.
+[33m2f4840df[m HEAD@{196}: commit: fix
+[33m8ee1a44e[m HEAD@{197}: pull origin master: Merge made by the 'ort' strategy.
+[33m52a1529f[m HEAD@{198}: commit: fix
+[33m2cc0a720[m HEAD@{199}: commit: fix
+[33ma0ac842c[m HEAD@{200}: pull origin master: Merge made by the 'ort' strategy.
+[33m4a51077f[m HEAD@{201}: pull origin master: Merge made by the 'ort' strategy.
+[33md5ebfa23[m HEAD@{202}: pull origin master: Merge made by the 'ort' strategy.
+[33m7700277b[m HEAD@{203}: pull origin master: Merge made by the 'ort' strategy.
+[33mc04ce2c4[m HEAD@{204}: commit (merge): fix
+[33m9bdcae97[m HEAD@{205}: commit (merge): fix
+[33mc99b1ead[m HEAD@{206}: commit: fix
+[33m0c38880d[m HEAD@{207}: reset: moving to 0c38880d
+[33m5762c4a9[m HEAD@{208}: reset: moving to 5762c4a
+[33m0c38880d[m HEAD@{209}: reset: moving to 0c38880d
+[33mbbed765d[m HEAD@{210}: reset: moving to bbed765d
+[33m289e856d[m HEAD@{211}: reset: moving to HEAD@{10}
+[33m7c7eb798[m HEAD@{212}: reset: moving to HEAD@{6}
+[33mf2280fa2[m HEAD@{213}: reset: moving to HEAD@{3}
+[33mf2280fa2[m HEAD@{214}: reset: moving to HEAD@{2}
+[33mf2280fa2[m HEAD@{215}: reset: moving to HEAD@{1}
+[33mf2280fa2[m HEAD@{216}: reset: moving to HEAD
+[33mf2280fa2[m HEAD@{217}: pull origin master: Merge made by the 'ort' strategy.
+[33mbbed765d[m HEAD@{218}: commit: gfix
+[33m7c7eb798[m HEAD@{219}: pull origin master: Merge made by the 'ort' strategy.
+[33m0c38880d[m HEAD@{220}: pull origin master: Merge made by the 'ort' strategy.
+[33m36e18462[m HEAD@{221}: pull origin master: Merge made by the 'ort' strategy.
+[33m289e856d[m HEAD@{222}: commit (merge): fix
+[33m6012cacb[m HEAD@{223}: commit: fix
+[33m5762c4a9[m HEAD@{224}: pull origin master: Merge made by the 'ort' strategy.
+[33m4f0251d4[m HEAD@{225}: pull origin master: Merge made by the 'ort' strategy.
+[33m0a043a10[m HEAD@{226}: commit (merge): fix
+[33md06c9fe8[m HEAD@{227}: pull origin master: Merge made by the 'ort' strategy.
+[33mc68b1ebb[m HEAD@{228}: commit: fix
+[33ma26cd248[m HEAD@{229}: pull origin master: Fast-forward
+[33mec38487f[m HEAD@{230}: pull origin master: Fast-forward
+[33m6835875a[m HEAD@{231}: pull origin master: Fast-forward
+[33mddf0ace1[m HEAD@{232}: pull origin master: Fast-forward
+[33md9bf953f[m HEAD@{233}: pull origin master: Fast-forward
+[33m2899105c[m HEAD@{234}: pull origin master: Fast-forward
+[33mbbf50af8[m HEAD@{235}: pull origin master: Fast-forward
+[33mc2f87e83[m HEAD@{236}: pull origin master: Fast-forward
+[33m4e6c71f3[m HEAD@{237}: pull origin master: Fast-forward
+[33m2cbb3390[m HEAD@{238}: pull origin master: Fast-forward
+[33ma4da1f4a[m HEAD@{239}: pull origin master: Fast-forward
+[33m4e41f28e[m HEAD@{240}: pull origin master: Fast-forward
+[33m09353298[m HEAD@{241}: pull origin master: Fast-forward
+[33m61ee2353[m HEAD@{242}: reset: moving to HEAD~1
+[33m7b75dbf6[m HEAD@{243}: pull origin master: Fast-forward
+[33m11b8d786[m HEAD@{244}: reset: moving to ORIG_HEAD
+[33m11b8d786[m HEAD@{245}: reset: moving to ORIG_HEAD
+[33m11b8d786[m HEAD@{246}: commit: fix
+[33mcdef3aae[m HEAD@{247}: commit: fix
+[33mdd7f141a[m HEAD@{248}: pull origin master: Merge made by the 'ort' strategy.
+[33m6695e64c[m HEAD@{249}: pull origin master: Merge made by the 'ort' strategy.
+[33ma27522ba[m HEAD@{250}: pull origin master: Merge made by the 'ort' strategy.
+[33mf822c5df[m HEAD@{251}: pull origin master: Merge made by the 'ort' strategy.
+[33m6d3cb5ab[m HEAD@{252}: pull origin master: Merge made by the 'ort' strategy.
+[33m0a850097[m HEAD@{253}: pull origin master: Merge made by the 'ort' strategy.
+[33m2de84b98[m HEAD@{254}: pull origin master: Merge made by the 'ort' strategy.
+[33m5b81e494[m HEAD@{255}: pull origin master: Merge made by the 'ort' strategy.
+[33mf66d2943[m HEAD@{256}: commit: fix
+[33m9fe2a21c[m HEAD@{257}: pull origin master: Merge made by the 'ort' strategy.
+[33me71e288c[m HEAD@{258}: pull origin master: Merge made by the 'ort' strategy.
+[33m9c0add4e[m HEAD@{259}: pull origin master: Merge made by the 'ort' strategy.
+[33m1c028448[m HEAD@{260}: commit: fix
+[33mf53d5ec0[m HEAD@{261}: pull origin master: Merge made by the 'ort' strategy.
+[33m3bfd0930[m HEAD@{262}: pull origin master: Merge made by the 'ort' strategy.
+[33md4080c14[m HEAD@{263}: commit: fix
+[33m8375aa00[m HEAD@{264}: pull origin master: Merge made by the 'ort' strategy.
+[33mce1ee9c0[m HEAD@{265}: pull origin master: Merge made by the 'ort' strategy.
+[33m6e57f31b[m HEAD@{266}: commit: fix
+[33mda20b945[m HEAD@{267}: pull origin master: Merge made by the 'ort' strategy.
+[33m44ab917f[m HEAD@{268}: commit: gix
+[33mcf326db3[m HEAD@{269}: pull origin master: Merge made by the 'ort' strategy.
+[33ma9a67b72[m HEAD@{270}: pull origin master: Merge made by the 'ort' strategy.
+[33mc93b2ab4[m HEAD@{271}: commit (merge): fiix
+[33me533cccb[m HEAD@{272}: commit: fix

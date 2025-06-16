@@ -5,15 +5,17 @@ class AutoformSchedulerWorker
   sidekiq_options queue: 'default'
 
   PYTHON_SCRIPT_PATH = Rails.root.join('autoform', 'bootio.py').to_s
-  PYTHON_VENV_PATH = Rails.root.join('autoform/autoform', 'bin', 'python')
+  PYTHON_VENV_PATH = Rails.root.join('autoform', 'venv', 'bin', 'python')
   PYTHON_EXECUTABLE = File.exist?(PYTHON_VENV_PATH) ? PYTHON_VENV_PATH.to_s : (ENV['PYTHON_EXECUTABLE'] || %w[python3 python].find { |cmd| system("which #{cmd} > /dev/null 2>&1") } || 'python')
 
 
   def perform(contact_tracking_id)
+    # Sidekiq.logger.error "!!!!!! AutoformSchedulerWorker (using Sidekiq.logger): PERFORM METHOD ENTERED with CT ID: #{contact_tracking_id} !!!!!!"
+    # Sidekiq.logger.error "!!!!!! AutoformSchedulerWorker (using Rails.logger): PERFORM METHOD ENTERED with CT ID: #{contact_tracking_id} !!!!!!"
     contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
 
     unless contact_tracking
-      Rails.logger.error "AutoformSchedulerWorker: ContactTracking with ID #{contact_tracking_id} not found."
+      Sidekiq.logger.error "AutoformSchedulerWorker: ContactTracking with ID #{contact_tracking_id} not found."
       return
     end
 
@@ -21,7 +23,7 @@ class AutoformSchedulerWorker
 
     unless inquiry
       error_message = "Inquiry details not found for ContactTracking ID #{contact_tracking_id}."
-      Rails.logger.error "AutoformSchedulerWorker: #{error_message}"
+      Sidekiq.logger.error "AutoformSchedulerWorker: #{error_message}"
       contact_tracking.update(status: '自動送信エラー')
       return
     end
@@ -81,7 +83,7 @@ class AutoformSchedulerWorker
     # Ensure PYTHON_EXECUTABLE is found
     unless PYTHON_EXECUTABLE && File.exist?(PYTHON_EXECUTABLE) || system("which #{PYTHON_EXECUTABLE} > /dev/null 2>&1")
         error_message = "Python executable '#{PYTHON_EXECUTABLE}' not found. Please check PYTHON_EXECUTABLE environment variable or system PATH."
-        Rails.logger.fatal "AutoformSchedulerWorker: #{error_message}"
+        Sidekiq.logger.fatal "AutoformSchedulerWorker: #{error_message}"
         contact_tracking.update(status: '自動送信システムエラー')
         # Potentially raise an error to stop retries if this is a system config issue
         # raise StandardError, error_message 
@@ -90,7 +92,7 @@ class AutoformSchedulerWorker
     
     command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH] + args.map(&:to_s) # Ensure all args are strings
 
-    Rails.logger.info "AutoformSchedulerWorker: Executing command for CT ID #{contact_tracking_id}: #{command.join(' ')}"
+    Sidekiq.logger.info "AutoformSchedulerWorker: Executing command for CT ID #{contact_tracking_id}: #{command.join(' ')}"
     
     # Mark as processing before calling script
     contact_tracking.update(status: '処理中')
@@ -99,9 +101,9 @@ class AutoformSchedulerWorker
     begin
       stdout, stderr, status = Open3.capture3(*command)
 
-      Rails.logger.info "AutoformSchedulerWorker: Python script STDOUT for CT ID #{contact_tracking_id}:\n#{stdout}"
+      Sidekiq.logger.info "AutoformSchedulerWorker: Python script STDOUT for CT ID #{contact_tracking_id}:\n#{stdout}"
       unless stderr.blank?
-        Rails.logger.error "AutoformSchedulerWorker: Python script STDERR for CT ID #{contact_tracking_id}:\n#{stderr}"
+        Sidekiq.logger.error "AutoformSchedulerWorker: Python script STDERR for CT ID #{contact_tracking_id}:\n#{stderr}"
       end
 
       contact_tracking.reload
@@ -109,13 +111,13 @@ class AutoformSchedulerWorker
       # current_notes_after_script = contact_tracking.notes
 
       if status.success?
-        Rails.logger.info "AutoformSchedulerWorker: Python script completed for CT ID #{contact_tracking_id}. Final DB status: #{current_status_after_script}"
+        Sidekiq.logger.info "AutoformSchedulerWorker: Python script completed for CT ID #{contact_tracking_id}. Final DB status: #{current_status_after_script}"
         # If script ran but didn't update status from '処理中', it might be an internal script logic issue
         if current_status_after_script == '処理中'
             contact_tracking.update(status: '自動送信エラー')
         end
       else
-        Rails.logger.error "AutoformSchedulerWorker: Python script execution failed for CT ID #{contact_tracking_id}. Exit status: #{status.exitstatus}. Final DB status: #{current_status_after_script}"
+        Sidekiq.logger.error "AutoformSchedulerWorker: Python script execution failed for CT ID #{contact_tracking_id}. Exit status: #{status.exitstatus}. Final DB status: #{current_status_after_script}"
         # If script failed and status is still '処理中', it means script crashed before updating DB or failed to update.
         if current_status_after_script == '処理中'
           contact_tracking.update(status: '自動送信システムエラー')
@@ -123,8 +125,8 @@ class AutoformSchedulerWorker
       end
 
     rescue StandardError => e
-      Rails.logger.error "AutoformSchedulerWorker: Error executing Python script for CT ID #{contact_tracking_id}: #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
+      Sidekiq.logger.error "AutoformSchedulerWorker: Error executing Python script for CT ID #{contact_tracking_id}: #{e.message}"
+      Sidekiq.logger.error e.backtrace.join("\n")
       # Ensure status is updated if an exception occurs in Ruby before/during script call
       contact_tracking.reload
       if contact_tracking.status == '処理中' || contact_tracking.status == '自動送信予定'

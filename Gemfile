@@ -128,8 +128,8 @@ gem 'rails_autolink'
 
 gem 'rails-html-sanitizer', '1.4.3'
 gem 'dotenv-rails', groups: [:development, :test]
-
-gem 'sidekiq', '>= 6.5.0'
+gem 'dotenv-rails'
+gem 'sidekiq', '~> 5.2'
 gem 'sidekiq-cron'
 
 gem 'open3'
