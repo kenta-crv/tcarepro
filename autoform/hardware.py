@@ -1,3 +1,5 @@
+import logging
+import json
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -440,7 +442,7 @@ class Place_enter():
             # WebDriverManager will download and cache the correct ChromeDriver
             serv = Service(ChromeDriverManager().install())
             driver = webdriver.Chrome(service=serv, options=options)
-            driver.set_page_load_timeout(45) # Increased page load timeout
+            driver.set_page_load_timeout(15) # Increased page load timeout
             print("WebDriver initialized successfully.")
 
             driver.get(self.endpoint)
@@ -803,59 +805,129 @@ class Place_enter():
                 print("Quitting WebDriver.")
                 driver.quit()
                 
-#switch = 1 #debug mode
-switch = 0
 
-if switch == 0:
-    print("本番モード")
-elif switch == 1:
-    form_data = {
-        "company":"Tamagawa",
-        "company_kana":"たまがわ",
-        "manager":"多摩川 フラン",
-        "manager_kana":"タマガワ フラン",
-        "phone":"090-3795-5760",
-        "fax":"",
-        "address":"東京都目黒区中目黒", # Consider adding a prefecture for self.pref testing
-        "mail":"info@tamagawa.com",
-        "subjects":"システム開発のご相談", # Test subject
-        "body":"はじめまして。 たまがわと申します。\nこの度、貴社のウェブサイトを拝見し、システム開発についてご相談させて頂きたくご連絡いたしました。\nよろしくお願いいたします。" # Test body
-    }
-    # url = "https://ri-plus.jp/contact"
-    # url = "https://www.amo-pack.com/contact/index.html"
-
-    print(f"--- Debug Mode Activated for URL: {url} ---")
+def run_test_case(url, form_data, log_prefix="test"):
     try:
-        # Instantiate Place_enter with the debug data
-        # This assumes your Place_enter.__init__ is ready to parse the form
-        # and logicer correctly identifies fields.
+        logging.info(f"{log_prefix} | Starting test for URL: {url}")
         automation_instance = Place_enter(url, form_data)
-
-        # Check if form parsing was successful (optional, depends on your __init__)
         if not automation_instance.form:
-            print("DEBUG: Place_enter failed to find or initialize the form. Exiting debug run.")
+            logging.warning(f"{log_prefix} | No form detected, skipping URL: {url}")
+            return False
+        result = automation_instance.go_selenium()
+        status = result.get('status')
+        reason = result.get('reason')
+        if status == "OK":
+            logging.info(f"{log_prefix} | SUCCESS | {url} | {reason}")
+            return True
         else:
-            print(f"DEBUG: Place_enter initialized. Identified field names (examples):")
-            print(f"  Company field name: {automation_instance.company}")
-            print(f"  Manager field name: {automation_instance.manager}")
-            print(f"  Email field name: {automation_instance.mail}")
-            print(f"  Email Confirm field name: {automation_instance.mail_c}")
-            print(f"  Body field name: {automation_instance.body}")
-            print(f"  Kiyaku checkbox name: {automation_instance.kiyakucheck.get('name') if automation_instance.kiyakucheck else 'Not identified'}")
-            # print(f"  Namelist from logicer: {automation_instance.namelist}") # Can be very verbose
+            logging.warning(f"{log_prefix} | FAIL | {url} | {reason}")
+            return False
+    except Exception as ex:
+        logging.error(f"{log_prefix} | ERROR | {url} | {str(ex)}")
+        logging.error(traceback.format_exc())
+        return False
 
-            # Call the go_selenium method
-            print("DEBUG: Calling go_selenium...")
-            result = automation_instance.go_selenium()
+def main(test_cases_file="test_cases.json", logs_file="logs.txt"):
+    logging.basicConfig(
+        level=logging.INFO,
+        filename=logs_file,
+        filemode='w',
+        format='%(asctime)s %(levelname)s: %(message)s'
+    )
+    # Log to console too
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
 
-            # Print the result
-            print(f"--- Debug Mode Selenium Result ---")
-            print(f"Status: {result.get('status')}")
-            print(f"Reason: {result.get('reason')}")
+    # Read test cases
+    with open(test_cases_file, "r", encoding="utf-8") as f:
+        test_cases = json.load(f)
+    total = len(test_cases)
+    passed = 0
 
-    except Exception as e_debug:
-        print(f"--- Debug Mode Error ---")
-        print(f"An error occurred during the debug run: {e_debug}")
-        traceback.print_exc()
+    for i, case in enumerate(test_cases, 1):
+        url = case["url"]
+        form_data = case["form_data"]
+        log_prefix = f"TestCase-{i:02d}/{total}"
+        success = run_test_case(url, form_data, log_prefix=log_prefix)
+        if success:
+            passed += 1
+        # Pause to avoid server rate-limiting
+        time.sleep(2)
 
-    print(f"--- Debug Mode Finished ---")
+    score = 100 * passed / total if total else 0
+    logging.info(f"\n{'='*40}\nTotal Cases: {total}, Successes: {passed}, Score: {score:.1f}%\n{'='*40}\n")
+    # Write score at the end of logs
+    with open(logs_file, "a", encoding="utf-8") as f:
+        f.write(f"\n{'='*40}\nTotal Cases: {total}, Successes: {passed}, Score: {score:.1f}%\n{'='*40}\n")
+    print(f"Final Success Score: {score:.1f}% (see {logs_file})")
+
+if __name__ == "__main__":
+    # Usage: python hardware.py test_cases.json logs.txt
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("test_cases_file", nargs="?", default="test_cases.json")
+    parser.add_argument("logs_file", nargs="?", default="logs.txt")
+    args = parser.parse_args()
+    main(args.test_cases_file, args.logs_file)
+
+#switch = 1 #debug mode
+
+
+# switch = 0
+
+# if switch == 0:
+#     print("本番モード")
+# elif switch == 1:
+#     form_data = {
+#         "company":"Tamagawa",
+#         "company_kana":"たまがわ",
+#         "manager":"多摩川 フラン",
+#         "manager_kana":"タマガワ フラン",
+#         "phone":"090-3795-5760",
+#         "fax":"",
+#         "address":"東京都目黒区中目黒", # Consider adding a prefecture for self.pref testing
+#         "mail":"info@tamagawa.com",
+#         "subjects":"システム開発のご相談", # Test subject
+#         "body":"はじめまして。 たまがわと申します。\nこの度、貴社のウェブサイトを拝見し、システム開発についてご相談させて頂きたくご連絡いたしました。\nよろしくお願いいたします。" # Test body
+#     }
+#     # url = "https://ri-plus.jp/contact"
+#     # url = "https://www.amo-pack.com/contact/index.html"
+
+#     print(f"--- Debug Mode Activated for URL: {url} ---")
+#     try:
+#         # Instantiate Place_enter with the debug data
+#         # This assumes your Place_enter.__init__ is ready to parse the form
+#         # and logicer correctly identifies fields.
+#         automation_instance = Place_enter(url, form_data)
+
+#         # Check if form parsing was successful (optional, depends on your __init__)
+#         if not automation_instance.form:
+#             print("DEBUG: Place_enter failed to find or initialize the form. Exiting debug run.")
+#         else:
+#             print(f"DEBUG: Place_enter initialized. Identified field names (examples):")
+#             print(f"  Company field name: {automation_instance.company}")
+#             print(f"  Manager field name: {automation_instance.manager}")
+#             print(f"  Email field name: {automation_instance.mail}")
+#             print(f"  Email Confirm field name: {automation_instance.mail_c}")
+#             print(f"  Body field name: {automation_instance.body}")
+#             print(f"  Kiyaku checkbox name: {automation_instance.kiyakucheck.get('name') if automation_instance.kiyakucheck else 'Not identified'}")
+#             # print(f"  Namelist from logicer: {automation_instance.namelist}") # Can be very verbose
+
+#             # Call the go_selenium method
+#             print("DEBUG: Calling go_selenium...")
+#             result = automation_instance.go_selenium()
+
+#             # Print the result
+#             print(f"--- Debug Mode Selenium Result ---")
+#             print(f"Status: {result.get('status')}")
+#             print(f"Reason: {result.get('reason')}")
+
+#     except Exception as e_debug:
+#         print(f"--- Debug Mode Error ---")
+#         print(f"An error occurred during the debug run: {e_debug}")
+#         traceback.print_exc()
+
+#     print(f"--- Debug Mode Finished ---")
