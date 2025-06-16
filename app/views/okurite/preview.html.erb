@@ -80,6 +80,10 @@ $(function () {
           <td><%= @customer.company %></td>
         </tr>
         <tr>
+         <th>Form URL</th>
+         <td><%= @customer.contact_url.present? ? @customer.contact_url : 'なし' %></td>
+       </tr>
+        <tr>
           <th>送信情報が出ない場合検索
             <br>
             ※ポータルサイト先へは送信しないで下さい。
