@@ -10,6 +10,8 @@ class AutoformSchedulerWorker
 
 
   def perform(contact_tracking_id)
+    Sidekiq.logger.error "!!!!!! AutoformSchedulerWorker (using Sidekiq.logger): PERFORM METHOD ENTERED with CT ID: #{contact_tracking_id} !!!!!!"
+    Rails.logger.error "!!!!!! AutoformSchedulerWorker (using Rails.logger): PERFORM METHOD ENTERED with CT ID: #{contact_tracking_id} !!!!!!"
     contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
 
     unless contact_tracking
