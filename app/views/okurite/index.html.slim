@@ -19,7 +19,7 @@
         th
           | URL1
         th
-          | URL2
+          | FormURL
         th
           | ワーカー名
         th
@@ -39,7 +39,7 @@
         td
           = customer.url&.truncate(30)
         td
-          = customer.url_2&.truncate(30)
+          = customer.contact_url&.truncate(30)
         td 
           = contact_tracking&.worker.user_name if contact_tracking&.worker.present?
         td
@@ -123,9 +123,9 @@
                 td
                   = f.check_box :contact_tracking_id_null, {}, 'true', ''
                 th
-                  | url有りのみ
+                  | フォームURL
                 td
-                  = f.check_box :url
+                  = f.check_box :contact_url
               tr
                 th
                   | 業種
