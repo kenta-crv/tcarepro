@@ -1,0 +1,10 @@
+2025-06-20 14:33:05,518 - INFO - Found form with 4 elements: https://mynet-system.co.jp/./contact.html
+2025-06-20 14:33:05,518 - INFO - Mapped name -> お名前 (context: お名前 お名前必須メールアドレス必須電話番号お問い合わせ内容必須)
+2025-06-20 14:33:05,518 - INFO - Mapped email -> お名前 (context: お名前 お名前必須メールアドレス必須電話番号お問い合わせ内容必須)
+2025-06-20 14:33:05,518 - INFO - Mapped phone -> お名前 (context: お名前 お名前必須メールアドレス必須電話番号お問い合わせ内容必須)
+2025-06-20 14:33:05,519 - INFO - Mapped message -> お名前 (context: お名前 お名前必須メールアドレス必須電話番号お問い合わせ内容必須)
+2025-06-20 14:33:05,519 - INFO - ====== WebDriver manager ======
+2025-06-20 14:33:05,569 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-20 14:33:05,632 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-20 14:33:05,692 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-20 14:33:05,991 - INFO - Navigating to: https://mynet-system.co.jp/./contact.html

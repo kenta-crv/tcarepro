@@ -1,0 +1,521 @@
+2025-06-18 18:22:43,891 - INFO - Starting form automation test suite
+2025-06-18 18:22:43,891 - INFO - Loaded 15 test cases
+2025-06-18 18:22:43,891 - INFO - === Case 1: Starting https://www.welfare-sendai.or.jp/pages/43/ ===
+2025-06-18 18:22:45,218 - INFO - Found form with 49 elements: https://www.welfare-sendai.or.jp/pages/43/
+2025-06-18 18:22:45,221 - INFO - Mapped phone -> Block283_1[item][35] (context: Block283_1[item][35] inp-FormItem-Block283_1-item-)
+2025-06-18 18:22:45,223 - INFO - Mapped email -> Block283_1[item][38] (context: Block283_1[item][38] inp-FormItem-Block283_1-item-)
+2025-06-18 18:22:45,228 - INFO - ====== WebDriver manager ======
+2025-06-18 18:22:45,284 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:22:45,413 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:22:45,525 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:22:45,807 - INFO - Navigating to: https://www.welfare-sendai.or.jp/pages/43/
+2025-06-18 18:22:50,966 - INFO - Form elements found: https://www.welfare-sendai.or.jp/pages/43/
+2025-06-18 18:22:51,160 - INFO - Math CAPTCHA detected: 46+09
+2025-06-18 18:22:51,161 - INFO - Solved math: 46+9 = 55
+2025-06-18 18:22:51,325 - INFO - Entered math answer 55 in empty text field
+2025-06-18 18:22:51,325 - INFO - Math CAPTCHA solved: 46+09 = 55
+2025-06-18 18:22:51,325 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:22:51,333 - INFO - Filling form: https://www.welfare-sendai.or.jp/pages/43/
+2025-06-18 18:22:51,554 - INFO - Filled Block283_1[item][35] with: 050-7119-1716
+2025-06-18 18:22:51,555 - INFO - Filled 1 mapped fields
+2025-06-18 18:22:54,124 - INFO - Auto-filled 0 selects and 3 radio groups
+2025-06-18 18:22:54,363 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:22:54,363 - INFO - Submitting form: https://www.welfare-sendai.or.jp/pages/43/
+2025-06-18 18:22:55,403 - INFO - Clicked confirmation button
+2025-06-18 18:22:58,358 - INFO - Clicked confirmation button
+2025-06-18 18:23:01,480 - INFO - Clicked submit input
+2025-06-18 18:23:05,516 - INFO - Found success pattern: ありがとうございました
+2025-06-18 18:23:05,516 - INFO - SUCCESS: Form submitted successfully: https://www.welfare-sendai.or.jp/pages/43/
+2025-06-18 18:23:05,577 - INFO - Case 1 Result: OK - submission_successful
+2025-06-18 18:23:07,578 - INFO - === Case 2: Starting https://www.mega.co.jp/form/ ===
+2025-06-18 18:23:08,030 - INFO - Found form with 7 elements: https://www.mega.co.jp/form/
+2025-06-18 18:23:08,031 - INFO - Mapped company -> company (context: company input_width 例：株式会社ABC )
+2025-06-18 18:23:08,031 - INFO - Mapped name -> name (context: name input_width 例：山田 太郎 )
+2025-06-18 18:23:08,031 - INFO - Mapped email -> email (context: email 例：sample@abc.co.jp )
+2025-06-18 18:23:08,031 - INFO - Mapped message -> contact (context: contact お問い合わせ内容をご入力ください。 )
+2025-06-18 18:23:08,032 - INFO - ====== WebDriver manager ======
+2025-06-18 18:23:08,116 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:23:08,240 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:23:08,364 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:23:08,655 - INFO - Navigating to: https://www.mega.co.jp/form/
+2025-06-18 18:23:12,786 - INFO - Form elements found: https://www.mega.co.jp/form/
+2025-06-18 18:23:12,950 - INFO - Filling form: https://www.mega.co.jp/form/
+2025-06-18 18:23:13,085 - INFO - Filled company with: 株式会社Ri-Plus
+2025-06-18 18:23:13,178 - INFO - Filled name with: 村田　直人
+2025-06-18 18:23:13,304 - INFO - Filled email with: mailer@ri-plus.jp
+2025-06-18 18:23:14,543 - INFO - Filled textarea contact with: お世話になります。私、株式会社Ri-Plusの村田と申します。
+
+当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。
+
+【過去の実績】
+・外国人紹介アポイント累計4000件
+・人材派遣アポイント累計2000件
+・アポイント総数30,000件
+
+現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。
+
+【トライアルキャンペーン】
+・初期費用０円
+・契約期間０ヶ月のアポ取り切り契約
+・リスト制作費０円
+
+当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。
+
+キャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。
+
+この度は貴重なお時間をいただき、ありがとうございました。
+2025-06-18 18:23:14,544 - INFO - Filled 4 mapped fields
+2025-06-18 18:23:14,678 - INFO - Auto-filled 1 selects and 0 radio groups
+2025-06-18 18:23:14,690 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:23:14,690 - INFO - Submitting form: https://www.mega.co.jp/form/
+2025-06-18 18:23:15,837 - INFO - Clicked confirmation button
+2025-06-18 18:23:18,545 - ERROR - Form submission failed: https://www.mega.co.jp/form/
+2025-06-18 18:23:18,656 - INFO - Case 2 Result: NG - submission_failed
+2025-06-18 18:23:20,657 - INFO - === Case 3: Starting https://www.kyodo-pr.co.jp/contact/ ===
+2025-06-18 18:23:23,354 - WARNING - No substantial form found: https://www.kyodo-pr.co.jp/contact/
+2025-06-18 18:23:23,355 - INFO - ====== WebDriver manager ======
+2025-06-18 18:23:23,403 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:23:23,530 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:23:23,654 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:23:23,932 - INFO - Navigating to: https://www.kyodo-pr.co.jp/contact/
+2025-06-18 18:23:32,226 - INFO - Form elements found: https://www.kyodo-pr.co.jp/contact/
+2025-06-18 18:23:32,240 - INFO - reCAPTCHA v2 detected
+2025-06-18 18:23:34,461 - WARNING - reCAPTCHA v2 requires manual solving
+2025-06-18 18:23:34,461 - WARNING - CAPTCHA detected but not solved: recaptcha_v2
+2025-06-18 18:23:34,461 - INFO - CAPTCHA detected but not solvable: https://www.kyodo-pr.co.jp/contact/
+2025-06-18 18:23:34,522 - INFO - Case 3 Result: OK - captcha_detected_success
+2025-06-18 18:23:36,522 - INFO - === Case 4: Starting https://sun-respect.com/contact/ ===
+2025-06-18 18:23:37,580 - INFO - Found form with 18 elements: https://sun-respect.com/contact/
+2025-06-18 18:23:37,581 - INFO - Mapped name -> name-kanji (context: name-kanji 例：山田太郎 )
+2025-06-18 18:23:37,581 - INFO - Mapped zip -> zip (context: zip 例：263-0031 )
+2025-06-18 18:23:37,581 - INFO - Mapped address -> address (context: address 例：千葉県千葉市稲毛区稲毛東5-15-7 )
+2025-06-18 18:23:37,581 - INFO - Mapped phone -> tel (context: tel 例：043-204-8322 )
+2025-06-18 18:23:37,581 - INFO - Mapped email -> mail (context: mail 例：respectinage@yahoo.co.jp )
+2025-06-18 18:23:37,582 - INFO - ====== WebDriver manager ======
+2025-06-18 18:23:37,632 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:23:37,764 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:23:37,886 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:23:38,166 - INFO - Navigating to: https://sun-respect.com/contact/
+2025-06-18 18:23:44,829 - INFO - Form elements found: https://sun-respect.com/contact/
+2025-06-18 18:23:44,842 - INFO - reCAPTCHA v2 detected
+2025-06-18 18:23:44,884 - WARNING - CAPTCHA detected but not solved: recaptcha_v2
+2025-06-18 18:23:44,884 - INFO - CAPTCHA detected but not solvable: https://sun-respect.com/contact/
+2025-06-18 18:23:44,943 - INFO - Case 4 Result: OK - captcha_detected_success
+2025-06-18 18:23:46,943 - INFO - === Case 5: Starting https://cocomi.co.jp/contact/ ===
+2025-06-18 18:23:47,871 - INFO - Found form with 8 elements: https://cocomi.co.jp/contact/
+2025-06-18 18:23:47,871 - INFO - Mapped name -> お名前 (context: お名前 お名前 )
+2025-06-18 18:23:47,871 - INFO - Mapped phone -> 電話番号 (context: 電話番号 00-0000-0000 )
+2025-06-18 18:23:47,871 - INFO - Mapped email -> メールアドレス (context: メールアドレス 例）contact@cocomi.co.jp )
+2025-06-18 18:23:47,871 - INFO - Mapped message -> お問い合わせ内容 (context: お問い合わせ内容 お問い合わせ内容 )
+2025-06-18 18:23:47,872 - INFO - ====== WebDriver manager ======
+2025-06-18 18:23:47,924 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:23:48,054 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:23:48,184 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:23:48,471 - INFO - Navigating to: https://cocomi.co.jp/contact/
+2025-06-18 18:23:53,932 - INFO - Form elements found: https://cocomi.co.jp/contact/
+2025-06-18 18:23:54,098 - INFO - Math CAPTCHA detected: 06+09
+2025-06-18 18:23:54,098 - INFO - Solved math: 6+9 = 15
+2025-06-18 18:23:54,252 - INFO - Entered math answer 15 in empty text field
+2025-06-18 18:23:54,252 - INFO - Math CAPTCHA solved: 06+09 = 15
+2025-06-18 18:23:54,252 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:23:54,258 - INFO - Filling form: https://cocomi.co.jp/contact/
+2025-06-18 18:23:54,361 - INFO - Filled お名前 with: 村田　直人
+2025-06-18 18:23:54,471 - INFO - Filled メールアドレス with: mailer@ri-plus.jp
+2025-06-18 18:23:54,584 - INFO - Filled 電話番号 with: 050-7119-1716
+2025-06-18 18:23:54,969 - INFO - Filled textarea お問い合わせ内容 with: お世話になります。私、株式会社Ri-Plusの村田と申します。
+
+当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。
+
+【過去の実績】
+・外国人紹介アポイント累計4000件
+・人材派遣アポイント累計2000件
+・アポイント総数30,000件
+
+現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。
+
+【トライアルキャンペーン】
+・初期費用０円
+・契約期間０ヶ月のアポ取り切り契約
+・リスト制作費０円
+
+当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。
+
+キャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。
+
+この度は貴重なお時間をいただき、ありがとうございました。
+2025-06-18 18:23:54,969 - INFO - Filled 4 mapped fields
+2025-06-18 18:23:54,998 - INFO - Auto-filled 0 selects and 0 radio groups
+2025-06-18 18:23:55,009 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:23:55,009 - INFO - Submitting form: https://cocomi.co.jp/contact/
+2025-06-18 18:23:56,776 - INFO - Clicked confirmation button
+2025-06-18 18:24:04,910 - INFO - Clicked final submit button
+2025-06-18 18:24:08,928 - INFO - URL changed from https://cocomi.co.jp/contact/ to https://cocomi.co.jp/contact/complete/
+2025-06-18 18:24:08,928 - INFO - SUCCESS: Form submitted successfully: https://cocomi.co.jp/contact/
+2025-06-18 18:24:08,990 - INFO - Case 5 Result: OK - submission_successful
+2025-06-18 18:24:10,990 - INFO - === Case 6: Starting https://www.rook.co.jp/contact/ ===
+2025-06-18 18:24:11,805 - INFO - Found form with 18 elements: https://www.rook.co.jp/contact/
+2025-06-18 18:24:11,805 - INFO - Mapped subject -> your-subject (context: your-subject 例：コピー機修理について )
+2025-06-18 18:24:11,805 - INFO - Mapped name -> your-name (context: your-name 例：山田　太郎 )
+2025-06-18 18:24:11,806 - INFO - Mapped email -> your-email (context: your-email 例：abcd@example.jp )
+2025-06-18 18:24:11,806 - INFO - Mapped phone -> your-tel (context: your-tel 例：09012345678(ハイフンなし) )
+2025-06-18 18:24:11,806 - INFO - Mapped address -> your-address (context: your-address 例：愛知県名古屋市中区 )
+2025-06-18 18:24:11,806 - INFO - Mapped message -> your-message (context: your-message )
+2025-06-18 18:24:11,806 - INFO - ====== WebDriver manager ======
+2025-06-18 18:24:11,857 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:24:11,985 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:24:12,106 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:24:12,398 - INFO - Navigating to: https://www.rook.co.jp/contact/
+2025-06-18 18:24:17,649 - INFO - Form elements found: https://www.rook.co.jp/contact/
+2025-06-18 18:24:17,663 - INFO - reCAPTCHA v2 detected
+2025-06-18 18:24:17,703 - WARNING - CAPTCHA detected but not solved: recaptcha_v2
+2025-06-18 18:24:17,703 - INFO - CAPTCHA detected but not solvable: https://www.rook.co.jp/contact/
+2025-06-18 18:24:17,818 - INFO - Case 6 Result: OK - captcha_detected_success
+2025-06-18 18:24:19,818 - INFO - === Case 7: Starting https://www.ajoyh.jp/formlist/contactform/ ===
+2025-06-18 18:24:21,412 - INFO - Found form with 13 elements: https://www.ajoyh.jp/formlist/contactform/
+2025-06-18 18:24:21,413 - INFO - ====== WebDriver manager ======
+2025-06-18 18:24:21,462 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:24:21,582 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:24:21,704 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:24:22,071 - INFO - Navigating to: https://www.ajoyh.jp/formlist/contactform/
+2025-06-18 18:24:29,447 - INFO - Form elements found: https://www.ajoyh.jp/formlist/contactform/
+2025-06-18 18:24:29,461 - INFO - reCAPTCHA v2 detected
+2025-06-18 18:24:29,501 - WARNING - CAPTCHA detected but not solved: recaptcha_v2
+2025-06-18 18:24:29,501 - INFO - CAPTCHA detected but not solvable: https://www.ajoyh.jp/formlist/contactform/
+2025-06-18 18:24:29,562 - INFO - Case 7 Result: OK - captcha_detected_success
+2025-06-18 18:24:31,562 - INFO - === Case 8: Starting https://naturalgarden.co.jp/contact ===
+2025-06-18 18:24:32,429 - INFO - Found form with 10 elements: https://naturalgarden.co.jp/contact
+2025-06-18 18:24:32,429 - INFO - Mapped name -> name (context: name 例）草花 庭子 お問い合わせ 入力画面下記にご入力下さい。※は必須項目です。お名前※メール)
+2025-06-18 18:24:32,429 - INFO - Mapped email -> name (context: name 例）草花 庭子 お問い合わせ 入力画面下記にご入力下さい。※は必須項目です。お名前※メール)
+2025-06-18 18:24:32,429 - INFO - Mapped phone -> name (context: name 例）草花 庭子 お問い合わせ 入力画面下記にご入力下さい。※は必須項目です。お名前※メール)
+2025-06-18 18:24:32,429 - INFO - Mapped zip -> name (context: name 例）草花 庭子 お問い合わせ 入力画面下記にご入力下さい。※は必須項目です。お名前※メール)
+2025-06-18 18:24:32,430 - INFO - Mapped address -> name (context: name 例）草花 庭子 お問い合わせ 入力画面下記にご入力下さい。※は必須項目です。お名前※メール)
+2025-06-18 18:24:32,430 - INFO - Mapped message -> name (context: name 例）草花 庭子 お問い合わせ 入力画面下記にご入力下さい。※は必須項目です。お名前※メール)
+2025-06-18 18:24:32,430 - INFO - ====== WebDriver manager ======
+2025-06-18 18:24:32,479 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:24:32,601 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:24:32,721 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:24:33,050 - INFO - Navigating to: https://naturalgarden.co.jp/contact
+2025-06-18 18:24:37,830 - INFO - Form elements found: https://naturalgarden.co.jp/contact
+2025-06-18 18:24:37,991 - INFO - Math CAPTCHA detected: 48-3
+2025-06-18 18:24:37,991 - INFO - Solved math: 48-3 = 45
+2025-06-18 18:24:38,142 - INFO - Entered math answer 45 in empty text field
+2025-06-18 18:24:38,142 - INFO - Math CAPTCHA solved: 48-3 = 45
+2025-06-18 18:24:38,142 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:24:38,146 - INFO - Filling form: https://naturalgarden.co.jp/contact
+2025-06-18 18:24:38,266 - INFO - Filled name with: 村田　直人
+2025-06-18 18:24:38,372 - INFO - Filled name with: mailer@ri-plus.jp
+2025-06-18 18:24:38,460 - INFO - Filled name with: 050-7119-1716
+2025-06-18 18:24:38,546 - INFO - Filled name with: 1-22-11 2F
+2025-06-18 18:24:38,641 - INFO - Filled name with: 東京都中央区銀座1-22-11 2F
+2025-06-18 18:24:44,057 - INFO - Filled name with: お世話になります。私、株式会社Ri-Plusの村田と申します。
+
+当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。
+
+【過去の実績】
+・外国人紹介アポイント累計4000件
+・人材派遣アポイント累計2000件
+・アポイント総数30,000件
+
+現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。
+
+【トライアルキャンペーン】
+・初期費用０円
+・契約期間０ヶ月のアポ取り切り契約
+・リスト制作費０円
+
+当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。
+
+キャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。
+
+この度は貴重なお時間をいただき、ありがとうございました。
+2025-06-18 18:24:44,057 - INFO - Filled 6 mapped fields
+2025-06-18 18:24:44,260 - INFO - Auto-filled 0 selects and 0 radio groups
+2025-06-18 18:24:44,272 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:24:44,272 - INFO - Submitting form: https://naturalgarden.co.jp/contact
+2025-06-18 18:24:45,924 - INFO - Clicked direct submit button
+2025-06-18 18:24:49,945 - INFO - URL changed from https://naturalgarden.co.jp/contact to https://naturalgarden.co.jp/contact.php
+2025-06-18 18:24:49,945 - INFO - SUCCESS: Form submitted successfully: https://naturalgarden.co.jp/contact
+2025-06-18 18:24:50,007 - INFO - Case 8 Result: OK - submission_successful
+2025-06-18 18:24:52,007 - INFO - === Case 9: Starting https://www.tombow-life.jp/email.html ===
+2025-06-18 18:24:52,568 - INFO - Found form with 15 elements: https://www.tombow-life.jp/email.html
+2025-06-18 18:24:52,568 - INFO - Mapped name -> 名前 (context: 名前 )
+2025-06-18 18:24:52,568 - INFO - Mapped name_kana -> フリガナ (context: フリガナ )
+2025-06-18 18:24:52,568 - INFO - Mapped company -> 組織 (context: 組織 選択して下さい個人企業団体行政)
+2025-06-18 18:24:52,568 - INFO - Mapped email -> email (context: email )
+2025-06-18 18:24:52,569 - INFO - Mapped zip -> 郵便番号 (context: 郵便番号 )
+2025-06-18 18:24:52,569 - INFO - Mapped address -> 住所 (context: 住所 )
+2025-06-18 18:24:52,569 - INFO - Mapped phone -> tel (context: tel )
+2025-06-18 18:24:52,569 - INFO - ====== WebDriver manager ======
+2025-06-18 18:24:52,617 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:24:52,743 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:24:52,869 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:24:53,145 - INFO - Navigating to: https://www.tombow-life.jp/email.html
+2025-06-18 18:24:57,157 - INFO - Form elements found: https://www.tombow-life.jp/email.html
+2025-06-18 18:24:57,346 - INFO - Math CAPTCHA detected: 00-32
+2025-06-18 18:24:57,346 - INFO - Solved math: 0-32 = -32
+2025-06-18 18:24:57,491 - INFO - Entered math answer -32 in empty text field
+2025-06-18 18:24:57,491 - INFO - Math CAPTCHA solved: 00-32 = -32
+2025-06-18 18:24:57,491 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:24:57,495 - INFO - Filling form: https://www.tombow-life.jp/email.html
+2025-06-18 18:24:57,673 - INFO - Auto-selected in 組織: 個人
+2025-06-18 18:24:57,781 - INFO - Filled 名前 with: 村田　直人
+2025-06-18 18:24:57,915 - INFO - Filled フリガナ with: ムラタ　ナオト
+2025-06-18 18:24:58,032 - INFO - Filled email with: mailer@ri-plus.jp
+2025-06-18 18:24:58,128 - INFO - Filled tel with: 050-7119-1716
+2025-06-18 18:24:58,219 - INFO - Filled 郵便番号 with: 1-22-11 2F
+2025-06-18 18:24:58,323 - INFO - Filled 住所 with: 東京都中央区銀座1-22-11 2F
+2025-06-18 18:24:58,324 - INFO - Filled 7 mapped fields
+2025-06-18 18:24:58,388 - INFO - Auto-filled 0 selects and 0 radio groups
+2025-06-18 18:24:58,396 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:24:58,396 - INFO - Submitting form: https://www.tombow-life.jp/email.html
+2025-06-18 18:25:01,490 - INFO - Clicked submit input
+2025-06-18 18:25:05,508 - INFO - URL changed from https://www.tombow-life.jp/email.html to https://www.tombow-life.jp/cgi-local/formmail/formmail2.cgi
+2025-06-18 18:25:05,508 - INFO - SUCCESS: Form submitted successfully: https://www.tombow-life.jp/email.html
+2025-06-18 18:25:05,568 - INFO - Case 9 Result: OK - submission_successful
+2025-06-18 18:25:07,569 - INFO - === Case 10: Starting https://asahimori.co.jp/contact/ ===
+2025-06-18 18:25:08,400 - INFO - Found form with 13 elements: https://asahimori.co.jp/contact/
+2025-06-18 18:25:08,401 - INFO - Mapped company -> company (context: company 例）株式会社 朝日森 )
+2025-06-18 18:25:08,401 - INFO - Mapped name -> name01 (context: name01 例）山田　太郎 )
+2025-06-18 18:25:08,401 - INFO - Mapped phone -> tel (context: tel 例）0476-73-5122 )
+2025-06-18 18:25:08,401 - INFO - Mapped email -> email (context: email 例）sample@sample.co.jp )
+2025-06-18 18:25:08,402 - INFO - ====== WebDriver manager ======
+2025-06-18 18:25:08,454 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:25:08,588 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:25:08,728 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:25:08,997 - INFO - Navigating to: https://asahimori.co.jp/contact/
+2025-06-18 18:25:14,046 - INFO - Form elements found: https://asahimori.co.jp/contact/
+2025-06-18 18:25:14,203 - INFO - Math CAPTCHA detected: 16+00
+2025-06-18 18:25:14,203 - INFO - Solved math: 16+0 = 16
+2025-06-18 18:25:14,354 - INFO - Entered math answer 16 in empty text field
+2025-06-18 18:25:14,354 - INFO - Math CAPTCHA solved: 16+00 = 16
+2025-06-18 18:25:14,354 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:25:14,359 - INFO - Filling form: https://asahimori.co.jp/contact/
+2025-06-18 18:25:14,472 - INFO - Filled company with: 株式会社Ri-Plus
+2025-06-18 18:25:14,562 - INFO - Filled name01 with: 村田　直人
+2025-06-18 18:25:14,656 - INFO - Filled email with: mailer@ri-plus.jp
+2025-06-18 18:25:14,751 - INFO - Filled tel with: 050-7119-1716
+2025-06-18 18:25:14,751 - INFO - Filled 4 mapped fields
+2025-06-18 18:25:14,771 - INFO - Auto-filled 0 selects and 0 radio groups
+2025-06-18 18:25:14,884 - INFO - Checked agreement checkbox: agree[]
+2025-06-18 18:25:14,884 - INFO - Checked 1 agreement checkboxes
+2025-06-18 18:25:14,884 - INFO - Submitting form: https://asahimori.co.jp/contact/
+2025-06-18 18:25:16,309 - INFO - Clicked direct submit button
+2025-06-18 18:25:20,394 - WARNING - No success indication found: https://asahimori.co.jp/contact/
+2025-06-18 18:25:20,454 - INFO - Case 10 Result: NG - no_success_indication
+2025-06-18 18:25:22,455 - INFO - === Case 11: Starting https://www.dotline-jp.com/contact/ ===
+2025-06-18 18:25:23,193 - INFO - Found form with 21 elements: https://www.dotline-jp.com/contact/
+2025-06-18 18:25:23,193 - INFO - Mapped subject -> your-subject (context: your-subject subject お問合せの内容を以下からお選びください＊ 選択してください)
+2025-06-18 18:25:23,194 - INFO - Mapped message -> your-subject (context: your-subject subject お問合せの内容を以下からお選びください＊ 選択してください)
+2025-06-18 18:25:23,194 - INFO - Mapped name -> your-name (context: your-name name お名前をご入力ください )
+2025-06-18 18:25:23,194 - INFO - Mapped name_kana -> your-kana (context: your-kana kana お名前（ふりがな）をひらがなでご入力ください )
+2025-06-18 18:25:23,194 - INFO - Mapped zip -> your-zipcode (context: your-zipcode zipcode 〒 )
+2025-06-18 18:25:23,194 - INFO - Mapped address -> your-address (context: your-address address 住所 )
+2025-06-18 18:25:23,195 - INFO - Mapped phone -> your-tel1 (context: your-tel1 tel1 電話番号 )
+2025-06-18 18:25:23,195 - INFO - Mapped email -> your-email (context: your-email email e-mailアドレス＊ )
+2025-06-18 18:25:23,195 - INFO - ====== WebDriver manager ======
+2025-06-18 18:25:23,245 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:25:23,412 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:25:23,588 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:25:23,873 - INFO - Navigating to: https://www.dotline-jp.com/contact/
+2025-06-18 18:25:28,864 - INFO - Form elements found: https://www.dotline-jp.com/contact/
+2025-06-18 18:25:29,034 - INFO - Math CAPTCHA detected: 32+00
+2025-06-18 18:25:29,034 - INFO - Solved math: 32+0 = 32
+2025-06-18 18:25:29,203 - INFO - Entered math answer 32 in empty text field
+2025-06-18 18:25:29,204 - INFO - Math CAPTCHA solved: 32+00 = 32
+2025-06-18 18:25:29,204 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:25:29,208 - INFO - Filling form: https://www.dotline-jp.com/contact/
+2025-06-18 18:25:29,310 - INFO - Filled your-name with: 村田　直人
+2025-06-18 18:25:29,413 - INFO - Filled your-kana with: ムラタ　ナオト
+2025-06-18 18:25:29,519 - INFO - Filled your-email with: mailer@ri-plus.jp
+2025-06-18 18:25:29,625 - INFO - Filled your-tel1 with: 050-7119-1716
+2025-06-18 18:25:29,731 - INFO - Filled your-zipcode with: 1-22-11 2F
+2025-06-18 18:25:29,842 - INFO - Filled your-address with: 東京都中央区銀座1-22-11 2F
+2025-06-18 18:25:30,047 - INFO - Auto-selected in your-subject: 当社について
+2025-06-18 18:25:30,171 - INFO - Auto-selected in your-subject: 当社について
+2025-06-18 18:25:30,172 - INFO - Filled 8 mapped fields
+2025-06-18 18:25:30,234 - INFO - Auto-filled 0 selects and 0 radio groups
+2025-06-18 18:25:31,359 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:25:31,360 - INFO - Submitting form: https://www.dotline-jp.com/contact/
+2025-06-18 18:25:32,267 - ERROR - Form submission failed: https://www.dotline-jp.com/contact/
+2025-06-18 18:25:32,327 - INFO - Case 11 Result: NG - submission_failed
+2025-06-18 18:25:34,327 - INFO - === Case 12: Starting https://nexleap.co.jp/contact/ ===
+2025-06-18 18:25:35,142 - INFO - Found form with 14 elements: https://nexleap.co.jp/contact/
+2025-06-18 18:25:35,143 - INFO - Mapped name -> your-name (context: your-name )
+2025-06-18 18:25:35,143 - INFO - Mapped email -> your-email (context: your-email )
+2025-06-18 18:25:35,143 - INFO - Mapped company -> company (context: company )
+2025-06-18 18:25:35,143 - INFO - Mapped phone -> tel (context: tel )
+2025-06-18 18:25:35,143 - INFO - Mapped message -> your-message (context: your-message )
+2025-06-18 18:25:35,143 - INFO - ====== WebDriver manager ======
+2025-06-18 18:25:35,195 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:25:35,318 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:25:35,444 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:25:35,728 - INFO - Navigating to: https://nexleap.co.jp/contact/
+2025-06-18 18:25:41,313 - INFO - Form elements found: https://nexleap.co.jp/contact/
+2025-06-18 18:25:41,489 - INFO - Math CAPTCHA detected: 70-10
+2025-06-18 18:25:41,489 - INFO - Solved math: 70-10 = 60
+2025-06-18 18:25:41,641 - INFO - Entered math answer 60 in empty text field
+2025-06-18 18:25:41,642 - INFO - Math CAPTCHA solved: 70-10 = 60
+2025-06-18 18:25:41,642 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:25:41,655 - INFO - Filling form: https://nexleap.co.jp/contact/
+2025-06-18 18:25:41,825 - INFO - Filled company with: 株式会社Ri-Plus
+2025-06-18 18:25:41,927 - INFO - Filled your-name with: 村田　直人
+2025-06-18 18:25:42,026 - INFO - Filled your-email with: mailer@ri-plus.jp
+2025-06-18 18:25:42,122 - INFO - Filled tel with: 050-7119-1716
+2025-06-18 18:25:43,233 - INFO - Filled textarea your-message with: お世話になります。私、株式会社Ri-Plusの村田と申します。
+
+当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。
+
+【過去の実績】
+・外国人紹介アポイント累計4000件
+・人材派遣アポイント累計2000件
+・アポイント総数30,000件
+
+現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。
+
+【トライアルキャンペーン】
+・初期費用０円
+・契約期間０ヶ月のアポ取り切り契約
+・リスト制作費０円
+
+当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。
+
+キャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。
+
+この度は貴重なお時間をいただき、ありがとうございました。
+2025-06-18 18:25:43,233 - INFO - Filled 5 mapped fields
+2025-06-18 18:25:43,260 - INFO - Auto-filled 0 selects and 0 radio groups
+2025-06-18 18:25:43,324 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:25:43,324 - INFO - Submitting form: https://nexleap.co.jp/contact/
+2025-06-18 18:25:44,754 - INFO - Clicked direct submit button
+2025-06-18 18:25:48,769 - INFO - Found success pattern: ありがとうございます
+2025-06-18 18:25:48,770 - INFO - SUCCESS: Form submitted successfully: https://nexleap.co.jp/contact/
+2025-06-18 18:25:48,831 - INFO - Case 12 Result: OK - submission_successful
+2025-06-18 18:25:50,832 - INFO - === Case 13: Starting https://form.synergy-marketing.co.jp/webapp/form/18784_mubb_8/index.do ===
+2025-06-18 18:25:51,387 - INFO - Found form with 19 elements: https://form.synergy-marketing.co.jp/webapp/form/18784_mubb_8/index.do
+2025-06-18 18:25:51,388 - INFO - Mapped name -> singleAnswer(ANSWER49) (context: singleAnswer(ANSWER49) name1 姓例）品時)
+2025-06-18 18:25:51,389 - INFO - Mapped email -> singleAnswer(ANSWER51) (context: singleAnswer(ANSWER51) mail 例）synergy@synergy101.j)
+2025-06-18 18:25:51,389 - INFO - Mapped phone -> singleAnswer(ANSWER52-1) (context: singleAnswer(ANSWER52-1) tel ※繋がりやすいご連絡先をご記入ください。例)
+2025-06-18 18:25:51,389 - INFO - Mapped company -> singleAnswer(ANSWER53) (context: singleAnswer(ANSWER53) company 例）シナジーマーケティング株式会社)
+2025-06-18 18:25:51,390 - INFO - ====== WebDriver manager ======
+2025-06-18 18:25:51,438 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:25:51,580 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:25:51,721 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:25:52,011 - INFO - Navigating to: https://form.synergy-marketing.co.jp/webapp/form/18784_mubb_8/index.do
+2025-06-18 18:25:58,437 - INFO - Form elements found: https://form.synergy-marketing.co.jp/webapp/form/18784_mubb_8/index.do
+2025-06-18 18:25:58,450 - INFO - reCAPTCHA v2 detected
+2025-06-18 18:25:58,493 - WARNING - CAPTCHA detected but not solved: recaptcha_v2
+2025-06-18 18:25:58,493 - INFO - CAPTCHA detected but not solvable: https://form.synergy-marketing.co.jp/webapp/form/18784_mubb_8/index.do
+2025-06-18 18:25:58,551 - INFO - Case 13 Result: OK - captcha_detected_success
+2025-06-18 18:26:00,552 - INFO - === Case 14: Starting http://www.jinnankai.jp/j_tellme ===
+2025-06-18 18:26:01,581 - INFO - Found form with 13 elements: http://www.jinnankai.jp/j_tellme
+2025-06-18 18:26:01,581 - INFO - Mapped name -> your-name (context: your-name )
+2025-06-18 18:26:01,581 - INFO - Mapped email -> your-email (context: your-email )
+2025-06-18 18:26:01,581 - INFO - Mapped subject -> your-subject (context: your-subject )
+2025-06-18 18:26:01,581 - INFO - Mapped message -> your-message (context: your-message )
+2025-06-18 18:26:01,582 - INFO - ====== WebDriver manager ======
+2025-06-18 18:26:01,630 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:26:01,753 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:26:01,879 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:26:02,146 - INFO - Navigating to: http://www.jinnankai.jp/j_tellme
+2025-06-18 18:26:07,258 - INFO - Form elements found: http://www.jinnankai.jp/j_tellme
+2025-06-18 18:26:07,418 - INFO - Math CAPTCHA detected: 32+00
+2025-06-18 18:26:07,418 - INFO - Solved math: 32+0 = 32
+2025-06-18 18:26:07,554 - INFO - Entered math answer 32 in empty text field
+2025-06-18 18:26:07,554 - INFO - Math CAPTCHA solved: 32+00 = 32
+2025-06-18 18:26:07,554 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:26:07,559 - INFO - Filling form: http://www.jinnankai.jp/j_tellme
+2025-06-18 18:26:07,658 - INFO - Filled your-name with: 村田　直人
+2025-06-18 18:26:07,750 - INFO - Filled your-email with: mailer@ri-plus.jp
+2025-06-18 18:26:07,874 - INFO - Filled your-subject with: 【今だけ初期費用０】テレアポ代行お試しキャンペーン！
+2025-06-18 18:26:08,960 - INFO - Filled textarea your-message with: お世話になります。私、株式会社Ri-Plusの村田と申します。
+
+当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。
+
+【過去の実績】
+・外国人紹介アポイント累計4000件
+・人材派遣アポイント累計2000件
+・アポイント総数30,000件
+
+現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。
+
+【トライアルキャンペーン】
+・初期費用０円
+・契約期間０ヶ月のアポ取り切り契約
+・リスト制作費０円
+
+当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。
+
+キャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。
+
+この度は貴重なお時間をいただき、ありがとうございました。
+2025-06-18 18:26:08,960 - INFO - Filled 4 mapped fields
+2025-06-18 18:26:08,980 - INFO - Auto-filled 0 selects and 0 radio groups
+2025-06-18 18:26:08,989 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:26:08,989 - INFO - Submitting form: http://www.jinnankai.jp/j_tellme
+2025-06-18 18:26:10,371 - INFO - Clicked direct submit button
+2025-06-18 18:26:14,394 - INFO - Found success pattern: ありがとうございます
+2025-06-18 18:26:14,394 - INFO - SUCCESS: Form submitted successfully: http://www.jinnankai.jp/j_tellme
+2025-06-18 18:26:14,456 - INFO - Case 14 Result: OK - submission_successful
+2025-06-18 18:26:16,457 - INFO - === Case 15: Starting http://www.heiannomachi.com/contact.html ===
+2025-06-18 18:26:16,958 - INFO - Found form with 14 elements: http://www.heiannomachi.com/contact.html
+2025-06-18 18:26:16,959 - INFO - Mapped company -> 会社名・団体名 (context: 会社名・団体名 )
+2025-06-18 18:26:16,959 - INFO - Mapped name -> _氏名 (context: _氏名 )
+2025-06-18 18:26:16,959 - INFO - Mapped name_kana -> _氏名（フリガナ） (context: _氏名（フリガナ） )
+2025-06-18 18:26:16,959 - INFO - Mapped email -> _email (context: _email )
+2025-06-18 18:26:16,959 - INFO - Mapped phone -> 電話番号 (context: 電話番号 )
+2025-06-18 18:26:16,959 - INFO - Mapped zip -> 郵便番号 (context: 郵便番号)
+2025-06-18 18:26:16,959 - INFO - Mapped address -> 市区町村以下住所 (context: 市区町村以下住所)
+2025-06-18 18:26:16,960 - INFO - Mapped message -> _お問い合わせ内容 (context: _お問い合わせ内容 )
+2025-06-18 18:26:16,960 - INFO - ====== WebDriver manager ======
+2025-06-18 18:26:17,009 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:26:17,143 - INFO - Get LATEST chromedriver version for google-chrome
+2025-06-18 18:26:17,285 - INFO - Driver [/home/sarmaasis/.wdm/drivers/chromedriver/linux64/136.0.7103.113/chromedriver-linux64/chromedriver] found in cache
+2025-06-18 18:26:17,597 - INFO - Navigating to: http://www.heiannomachi.com/contact.html
+2025-06-18 18:26:25,244 - INFO - Form elements found: http://www.heiannomachi.com/contact.html
+2025-06-18 18:26:25,414 - INFO - Math CAPTCHA detected: 37-63
+2025-06-18 18:26:25,415 - INFO - Solved math: 37-63 = -26
+2025-06-18 18:26:25,558 - INFO - Entered math answer -26 in empty text field
+2025-06-18 18:26:25,558 - INFO - Math CAPTCHA solved: 37-63 = -26
+2025-06-18 18:26:25,558 - INFO - CAPTCHA detected and solved: math_captcha
+2025-06-18 18:26:25,563 - INFO - Filling form: http://www.heiannomachi.com/contact.html
+2025-06-18 18:26:25,672 - INFO - Filled 会社名・団体名 with: 株式会社Ri-Plus
+2025-06-18 18:26:25,768 - INFO - Filled _氏名 with: 村田　直人
+2025-06-18 18:26:25,860 - INFO - Filled _氏名（フリガナ） with: ムラタ　ナオト
+2025-06-18 18:26:25,962 - INFO - Filled _email with: mailer@ri-plus.jp
+2025-06-18 18:26:26,072 - INFO - Filled 電話番号 with: 050-7119-1716
+2025-06-18 18:26:26,169 - INFO - Filled 郵便番号 with: 1-22-11 2F
+2025-06-18 18:26:26,277 - INFO - Filled 市区町村以下住所 with: 東京都中央区銀座1-22-11 2F
+2025-06-18 18:26:27,421 - INFO - Filled textarea _お問い合わせ内容 with: お世話になります。私、株式会社Ri-Plusの村田と申します。
+
+当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。
+
+【過去の実績】
+・外国人紹介アポイント累計4000件
+・人材派遣アポイント累計2000件
+・アポイント総数30,000件
+
+現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。
+
+【トライアルキャンペーン】
+・初期費用０円
+・契約期間０ヶ月のアポ取り切り契約
+・リスト制作費０円
+
+当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。
+
+キャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。
+
+この度は貴重なお時間をいただき、ありがとうございました。
+2025-06-18 18:26:27,421 - INFO - Filled 8 mapped fields
+2025-06-18 18:26:27,591 - INFO - Auto-filled 1 selects and 0 radio groups
+2025-06-18 18:26:27,602 - INFO - Checked 0 agreement checkboxes
+2025-06-18 18:26:27,602 - INFO - Submitting form: http://www.heiannomachi.com/contact.html
+2025-06-18 18:26:28,911 - INFO - Clicked confirmation button
+2025-06-18 18:26:31,573 - ERROR - Form submission failed: http://www.heiannomachi.com/contact.html
+2025-06-18 18:26:31,633 - INFO - Case 15 Result: NG - submission_failed
+2025-06-18 18:26:33,634 - INFO - ============================================================
+2025-06-18 18:26:33,634 - INFO - FINAL RESULTS:
+2025-06-18 18:26:33,634 - INFO - Total Cases: 15
+2025-06-18 18:26:33,634 - INFO - Passed Cases: 11
+2025-06-18 18:26:33,635 - INFO - Success Rate: 73.3%
+2025-06-18 18:26:33,635 - INFO - ============================================================

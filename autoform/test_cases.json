@@ -1,707 +1,258 @@
 [
   {
-    "url": "https://www.kotonoura.or.jp/contact-2/",
+    "url": "https://www.welfare-sendai.or.jp/pages/43/",
     "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "山田 太郎",
-      "manager_kana": "ヤマダ タロウ",
-      "phone": "090-1111-1111",
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区1-1-1",
-      "mail": "test01@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信1"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "https://koshokai-swc.or.jp/inquiry/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "鈴木 花子",
-      "manager_kana": "スズキ ハナコ",
-      "phone": "090-1111-1112",
+  "url": "https://www.mega.co.jp/form/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区2-2-2",
-      "mail": "test02@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信2"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "http://www.wachuohp.or.jp/wakagawaen/contact",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "佐藤 次郎",
-      "manager_kana": "サトウ ジロウ",
-      "phone": "090-1111-1113",
+  "url": "https://www.kyodo-pr.co.jp/contact/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区3-3-3",
-      "mail": "test03@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信3"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "https://souwakai2019.com/./",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "高橋 美咲",
-      "manager_kana": "タカハシ ミサキ",
-      "phone": "090-1111-1114",
+  "url": "https://sun-respect.com/contact/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区4-4-4",
-      "mail": "test04@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信4"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "http://www.hachikikai.com/./contact/index.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "伊藤 大輔",
-      "manager_kana": "イトウ ダイスケ",
-      "phone": "090-1111-1115",
+  "url": "https://cocomi.co.jp/contact/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区5-5-5",
-      "mail": "test05@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信5"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "http://aoi2006.jp/publics/index/3/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "渡辺 洋子",
-      "manager_kana": "ワタナベ ヨウコ",
-      "phone": "090-1111-1116",
+  "url": "https://www.rook.co.jp/contact/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区6-6-6",
-      "mail": "test06@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信6"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "https://takasekai.or.jp/contact",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "中村 健",
-      "manager_kana": "ナカムラ ケン",
-      "phone": "090-1111-1117",
+  "url": "https://www.ajoyh.jp/formlist/contactform/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区7-7-7",
-      "mail": "test07@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信7"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "https://seieikai.or.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "小林 美穂",
-      "manager_kana": "コバヤシ ミホ",
-      "phone": "090-1111-1118",
+  "url": "https://naturalgarden.co.jp/contact",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区8-8-8",
-      "mail": "test08@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信8"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "https://rupinasu.jp/pages/3/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "加藤 拓也",
-      "manager_kana": "カトウ タクヤ",
-      "phone": "090-1111-1119",
+  "url": "https://www.tombow-life.jp/email.html",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区9-9-9",
-      "mail": "test09@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信9"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "https://shinpukukai.or.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "吉田 里奈",
-      "manager_kana": "ヨシダ リナ",
-      "phone": "090-1111-1120",
+  "url": "https://asahimori.co.jp/contact/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区10-10-10",
-      "mail": "test10@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信10"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "http://aigaaru.co.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "山本 亮",
-      "manager_kana": "ヤマモト リョウ",
-      "phone": "090-1111-1121",
+  "url": "https://www.dotline-jp.com/contact/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区11-11-11",
-      "mail": "test11@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信11"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "http://wakayamaseikai.jp/inquiry",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "斎藤 愛美",
-      "manager_kana": "サイトウ マナミ",
-      "phone": "090-1111-1122",
+  "url": "https://nexleap.co.jp/contact/",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区12-12-12",
-      "mail": "test12@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信12"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "https://hals-hals.co.jp/contact",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "松本 剛",
-      "manager_kana": "マツモト タケシ",
-      "phone": "090-1111-1123",
+  "url": "https://form.synergy-marketing.co.jp/webapp/form/18784_mubb_8/index.do",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区13-13-13",
-      "mail": "test13@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信13"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "http://www.heiannomachi.com/contact.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "井上 真理",
-      "manager_kana": "イノウエ マリ",
-      "phone": "090-1111-1124",
+  "url": "http://www.jinnankai.jp/j_tellme",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区14-14-14",
-      "mail": "test14@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信14"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   },
   {
-    "url": "http://www.jinnankai.jp/j_tellme",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "木村 大地",
-      "manager_kana": "キムラ ダイチ",
-      "phone": "090-1111-1125",
+  "url": "http://www.heiannomachi.com/contact.html",
+  "form_data": {
+      "company": "株式会社Ri-Plus",
+      "company_kana": "株式会社Ri-Plus",
+      "manager": "村田　直人",
+      "manager_kana": "ムラタ　ナオト",
+      "phone": "050-7119-1716",
       "fax": "",
-      "address": "東京都中央区15-15-15",
-      "mail": "test15@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信15"
-    }
-  },
-  {
-    "url": "https://carenation.jp/nopage/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "林 美紀",
-      "manager_kana": "ハヤシ ミキ",
-      "phone": "090-1111-1126",
-      "fax": "",
-      "address": "東京都中央区16-16-16",
-      "mail": "test16@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信16"
-    }
-  },
-  {
-    "url": "https://www.fureai-net.com/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "清水 拓海",
-      "manager_kana": "シミズ タクミ",
-      "phone": "090-1111-1127",
-      "fax": "",
-      "address": "東京都中央区17-17-17",
-      "mail": "test17@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信17"
-    }
-  },
-  {
-    "url": "http://taizankai.org/taizankai/contact/index.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "山口 由美",
-      "manager_kana": "ヤマグチ ユミ",
-      "phone": "090-1111-1128",
-      "fax": "",
-      "address": "東京都中央区18-18-18",
-      "mail": "test18@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信18"
-    }
-  },
-  {
-    "url": "http://www.nihon-unicare.com/otoiawase.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "森田 智也",
-      "manager_kana": "モリタ トモヤ",
-      "phone": "090-1111-1129",
-      "fax": "",
-      "address": "東京都中央区19-19-19",
-      "mail": "test19@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信19"
-    }
-  },
-  {
-    "url": "https://www.activelife.co.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "池田 春香",
-      "manager_kana": "イケダ ハルカ",
-      "phone": "090-1111-1130",
-      "fax": "",
-      "address": "東京都中央区20-20-20",
-      "mail": "test20@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信20"
-    }
-  },
-  {
-    "url": "http://www.nanfu.or.jp/contact.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "橋本 翔太",
-      "manager_kana": "ハシモト ショウタ",
-      "phone": "090-1111-1131",
-      "fax": "",
-      "address": "東京都中央区21-21-21",
-      "mail": "test21@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信21"
-    }
-  },
-  {
-    "url": "https://www.yamanobe.or.jp/contact.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "山下 美奈子",
-      "manager_kana": "ヤマシタ ミナコ",
-      "phone": "090-1111-1132",
-      "fax": "",
-      "address": "東京都中央区22-22-22",
-      "mail": "test22@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信22"
-    }
-  },
-  {
-    "url": "https://www.possible-plus.co.jp/../contact.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "石田 優",
-      "manager_kana": "イシダ ユウ",
-      "phone": "090-1111-1133",
-      "fax": "",
-      "address": "東京都中央区23-23-23",
-      "mail": "test23@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信23"
-    }
-  },
-  {
-    "url": "https://www.yawaragikai.jp/contact.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "小川 恵",
-      "manager_kana": "オガワ メグミ",
-      "phone": "090-1111-1134",
-      "fax": "",
-      "address": "東京都中央区24-24-24",
-      "mail": "test24@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信24"
-    }
-  },
-  {
-    "url": "https://www.yushinkai-nara.com/contact_2",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "藤田 陽介",
-      "manager_kana": "フジタ ヨウスケ",
-      "phone": "090-1111-1135",
-      "fax": "",
-      "address": "東京都中央区25-25-25",
-      "mail": "test25@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信25"
-    }
-  },
-  {
-    "url": "https://www.alpsbc.co.jp/kaigo/toiawase_ssl/index.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "岡田 美沙",
-      "manager_kana": "オカダ ミサ",
-      "phone": "090-1111-1136",
-      "fax": "",
-      "address": "東京都中央区26-26-26",
-      "mail": "test26@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信26"
-    }
-  },
-  {
-    "url": "http://iwate-jikoukai.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "竹内 亮介",
-      "manager_kana": "タケウチ リョウスケ",
-      "phone": "090-1111-1137",
-      "fax": "",
-      "address": "東京都中央区27-27-27",
-      "mail": "test27@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信27"
-    }
-  },
-  {
-    "url": "https://www.yasashiite.com/contactus/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "中島 奈々",
-      "manager_kana": "ナカジマ ナナ",
-      "phone": "090-1111-1138",
-      "fax": "",
-      "address": "東京都中央区28-28-28",
-      "mail": "test28@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信28"
-    }
-  },
-  {
-    "url": "https://sazan-cross.co.jp/#contact",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "小野 直樹",
-      "manager_kana": "オノ ナオキ",
-      "phone": "090-1111-1139",
-      "fax": "",
-      "address": "東京都中央区29-29-29",
-      "mail": "test29@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信29"
-    }
-  },
-  {
-    "url": "https://www.msc33.co.jp/publics/index/23/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "原田 真由美",
-      "manager_kana": "ハラダ マユミ",
-      "phone": "090-1111-1140",
-      "fax": "",
-      "address": "東京都中央区30-30-30",
-      "mail": "test30@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信30"
-    }
-  },
-  {
-    "url": "https://ew.seimei-kai.or.jp/inquiry.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "森本 貴子",
-      "manager_kana": "モリモト タカコ",
-      "phone": "090-1111-1141",
-      "fax": "",
-      "address": "東京都中央区31-31-31",
-      "mail": "test31@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信31"
-    }
-  },
-  {
-    "url": "https://japan.shijigroup.com/about/contact",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "福田 慎太郎",
-      "manager_kana": "フクダ シンタロウ",
-      "phone": "090-1111-1142",
-      "fax": "",
-      "address": "東京都中央区32-32-32",
-      "mail": "test32@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信32"
-    }
-  },
-  {
-    "url": "https://www.nexredge.com/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "大西 美和",
-      "manager_kana": "オオニシ ミワ",
-      "phone": "090-1111-1143",
-      "fax": "",
-      "address": "東京都中央区33-33-33",
-      "mail": "test33@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信33"
-    }
-  },
-  {
-    "url": "https://www.logprostyle.co.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "松井 康平",
-      "manager_kana": "マツイ コウヘイ",
-      "phone": "090-1111-1144",
-      "fax": "",
-      "address": "東京都中央区34-34-34",
-      "mail": "test34@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信34"
-    }
-  },
-  {
-    "url": "https://www.hopinnhotel.com/ja/contact-us",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "上田 麻友",
-      "manager_kana": "ウエダ マユ",
-      "phone": "090-1111-1145",
-      "fax": "",
-      "address": "東京都中央区35-35-35",
-      "mail": "test35@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信35"
-    }
-  },
-  {
-    "url": "https://mystays.zendesk.com/hc/ja/requests/new",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "石井 遼",
-      "manager_kana": "イシイ リョウ",
-      "phone": "090-1111-1146",
-      "fax": "",
-      "address": "東京都中央区36-36-36",
-      "mail": "test36@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信36"
-    }
-  },
-  {
-    "url": "https://www.towa-denko.co.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "村上 彩",
-      "manager_kana": "ムラカミ アヤ",
-      "phone": "090-1111-1147",
-      "fax": "",
-      "address": "東京都中央区37-37-37",
-      "mail": "test37@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信37"
-    }
-  },
-  {
-    "url": "https://www.askul.co.jp/corp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "永井 剛志",
-      "manager_kana": "ナガイ タケシ",
-      "phone": "090-1111-1148",
-      "fax": "",
-      "address": "東京都中央区38-38-38",
-      "mail": "test38@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信38"
-    }
-  },
-  {
-    "url": "https://yomilogi.com/inquiry/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "西村 真紀",
-      "manager_kana": "ニシムラ マキ",
-      "phone": "090-1111-1149",
-      "fax": "",
-      "address": "東京都中央区39-39-39",
-      "mail": "test39@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信39"
-    }
-  },
-  {
-    "url": "https://aeronext.co.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "菅原 慎吾",
-      "manager_kana": "スガワラ シンゴ",
-      "phone": "090-1111-1150",
-      "fax": "",
-      "address": "東京都中央区40-40-40",
-      "mail": "test40@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信40"
-    }
-  },
-  {
-    "url": "https://www.nippon-access.co.jp/inquiry_list/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "野口 亮太",
-      "manager_kana": "ノグチ リョウタ",
-      "phone": "090-1111-1151",
-      "fax": "",
-      "address": "東京都中央区41-41-41",
-      "mail": "test41@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信41"
-    }
-  },
-  {
-    "url": "https://www.sanyo-logi.com/Contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "松田 美香",
-      "manager_kana": "マツダ ミカ",
-      "phone": "090-1111-1152",
-      "fax": "",
-      "address": "東京都中央区42-42-42",
-      "mail": "test42@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信42"
-    }
-  },
-  {
-    "url": "https://www.sbs-ricohlogistics.co.jp/sbsrlsc/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "福島 幸子",
-      "manager_kana": "フクシマ サチコ",
-      "phone": "090-1111-1153",
-      "fax": "",
-      "address": "東京都中央区43-43-43",
-      "mail": "test43@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信43"
-    }
-  },
-  {
-    "url": "http://www.jhg.co.jp/contact.html",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "岡本 慎吾",
-      "manager_kana": "オカモト シンゴ",
-      "phone": "090-1111-1154",
-      "fax": "",
-      "address": "東京都中央区44-44-44",
-      "mail": "test44@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信44"
-    }
-  },
-  {
-    "url": "https://www.nishi-butsuryu.co.jp/contact/",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "三浦 美月",
-      "manager_kana": "ミウラ ミヅキ",
-      "phone": "090-1111-1155",
-      "fax": "",
-      "address": "東京都中央区45-45-45",
-      "mail": "test45@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信45"
-    }
-  },
-  {
-    "url": "https://daikonavi.com/contact.php",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "村田 直也",
-      "manager_kana": "ムラタ ナオヤ",
-      "phone": "090-1111-1156",
-      "fax": "",
-      "address": "東京都中央区46-46-46",
-      "mail": "test46@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信46"
-    }
-  },
-  {
-    "url": "https://amatoro.jp/contact",
-    "form_data": {
-      "company": "テスト株式会社",
-      "company_kana": "テストカブシキガイシャ",
-      "manager": "藤本 百合",
-      "manager_kana": "フジモト ユリ",
-      "phone": "090-1111-1157",
-      "fax": "",
-      "address": "東京都中央区47-47-47",
-      "mail": "test47@example.com",
-      "subjects": "お問い合わせ",
-      "body": "自動テスト送信47"
+      "url": "https://ri-plus.jp/",
+      "address": "東京都中央区銀座1-22-11 2F",
+      "postal_code": "1-22-11 2F",
+      "mail": "mailer@ri-plus.jp",
+      "subjects": "【今だけ初期費用０】テレアポ代行お試しキャンペーン！",
+      "body": "お世話になります。私、株式会社Ri-Plusの村田と申します。\n\n当社は、登録支援機関・協同組合・人材紹介会社様に特化して、人材関連のテレアポ代行を行っております企業となっており、ITプログラミング技術を活用して求人ニーズのある企業へピンポイントで架電することにより、質の高いアポイントの提供を行わせて頂いております。\n\n【過去の実績】\n・外国人紹介アポイント累計4000件\n・人材派遣アポイント累計2000件\n・アポイント総数30,000件\n\n現在弊社にて事業拡大により、新規取引企業様を募集させて頂いており、以下のキャンペーンを行っており、是非ともご検討いただければと思い、今回ご連絡をさせて頂きました。\n\n【トライアルキャンペーン】\n・初期費用０円\n・契約期間０ヶ月のアポ取り切り契約\n・リスト制作費０円\n\n当社では『完全成功報酬制』を採用しており、企業様にはリスクを最小限に抑えた形でサービスをご利用いただけます。\n\nキャンペーン興味をお持ちいただけましたら、本メール限定の特典となりますので、『トライアル希望』の旨をご連絡いただければ幸いです。\n\nこの度は貴重なお時間をいただき、ありがとうございました。"
     }
   }
+
 ]
