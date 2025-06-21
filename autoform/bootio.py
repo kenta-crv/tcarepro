@@ -43,26 +43,43 @@ def boot(db_connection, url, unique_id, formdata_for_hardware, session_code="N/A
             print(f"Attempting submission to: {url} with provided form data.")
             automation_instance = hardware.Place_enter(url, formdata_for_hardware)
             
-            if not automation_instance.form and not automation_instance.iframe_mode:
-                print(f"hardware.py's Place_enter could not find a form on {url} for unique_id {unique_id}")
-                status_to_set = "No form found by parser on url"
-                # Fall through to finally
+            # Check if any fields were mapped or iframe mode is detected
+            mapped_fields = len(automation_instance.field_mappings) if hasattr(automation_instance, 'field_mappings') else 0
+            iframe_mode = getattr(automation_instance, 'iframe_mode', False)
+            
+            if mapped_fields == 0 and not iframe_mode:
+                print(f"hardware.py's Place_enter could not find mappable forms on {url}")
+                status_to_set = "No mappable form found by parser on url"
             else:
+                print(f"Form analysis: {mapped_fields} fields mapped, iframe_mode: {iframe_mode}")
+                if mapped_fields > 0:
+                    print(f"Mapped fields: {list(automation_instance.field_mappings.keys())}")
+                
+                # Proceed with form submission
                 result_dict = automation_instance.go_selenium()
-                print(f"Selenium outcome for unique_id {unique_id}: {result_dict}")
-
-                detailed_reason_from_hardware = result_dict.get("reason", "No reason provided")
-
-                if result_dict.get("status") == "OK":
-                    status_to_set = "送信済"
+                
+                if result_dict:
+                    if result_dict.get('status') == 'OK':
+                        reason = result_dict.get('reason', 'Unknown success')
+                        if 'captcha' in reason.lower():
+                            status_to_set = "CAPTCHA detected - requires manual intervention"
+                        elif 'success' in reason.lower():
+                            status_to_set = "送信成功"
+                        else:
+                            status_to_set = f"送信完了: {reason}"
+                        print(f"SUCCESS: Form submission successful - {reason}")
+                    else:
+                        reason = result_dict.get('reason', 'Unknown failure')
+                        status_to_set = f"送信失敗: {reason}"
+                        print(f"FAILURE: Form submission failed - {reason}")
                 else:
-                    # For any NG status (including CAPTCHA, errors), use the reason as the status
-                    status_to_set = detailed_reason_from_hardware 
+                    status_to_set = "No result returned from selenium automation"
+                    print("ERROR: automation_instance.go_selenium() returned None/empty result")
 
     except Exception as e:
         status_to_set = f"Exception during processing: {str(e)[:200]}" # Store exception in status
         print(f"Exception during boot process for unique_id {unique_id}:")
-        print(e)
+        print(str(e))
         traceback.print_exc()
     finally:
         # Update the contact_trackings table
@@ -131,7 +148,7 @@ def main():
         'company', 'company_kana', 'manager', 'manager_kana', 
         'manager_first', 'manager_last', 'manager_first_kana', 'manager_last_kana',
         'phone', 'phone0', 'phone1', 'phone2', 'fax', 
-        'address', 'address_city', 'address_thin', 'zip', 
+        'address', 'address_city', 'address_thin', 'zip', 'postal_code',
         'mail', 'subjects', 'body',
         'address_pref', 
         'address_pref_value',
@@ -146,10 +163,18 @@ def main():
             arg_name = 'pref'
         elif key_in_dict == 'address_pref' and not hasattr(args, 'address_pref'):
              arg_name = 'pref'
+        elif key_in_dict == 'postal_code':
+            arg_name = 'zip'  # Map postal_code to zip argument
 
         value = getattr(args, arg_name, None)
         if value is not None: 
             formdata_for_hardware[key_in_dict] = value
+    
+    # Additional mappings for zip/postal_code
+    if args.zip is not None:
+        formdata_for_hardware['postal_code'] = args.zip
+        if 'zip' not in formdata_for_hardware:
+            formdata_for_hardware['zip'] = args.zip
     
     if args.pref is not None:
         formdata_for_hardware['address_pref_value'] = args.pref 
