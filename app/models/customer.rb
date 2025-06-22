@@ -594,7 +594,7 @@ scope :before_sended_at, ->(sended_at){
   def self.csv_attributes
     ["id","company","store","tel","address","url","url_2","title","industry","mail","first_name","postnumber","people",
      "caption","business","genre","mobile","choice","inflow","other","history","area","target","meeting","experience","price",
-     "number","start","remarks","extraction_count","send_count"]
+     "number","start","remarks","extraction_count","send_count","contact_url"]
   end
 
   def self.ransackable_scopes(_auth_object = nil)
