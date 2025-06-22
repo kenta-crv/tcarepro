@@ -5,6 +5,8 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+ruby '2.7.0'
+
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.6'
@@ -127,9 +129,10 @@ gem 'audiojs-rails'
 gem 'rails_autolink'
 
 gem 'rails-html-sanitizer', '1.4.3'
-gem 'dotenv-rails', groups: [:development, :test]
-gem 'dotenv-rails'
+gem 'dotenv-rails', groups: [:development, :test, :production]
 gem 'sidekiq', '~> 5.2'
 gem 'sidekiq-cron'
 
 gem 'open3'
+
+gem 'net-imap', '~>0.3.9'
