@@ -446,15 +446,21 @@ class CustomersController < ApplicationController
   end
 
   def documents
-    customer = Customer.find_by(id: params[:from]) # ← クエリで顧客IDを受け取る
+    customer = Customer.find_by(id: params[:from]) # クエリで顧客IDを受け取る
+  
     if customer
+      # アクセスログ保存
       AccessLog.create!(
-        customer: customer,              # ← 顧客を保存
+        customer: customer,
         path: request.path,
         ip: request.remote_ip,
         accessed_at: Time.current
       )
+  
+      # 管理者に通知メール送信
+      CustomerMailer.clicked_notice(customer).deliver_later
     end
+  
     pdf_path = Rails.root.join('public', 'documents.pdf')
     if File.exist?(pdf_path)
       send_file pdf_path, filename: 'documents.pdf', type: 'application/pdf', disposition: 'attachment'

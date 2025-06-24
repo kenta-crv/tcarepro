@@ -57,5 +57,14 @@ class CustomerMailer < ActionMailer::Base
       content_type: "text/plain"
     )
   end
+
+  def clicked_notice(customer)
+    @customer = customer
+    mail(
+      to: "info@j-work.jp", # 管理者メールアドレス
+      from: "info@j-work.jp", # 管理者メールアドレス
+      subject: "#{@customer.company}が資料リンクにアクセスしました"
+    )
+  end
 end
 
