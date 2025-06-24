@@ -134,6 +134,10 @@ Rails.application.routes.draw do
   get 'pybot' => 'pybot_e_notify#index'
   get 'pybot/destroy' => 'pybot_e_notify#destroyer'
 
+  #資料
+  get 'documents', to: 'customers#documents'
+  resources :access_logs, only: [:index]
+
   # API
   namespace :api do
     namespace :v1 do

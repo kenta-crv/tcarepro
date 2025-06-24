@@ -20,7 +20,6 @@
 
   .field
     = f.label :body
-    = f.text_area :body, rows: 25, value: "#{@customer.company} #{@customer.first_name}様\n\nお世話になります。\n\n#{@customer.industry_name}の#{@user.user_name}で御座います。\n\n先ほどはご丁寧にお電話対応ありがとうございました。\n\n当メールにて、日程調整を行わせて頂ければと存じますが、以下の日程において、ご都合はいかがでしょうか？\n\n 月 日 :00〜 :00\n\n 月 日 :00〜 :00\n\n 月 日 :00〜 :00\n\n以上、お忙しい中恐縮では御座いますが、お返事の程お待ちしております。\n\n引き続きでは御座いますが、何卒よろしくお願い致します。\n\n会社名：#{@customer.company_name}\n担当：#{@user.user_name}"
-
+    = f.text_area :body, value: @default_body, rows: 10
   .actions
     = f.submit 'Send Email'

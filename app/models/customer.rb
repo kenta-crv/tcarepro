@@ -131,6 +131,7 @@ class Customer < ApplicationRecord
   has_many :estimates
   has_many :calls#, foreign_key: :tel, primary_key: :tel
   has_many :counts
+  has_many :access_logs, dependent: :destroy
   has_one :last_call, ->{
     order("created_at desc")
   }, class_name: :Call
@@ -417,6 +418,14 @@ scope :before_sended_at, ->(sended_at){
       existing_customer_with_same_company = Customer.find_by(company: row['company'])
       
       if existing_customer_with_same_company
+        existing_industry = existing_customer_with_same_company.industry.to_s
+        new_industry = row['industry'].to_s
+      
+        unless existing_industry.include?(new_industry) || new_industry.include?(existing_industry)
+          Rails.logger.info "Skipped due to industry mismatch: #{row['company']} - #{row['industry']}"
+          next
+        end
+      
         # 一致する業種がある場合
         crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
         

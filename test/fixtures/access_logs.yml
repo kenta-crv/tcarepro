@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer: one
+  ip: MyString
+  user_agent: MyString
+  referer: MyString
+
+two:
+  customer: two
+  ip: MyString
+  user_agent: MyString
+  referer: MyString
