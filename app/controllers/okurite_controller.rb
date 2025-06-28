@@ -104,6 +104,32 @@ class OkuriteController < ApplicationController
     end
   end
 
+  def bulk_delete
+    begin
+      sender = current_sender || Sender.find(params[:sender_id])
+      
+      # Delete all contact_trackings with status '自動送信予定' for this sender
+      deleted_count = ContactTracking.joins(:inquiry)
+                                    .where(inquiries: { sender_id: sender.id })
+                                    .where(status: '自動送信予定')
+                                    .delete_all
+      
+      if deleted_count > 0
+        flash[:notice] = "#{deleted_count}件の自動送信予定を削除しました。"
+      else
+        flash[:alert] = "削除対象の自動送信予定が見つかりませんでした。"
+      end
+      
+    rescue => e
+      Rails.logger.error "Bulk delete error: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      flash[:alert] = "削除中にエラーが発生しました: #{e.message}"
+    end
+    
+    # Redirect back to the referring page
+    redirect_back(fallback_location: sender_okurite_index_path(sender))
+  end
+
   def autosettings
     Rails.logger.info("autosettings called. Date: #{params[:date]}, Count: #{params[:count]}")
     @q = Customer.ransack(params[:q])
