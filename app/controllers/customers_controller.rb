@@ -398,53 +398,52 @@ class CustomersController < ApplicationController
   def send_email
     @customer = Customer.find(params[:id])
     @user = current_user
-    @default_body = <<~TEXT
-    #{@customer.company} #{@customer.first_name}様
-
+  
+    body = <<~TEXT
+      #{@customer.company} #{@customer.first_name}様
+  
       お世話になります。私、国内転職外国人紹介プラットフォーム『J Work』の#{@user.user_name}でございます。
-
+  
       この度はお忙しい中、弊社スタッフとお話の機会をいただきありがとうございました。
-
+  
       改めて弊社は国内最大級の外国人転職人材を取り扱っている企業となります。簡単に以下、弊社人材特長を明記しております。
-
+  
       【J Workの人材】
       登録者数：毎月300~500名
       人材層：国内転職外国人材100%
       国内在住：平均2〜10年
       日本語レベル：N1~N4
       ビザの種類：永住ビザ・技術人文国際ビザ・特定技能ビザ
-
+  
       更に当社人材について、県外への転職が可能な人材が全体の【80%前後】を占めており、非常に柔軟な転職が可能となっております。
-
+  
       J Workでは『成果報酬0円』で人数無制限で採用頂くことが可能となっておりますので、この機会に是非ともご利用いただければと存じます。
-
+  
       【サービス資料】
-      https://tcare.pro/documents?from=#{customer.id}
-
+      https://tcare.pro/documents?from=#{@customer.id}
+  
       尚、当社では0円採用を実現するためオンライン商談等は行なっておらず、公式LINEのみの対応となっております。
-
+  
       【公式LINE】
       https://lin.ee/l5EzcZW
-
+  
       以上、ご確認よろしくお願い致します。
-
+  
       株式会社セールスプロ
       【0円採用】国内転職外国人紹介プラットフォーム『J Work』
       https://j-work.jp/
       info@j-work.jp
       東京都港区芝5-27-3 MBC・Aー9
     TEXT
-  end
-
-  def send_email_send
-    @customer = Customer.find(params[:id])
-    @user = current_user  
-    email_params = params.require(:mail).permit(:company, :first_name, :mail, :body, :company_name, :user_name)
+  
+    email_params = { mail: @customer.mail, body: body }
+  
     CustomerMailer.teleapo_send_email(@customer, email_params).deliver_now
     CustomerMailer.teleapo_reply_email(@customer, email_params).deliver_now
-    redirect_to customers_path, notice: 'Email sent successfully!'
+  
+    redirect_to customers_path, notice: "#{@customer.company}(#{@customer.mail})にメールを送信しました。"
   end
-
+  
   def documents
     customer = Customer.find_by(id: params[:from]) # クエリで顧客IDを受け取る
   

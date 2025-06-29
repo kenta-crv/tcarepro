@@ -58,12 +58,12 @@
 		<tr>
 			<th>検索対象</th>
 			<td><%= @customer.industry %></td>
-      <th>
-        <%= link_to 'メール日程調整', send_email_customer_path(@customer), target: '_blank'  %>
-
-     </th>
-			<th>
-     </th>
+      <th>メール送信</th>
+			<% if @customer.mail.present? %>
+       <td>
+         <%= button_to 'J Work送信', send_email_customer_path(@customer),method: :post, form: { "data-turbo-confirm": "【#{@customer.company}】の #{@customer.mail} に送信しますか？" },class: "btn btn-success" %>
+       </td>
+      <% end %>
 		</tr>
     <tr>
 			<th>住所</th>

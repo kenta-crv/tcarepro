@@ -112,8 +112,8 @@ Rails.application.routes.draw do
   get 'draft' => 'customers#draft' #締め
   get 'draft/filter_by_industry', to: 'customers#filter_by_industry', as: 'filter_by_industry'
   #showからのメール送信
-  get 'customers/:id/send_email', to: 'customers#send_email', as: 'send_email_customer'
-  post 'customers/:id/send_email', to: 'customers#send_email_send'
+  match 'customers/:id/send_email', to: 'customers#send_email', via: [:get, :post], as: 'send_email_customer'
+
   get 'customers/:id/:is_auto_call' => 'customers#show'
   get 'direct_mail_send/:id' => 'customers#direct_mail_send' #SFA
   get '/customers/analytics/generate_pdf', to: 'customers#generate_pdf', as: 'customers_analytics_generate_pdf'

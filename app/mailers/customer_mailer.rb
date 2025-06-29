@@ -66,5 +66,6 @@ class CustomerMailer < ActionMailer::Base
       subject: "#{@customer.company}が資料リンクにアクセスしました"
     )
   end
+  
 end
 
