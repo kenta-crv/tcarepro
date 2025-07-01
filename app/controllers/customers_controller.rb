@@ -59,7 +59,7 @@ class CustomersController < ApplicationController
     end
     @customer = Customer.find(params[:id])
     @q = Customer.ransack(params[:q]) || Customer.ransack(params[:last_call])
-    @customers = @q.result || @q.result.includes(:last_call)
+    @customers = @q.result.includes(:last_call)
     @customers = @customers.where( id: last_call )  if last_call
     @customers = @customers.where.not(tel: [nil, "", " "])
     #@customers = @customers.where(status: [nil, "", " "])
