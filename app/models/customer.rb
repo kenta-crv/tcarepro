@@ -421,7 +421,7 @@ scope :before_sended_at, ->(sended_at){
         existing_industry = existing_customer_with_same_company.industry.to_s
         new_industry = row['industry'].to_s
       
-        unless existing_industry.include?(new_industry) || new_industry.include?(existing_industry)
+        unless industry_match?(existing_industry, new_industry)
           Rails.logger.info "Skipped due to industry mismatch: #{row['company']} - #{row['industry']}"
           next
         end
@@ -497,6 +497,15 @@ scope :before_sended_at, ->(sended_at){
     
   EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社", "協同組合", "医療法人", "一般社団法人"]
         
+  def self.industry_match?(existing_industry, new_industry)
+    return false if existing_industry.blank? || new_industry.blank?
+  
+    keywords_existing = existing_industry.scan(/[一-龠ぁ-んァ-ンa-zA-Z0-9]+/)
+    keywords_new = new_industry.scan(/[一-龠ぁ-んァ-ンa-zA-Z0-9]+/)
+  
+    (keywords_existing & keywords_new).any?
+  end
+
   def self.normalized_name(name)
     name = name.to_s  # nilでも空文字になる
     EXCLUDE_WORDS.each { |word| name = name.gsub(word, "") }

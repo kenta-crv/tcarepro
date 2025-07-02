@@ -1,24 +1,26 @@
 .tops-wrapper
  h2.headline アクセスログ一覧
 
-table
+ table[width="90%" cellpadding="0" cellspacing="0"]
   thead
     tr
-      th アクセス日時
-      th 顧客名
+      th 会社名
       th 電話番号
       th メールアドレス
-      th アクセスパス
-      th IPアドレス
+      th 架電先
+      th 担当者
+      th 開封日時
   tbody
     - @logs.each do |log|
       tr
-        td= log.accessed_at.strftime("%Y-%m-%d %H:%M:%S")
         td
           = link_to log.customer&.company || "不明", customer_path(log.customer) if log.customer
           - unless log.customer
             | 不明
         td= log.customer&.tel
         td= log.customer&.mail
-        td= log.path
-        td= log.ip
+        td= log.customer&.industry
+        td= customer.calls.last&.user&.user_name
+        td= log.accessed_at.strftime("%Y-%m-%d %H:%M:%S")
+
+

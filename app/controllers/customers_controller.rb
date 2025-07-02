@@ -296,8 +296,7 @@ class CustomersController < ApplicationController
   def all_import
     save_count = Customer.import(params[:file])
     call_count = Customer.call_import(params[:file])
-    
-    # チェックが入っている場合、転用登録をスキップ
+  
     if params[:skip_repurpose] == "1"
       repurpose_count = { repurpose_import_count: 0 }
     else
@@ -306,7 +305,7 @@ class CustomersController < ApplicationController
   
     draft_count = Customer.draft_import(params[:file])
   
-    notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_cnt]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
+    notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_count]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
     redirect_to customers_url, notice: notice_message
   end
       
