@@ -76,6 +76,9 @@ class CustomersController < ApplicationController
     @customer = Customer.new
   end
 
+  def easy 
+  end
+
   def search
     branch = params[:branch]
     address = params[:address]

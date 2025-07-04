@@ -124,6 +124,7 @@ Rails.application.routes.draw do
   end
 
   get 'news' => 'customers#news' #インポート情報
+  get 'customers/easy' => 'customers#easy' #簡易アポ
   delete :customers, to: 'customers#destroy_all' #Mailer
 
   resources :contracts  do
