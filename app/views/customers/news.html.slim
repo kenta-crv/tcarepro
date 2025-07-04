@@ -22,420 +22,308 @@ table[width="90%" cellpadding="0" cellspacing="0"]
             | 1ヶ月以内未コール件数
         tr
           th
-            | VIETA（介護）
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-          td
-             .no_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（介護）%").where.not(status:"draft").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-        tr
-          th
-            | VIETA（工場）
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-          td
-             .no_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（工場）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-
-        tr
-          th
-            | VIETA（飲食）
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-          td
-             .no_calls_count
-              = Customer.where("industry LIKE ?", "%VIETA（飲食）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-
-        tr
-          th
-            | ニューアース（介護）
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-          td
-             .no_calls_count
-              = Customer.where("industry LIKE ?", "%ニューアース（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-
-        tr
-          th
             | 光誠会（介護）
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-
+              = Customer.where("industry LIKE ?", "%光誠会（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
         tr
           th
             | モンキークルー（介護）
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-
-        tr
-          th
-            | J Work（食品）
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-          td
-             .no_calls_count
-              = Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-
-        tr
-          th
-            | J Work（工場）
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-          td
-             .no_calls_count
-              = Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-        tr
-          th
-            | ミライユ（警備）
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（警備）%").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（警備）%").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（警備）%").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（警備）%").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（警備）%").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-          td
-             .no_calls_count
-              = Customer.where("industry LIKE ?", "%ミライユ（警備）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-
-        tr
-          th
-            | ミライユ（ドライバー）
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .between_created_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
-             .between_nexted_at
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
-          td
-             .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
-          td
-             .no_calls_count
-              = Customer.where("industry LIKE ?", "%ミライユ（ドライバー）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%モンキークルー（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
         tr
           th
             | SND（介護）
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%SND（介護）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+              = Customer.where("industry LIKE ?", "%SND（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+        tr
+          th
+            | SND（宿泊）
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（宿泊）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（宿泊）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（宿泊）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（宿泊）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .ltec_calls_count
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+          td
+             .no_calls_count
+              = Customer.where("industry LIKE ?", "%SND（宿泊）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+        tr
+          th
+            | LINK（介護）
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%LINK（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%LINK（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%LINK（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%LINK（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .ltec_calls_count
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+          td
+             .no_calls_count
+              = Customer.where("industry LIKE ?", "%LINK（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+        tr
+          th
+            | LINK（飲食）
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%LINK（飲食）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%LINK（飲食）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%LINK（飲食）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%LINK（飲食）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .ltec_calls_count
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+          td
+             .no_calls_count
+              = Customer.where("industry LIKE ?", "%LINK（飲食）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
 
         tr
           th
-            | SND（飲食）
+            | J Work（介護）
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").where(created_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（飲食）%").where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").where(created_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（飲食）%").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").where.not(status:"draft").joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").where(created_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（飲食）%").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").where(created_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（飲食）%").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .between_created_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").where(created_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%SND（飲食）%").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（介護）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
              .between_nexted_at
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
           td
              .ltec_calls_count
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
           td
              .no_calls_count
-              = Customer.where("industry LIKE ?", "%SND（飲食）%").where.not(status:"draft").where(created_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
-
-p.small.center
- | （緑）＝直近１ヶ月以内以内で架電した着信留守と担当者不在の架電回数1回以内の件数
+              = Customer.where("industry LIKE ?", "%J Work（介護）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+        tr
+          th
+            | J Work（工場）
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（工場）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .ltec_calls_count
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+          td
+             .no_calls_count
+              = Customer.where("industry LIKE ?", "%J Work（工場）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
+        tr
+          th
+            | J Work（食品）
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours)).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.since.beginning_of_day - 8.hours)..(1.day.since.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (Time.zone.now.beginning_of_day - 8.hours)..(Time.zone.now.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (1.day.ago.beginning_of_day - 8.hours)..(1.day.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (2.days.ago.beginning_of_day - 8.hours)..(2.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .between_created_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours)).or(Customer.where("industry LIKE ?", "%J Work（食品）%").where.not(status:"draft").where.not(status:"draft").where(updated_at: (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours))).count
+             .between_nexted_at
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).joins(:calls).where("calls.created_at": (3.days.ago.beginning_of_day - 8.hours)..(3.days.ago.beginning_of_day + 16.hours), "calls.statu": "再掲載").count
+          td
+             .ltec_calls_count
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).ltec_calls_count(1).joins(:calls).where("calls.statu": "着信留守").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count + Customer.where("industry LIKE ?", "%フコックス（工場）%").ltec_calls_count(1).joins(:calls).where("calls.statu": "担当者不在").where("calls.created_at > ?", 1.month.ago.beginning_of_month).where("calls.created_at < ?", Time.current.end_of_month).count
+          td
+             .no_calls_count
+              = Customer.where("industry LIKE ?", "%J Work（食品）%").where(status: nil).where.not(tel: [nil, "", " "]).where(updated_at: (1.month.ago.beginning_of_month..Time.current.end_of_month)).where.not(id: Call.select(:customer_id)).count
