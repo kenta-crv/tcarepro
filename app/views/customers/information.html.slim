@@ -645,13 +645,13 @@ br/
       tr
         th ファイル選択
         th インポート実行
-        th 転用スキップ
+        /th 転用スキップ
       tr
         td
           = f.file_field :file, required: true
         td
           = f.submit 'インポート実行'
-        td
+        /td
           = f.check_box :skip_repurpose
           = f.label :skip_repurpose, '転用をスキップする'
 br/
