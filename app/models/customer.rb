@@ -875,9 +875,9 @@ scope :before_sended_at, ->(sended_at){
   end
       
   def valid_business?(required_businesses, customer_business)
-    # required_businessesがカンマ区切りの場合を配列に変換
+    return false if customer_business.blank?
+  
     required_businesses_array = required_businesses.split(',').map(&:strip)
-    # 入力されたbusinessがいずれかと一致すればtrue
     required_businesses_array.any? { |required_business| customer_business.include?(required_business) }
   end
   

@@ -26,6 +26,13 @@ class Sender < ApplicationRecord
   end
 
   def send_contact!(code, customer_id, worker_id, inquiry_id, contact_url, status)
+    customer = Customer.find(customer_id)
+  
+    # contact_urlが異なるときだけ強制的に更新（バリデーション無視）
+    if contact_url.present? && customer.contact_url != contact_url
+      customer.update_column(:contact_url, contact_url)
+    end
+  
     contact_tracking = contact_trackings.new(
       code: code,
       customer_id: customer_id,
@@ -35,10 +42,10 @@ class Sender < ApplicationRecord
       sended_at: status == '送信済' && Time.zone.now,
       status: status,
     )
-
+  
     contact_tracking.save!
   end
-
+      
   def send_direct_mail_contact!(customer_id, user_id,worker_id)
     code = generate_code
     direct_mail_contact_tracking = direct_mail_contact_trackings.new(

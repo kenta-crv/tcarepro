@@ -38,6 +38,16 @@ class OkuriteController < ApplicationController
   end
 
   def create
+    if params[:status] == '送信済'
+      if params[:contact_url].blank?
+        flash[:notice] = "contact_urlを入力してください"
+        return redirect_back(fallback_location: sender_okurite_preview_path(okurite_id: params[:okurite_id]))
+      elsif !params[:contact_url].include?('http')
+        flash[:notice] = "有効なURL（httpを含む）を入力してください"
+        return redirect_back(fallback_location: sender_okurite_preview_path(okurite_id: params[:okurite_id]))
+      end
+    end
+  
     @sender.send_contact!(
       params[:callback_code],
       params[:okurite_id],
@@ -46,7 +56,7 @@ class OkuriteController < ApplicationController
       params[:contact_url],
       params[:status]
     )
-
+  
     if params[:next_customer_id].present?
       redirect_to sender_okurite_preview_path(
         okurite_id: params[:next_customer_id],
@@ -54,11 +64,10 @@ class OkuriteController < ApplicationController
       )
     else
       flash[:notice] = "送信が完了しました"
-
       redirect_to sender_okurite_index_path(sender_id: sender.id)
     end
-  end
-
+  end  
+    
   def preview
     @customer = Customer.find(params[:okurite_id])
     @inquiry = @sender.default_inquiry
