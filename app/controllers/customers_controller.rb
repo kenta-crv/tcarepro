@@ -394,12 +394,12 @@ class CustomersController < ApplicationController
   end
   
   def jwork
-    @q = Customer.joins(:calls)
-    .where(calls: { statu: "APP" })
-    .where("customers.industry LIKE ?", "%J Work%")
-    .distinct
-    .ransack(params[:q])
-    @customers = @q.result.includes(:calls)
+    @customers = Customer
+      .where("customers.company LIKE ?", "%J Work%")
+      .joins(:calls)
+      .where(calls: { statu: "APP" })
+      .distinct
+      .includes(:calls)
   end
   
   def send_email
