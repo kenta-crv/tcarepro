@@ -394,11 +394,12 @@ class CustomersController < ApplicationController
   end
   
   def jwork
-    @q = Customer.ransack(params[:q]) # ← これが必要！
-    @customers = @q.result.includes(:calls).select do |customer|
-      customer.calls.any? { |call| call.statu == "APP" } &&
-        customer.industry.to_s.include?("J Work")
-    end
+    @q = Customer.joins(:calls)
+    .where(calls: { statu: "APP" })
+    .where("customers.industry LIKE ?", "%J Work%")
+    .distinct
+    .ransack(params[:q])
+    @customers = @q.result.includes(:calls)
   end
   
   def send_email
