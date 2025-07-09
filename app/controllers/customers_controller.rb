@@ -395,7 +395,7 @@ class CustomersController < ApplicationController
   
   def jwork
     @customers = Customer
-      .where("customers.company LIKE ?", "%J Work%")
+      .where("customers.industry LIKE ?", "%J Work%")
       .joins(:calls)
       .where(calls: { statu: "APP" })
       .distinct
