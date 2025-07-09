@@ -65,8 +65,8 @@ Rails.application.routes.draw do
     registrations: 'senders/registrations'
   }
 
-  get 'customers/easy' => 'customers#easy' #簡易アポ
-  get 'customers/jwork' => 'customers#jwork' #J Work
+  get 'easy' => 'customers#easy' #簡易アポ
+  get 'jwork' => 'customers#jwork' #J Work
 
   resources :inquiries, only: [:index, :show, :edit, :update, :destroy] 
 
