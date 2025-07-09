@@ -393,6 +393,13 @@ class CustomersController < ApplicationController
     redirect_to customers_path, notice: "メールが送信されました"
   end
   
+  def jwork
+    @q = Customer.ransack(params[:q]) # ← これが必要！
+    @customers = @q.result.includes(:calls).select do |customer|
+      customer.calls.any? { |call| call.statu == "APP" } &&
+        customer.industry.to_s.include?("J Work")
+    end
+  end
   
   def send_email
     @customer = Customer.find(params[:id])

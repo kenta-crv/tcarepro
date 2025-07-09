@@ -1,0 +1,43 @@
+- set_meta_tags noindex: true
+.tops-wrapper
+  h2.headline
+    | J Work APP Lists
+  table[width="90%" cellpadding="0" cellspacing="0"]
+    thead
+      tr
+        th
+          | 会社名
+        th
+          | 電話番号
+        th
+          | 住所
+        th
+          | ステータス
+        th
+          | 担当者
+        th
+          = sort_link(@q, "最終コール日",  :created_at)
+        th
+          = sort_link(@q, "インポート日", :updated_at)
+        th
+          | 編集/削除
+    - @customers.each do |customer|
+      tr
+        td
+          = link_to customer.company, customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+        td
+          = customer.tel
+        td
+          = customer.address
+        td
+          = customer.last_call.try(:statu)
+        td
+          = customer.calls.last&.user&.user_name
+        td
+          = customer.last_call.try(:created_at)&.strftime("%Y年%m月%d日 %H時%M分%S秒")
+        td
+          = customer.created_at.strftime("%Y年%m月%d日 %H時%M分%S秒")
+        td
+          = link_to '編集', edit_customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!), class: 'command'
+          = link_to '削除',
+          -                        customer_path(customer, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!),method: :delete,class: 'command',data: { confirm: '本当に削除しますか？'}

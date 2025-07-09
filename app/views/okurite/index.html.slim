@@ -112,7 +112,6 @@
                 th
                   | 状態
                 td
-                td
                   = f.select :contact_trackings_status_eq, 
                       options_for_select(['自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可', '自動送信予定', '自動送信エラー'], params.dig(:q, :contact_trackings_status_eq)), 
                       { include_blank: '選択してください' }, 

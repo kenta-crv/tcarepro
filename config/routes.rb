@@ -65,6 +65,9 @@ Rails.application.routes.draw do
     registrations: 'senders/registrations'
   }
 
+  get 'customers/easy' => 'customers#easy' #簡易アポ
+  get 'customers/jwork' => 'customers#jwork' #J Work
+
   resources :inquiries, only: [:index, :show, :edit, :update, :destroy] 
 
   resources :senders, only: [:index, :show, :edit, :update] do
@@ -124,7 +127,6 @@ Rails.application.routes.draw do
   end
 
   get 'news' => 'customers#news' #インポート情報
-  get 'customers/easy' => 'customers#easy' #簡易アポ
   delete :customers, to: 'customers#destroy_all' #Mailer
 
   resources :contracts  do
