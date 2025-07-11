@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20250623075719) do
+ActiveRecord::Schema.define(version: 20250710175814) do
 
   create_table "access_logs", force: :cascade do |t|
     t.integer "customer_id", null: false
@@ -98,11 +98,18 @@ ActiveRecord::Schema.define(version: 20250623075719) do
     t.string "callback_url"
     t.string "customers_code"
     t.string "auto_job_code"
+    t.datetime "sending_started_at"
+    t.datetime "sending_completed_at"
+    t.text "response_data"
     t.index ["code"], name: "index_contact_trackings_on_code", unique: true
     t.index ["customer_id", "inquiry_id", "sender_id", "worker_id"], name: "index_contact_trackings_on_colums"
     t.index ["customer_id"], name: "index_contact_trackings_on_customer_id"
     t.index ["inquiry_id"], name: "index_contact_trackings_on_inquiry_id"
+    t.index ["sended_at"], name: "index_contact_trackings_on_sended_at"
+    t.index ["sender_id", "customer_id"], name: "index_contact_trackings_on_sender_id_and_customer_id"
+    t.index ["sender_id", "status"], name: "index_contact_trackings_on_sender_id_and_status"
     t.index ["sender_id"], name: "index_contact_trackings_on_sender_id"
+    t.index ["sending_started_at"], name: "index_contact_trackings_on_sending_started_at"
     t.index ["worker_id"], name: "index_contact_trackings_on_worker_id"
   end
 

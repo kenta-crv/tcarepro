@@ -39,11 +39,16 @@ class Sender < ApplicationRecord
       worker_id: worker_id,
       inquiry_id: inquiry_id,
       contact_url: contact_url,
-      sended_at: status == '送信済' && Time.zone.now,
-      status: status,
+      sended_at: status == '送信済' ? Time.zone.now : nil,
+      status: status == '送信済' ? '送信済' : '自動送信予定',
+      auto_job_code: generate_code,
+      sender_id: id 
     )
-  
     contact_tracking.save!
+
+    if contact_tracking.status == '自動送信予定'
+      AutoformSchedulerWorker.perform_async(contact_tracking.id)
+    end
   end
       
   def send_direct_mail_contact!(customer_id, user_id,worker_id)
