@@ -154,7 +154,7 @@ class AutoformSchedulerWorker
       # contact_finder.pyを実行
       command = [
         PYTHON_EXECUTABLE,
-        Rails.root.join('python', 'contact_finder.py').to_s,
+        Rails.root.join('py_app', 'contact_finder.py').to_s,
         customer.name.to_s,
         customer.domain.to_s
       ]
