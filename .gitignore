@@ -49,3 +49,7 @@ config/smart-edee0-firebase-adminsdk-m74sr-92f564d81e.json
 #Python venv files
 
 ./autoform/autoform
+*.log
+autoform/venv/
+autoform/__pycache__/
+*.pyc

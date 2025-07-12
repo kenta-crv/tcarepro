@@ -7,7 +7,10 @@ class AutoformSchedulerWorker
 
   PYTHON_SCRIPT_PATH = Rails.root.join('autoform', 'bootio.py').to_s
   PYTHON_VENV_PATH = Rails.root.join('autoform', 'venv', 'bin', 'python')
-  PYTHON_EXECUTABLE = File.exist?(PYTHON_VENV_PATH) ? PYTHON_VENV_PATH.to_s : (ENV['PYTHON_EXECUTABLE'] || %w[python3 python].find { |cmd| system("which #{cmd} > /dev/null 2>&1") } || 'python')
+  # 一旦退避
+  # PYTHON_EXECUTABLE = File.exist?(PYTHON_VENV_PATH) ? PYTHON_VENV_PATH.to_s : (ENV['PYTHON_EXECUTABLE'] || %w[python3 python].find { |cmd| system("which #{cmd} > /dev/null 2>&1") } || 'python')
+  PYTHON_EXECUTABLE = 'python3'  # システムのpython3を強制使用
+
 
   def perform(contact_tracking_id)
     contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
@@ -32,7 +35,7 @@ class AutoformSchedulerWorker
         Sidekiq.logger.info "AutoformSchedulerWorker: Found contact_url: #{auto_url}"
       else
         contact_tracking.update!(
-          status: '自動送信エラー(URL検索失敗)',
+          status: '自動送信エラー',  # ← 許可されたstatus値を使用
           sending_completed_at: Time.current
         )
         return
@@ -148,25 +151,39 @@ class AutoformSchedulerWorker
   # URL自動検索機能
   def search_contact_url_automatically(contact_tracking)
     customer = contact_tracking.customer
-    sender = contact_tracking.sender
     
     begin
+      # URLからドメイン部分を抽出
+      domain = if customer.url.present?
+        URI.parse(customer.url).host
+      else
+        nil
+      end
+
+      # ドメインが取得できない場合はスキップ
+      return nil unless domain
+
       # contact_finder.pyを実行
       command = [
         PYTHON_EXECUTABLE,
         Rails.root.join('py_app', 'contact_finder.py').to_s,
-        customer.name.to_s,
-        customer.domain.to_s
+        customer.company.to_s,
+        domain.to_s
       ]
       
       stdout, stderr, status = Open3.capture3(*command)
       
       if status.success? && stdout.present?
-        # Pythonの出力からURLを抽出
-        extracted_url = extract_url_from_output(stdout)
+        output = stdout.strip
         
-        if extracted_url.present? && !excluded_domain?(extracted_url)
-          return extracted_url
+        # MAILTO検出の場合
+        if output == 'MAILTO_DETECTED'
+          return nil
+        end
+        
+        # 通常のURL（httpで始まる場合）
+        if output.present? && output.start_with?('http')
+          return output
         end
       end
       
@@ -176,6 +193,8 @@ class AutoformSchedulerWorker
       nil
     end
   end
+
+
 
   # Python出力からURL抽出
   def extract_url_from_output(output)
