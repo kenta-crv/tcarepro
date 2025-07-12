@@ -1159,6 +1159,25 @@ def signal_handler(sig, frame):
     print('\n⚠️ 中断要求を受信しました。安全に停止中...')
 
 def main():
+    
+    # 個別URL検索モード（新規追加）
+    if len(sys.argv) == 3 and not sys.argv[1].endswith('.csv'):
+        company_name = sys.argv[1]
+        domain = sys.argv[2]
+        base_url = f"https://{domain}"
+        
+        try:
+            result = find_contact_url_enhanced(base_url, EXCLUDE_DOMAINS)
+            if result and result != 'MAILTO_DETECTED':
+                print(result)
+            elif result == 'MAILTO_DETECTED':
+                print('MAILTO_DETECTED')
+        except Exception as e:
+            pass  # エラー時は何も出力しない
+        
+        return
+    
+    
     """コード内直接指定方式メイン処理"""
     global current_df, output_file, stop_requested, original_encoding
     
