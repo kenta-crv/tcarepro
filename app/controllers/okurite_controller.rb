@@ -20,17 +20,25 @@ class OkuriteController < ApplicationController
     # @customers = @customers.merge(conditional_results)
   
     # ContactTracking 一覧を取得
-    @contact_trackings = ContactTracking.latest(@sender.id).where(customer_id: @customers.select(:id)) # ここを追加
+    @contact_trackings = ContactTracking.for_sender(@sender.id)
+                                     .where(customer_id: @customers.select(:id))
+                                     .includes(:customer, :worker, :inquiry)
+                                     .order(created_at: :desc)
   end
   
   
   def resend
     customers = Customer.joins(:contact_trackings)
-                        .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
-                        .distinct
+    .where(contact_trackings: { sender_id: params[:sender_id], status: '送信済' })
+    .distinct
     @q = customers.ransack(params[:q])
     @customers = @q.result.page(params[:page]).per(30)
-    @contact_trackings = ContactTracking.latest(params[:sender_id]).where(customer_id: @customers.pluck(:id))
+
+    # for_senderスコープを適用
+    @contact_trackings = ContactTracking.for_sender(params[:sender_id])
+                      .where(customer_id: @customers.pluck(:id))
+                      .includes(:customer, :worker, :inquiry)
+                      .order(created_at: :desc)
   end
   
   def show
@@ -64,7 +72,7 @@ class OkuriteController < ApplicationController
       )
     else
       flash[:notice] = "送信が完了しました"
-      redirect_to sender_okurite_index_path(sender_id: sender.id)
+      redirect_to sender_okurite_index_path(sender_id: @sender.id)
     end
   end  
     
@@ -76,8 +84,10 @@ class OkuriteController < ApplicationController
   
     @prev_customer = @customers.where("customers.id < ?", @customer.id).last
     @next_customer = @customers.where("customers.id > ?", @customer.id).first
-    @contact_tracking = @sender.contact_trackings.where(customer: @customer).order(created_at: :desc).first
-  
+    @contact_tracking = ContactTracking.for_sender(@sender.id)
+                                  .where(customer: @customer)
+                                  .order(created_at: :desc)
+                                  .first
     contactor = Contactor.new(@inquiry, @sender)
     @contact_url = @customer.contact_url
     @callback_code = @sender.generate_code
@@ -182,6 +192,7 @@ class OkuriteController < ApplicationController
       contact_tracking = ContactTracking.new(
         customer: cust,
         sender: @sender,
+        sender_id: @sender.id,
         # inquiry_id: @sender.default_inquiry_id, # The worker will fetch inquiry details based on its logic
         # Let's ensure the worker can derive the inquiry from sender or contact_tracking if needed.
         # If default_inquiry_id is crucial for the worker to find the right inquiry, set it.
