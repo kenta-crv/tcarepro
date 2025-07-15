@@ -27,7 +27,7 @@ class Sender < ApplicationRecord
 
   def send_contact!(code, customer_id, worker_id, inquiry_id, contact_url, status)
     customer = Customer.find(customer_id)
-  
+    customer.skip_validation = true  # ← これを追加！
     # contact_urlが異なるときだけ強制的に更新（バリデーション無視）
     if contact_url.present? && customer.contact_url != contact_url
       customer.update_column(:contact_url, contact_url)

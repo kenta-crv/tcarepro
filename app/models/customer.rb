@@ -128,6 +128,7 @@ class Customer < ApplicationRecord
   before_save :set_industry_defaults
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
+  has_many :scrapings, dependent: :destroy
   has_many :estimates
   has_many :calls#, foreign_key: :tel, primary_key: :tel
   has_many :counts
