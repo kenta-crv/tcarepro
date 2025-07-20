@@ -134,4 +134,20 @@ class ContactTracking < ApplicationRecord
       updated_at: Time.current
     )
   end
+  
+  # 特定ステータスでの検索（sender_id制限付き）
+  scope :with_status_for_sender, ->(sender_id, status) {
+    for_sender(sender_id).where(status: status)
+  }
+
+  # 送信済み顧客の取得（sender_id制限付き）
+  scope :sent_customers_for_sender, ->(sender_id) {
+    for_sender(sender_id).where(status: '送信済').select(:customer_id)
+  }
+
+  # 未送信顧客の取得（sender_id制限付き）
+  scope :unsent_customers_for_sender, ->(sender_id, all_customer_ids) {
+    contacted_ids = for_sender(sender_id).select(:customer_id)
+    all_customer_ids - contacted_ids
+  }
 end

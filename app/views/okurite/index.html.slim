@@ -1,6 +1,7 @@
 - set_meta_tags noindex: true
+
 .tops-wrapper
- .headline
+  .headline
     | Okuriteリスト
     | (
     = @customers.current_page * 30 - 29
@@ -10,76 +11,78 @@
     = @customers.page(1).per(30).total_count
     | 件中
     | )
- = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
-  table[style="margin: 0 30px;"]
-    thead
+    
+  = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
+    table[style="margin: 0 30px;"]
+      thead
+        tr
+          th
+            | 企業名
+          th
+            | URL1
+          th
+            | FormURL
+          th
+            | ワーカー名
+          th
+            | ステータス
+          th
+            | 最終送信日時
+          th
+            | URLアクセス日時
+      
+      - @customers.each do |customer|
+        - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
+        tr
+          td
+            - if customer.company != nil
+              = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
+            - else
+              = link_to "未記入", sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
+          td
+            = customer.url&.truncate(30)
+          td
+            = customer.contact_url&.truncate(30)
+          td
+            = contact_tracking&.worker.user_name if contact_tracking&.worker.present?
+          td
+            - begin
+              = contact_tracking&.status
+            - rescue
+              = ""
+          td
+            - begin
+              = contact_tracking&.sended_at
+            - rescue
+              = ""
+          td
+            - begin
+              = contact_tracking&.sended_at
+            - rescue
+              = ""
+      
       tr
-        th
-          | 企業名
-        th
-          | URL1
-        th
-          | FormURL
-        th
-          | ワーカー名
-        th
-          | ステータス
-        th
-          | 最終送信日時
-        th
-          | URLアクセス日時
-    - @customers.each do |customer|
-      - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
-      tr
-        td
-          - if customer.company != nil
-            = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
-          - else
-            = link_to "未記入", sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
-        td
-          = customer.url&.truncate(30)
-        td
-          = customer.contact_url&.truncate(30)
-        td 
-          = contact_tracking&.worker.user_name if contact_tracking&.worker.present?
-        td
-          - begin 
-            = contact_tracking&.status 
-          - rescue 
-            = ""
-        td
-          - begin 
-            = contact_tracking&.sended_at
-          - rescue 
-            = ""
-        td
-          - begin 
-            = contact_tracking&.sended_at
-          - rescue 
-            = ""
-    tr
-      th[colspan="8"]
-        = paginate @customers
+        th[colspan="8"]
+          = paginate @customers
 
-
-= form_tag sender_okurite_autosettings_path(sender_id: params[:sender_id],q: params[:q]&.permit!, date: params[:date]&.permit!, page: params[:page]) do
-  table.space[width="90%"]
-    tbody
-    tr
-        th[colspan="4"]
-          | 自動送信設定
-    tr
-        td
-          #created_at_from_datetimepicker.input-group.date
-                    = datetime_field_tag 'date','',max: Time.now.strftime("%m/%d/%Y %H:%M %p"), required:true,class: "form-control"
-                    span.input-group-addon
-                      span.glyphicon.glyphicon-calendar
-        td
-          = number_field_tag 'count', 1, min: 1, required:true
-        th
-          = submit_tag "自動送信設定",  class: 'btn btn-success'
-        th
-          = link_to '自動送信予定の一括削除', sender_bulk_delete_path, class: 'btn btn-danger', data: { method: :delete, confirm: '本当に削除しますか？'}
+  = form_tag sender_okurite_autosettings_path(sender_id: params[:sender_id], q: params[:q]&.permit!, date: params[:date]&.permit!, page: params[:page]) do
+    table.space[width="90%"]
+      tbody
+        tr
+          th[colspan="4"]
+            | 自動送信設定
+        tr
+          td
+            #created_at_from_datetimepicker.input-group.date
+              = datetime_field_tag 'date', '', max: Time.now.strftime("%m/%d/%Y %H:%M %p"), required: true, class: "form-control"
+              span.input-group-addon
+                span.glyphicon.glyphicon-calendar
+          td
+            = number_field_tag 'count', 1, min: 1, required: true
+          th
+            = submit_tag "自動送信設定", class: 'btn btn-success'
+          th
+            = link_to '自動送信予定の一括削除', sender_bulk_delete_path, class: 'btn btn-danger', data: { method: :delete, confirm: '本当に削除しますか？'}
 
 #searchModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
   .modal-dialog
@@ -107,15 +110,11 @@
                 th
                   | 住所
                 td
-                  =  f.collection_select :address_cont_any, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'},
-                  {class: 'form-control', id: 'search_prefecture', multiple: true}
+                  = f.collection_select :address_cont_any, JpPrefecture::Prefecture.all, :name, :name, {include_blank: '選択してください'}, {class: 'form-control', id: 'search_prefecture', multiple: true}
                 th
                   | 状態
                 td
-                  = f.select :contact_trackings_status_eq, 
-                      options_for_select(['自動送信送信済', '自動送信不可', '営業NG', '送信済', '送信不可', '自動送信予定', '自動送信エラー'], params.dig(:q, :contact_trackings_status_eq)), 
-                      { include_blank: '選択してください' }, 
-                      class: 'form-control'
+                  = f.select :contact_trackings_status_eq, options_for_select([['自動送信送信済', '自動送信送信済'], ['自動送信不可', '自動送信不可'], ['営業NG', '営業NG'], ['送信済', '送信済'], ['送信不可', '送信不可'], ['自動送信予定', '自動送信予定'], ['自動送信エラー', '自動送信エラー']], params.dig(:q, :contact_trackings_status_eq)), { include_blank: '選択してください' }, { class: 'form-control' }
               tr
                 th
                   | 未送信
@@ -129,9 +128,7 @@
                 th
                   | 業種
                 td
-                  - business_status2 = ["人材関連業","協同組合","登録支援機関","IT・エンジニア","ホームページ制作","Webデザイナー","食品加工業",
-                  "製造業","広告業","営業","販売","介護","マーケティング業","コンサルティング業","不動産","商社","ドライバー","運送業","タクシー",
-                  "建設土木業","自動車整備工場","教育業","飲食業","美容院","看護・病院","弁護士","社会保険労務士","保育士","旅行業","警備業","その他"]
+                  - business_status2 = ["人材関連業","協同組合","登録支援機関","IT・エンジニア","ホームページ制作","Webデザイナー","食品加工業","製造業","広告業","営業","販売","介護","マーケティング業","コンサルティング業","不動産","商社","ドライバー","運送業","タクシー","建設土木業","自動車整備工場","教育業","飲食業","美容院","看護・病院","弁護士","社会保険労務士","保育士","旅行業","警備業","その他"]
                   = f.select :business_cont, business_status2, { include_blank: '選択してください' }
                 th
                   | 事業内容
@@ -168,5 +165,5 @@
 
 javascript:
   $(function() {
-     $('#datetimepicker1').datetimepicker(format: 'YYYY-MM-DD HH:mm');
+    $('#datetimepicker1').datetimepicker({format: 'YYYY-MM-DD HH:mm'});
   });

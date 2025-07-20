@@ -16,6 +16,24 @@ class AutoformSchedulerWorker
       return
     end
 
+    # 🚫 開発環境での実送信を無効化
+    if ENV['DISABLE_AUTOFORM_SENDING'] == 'true'
+      Rails.logger.warn "🚫 実送信無効化モード: ContactTracking ID #{contact_tracking_id}"
+      contact_tracking.update!(
+        status: '送信済（テストモード）',
+        sended_at: Time.current,
+        sending_completed_at: Time.current,
+        response_data: 'テストモードでの送信スキップ'
+      )
+      return
+    end
+
+    # contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
+    # unless contact_tracking
+    #   Sidekiq.logger.error "AutoformSchedulerWorker: ContactTracking with ID #{contact_tracking_id} not found."
+    #   return
+    # end
+
     ContactTracking.transaction do
       begin
         # 送信開始状態の記録

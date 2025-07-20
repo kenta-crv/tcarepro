@@ -2,3 +2,5 @@
 :queues:
   - default
 :logfile: ./log/sidekiq.log
+:timeout: 300
+:max_retries: 3

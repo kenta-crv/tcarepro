@@ -32,10 +32,15 @@ class Sender < ApplicationRecord
     if contact_url.present? && customer.contact_url != contact_url
       customer.update_column(:contact_url, contact_url)
     end
+
+    # 既存のContactTrackingレコードを検索または新規作成
+    contact_tracking = contact_trackings.find_or_initialize_by(
+      customer_id: customer_id
+    )
   
-    contact_tracking = contact_trackings.new(
+    contact_tracking.assign_attributes(
       code: code,
-      customer_id: customer_id,
+      #customer_id: customer_id,
       worker_id: worker_id,
       inquiry_id: inquiry_id,
       contact_url: contact_url,
