@@ -4,7 +4,44 @@ class SendersController < ApplicationController
 
   def index
     @senders = Sender.all
+    
+    @sender_stats = {}
+    @senders.each do |sender|
+      contact_trackings = ContactTracking.where(sender_id: sender.id)
+      
+      # 基本統計
+      total_customers = contact_trackings.select(:customer_id).distinct.count
+      sent_count = contact_trackings.where(status: '送信済').count
+      
+      # フォーム存在数（contact_urlがあるもの）
+      form_exists_count = contact_trackings.where.not(contact_url: [nil, '']).count
+      
+      # 実送信数（contact_urlがあり、かつ送信済み）
+      actual_sent_count = contact_trackings.where(status: '送信済')
+                                        .where.not(contact_url: [nil, ''])
+                                        .count
+      
+      # エラー数（真のエラーのみ）
+      error_count = contact_trackings.where(status: [
+        'CAPTCHA detected - requires manual intervention',
+        '自動送信エラー',
+        '送信失敗: no_success_indication',
+        '送信失敗: submission_failed'
+      ]).count
+      
+      @sender_stats[sender.id] = {
+        total: total_customers,
+        sent: sent_count,
+        form_exists: form_exists_count,
+        actual_sent: actual_sent_count,
+        error: error_count,
+        send_rate: total_customers > 0 ? (sent_count.to_f / total_customers * 100).round(1) : 0,
+        actual_rate: sent_count > 0 ? (actual_sent_count.to_f / sent_count * 100).round(1) : 0
+      }
+    end
   end
+
+
 
   def show
     @call
