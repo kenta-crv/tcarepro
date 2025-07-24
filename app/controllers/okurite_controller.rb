@@ -11,32 +11,65 @@ class OkuriteController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
 
   def index
-    # sender_idでContactTrackingを制限した上でCustomer検索
+    # この`sender`に紐づく全ての`ContactTracking`をベースとして取得
     base_contact_trackings = ContactTracking.for_sender(@sender.id)
-  
-    # ステータス検索がある場合の特別処理
-    if params[:q]&.dig(:contact_trackings_status_eq).present?
-      # 指定されたステータスのContactTrackingに関連するCustomerのみを対象
-      customer_ids = base_contact_trackings.where(status: params[:q][:contact_trackings_status_eq]).select(:customer_id)
-    
-      # Customer検索の範囲をsender関連の顧客に限定
+
+    # 条件分岐1: 一括設定直後（IDの配列が渡された場合）
+    # autosettingsアクションからリダイレクトされた際の、最も優先されるべき特殊な表示処理
+    if params[:q]&.dig(:contact_trackings_id_in).present?
+      # Ransackの検索オブジェクトを生成（検索フォームの状態を維持するため）
+      @q = Customer.ransack(params[:q])
+      
+      # 渡されたIDを持つContactTrackingに紐づくCustomerを、更新が新しい順に取得
+      @customers = Customer.joins(:contact_trackings)
+                           .where(contact_trackings: { id: params[:q][:contact_trackings_id_in] })
+                           .order('contact_trackings.updated_at DESC')
+                           .page(params[:page]).per(30)
+
+    # 条件分岐2: 検索モーダルで「状態」が指定された場合
+    elsif params[:q]&.dig(:contact_trackings_status_eq).present?
+      status = params[:q][:contact_trackings_status_eq]
+      
+      # パフォーマンスのため、各顧客の最新のContactTrackingレコードIDのみを取得
+      latest_ids = base_contact_trackings.select('MAX(id) as id').group(:customer_id)
+      # 最新レコードの中から、指定されたステータスを持つ顧客IDを絞り込む
+      customer_ids = base_contact_trackings.where(id: latest_ids).where(status: status).select(:customer_id)
+      
       @q = Customer.where(id: customer_ids).ransack(params[:q])
+
+      # 「自動送信予定」の場合は、特別に更新順でソートする
+      if status == '自動送信予定'
+        @customers = @q.result.distinct
+                    .joins(:contact_trackings)
+                    .where(contact_trackings: {sender_id: @sender.id, status: '自動送信予定'})
+                    .order('contact_trackings.updated_at DESC')
+                    .page(params[:page]).per(30)
+      else
+        @customers = @q.result.distinct.order(:id).page(params[:page]).per(30)
+      end
+
+    # 条件分岐3: 検索モーダルで「未送信」がチェックされた場合
     elsif params[:q]&.dig(:contact_tracking_id_null).present? && params[:q][:contact_tracking_id_null] == 'true'
-      # 未送信検索の場合：このSenderでContactTrackingがない顧客を検索
+      # 一度でもコンタクト履歴がある顧客IDを除外する
       contacted_customer_ids = base_contact_trackings.select(:customer_id)
       @q = Customer.where.not(id: contacted_customer_ids).ransack(params[:q])
-    else
-      # 通常の検索
-      @q = Customer.ransack(params[:q])
-    end
+      @customers = @q.result.distinct.order(:id).page(params[:page]).per(30)
 
-    @customers = @q.result.distinct.page(params[:page]).per(30)
+    # 条件分岐4: 上記以外の全てのケース（通常のページアクセス時）
+    else
+      @q = Customer.ransack(params[:q])
+      @customers = @q.result.distinct.order(:id).page(params[:page]).per(30)
+    end
     
-    # ContactTrackingは常にsender_id制限下で取得
-    @contact_trackings = base_contact_trackings.where(customer_id: @customers.select(:id))
-                          .includes(:customer, :worker, :inquiry)
-                          .order(created_at: :desc)
-end
+    # パフォーマンス対策: 画面に表示する顧客のContactTracking情報を一括で取得し、N+1問題を回避する
+    customer_ids_on_page = @customers.pluck(:id)
+    @contact_trackings_hash = base_contact_trackings
+                              .where(customer_id: customer_ids_on_page)
+                              .includes(:customer, :worker, :inquiry)
+                              .group_by(&:customer_id)
+  end
+
+
   
   def resend
     # sender_idを強制的に注入
@@ -55,81 +88,93 @@ end
     @customer = Customer.find(params[:id])
   end
 
-  def create
-    if params[:status] == '送信済'
-      # 手動「送信済み」更新の場合
-      @contact_tracking = ContactTracking.for_sender(@sender.id)
-                                        .where(customer_id: params[:okurite_id])
-                                        .first
-      
-      if @contact_tracking
-        # 既存レコードを直接更新（バリデーション回避）
-        @contact_tracking.update_columns(
-          status: '送信済',
-          sended_at: Time.current,
-          worker_id: current_worker&.id,
-          contact_url: params[:contact_url],
-          code: params[:callback_code],
-          updated_at: Time.current
-        )
-      else
-        # レコードがない場合は新規作成
-        ContactTracking.create!(
-          customer_id: params[:okurite_id],
-          sender_id: @sender.id,
-          worker_id: current_worker&.id,
-          inquiry_id: params[:inquiry_id],
-          contact_url: params[:contact_url],
-          status: '送信済',
-          sended_at: Time.current,
-          code: params[:callback_code],
-          auto_job_code: @sender.generate_code
-        )
-      end
-    else
-      # 通常の送信処理
-      @sender.send_contact!(
-        params[:callback_code],
-        params[:okurite_id],
-        current_worker&.id,
-        params[:inquiry_id],
-        params[:contact_url],
-        params[:status]
-      )
-    end
-
-    # リダイレクト処理
-    if params[:next_customer_id].present?
-      redirect_to sender_okurite_preview_path(
-      okurite_id: params[:next_customer_id],
-      q: params[:q]&.permit!
-    )
-    else
-      flash[:notice] = "送信が完了しました"
-      redirect_to sender_okurite_index_path(sender_id: @sender.id)
-    end
-  rescue => e
-    redirect_back fallback_location: sender_okurite_path(@sender),
-    alert: "更新に失敗しました: #{e.message}"
-  end
-    
   def preview
     @customer = Customer.find(params[:okurite_id])
-    @inquiry = @sender.default_inquiry
+    
+    # Inquiry（問い合わせ文）の取得。Nilの場合はフォールバックし、それでもなければエラーで処理を中断
+    @inquiry = @sender.default_inquiry || Inquiry.first
+    if @inquiry.nil?
+      flash[:alert] = "問い合わせ文が設定されていません。システム管理者に連絡してください。"
+      redirect_to sender_okurite_index_path(@sender) and return
+    end
+    
     @q = Customer.ransack(params[:q])
     @customers = @q.result(distinct: true)
-  
-    @prev_customer = @customers.where("customers.id < ?", @customer.id).last
-    @next_customer = @customers.where("customers.id > ?", @customer.id).first
+
+    # ページネーション用の「前へ」「次へ」の顧客情報を取得
+    @prev_customer = @customers.where("customers.id < ?", @customer.id).reorder(id: :desc).first
+    @next_customer = @customers.where("customers.id > ?", @customer.id).reorder(id: :asc).first
+
+    # この顧客に対する最新のコンタクト履歴を取得（更新日時が新しいものを優先）
     @contact_tracking = ContactTracking.for_sender(@sender.id)
-                                  .where(customer: @customer)
-                                  .order(updated_at: :desc, id: :desc)
-                                  .first
+                                       .where(customer: @customer)
+                                       .order(updated_at: :desc, id: :desc)
+                                       .first
+    
     contactor = Contactor.new(@inquiry, @sender)
-    @contact_url = @customer.contact_url
+    
+    # プレビュー画面で実際に使用するURLを決定（履歴のURLを優先）
+    @contact_url = @contact_tracking&.contact_url.presence || @customer.contact_url
+    
     @callback_code = @sender.generate_code
     gon.typings = contactor.try_typings(@contact_url, @customer.id)
   end
+
+
+  def create
+    # プレビュー画面からの手動ステータス更新処理
+    # 既存のContactTrackingレコードを検索、なければ新規作成の準備
+    @contact_tracking = ContactTracking.for_sender(@sender.id)
+                                       .find_or_initialize_by(customer_id: params[:okurite_id])
+
+    # 更新または新規作成する属性をハッシュとして準備
+    attributes = {
+      status: params[:status], # フォームから送信されたステータスを使用
+      worker_id: current_worker&.id,
+      contact_url: params[:contact_url],
+      code: params[:callback_code] || @contact_tracking.code || SecureRandom.hex(10),
+      inquiry_id: params[:inquiry_id] || @sender.default_inquiry_id
+    }
+
+    # ステータスが「送信済」の場合に限り、送信日時(sended_at)を更新する
+    if params[:status] == '送信済'
+      attributes[:sended_at] = Time.current
+    end
+
+    # バリデーションを実行しつつレコードを保存
+    @contact_tracking.update!(attributes)
+
+    # --- ここからがリダイレクト処理の修正 ---
+
+    # 次の顧客IDがパラメータに含まれている場合（リストを順番に処理している場合）
+    if params[:next_customer_id].present?
+      redirect_to sender_okurite_preview_path(
+        okurite_id: params[:next_customer_id],
+        q: params[:q]&.permit!
+      )
+    else
+      # 次の顧客がいない場合（単一のレコードを更新した場合）は、
+      # 同じプレビュー画面に、更新完了メッセージと共にリダイレクトする
+      flash[:notice] = "ステータスを「#{params[:status]}」に更新しました。"
+      redirect_to sender_okurite_preview_path(
+        okurite_id: params[:okurite_id], # 今いる顧客IDを渡す
+        q: params[:q]&.permit!
+      )
+    end
+
+  # バリデーションエラーやその他の例外をここで捕捉
+  rescue ActiveRecord::RecordInvalid => e
+    error_messages = e.record.errors.full_messages.join(', ')
+    redirect_back fallback_location: sender_okurite_path(@sender),
+                  alert: "更新に失敗しました: #{error_messages}"
+  rescue => e
+    redirect_back fallback_location: sender_okurite_path(@sender),
+                  alert: "更新に失敗しました: #{e.message}"
+  end
+
+
+
+
   
   def callback
     @contact_tracking = ContactTracking.find_by!(code: params[:t])
@@ -183,9 +228,9 @@ end
 
     @q = Customer.ransack(params[:q])
     
-    # 🔥 重要な修正：処理件数を大幅に制限
     target_count = params[:count].to_i
-    # 必要な件数の3倍程度に制限（送信済みをスキップする可能性があるため）
+    # パフォーマンス低下を防ぐため、処理対象を制限する
+    # 既に処理済みの顧客をスキップすることを考慮し、目標件数より多めに取得する
     @customers = @q.result.distinct.limit(target_count * 3)
     
     Rails.logger.info("OkuriteController: 対象顧客数: #{@customers.count}件")
@@ -193,17 +238,18 @@ end
     save_cont = 0
     @sender = Sender.find(params[:sender_id])
 
-    scheduled_date_str = params[:date]
-    parsed_scheduled_date = nil
+    # 今回の処理で正常に保存されたContactTrackingのIDを格納する配列
+    processed_contact_tracking_ids = []
 
+    # 日付文字列をTimeオブジェクトに変換する
     begin
-      parsed_scheduled_date = Time.zone.parse(scheduled_date_str)
+      parsed_scheduled_date = Time.zone.parse(params[:date])
       if parsed_scheduled_date.nil?
         raise ArgumentError, "Invalid date format"
       end
     rescue ArgumentError, TypeError
-      Rails.logger.error "OkuriteController: Invalid date format received in autosettings: '#{scheduled_date_str}'"
-      redirect_to sender_okurite_index_path(sender_id: @sender.id, q: params[:q]&.permit!, page: params[:page]), alert: "無効な日付形式です。"
+      Rails.logger.error "OkuriteController: Invalid date format received in autosettings: '#{params[:date]}'"
+      redirect_to sender_okurite_index_path(sender_id: @sender.id, q: params[:q]&.permit!), alert: "無効な日付形式です。"
       return
     end
 
@@ -211,37 +257,37 @@ end
     @customers.each do |cust|
       processed_count += 1
       
-      # 進捗ログ（5件ごと）
+      # 5件処理するごとに進捗ログを出力
       if processed_count % 5 == 0
         Rails.logger.info "OkuriteController: 処理進捗 #{processed_count}/#{@customers.count} (成功: #{save_cont})"
       end
       
-      # 目標件数に達したら終了
+      # 設定した目標件数に達したらループを抜ける
       break if target_count <= save_cont
 
       url_to_submit = cust.get_search_url
 
+      # URLが無効な場合はスキップ
       unless url_to_submit.present? && url_to_submit.start_with?('http')
         Rails.logger.warn "OkuriteController: Skipping Customer ID #{cust.id} due to invalid or missing contact_url: '#{url_to_submit}'"
         next
       end
 
-      # 既存レコードを検索または新規初期化（ユニーク制約回避）
+      # ユニーク制約(customer_id, sender_id)でレコードを検索、または新規作成
       contact_tracking = ContactTracking.find_or_initialize_by(
         customer_id: cust.id,
         sender_id: @sender.id
       )
 
-      # 既存レコードの場合は状態を確認
+      # 既存レコードの場合、ステータスをチェックして処理済みならスキップ
       if contact_tracking.persisted?
-        # 既に送信済みまたは送信予定の場合はスキップ
         if ['送信済', '自動送信予定', '処理中'].include?(contact_tracking.status)
           Rails.logger.info "OkuriteController: Skipping Customer ID #{cust.id} - already processed (#{contact_tracking.status})"
           next
         end
       end
 
-      # 属性を設定
+      # 送信予定レコードの属性を設定
       contact_tracking.assign_attributes(
         contact_url: url_to_submit,
         customers_code: cust.customers_code,
@@ -252,8 +298,13 @@ end
         inquiry_id: @sender.default_inquiry_id
       )
 
+      # データベースへの保存
       if contact_tracking.save
+        # 保存に成功した場合のみ、IDをリダイレクト用の配列に追加
+        processed_contact_tracking_ids << contact_tracking.id
+        
         begin
+          # Sidekiqにジョブを登録
           if parsed_scheduled_date <= Time.zone.now
             AutoformSchedulerWorker.perform_async(contact_tracking.id)
           else
@@ -263,17 +314,26 @@ end
           save_cont += 1
           Rails.logger.info "OkuriteController: Enqueued job for ContactTracking ID #{contact_tracking.id}, Customer ID #{cust.id} (#{save_cont}/#{target_count})"
         rescue StandardError => e
+          # Sidekiqへの登録が失敗した場合のエラーハンドリング
           Rails.logger.error "OkuriteController: Failed to enqueue job for ContactTracking ID #{contact_tracking.id}. Error: #{e.message}"
           contact_tracking.update(status: '自動送信システムエラー', response_data: "Sidekiqへの登録に失敗: #{e.message.truncate(100)}")
         end
       else
+        # DB保存が失敗した場合のエラーログ
         Rails.logger.error "OkuriteController: Failed to save ContactTracking for Customer ID #{cust.id}. Errors: #{contact_tracking.errors.full_messages.join(', ')}"
       end
     end
 
     Rails.logger.info("OkuriteController: Total jobs enqueued: #{save_cont}")
-    redirect_to sender_okurite_index_path(sender_id: @sender.id, q: params[:q]&.permit!, page: params[:page]), notice: "#{save_cont}件の自動送信を予約しました。"
+
+    # indexアクションにリダイレクト。qパラメータとして、今回処理したIDの配列のみを渡す
+    # これにより、indexでは「今回設定したリスト」だけが表示される
+    redirect_to sender_okurite_index_path(
+      sender_id: @sender.id,
+      q: { contact_trackings_id_in: processed_contact_tracking_ids }
+    ), notice: "#{save_cont}件の自動送信を予約しました。"
   end
+
 
 
   private

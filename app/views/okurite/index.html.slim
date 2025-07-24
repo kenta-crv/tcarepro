@@ -32,7 +32,7 @@
             | URLアクセス日時
       
       - @customers.each do |customer|
-        - contact_tracking = @contact_trackings.find { |contact_tracking| contact_tracking.customer_id == customer.id }
+        - contact_tracking = @contact_trackings_hash[customer.id]&.first
         tr
           td
             - if customer.company != nil
@@ -42,25 +42,15 @@
           td
             = customer.url&.truncate(30)
           td
-            = customer.contact_url&.truncate(30)
+            = contact_tracking&.contact_url&.truncate(30) || ""
           td
-            = contact_tracking&.worker.user_name if contact_tracking&.worker.present?
+            = contact_tracking&.worker&.user_name || ""
           td
-            - begin
-              = contact_tracking&.status
-            - rescue
-              = ""
+            = contact_tracking&.status || ""
           td
-            - begin
-              = contact_tracking&.sended_at
-            - rescue
-              = ""
+            = contact_tracking&.sended_at&.strftime('%Y-%m-%d %H:%M:%S') || ""
           td
-            - begin
-              = contact_tracking&.sended_at
-            - rescue
-              = ""
-      
+            = contact_tracking&.sended_at&.strftime('%Y-%m-%d %H:%M:%S') || ""
       tr
         th[colspan="8"]
           = paginate @customers
