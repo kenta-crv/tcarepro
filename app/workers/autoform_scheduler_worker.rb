@@ -16,23 +16,11 @@ class AutoformSchedulerWorker
       return
     end
 
-    # 🚫 開発環境での実送信を無効化
-    if ENV['DISABLE_AUTOFORM_SENDING'] == 'true'
-      Rails.logger.warn "🚫 実送信無効化モード: ContactTracking ID #{contact_tracking_id}"
-      contact_tracking.update!(
-        status: '送信済（テストモード）',
-        sended_at: Time.current,
-        sending_completed_at: Time.current,
-        response_data: 'テストモードでの送信スキップ'
-      )
+    contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
+    unless contact_tracking
+      Sidekiq.logger.error "AutoformSchedulerWorker: ContactTracking with ID #{contact_tracking_id} not found."
       return
     end
-
-    # contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
-    # unless contact_tracking
-    #   Sidekiq.logger.error "AutoformSchedulerWorker: ContactTracking with ID #{contact_tracking_id} not found."
-    #   return
-    # end
 
     ContactTracking.transaction do
       begin
@@ -43,13 +31,16 @@ class AutoformSchedulerWorker
         )
 
         # URL自動検索機能
+        # app/workers/autoform_scheduler_worker.rb の修正
         if contact_tracking.contact_url.blank?
-          Sidekiq.logger.info "AutoformSchedulerWorker: contact_url is blank for CT ID #{contact_tracking_id}, attempting auto-search"
           auto_url = search_contact_url_automatically(contact_tracking)
+          
           if auto_url.present?
+            # 見つけたURLをContactTrackingに保存
             contact_tracking.update!(contact_url: auto_url)
-            Sidekiq.logger.info "AutoformSchedulerWorker: Found contact_url: #{auto_url}"
+            Rails.logger.info "AutoformSchedulerWorker: Found and saved contact_url: #{auto_url}"
           else
+            Rails.logger.warn "AutoformSchedulerWorker: Could not find contact_url for CT ID #{contact_tracking_id}"
             contact_tracking.update!(
               status: '自動送信エラー',
               sending_completed_at: Time.current,
@@ -58,6 +49,7 @@ class AutoformSchedulerWorker
             return
           end
         end
+
 
         # Always use the most recently updated inquiry
         inquiry = Inquiry.order(updated_at: :desc).first
