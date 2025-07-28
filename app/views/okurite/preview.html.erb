@@ -5,7 +5,6 @@ $(function () {
 
     $.each(gon.typings, function(name, typing) {
       const element = contents.find('[name="' + name + '"]');
-
       element.attr('placeholder', name);
       element.val(typing.value);
     });
@@ -13,7 +12,6 @@ $(function () {
 
   $('iframe').css('left', '340px');
   $('iframe').css('width', 'calc(100% - 340px)');
-
   $('iframe').load(autoTyping);
 
   $('.entries > span').click(function () {
@@ -27,7 +25,7 @@ $(function () {
       $('.entries__detail').hide();
       $('iframe').css('left', '0');
       $('iframe').css('width', '100%');
-    };
+    }
   });
 });
 </script>
@@ -40,24 +38,19 @@ $(function () {
       <div class="row">
         <div class="col-sm-3">
           <% if @prev_customer && !params[:from_resend] %>
-            <%= link_to '前へ ←', sender_okurite_preview_path(okurite_id: @prev_customer.id, q: params[:q]&.permit!), class:"btn btn-success" %>
+            <%= link_to '前へ ←', sender_okurite_preview_path(okurite_id: @prev_customer.id, q: params[:q]&.permit!), class: "btn btn-success" %>
           <% end %>
         </div>
         <div class="col-sm-6"></div>
         <div class="col-sm-3">
           <% if @next_customer && !params[:from_resend] %>
-            <%= link_to '→ 次へ', sender_okurite_preview_path(okurite_id: @next_customer.id, q: params[:q]&.permit!), class:"btn btn-success" %>
+            <%= link_to '→ 次へ', sender_okurite_preview_path(okurite_id: @next_customer.id, q: params[:q]&.permit!), class: "btn btn-success" %>
           <% end %>
         </div>
       </div>
 
-      <h4>
-        <%= link_to '送信情報', sender_path(@sender), target: :_blank %>
-      </h4>
-
+      <h4><%= link_to '送信情報', sender_path(@sender), target: :_blank %></h4>
       <table class="table table-striped">
-        <col width="40%">
-    		<col width="60%">
         <tr>
           <th>取引企業名</th>
           <td><%= @sender.user_name %></td>
@@ -68,56 +61,41 @@ $(function () {
         </tr>
       </table>
 
-      <h4>
-        <%= link_to '企業情報', sender_okurite_path(id: @customer.id, sender_id: @sender.id), target: :_blank %>
-      </h4>
-
+      <h4><%= link_to '企業情報', sender_okurite_path(id: @customer.id, sender_id: @sender.id), target: :_blank %></h4>
       <table class="table table-striped">
-        <col width="40%">
-    		<col width="60%">
         <tr>
           <th>会社名</th>
           <td><%= @customer.company %></td>
         </tr>
         <tr>
-         <th>Form URL</th>
-         <td><%= @contact_url.present? ? @contact_url : 'なし' %></td>
-       </tr>
+          <th>Form URL</th>
+          <td><%= @contact_url.present? ? @contact_url : 'なし' %></td>
+        </tr>
         <tr>
-          <th>送信情報が出ない場合検索
-            <br>
-            ※ポータルサイト先へは送信しないで下さい。
-          </th>
+          <th>送信情報が出ない場合検索<br>※ポータルサイト先へは送信しないで下さい。</th>
           <td>
-            <% if @customer.contact_url != nil %>
+            <% if @customer.contact_url.present? %>
               <%= link_to '別タブで表示1', @customer.contact_url, target: :_blank %><br>
             <% end %>
-            <% if @customer.url_2 != nil %>
-               <%= link_to '別タブで表示2', @customer.url_2, target: :_blank %><br>
+            <% if @customer.url_2.present? %>
+              <%= link_to '別タブで表示2', @customer.url_2, target: :_blank %><br>
             <% end %>
-            <% if @customer.company != blank? %>
-          　  <%=
-              link_to 'Google で再検索',
-              "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component([@customer.company, @customer.address, @customer.tel].join(' '))}",
-              target: :_blank%>
-            <%end%>
-            <br>
-            <% if @customer.url != blank? %>
-             <%=
-              link_to 'URLで検索',
-              "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component([@customer.company, @customer.address, @customer.tel].join(' '))}",
-              target: :_blank
-             %>
-            <%end%>
+            <% if @customer.company.present? %>
+              <%= link_to 'Google で再検索',
+                "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component([@customer.company, @customer.address, @customer.tel].join(' '))}",
+                target: :_blank %><br>
+            <% end %>
+            <% if @customer.url.present? %>
+              <%= link_to 'URLで検索',
+                "https://www.google.co.jp/search?hl=ja&num=11&q=#{URI.encode_www_form_component([@customer.company, @customer.address, @customer.tel].join(' '))}",
+                target: :_blank %>
+            <% end %>
           </td>
         </tr>
       </table>
 
       <h4><%= link_to '送信履歴', sender_path(@sender), target: :_blank %></h4>
-
       <table class="table table-striped">
-        <col width="40%">
-    		<col width="60%">
         <tr>
           <th>ステータス</th>
           <td><%= @contact_tracking&.status || '-' %></td>
@@ -151,51 +129,45 @@ $(function () {
           <%= hidden_field_tag :inquiry_id, @inquiry.id %>
           <%= hidden_field_tag :callback_code, @callback_code %>
           <%= hidden_field_tag :next_customer_id, @next_customer&.id %>
+
           <%= text_field_tag :contact_url, @contact_url, placeholder: '問い合わせURLを入力', class: 'form-control' %>
           <div class="input-group">
-             <%= select_tag(
-              :status,
-              options_for_select(['送信済', '送信不可']),
-              class: 'custom-select'
-             )%>
-
+            <%= select_tag :status, options_for_select(['送信済', '送信不可']), class: 'custom-select' %>
             <div class="input-group-append">
-              <%= submit_tag '確定', class: 'btn btn-outline-secondary', class:"btn btn-success" %>
+              <%= submit_tag '確定', class: 'btn btn-success' %>
             </div>
           </div>
         <% end %>
+
         <small class="red">
           【減給対象】
-          <br>
-          ※重複する企業に送信を行う行為
-          <br>
-          ※企業HPとは異なる企業に送信する行為
-          <br>
-          ※送信していないにも関わらず送信カウントする行為
-          <br>
-          ※営業メール不可の企業に対して送信する行為
+          <br>※重複する企業に送信を行う行為
+          <br>※企業HPとは異なる企業に送信する行為
+          <br>※送信していないにも関わらず送信カウントする行為
+          <br>※営業メール不可の企業に対して送信する行為
         </small>
+
         <dl>
-          <dt class="col-12">会社名</dt>
-          <dd class="col-12"><pre><%= @inquiry.from_company %></pre></dd>
-          <dt class="col-12">担当者</dt>
-          <dd class="col-12"><pre><%= @inquiry.person %></pre></dd>
-          <dt class="col-12">タントウシャ</dt>
-          <dd class="col-12"><pre><%= @inquiry.person_kana %></pre></dd>
-          <dt class="col-12">電話番号</dt>
-          <dd class="col-12"><pre><%= @inquiry.from_tel %></pre></dd>
-          <dt class="col-12">FAX番号</dt>
-          <dd class="col-12"><pre><%= @inquiry.from_fax %></pre></dd>
-          <dt class="col-12">住所</dt>
-          <dd class="col-12"><pre><%= @inquiry.address %></pre></dd>
-          <dt class="col-12">メールアドレス</dt>
-          <dd class="col-12"><pre><%= @inquiry.from_mail %></pre></dd>
-          <dt class="col-12">URL</dt>
-          <dd class="col-12"><pre><%= @sender.callback_url(@callback_code) %></pre></dd>
-          <dt class="col-12">件名</dt>
-          <dd class="col-12"><pre><%= @inquiry.title %></pre></dd>
-          <dt class="col-12">本文</dt>
-          <dd class="col-12"><pre><%= @inquiry.parse_content(@sender, @callback_code) %></pre></dd>
+          <dt>会社名</dt>
+          <dd><pre><%= @inquiry.from_company %></pre></dd>
+          <dt>担当者</dt>
+          <dd><pre><%= @inquiry.person %></pre></dd>
+          <dt>タントウシャ</dt>
+          <dd><pre><%= @inquiry.person_kana %></pre></dd>
+          <dt>電話番号</dt>
+          <dd><pre><%= @inquiry.from_tel %></pre></dd>
+          <dt>FAX番号</dt>
+          <dd><pre><%= @inquiry.from_fax %></pre></dd>
+          <dt>住所</dt>
+          <dd><pre><%= @inquiry.address %></pre></dd>
+          <dt>メールアドレス</dt>
+          <dd><pre><%= @inquiry.from_mail %></pre></dd>
+          <dt>URL</dt>
+          <dd><pre><%= @sender.callback_url(@callback_code) %></pre></dd>
+          <dt>件名</dt>
+          <dd><pre><%= @inquiry.title %></pre></dd>
+          <dt>本文</dt>
+          <dd><pre><%= @inquiry.parse_content(@sender, @callback_code) %></pre></dd>
         </dl>
       <% else %>
         <div class="alert alert-danger" role="alert">
@@ -206,12 +178,12 @@ $(function () {
   </div>
 
   <div class="tops-wrapper">
-    <% if @contact_url %>
+    <% if @contact_url.present? %>
       <div class="embed-responsive embed-responsive-16by9">
         <iframe class="embed-responsive-item" src="<%= @contact_url %>" allowfullscreen></iframe>
       </div>
     <% else %>
-      <p class="col-12" style="width: 100%;text-align: center;">問い合わせページが不明です</p>
+      <p class="col-12 text-center">問い合わせページが不明です</p>
     <% end %>
   </div>
 </div>
