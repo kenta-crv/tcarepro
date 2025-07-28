@@ -1,0 +1,35 @@
+<h1>送信成功率ダッシュボード</h1>
+
+<div class="metrics">
+  <div class="metric-card">
+    <h2>総試行回数</h2>
+    <p class="metric-value"><%= @total_attempts %></p>
+  </div>
+  
+  <div class="metric-card">
+    <h2>成功回数</h2>
+    <p class="metric-value"><%= @successful_submissions %></p>
+  </div>
+  
+  <div class="metric-card">
+    <h2>成功率</h2>
+    <p class="metric-value" style="color: <%= @success_rate >= 60 ? 'green' : 'red' %>">
+      <%= @success_rate %>% <%= @success_rate >= 60 ? '✅' : '⚠️' %>
+    </p>
+  </div>
+</div>
+
+<div class="failure-breakdown">
+  <h2>失敗原因</h2>
+  <% if @failure_breakdown.any? %>
+    <ul>
+      <% @failure_breakdown.each do |status, count| %>
+        <li><%= status %>: <%= count %>件</li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>失敗はありません</p>
+  <% end %>
+</div>
+
+<%= link_to "戻る", sender_okurite_index_path(@sender), class: "btn btn-secondary" %>
