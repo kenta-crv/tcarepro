@@ -59,11 +59,8 @@
 			<th>検索対象</th>
 			<td><%= @customer.industry %></td>
       <th>メール送信</th>
-			<% if @customer.mail.present? %>
-       <td>
-         <%= button_to 'J Work送信', send_email_customer_path(@customer),method: :post, form: { "data-turbo-confirm": "【#{@customer.company}】の #{@customer.mail} に送信しますか？" },class: "btn btn-success" %>
+       <td>      
        </td>
-      <% end %>
 		</tr>
     <tr>
 			<th>住所</th>
@@ -136,6 +133,17 @@
 	</tbody>
 </table>
 <%end%>
+<table width="100%" class="space">
+		<col width="40%">
+		<col width="60%">
+	<tbody>
+		<tr>
+			<th>J Work登録</th>
+			<td><%= link_to("アポ報告・資料送付", edit_customer_path,  target:"_blank", class:"btn btn-success") %></td>
+		</tr>
+	</tbody>
+</table>
+
 </div>
 
 <table width="100%" class="space">

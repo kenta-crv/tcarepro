@@ -98,20 +98,31 @@ class CustomersController < ApplicationController
      end
   end
 
-  def edit
-    @customer = Customer.find(params[:id])
-    if worker_signed_in?
-      # 電話番号がない顧客のみを表示
-      @q = Customer.where(status: "draft").where("TRIM(tel) = ''")
-      ## 他の人が既に作業を完了していない顧客をフィルター
-      #@q = @q.where.not(id: Call.select(:customer_id))
-      # 管理者を除外
-      #if current_user && current_admin?
-      #  @q = @q.where.not(user_id: User.admins.pluck(:id))
-      #end
-      @customers = @q.ransack(params[:q]).result.page(params[:page]).per(100)
-    end
+def edit
+  @customer = Customer.find(params[:id])
+  if @customer.remarks.blank?
+    @customer.remarks = <<~TEXT
+      ①まず冒頭で恐れ入りますが、現在も御社は人材は募集している形でお間違いなかったでしょうか？
+      →
+
+      ②御社で成功報酬等が無く採用ができるなら、人材の質によっては特定技能外国人材でのすぐ面接まで対応いただくことは可能でしょうか？
+      →
+
+      ③もう一点、無料となるとご警戒されてしまうと思うので確認となりますが、『特定技能外国人』自体についての仕組みはご存知でしょうか？
+      →
+
+      赤枠内の説明可否
+      → 説明済・未説明
+
+      【備考】
+    TEXT
   end
+
+  if worker_signed_in?
+    @q = Customer.where(status: "draft").where("TRIM(tel) = ''")
+    @customers = @q.ransack(params[:q]).result.page(params[:page]).per(100)
+  end
+end
 
   def update
     @customer = Customer.find(params[:id])
@@ -122,11 +133,10 @@ class CustomersController < ApplicationController
       @customer.save(validate: false)
     end
   
-  # admin または user がサインインしている場合、バリデーションをスキップ
-  if admin_signed_in? || user_signed_in?
-    @customer.skip_validation = true
-  end
-
+    # admin または user がサインインしている場合、バリデーションをスキップ
+    if admin_signed_in? || user_signed_in?
+      @customer.skip_validation = true
+    end
   
     # 現在のフィルタ条件を考慮して次のdraft顧客を取得
     @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
@@ -144,6 +154,15 @@ class CustomersController < ApplicationController
     @next_draft = @q.order(:id).first
   
     if @customer.update(customer_params)
+      if params[:commit] == '登録＋J Workメール送信'
+        @customer.reload 
+        CustomerMailer.teleapo_send_email(@customer, current_user).deliver_now
+        CustomerMailer.teleapo_reply_email(@customer, current_user).deliver_now
+      elsif params[:commit] == '資料送付'
+        @customer.reload 
+        CustomerMailer.document_send_email(@customer, current_user).deliver_now
+        CustomerMailer.document_reply_email(@customer, current_user).deliver_now
+      end
       if worker_signed_in?
         if @next_draft
           redirect_to edit_customer_path(
@@ -401,56 +420,7 @@ class CustomersController < ApplicationController
       .distinct
       .includes(:calls)
   end
-  
-  def send_email
-    @customer = Customer.find(params[:id])
-    @user = current_user
-  
-    body = <<~TEXT
-      #{@customer.company} #{@customer.first_name}様
-  
-      お世話になります。私、国内転職外国人紹介プラットフォーム『J Work』の#{@user.user_name}でございます。
-  
-      この度はお忙しい中、弊社スタッフとお話の機会をいただきありがとうございました。
-  
-      改めて弊社は国内最大級の外国人転職人材を取り扱っている企業となります。簡単に以下、弊社人材特長を明記しております。
-  
-      【J Workの人材】
-      登録者数：毎月300~500名
-      人材層：国内転職外国人材100%
-      国内在住：平均2〜10年
-      日本語レベル：N1~N4
-      ビザの種類：永住ビザ・技術人文国際ビザ・特定技能ビザ
-  
-      更に当社人材について、県外への転職が可能な人材が全体の【80%前後】を占めており、非常に柔軟な転職が可能となっております。
-  
-      J Workでは『成果報酬0円』で人数無制限で採用頂くことが可能となっておりますので、この機会に是非ともご利用いただければと存じます。
-  
-      【サービス資料】
-      https://tcare.pro/documents?from=#{@customer.id}
-  
-      尚、当社では0円採用を実現するためオンライン商談等は行なっておらず、公式LINEのみの対応となっております。
-  
-      【公式LINE】
-      https://lin.ee/l5EzcZW
-  
-      以上、ご確認よろしくお願い致します。
-  
-      株式会社セールスプロ
-      【0円採用】国内転職外国人紹介プラットフォーム『J Work』
-      https://j-work.jp/
-      info@j-work.jp
-      東京都港区芝5-27-3 MBC・Aー9
-    TEXT
-  
-    email_params = { mail: @customer.mail, body: body }
-  
-    CustomerMailer.teleapo_send_email(@customer, email_params).deliver_now
-    CustomerMailer.teleapo_reply_email(@customer, email_params).deliver_now
-  
-    redirect_to customers_path, notice: "#{@customer.company}(#{@customer.mail})にメールを送信しました。"
-  end
-  
+    
   def documents
     customer = Customer.find_by(id: params[:from]) # クエリで顧客IDを受け取る
   

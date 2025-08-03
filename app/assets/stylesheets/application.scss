@@ -125,6 +125,7 @@ text-decoration: none;
   tr:nth-child(odd) td {
     background: #fff;
   }
+  .work {background-color:blue;}
 }
 
 /*テーブル共通*/
@@ -138,6 +139,10 @@ table, td, th {
   tr:nth-child(odd) td {
   	background: #fff;
   }
+
+  .document-color {background-color: #b9c42f;}
+  .report-color {background-color: #00ca3d;}
+
 
   caption {
     font-weight: bold;

@@ -1,69 +1,73 @@
 - set_meta_tags noindex: true
-= form_for @customer do |f|
+small.red 『J Work』資料送付のみの場合、黄緑を入力
+small.red 『J Work』アポ報告＋日程調整URL送信の場合、黄緑＋緑を入力
+= form_for @customer, url: customer_path(@customer), method: :patch do |f|
+
   table.space[width="90%"]
-    col[width="20%"]
     col[width="30%"]
-    col[width="20%"]
-    col[width="30%"]
+    col[width="70%"]
     tbody
       tr
-        th
+        th.document-color
           | 会社名
         td
           =text_field :customer, :company
-        th
+      tr 
+        th.document-color
           | メールアドレス
         td
           =text_field :customer, :mail
       tr
-        th
-          | 担当者姓
+        th.document-color
+          | 担当者姓（様はつけない）
         td
           =text_field :customer, :first_name
-        th
-          | 担当者名
-        td
-          =text_field :customer, :last_name
       tr
-        th
+        th.report-color
           | 電話番号
         td
           =telephone_field :customer, :tel
-        th
+      tr 
+        th.report-color
           | 携帯番号
         td
           =telephone_field :customer, :mobile
-      tr
-        th
-          | 郵便番号
-        td
-          | 〒
-          =telephone_field :customer, :postnumber
-        th
+      tr 
+        th.report-color
           | 住所
         td
           =telephone_field :customer, :address
       tr
-        th
+        th.report-color
           | URL
         td
           =text_field :customer, :url
-        th
-          | SFA
+      tr
+        th.report-color
+          | 業種
         td
-          = f.select(:choice, [\
-                      ["選択する","選択する"],\
-                      ["アポスク","アポスク"],\
-                      ["Okurite Neo","Okurite Neo"],\
-                      ["アポ匠","アポ匠"],\
-                      ["社会保険","社会保険"],\
-                      ["SFA","SFA"],\
-                      ["その他","その他"],])
+          = f.select(:business, Customer.BusinessStatus2, include_blank: "選択する", name: "business_name", id:"business")
+      tr 
+        th.report-color
+          | 事業内容
+        td
+           = text_field :customer, :genre
+      tr 
+        th.report-color
+          | 商談日時
+        td 
+           = datetime_field :customer, :start
+      tr
+        th.report-color
+          | ヒアリング＋備考
+        td
+          = text_area :customer, :remarks, style: "width: 100%; height: 350px;"
       tr
         th
           | フォーム送信NG
         td
           = check_box :customer, :forever
+      tr 
         th
           | 対象分類
         td
@@ -73,94 +77,13 @@
           | 問い合わせフォームURL
         td
           = text_field :customer, :contact_url
+      tr
+        td
+         = f.submit '編集のみ登録', class:"btn btn-success"
+        td 
+         .row 
+          .col-sm-6 
+           = f.submit '資料送付', name: 'commit', value: '資料送付', class: "btn btn-success"
+          .col-sm-6 
+           = f.submit '登録＋J Workメール送信', name: 'commit', value: '登録＋J Workメール送信', class: "btn btn-danger"
 
-  br
-  table.space[width="90%"]
-    col[width="20%"]
-    col[width="30%"]
-    col[width="20%"]
-    col[width="30%"]
-    tbody
-      tr
-        th
-          | 業種
-        td
-          = f.select(:business, Customer.BusinessStatus2, include_blank: "選択する", name: "business_name", id:"business")
-        th
-          | 事業内容（一覧にない場合その他入力）
-        td
-           = text_field :customer, :genre
-      /tr
-        th
-          | 業種
-        td
-          = f.select(:business, Customer.BusinessStatus, include_blank: "選択する", name: "business_name", id:"business")
-        th
-          | 事業内容（一覧にない場合その他入力）
-        td
-           = f.select(:genre, Customer.GenreStatus, include_blank: "選択する", name: "genre_name", id:"genre")
-      tr
-        th
-          | 流入元
-        td
-          = f.select(:inflow, [\
-                      ["選択する","選択する"],\
-                      ["テレマーケティング","テレマーケティング"],\
-                      ["メールマーケティング","メールマーケティング"],\
-                      ["問い合わせフォーム","問い合わせフォーム"],\
-                      ["紹介","紹介"],\
-                      ["その他","その他"],])
-        th
-          | 過去アポ利用履歴
-        td
-          = f.radio_button :history, "Yes"
-          | ある
-          = f.radio_button :history, "No"
-          | ない
-          = f.radio_button :history, "what"
-          | 不明
-      tr
-        th
-          | ターゲットエリア
-        td
-          =text_field :customer, :area
-        th
-          | ターゲット業種
-        td
-          =text_field :customer, :target
-      tr
-        th
-          | 商談方法
-        td
-          =text_field :customer, :meeting
-        th
-          | 経験則
-        td
-          =text_field :customer, :experience
-      tr
-        th
-          | 料金
-        td
-          =text_field :customer, :price
-          | 円
-        th
-          | 件数
-        td
-          =text_field :customer, :number
-          | 件
-      tr
-        th
-          | 開始時期
-        td
-          =text_field :customer, :start
-
-
-      tr
-        th
-          | 備考
-        td[colspan="3"]
-          = text_area :customer, :remarks
-
-        td
-          = f.select(:send_count, Customer.SendStatus,include_blank:true)
-        td = f.submit '登録する',class:"btn btn-success"

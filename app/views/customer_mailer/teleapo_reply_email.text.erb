@@ -1,3 +1,16 @@
 <%= @customer.company %>に資料が送付されました。
 
 https://tcare.pro/access_logs
+
+会社名：<%= @customer.company %>
+担当者：<%= @customer.first_name %>
+電話番号：<%= @customer.tel %>
+携帯番号：<%= @customer.mobile %>
+住所：<%= @customer.address %>
+メールアドレス：<%= @customer.mail %>
+URL：<%= @customer.url %>
+業種：<%= @customer.business %>
+事業内容：<%= @customer.genre %>
+商談日時：<%= @customer.start.strftime("%-m月%-d日%-H時%-M分") if @customer.start.present? %>
+ヒアリング事項：
+<%= @customer.remarks.to_s %>

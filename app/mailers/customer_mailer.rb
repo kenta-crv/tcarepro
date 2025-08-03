@@ -8,15 +8,28 @@ class CustomerMailer < ActionMailer::Base
     end
   end
 
-  def teleapo_send_email(customer, email_params)
+  def teleapo_send_email(customer, current_user)
     @customer = customer
-    @body = email_params[:body]
-    mail(to: email_params[:mail], from: "info@j-work.jp", subject: '※資料送付【0円採用】国内転職外国人紹介『J Work』')
+    @user = current_user 
+    mail(to: customer.mail, from: "info@j-work.jp", subject: '【0円採用 J Work】資料・オンライン商談URLのご案内')
   end
 
-  def teleapo_reply_email(customer, email_params)
+  def teleapo_reply_email(customer, current_user)
     @customer = customer
-    mail(to: "info@j-work.jp", from: "info@j-work.jp", subject: 'アポイント先に資料が送付されました')
+    @user = current_user 
+    mail(to: "info@j-work.jp", from: "info@j-work.jp", subject: "【#{@customer.company}】#{@customer.start.strftime('%-m月%-d日-%H時%-M分')}")
+  end
+
+  def document_send_email(customer, current_user)
+    @customer = customer
+    @user = current_user 
+    mail(to: customer.mail, from: "info@j-work.jp", subject: '【0円採用 J Work】資料送付のご案内')
+  end
+
+  def document_reply_email(customer, current_user)
+    @customer = customer
+    @user = current_user 
+    mail(to: "info@j-work.jp", from: "info@j-work.jp", subject: "【#{@customer.company}】へ資料送付が行われました")
   end
 
   def send_email(customer)
