@@ -128,7 +128,7 @@ class Customer < ApplicationRecord
   before_save :set_industry_defaults
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
-  has_many :scrapings, dependent: :destroy
+  #has_many :scrapings, dependent: :destroy
   has_many :estimates
   has_many :calls#, foreign_key: :tel, primary_key: :tel
   has_many :counts
@@ -927,13 +927,4 @@ scope :before_sended_at, ->(sended_at){
     save
   end
 
-  #def scraping
-  #  @scraping ||= Scraping.new
-  #end
-
-  # def get_search_url
-  #   # Example: return self.url or self.url_2, or more complex logic
-  #   self.url || self.url_2 # Replace with your actual logic
-  # end
-  
 end
