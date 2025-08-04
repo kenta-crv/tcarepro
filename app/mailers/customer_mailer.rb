@@ -17,7 +17,7 @@ class CustomerMailer < ActionMailer::Base
   def teleapo_reply_email(customer, current_user)
     @customer = customer
     @user = current_user 
-    mail(to: "info@j-work.jp", from: "info@j-work.jp", subject: "【#{@customer.company}】#{@customer.start.strftime('%-m月%-d日-%H時%-M分')}")
+    mail(to: "info@j-work.jp", from: "info@j-work.jp", subject: "【#{@customer.company}】#{@customer.next_date.strftime('%-m月%-d日-%H時%-M分')}")
   end
 
   def document_send_email(customer, current_user)

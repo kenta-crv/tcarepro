@@ -730,6 +730,7 @@ end
         :company_name,
         :payment_date,
         :industry_mail,
+        :next_date,
        )&.merge(worker: current_worker)
     end
 

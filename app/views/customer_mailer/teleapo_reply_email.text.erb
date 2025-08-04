@@ -11,6 +11,6 @@ https://tcare.pro/access_logs
 URL：<%= @customer.url %>
 業種：<%= @customer.business %>
 事業内容：<%= @customer.genre %>
-商談日時：<%= @customer.start.strftime("%-m月%-d日%-H時%-M分") if @customer.start.present? %>
+商談日時：<%= @customer.next_date.strftime("%-m月%-d日%-H時%-M分") if @customer.next_date.present? %>
 ヒアリング事項：
 <%= @customer.remarks.to_s %>

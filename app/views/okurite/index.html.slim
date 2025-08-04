@@ -48,9 +48,8 @@
           td
             = contact_tracking&.status || ""
           td
-            = contact_tracking&.sended_at&.strftime('%Y-%m-%d %H:%M:%S') || ""
+            = contact_tracking&.updated_at&.strftime('%Y-%m-%d %H:%M:%S') || ""
           td
-            = contact_tracking&.sended_at&.strftime('%Y-%m-%d %H:%M:%S') || ""
       tr
         th[colspan="8"]
           = paginate @customers

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20250710175814) do
+ActiveRecord::Schema.define(version: 20250804134515) do
 
   create_table "access_logs", force: :cascade do |t|
     t.integer "customer_id", null: false
@@ -205,6 +205,7 @@ ActiveRecord::Schema.define(version: 20250710175814) do
     t.integer "worker_update_count_week"
     t.integer "worker_update_count_month"
     t.integer "sender_id"
+    t.datetime "next_date"
     t.index ["created_at"], name: "index_customers_on_created_at"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end

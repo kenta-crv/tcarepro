@@ -20,7 +20,7 @@ J Workでは『採用費0円』で人数無制限で採用頂くことが可能�
 【サービス資料】  
 https://tcare.pro/documents?from=<%= @customer.id %>
   
-改めて今回は御社のお求めの人材確認をさせて頂きたく、<%= @customer.start.strftime("%-m月%-d日%-H時%-M分") if @customer.start.present? %>よりお時間の確保のほどお願い申し上げます。
+改めて今回は御社のお求めの人材確認をさせて頂きたく、<%= @customer.next_date.strftime("%-m月%-d日%-H時%-M分") if @customer.next_date.present? %>よりお時間の確保のほどお願い申し上げます。
   
 【オンラインURL】
 https://meet.google.com/yzv-gkyn-kvi
