@@ -114,7 +114,7 @@ class Customer < ApplicationRecord
     industry_data = INDUSTRY_MAPPING[company_name] || { industry_code: nil, company_name: nil, payment_date: nil }
 
     {
-      company_name: company_name,
+      #company_name: company_name,
       industry_code: industry_data[:industry_code],
       company_name: industry_data[:company_name],
       payment_date: industry_data[:payment_date],
@@ -631,7 +631,7 @@ scope :before_sended_at, ->(sended_at){
   
     { draft_count: draft_count }
   end
-            
+              
   #customer_export
   def self.generate_csv
     CSV.generate(headers:true) do |csv|

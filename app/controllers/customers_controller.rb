@@ -327,7 +327,7 @@ end
   
     redirect_to customers_url, notice: 'インポート処理をバックグラウンドで実行しています。完了までしばらくお待ちください。'
   end
-
+  
   def print
     report = Thinreports::Report.new layout: "app/reports/layouts/invoice.tlf"
     
