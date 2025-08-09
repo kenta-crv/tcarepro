@@ -24,10 +24,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
-  resources :users, only: [:show, :destroy] do
-    resources :attendances, except: [:index]
-  end
-  resources :attendances, only: [:index]
+  resources :users, only: [:show, :destroy] 
   #ワーカーアカウント
   devise_for :workers, controllers: {
     registrations: 'workers/registrations',
@@ -42,7 +39,6 @@ Rails.application.routes.draw do
       get 'confirm', to: 'workers#confirm'
     end
     collection do
-      post :import_customers
       get 'practices/question1', to: 'workers#question1'
       get 'practices/question2', to: 'workers#question2'
       get 'practices/question3', to: 'workers#question3'
@@ -54,10 +50,8 @@ Rails.application.routes.draw do
     end
     resources :tests
     resources :sends
-    resources :contacts, except: [:index, :edit, :update, :destroy]
   end
   resources :crowdworks
-  resources :contacts, only: [:index, :edit, :update, :destroy]
 
   resource :sender, only: [:show]
   #センダーアカウント
@@ -65,11 +59,9 @@ Rails.application.routes.draw do
     registrations: 'senders/registrations'
   }
 
-  get 'easy' => 'customers#easy' #簡易アポ
   get 'jwork' => 'customers#jwork' #J Work
 
   resources :inquiries, only: [:index, :show, :edit, :update, :destroy] 
-
   resources :senders, only: [:index, :show, :edit, :update] do
     resources :inquiries, except: [:index, :show, :edit, :update, :destroy] do
       put :default, to: 'inquiries#default'
@@ -85,7 +77,6 @@ Rails.application.routes.draw do
     #get 'okurite/index01', to: 'okurite#index01'
     post 'okurite/autosettings', to: 'okurite#autosettings'
     delete 'bulk_delete', to: 'okurite#bulk_delete'
-    get 'resend', to: 'okurite#resend'
     # okurite
     resources :okurite, only: [:index, :show] do
       get :preview, to: 'okurite#preview'
@@ -94,7 +85,6 @@ Rails.application.routes.draw do
   end
   get 'callback' => 'okurite#callback', as: :callback
   get 'direct_mail_callback' => 'okurite#direct_mail_callback', as: :direct_mail_callback
-
 
   resources :customers do
     post 'exclude', on: :member

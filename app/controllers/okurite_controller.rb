@@ -68,21 +68,6 @@ class OkuriteController < ApplicationController
                               .includes(:customer, :worker, :inquiry)
                               .group_by(&:customer_id)
   end
-
-
-  
-  def resend
-    # sender_idを強制的に注入
-    sanitized_params = build_secure_search_params
-    sanitized_params.merge!(status_eq: '送信済')
-    @q = ContactTracking.ransack(sanitized_params)
-    @contact_trackings = @q.result
-                          .includes(:customer, :worker, :inquiry)
-                          .order(created_at: :desc)
-                          .page(params[:page])
-                          .per(30)
-    @customers = Customer.where(id: @contact_trackings.select(:customer_id)).distinct
-  end
   
   def show
     @customer = Customer.find(params[:id])

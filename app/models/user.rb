@@ -4,7 +4,6 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   has_many :calls
-  has_many :attendances
 
   def calls_in_period(start_date, end_date)
     calls.where('created_at > ?', start_date).where('created_at < ?', end_date)

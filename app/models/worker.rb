@@ -6,7 +6,6 @@ class Worker < ApplicationRecord
   has_many :customers
   has_many :contact_trackings
   has_many :assignments, dependent: :destroy
-  has_many :contacts
   has_many :tests, dependent: :destroy
   has_many :crowdworks, through: :assignments
   has_many :sender_assignments, dependent: :destroy

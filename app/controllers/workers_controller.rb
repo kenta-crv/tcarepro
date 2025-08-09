@@ -102,11 +102,6 @@ class WorkersController < ApplicationController
     # セッションをクリアする
     session.delete(:upload_results)
   end
-
-  def import_customers
-    cnt = Worker.import_customers(params[:file])
-    redirect_to some_path, notice: "#{cnt}件のデータをCustomerにインポートしました。"
-  end
   
   def question1
     render 'workers/practices/question1'
