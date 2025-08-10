@@ -469,10 +469,6 @@ table
       th
         | 先月売上
       th
-        | 先月勤務
-      th
-        | 獲得価値
-      th
         | 着信留守
       th
         | 担当者不在
@@ -514,20 +510,6 @@ table
       td
           - app_customers_for_user_last_month = Call.joins(:customer).where('calls.created_at >= ? AND calls.created_at < ?', Time.current.prev_month.beginning_of_month, Time.current.beginning_of_month).select('customers.id').where(statu:"APP").where(user_id: user.id)
           = app_customers_for_user_last_month.present? ? app_customers_for_user_last_month.sum(:industry_code) : 0
-      td
-          - latest_attendance = user.attendances.order(created_at: :desc).first
-          - if latest_attendance.present? && latest_attendance.hours_worked.present?
-            = latest_attendance.hours_worked
-          - else
-            | -
-      td.red
-        - app_customers_for_user_last_month = Call.joins(:customer).where('calls.created_at >= ? AND calls.created_at < ?', Time.current.prev_month.beginning_of_month, Time.current.beginning_of_month).where(statu: "APP").where(user_id: user.id)
-        - latest_attendance = user.attendances.order(created_at: :desc).first
-        - if latest_attendance.present? && latest_attendance.hours_worked.present? && latest_attendance.hours_worked > 0
-         - industry_code_sum = app_customers_for_user_last_month.joins(:customer).sum('customers.industry_code')
-         = (industry_code_sum.to_f / latest_attendance.hours_worked.to_f).round(0)
-        - else
-         | -
       td
         = user_calls_month.select { |call| call.statu == "着信留守" }.count
         br
