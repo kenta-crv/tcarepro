@@ -303,7 +303,7 @@ scope :before_sended_at, ->(sended_at){
     call_count = call_import(file)[:save_count]
     repurpose_count = skip_repurpose ? 0 : repurpose_import(file)[:repurpose_import_count]
     draft_count = draft_import(file)[:draft_count]
-  
+
     { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
   end
 
@@ -395,119 +395,107 @@ scope :before_sended_at, ->(sended_at){
     { save_count: save_cnt }
   end
   
-  def self.repurpose_import(repurpose_file)
-    repurpose_import_count = 0
-    batch_size = 2500
-    batch = []
-    
-    # Crowdworkのデータを準備
-    crowdwork_data = Crowdwork.pluck(:title, :area).map do |title, area|
-      { 'title' => title, 'area' => area.split(',') }
+def self.repurpose_import(repurpose_file)
+  repurpose_import_count = 0
+  batch_size = 2500
+  batch = []
+
+  # Crowdworkのデータを準備
+  crowdwork_data = Crowdwork.pluck(:title, :area, :business).map do |title, area, business|
+    { 'title' => title, 'area' => area.split(','), 'business' => business.to_s }
+  end
+
+  processed_combinations = Set.new
+
+  CSV.foreach(repurpose_file.path, headers: true) do |row|
+    company_industry_key = "#{row['company']}_#{row['industry']}"
+
+    if processed_combinations.include?(company_industry_key)
+      Rails.logger.info "Skipped duplicate combination: #{row['company']} - #{row['industry']}"
+      next
+    else
+      processed_combinations.add(company_industry_key)
     end
-  
-    # 処理済みのcompanyとindustryの組み合わせを記録するためのセット
-    processed_combinations = Set.new
-  
-    # CSVファイルを処理
-    CSV.foreach(repurpose_file.path, headers: true) do |row|
-      company_industry_key = "#{row['company']}_#{row['industry']}"
-  
-      # 同じcompanyとindustryの組み合わせが既に処理済みの場合はスキップ
-      if processed_combinations.include?(company_industry_key)
-        Rails.logger.info "Skipped duplicate combination: #{row['company']} - #{row['industry']}"
-        next
-      else
-        processed_combinations.add(company_industry_key)
-      end
-  
-      Rails.logger.info "Processing row: #{row.to_hash}"
-  
-      # 同一会社・業種が既に存在する場合はスキップ
-      if Customer.exists?(company: row['company'], industry: row['industry'])
-        Rails.logger.info "Skipped existing customer: #{row['company']} - #{row['industry']}"
-        next
-      end
-  
-      # 同じ会社が既存のレコードに存在するかを確認
-      existing_customer_with_same_company = Customer.find_by(company: row['company'])
-      
-      if existing_customer_with_same_company
-        existing_industry = existing_customer_with_same_company.industry.to_s
-        new_industry = row['industry'].to_s
-      
-        unless existing_industry.include?(new_industry) || new_industry.include?(existing_industry)
-          Rails.logger.info "Skipped due to industry mismatch: #{row['company']} - #{row['industry']}"
+
+    if Customer.exists?(company: row['company'], industry: row['industry'])
+      Rails.logger.info "Skipped existing customer: #{row['company']} - #{row['industry']}"
+      next
+    end
+
+    existing_customer_with_same_company = Customer.find_by(company: row['company'])
+
+    if existing_customer_with_same_company
+      new_industry = row['industry'].to_s
+      existing_industry = existing_customer_with_same_company.industry.to_s
+
+      # crowdwork.title と customer.industry が一致する場合のみ部分一致チェック
+      crowdwork = crowdwork_data.find { |cw| cw['title'] == new_industry }
+
+      if crowdwork
+        # businessとindustryの部分一致を確認
+        unless existing_industry.include?(crowdwork['business']) || crowdwork['business'].include?(existing_industry)
+          Rails.logger.info "Skipped due to business mismatch: #{row['company']} - #{row['industry']}"
           next
         end
-      
-        # 一致する業種がある場合
-        crowdwork = crowdwork_data.find { |cw| cw['title'] == row['industry'] }
-        
-        if crowdwork
-          # 既存顧客に住所があるか確認
-          if existing_customer_with_same_company.address.present?
-            area_match = crowdwork['area'].any? { |area| existing_customer_with_same_company.address.include?(area) }
-            
-            unless area_match
-              Rails.logger.info "Skipped due to unmatched area: #{row['company']} - #{row['industry']}"
-              next
-            end
-          else
-            Rails.logger.info "Skipped due to missing address: #{row['company']}"
+
+        if existing_customer_with_same_company.address.present?
+          area_match = crowdwork['area'].any? { |area| existing_customer_with_same_company.address.include?(area) }
+          unless area_match
+            Rails.logger.info "Skipped due to unmatched area: #{row['company']} - #{row['industry']}"
             next
           end
+        else
+          Rails.logger.info "Skipped due to missing address: #{row['company']}"
+          next
         end
-  
-        # 新規顧客データをマージして新しいCustomerオブジェクトを作成
-        repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
-          'industry' => row['industry'],
-          'url_2' => row['url_2']
-        )
-        
-        # 既存顧客の属性をコピーして新しい顧客を作成
-        repurpose_customer = Customer.new(
-          repurpose_customer_attributes.merge(
-            existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
-              'industry' => row['industry'],
-              'status' => 'draft'
-            )
+      end
+
+      repurpose_customer_attributes = row.to_hash.slice(*self.updatable_attributes).merge(
+        'industry' => new_industry,
+        'url_2' => row['url_2']
+      )
+
+      repurpose_customer = Customer.new(
+        repurpose_customer_attributes.merge(
+          existing_customer_with_same_company.attributes.slice(*self.updatable_attributes).except('id').merge(
+            'industry' => new_industry,
+            'status' => 'draft'
           )
         )
-  
-        Rails.logger.info "Added to batch: #{repurpose_customer.company} - #{repurpose_customer.industry}"
-        batch << repurpose_customer
-  
-        # バッチサイズに達したら保存
-        if batch.size >= batch_size
-          begin
-            Customer.transaction { batch.each(&:save!) }
-            Rails.logger.info "Batch saved: #{batch.size} customers"
-            repurpose_import_count += batch.size
-            batch.clear
-          rescue StandardError => e
-            Rails.logger.error "Error while saving batch: #{e.message}"
-            next
-          end
+      )
+
+      Rails.logger.info "Added to batch: #{repurpose_customer.company} - #{repurpose_customer.industry}"
+      batch << repurpose_customer
+
+      if batch.size >= batch_size
+        begin
+          Customer.transaction { batch.each(&:save!) }
+          Rails.logger.info "Batch saved: #{batch.size} customers"
+          repurpose_import_count += batch.size
+          batch.clear
+        rescue StandardError => e
+          Rails.logger.error "Error while saving batch: #{e.message}"
+          next
         end
-      else
-        Rails.logger.info "Skipped no matching company for transfer: #{row['company']}"
       end
+    else
+      Rails.logger.info "Skipped no matching company for transfer: #{row['company']}"
     end
-  
-    # 最後のバッチを保存
-    unless batch.empty?
-      begin
-        Customer.transaction { batch.each(&:save!) }
-        Rails.logger.info "Final batch saved: #{batch.size} customers"
-        repurpose_import_count += batch.size
-      rescue StandardError => e
-        Rails.logger.error "Error while saving final batch: #{e.message}"
-      end
-    end
-  
-    Rails.logger.info "Repurpose import completed. Total saved: #{repurpose_import_count}"
-    { repurpose_import_count: repurpose_import_count }
   end
+
+  unless batch.empty?
+    begin
+      Customer.transaction { batch.each(&:save!) }
+      Rails.logger.info "Final batch saved: #{batch.size} customers"
+      repurpose_import_count += batch.size
+    rescue StandardError => e
+      Rails.logger.error "Error while saving final batch: #{e.message}"
+    end
+  end
+
+  Rails.logger.info "Repurpose import completed. Total saved: #{repurpose_import_count}"
+  { repurpose_import_count: repurpose_import_count }
+end
     
   EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社", "協同組合", "医療法人", "一般社団法人"]
         
