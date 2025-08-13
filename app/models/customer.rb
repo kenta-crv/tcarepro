@@ -312,143 +312,139 @@ def self.import(file)
   batch_size = 2500
   batch = []
 
-  # CSVパーサをゆるくして、変なクオート等でもなるべく読み飛ばせる
   csv = CSV.new(File.open(file.path), headers: true, liberal_parsing: true)
 
   csv.each_with_index do |row, index|
     begin
       customer = find_or_initialize_by(id: row["id"])
       customer.attributes = row.to_hash.slice(*updatable_attributes)
-
-      # companyをstoreにも登録
       if row["company"]
         customer.company = row["company"]
         customer.store   = row["company"]
       end
 
       next if customer.industry.nil?
-      next if customer.tel.blank?  # 電話番号が空の場合はスキップ
+      next if customer.tel.blank?
       next if where(tel: customer.tel).where(industry: nil).count > 0
       next if where(tel: customer.tel).where(industry: customer.industry).count > 0
-
-      # 既にバッチに含まれていないか確認
       next if batch.any? { |c| c.tel == customer.tel && c.industry == customer.industry }
 
       customer.status = "draft"
       batch << customer
 
       if batch.size >= batch_size
-        Customer.transaction { batch.each(&:save!) }
-        save_count += batch.size
+        batch.each do |c|
+          begin
+            c.save!
+            save_count += 1
+          rescue => e
+            Rails.logger.error "Unexpected error while saving customer #{c.company}: #{e.message}"
+          end
+        end
         batch.clear
       end
 
     rescue CSV::MalformedCSVError => e
       Rails.logger.warn "Malformed CSV line skipped at line #{index + 2}: #{e.message}"
-      next
     rescue => e
       Rails.logger.error "Unexpected error at line #{index + 2}: #{e.message}"
-      next
     end
   end
 
   unless batch.empty?
-    Customer.transaction { batch.each(&:save!) }
-    save_count += batch.size
+    batch.each do |c|
+      begin
+        c.save!
+        save_count += 1
+      rescue => e
+        Rails.logger.error "Unexpected error while saving customer #{c.company}: #{e.message}"
+      end
+    end
   end
 
   save_count
 end
+
 
 def self.call_import(call_file)
   save_cnt = 0
   batch_size = 2500
   batch = []
 
-  # CSVパーサをゆるく設定
   csv = CSV.new(File.open(call_file.path), headers: true, liberal_parsing: true)
 
   csv.each_with_index do |row, index|
     begin
       existing_customer = find_by(company: row['company'], industry: row['industry'])
-      
-      # callが存在しない顧客はスキップ
       next if existing_customer.nil? || existing_customer.calls.empty?
 
-      # "再掲載" ステータスの Call が最近2ヶ月以内に登録されているかを確認
       recent_republication = existing_customer.calls
         .where(statu: "再掲載")
         .where("created_at >= ?", 2.months.ago)
         .exists?
-      
-      # 最新の Call を取得
+
       latest_call = existing_customer.calls.order(created_at: :desc).first
-      
-      # 再掲載が必要な場合のみ追加
+
       if !recent_republication && (latest_call.nil? || (latest_call.created_at <= 2.months.ago && !["APP", "永久NG"].include?(latest_call.statu)))
         batch << existing_customer unless batch.include?(existing_customer)
 
         if batch.size >= batch_size
-          Customer.transaction do
-            batch.each do |customer|
+          batch.each do |customer|
+            begin
               customer.calls.create!(statu: "再掲載", created_at: Time.current)
+              save_cnt += 1
+            rescue => e
+              Rails.logger.error "Unexpected error while creating call for #{customer.company}: #{e.message}"
             end
           end
-          save_cnt += batch.size
           batch.clear
         end
       end
 
     rescue CSV::MalformedCSVError => e
       Rails.logger.warn "Malformed CSV line skipped in call_import at line #{index + 2}: #{e.message}"
-      next
     rescue => e
       Rails.logger.error "Unexpected error in call_import at line #{index + 2}: #{e.message}"
-      next
     end
   end
 
-  # 残りのバッチ処理
   unless batch.empty?
-    Customer.transaction do
-      batch.each do |customer|
+    batch.each do |customer|
+      begin
         customer.calls.create!(statu: "再掲載", created_at: Time.current)
+        save_cnt += 1
+      rescue => e
+        Rails.logger.error "Unexpected error while creating call for #{customer.company}: #{e.message}"
       end
     end
-    save_cnt += batch.size
   end
 
   { save_count: save_cnt }
 end
-  
+
+
 def self.repurpose_import(repurpose_file)
   repurpose_import_count = 0
   batch_size = 2500
   batch = []
 
-  # Crowdworkのデータを準備
   crowdwork_data = Crowdwork.pluck(:title, :area, :business).map do |title, area, business|
     { 'title' => title, 'area' => area.split(','), 'business' => business.to_s }
   end
 
   processed_combinations = Set.new
-
-  # CSVパーサをゆるくしてエラー行をスキップ可能に
   csv = CSV.new(File.open(repurpose_file.path), headers: true, liberal_parsing: true)
 
   csv.each_with_index do |row, index|
     begin
       company_industry_key = "#{row['company']}_#{row['industry']}"
-
       if processed_combinations.include?(company_industry_key)
-        Rails.logger.info "Skipped duplicate combination: #{row['company']} - #{row['industry']}"
         next
       else
         processed_combinations.add(company_industry_key)
       end
 
       if Customer.exists?(company: row['company'], industry: row['industry'])
-        Rails.logger.info "Skipped existing customer: #{row['company']} - #{row['industry']}"
         next
       end
 
@@ -457,25 +453,16 @@ def self.repurpose_import(repurpose_file)
       if existing_customer_with_same_company
         new_industry = row['industry'].to_s
         existing_industry = existing_customer_with_same_company.industry.to_s
-
-        # crowdwork.title と customer.industry が一致する場合のみ部分一致チェック
         crowdwork = crowdwork_data.find { |cw| cw['title'] == new_industry }
 
         if crowdwork
-          # businessとindustryの部分一致を確認
           unless existing_industry.include?(crowdwork['business']) || crowdwork['business'].include?(existing_industry)
-            Rails.logger.info "Skipped due to business mismatch: #{row['company']} - #{row['industry']}"
             next
           end
-
           if existing_customer_with_same_company.address.present?
             area_match = crowdwork['area'].any? { |area| existing_customer_with_same_company.address.include?(area) }
-            unless area_match
-              Rails.logger.info "Skipped due to unmatched area: #{row['company']} - #{row['industry']}"
-              next
-            end
+            next unless area_match
           else
-            Rails.logger.info "Skipped due to missing address: #{row['company']}"
             next
           end
         end
@@ -494,46 +481,42 @@ def self.repurpose_import(repurpose_file)
           )
         )
 
-        Rails.logger.info "Added to batch: #{repurpose_customer.company} - #{repurpose_customer.industry}"
         batch << repurpose_customer
 
         if batch.size >= batch_size
-          begin
-            Customer.transaction { batch.each(&:save!) }
-            Rails.logger.info "Batch saved: #{batch.size} customers"
-            repurpose_import_count += batch.size
-            batch.clear
-          rescue StandardError => e
-            Rails.logger.error "Error while saving batch: #{e.message}"
-            next
+          batch.each do |c|
+            begin
+              c.save!
+              repurpose_import_count += 1
+            rescue => e
+              Rails.logger.error "Unexpected error while saving repurpose customer #{c.company}: #{e.message}"
+            end
           end
+          batch.clear
         end
-      else
-        Rails.logger.info "Skipped no matching company for transfer: #{row['company']}"
       end
 
     rescue CSV::MalformedCSVError => e
-      Rails.logger.warn "Malformed CSV line skipped in repurpose_import at line #{index + 2}: #{e.message}"
-      next
+      Rails.logger.warn "[repurpose_import] Malformed CSV line skipped at line #{index + 2}: #{e.message}"
     rescue => e
-      Rails.logger.error "Unexpected error in repurpose_import at line #{index + 2}: #{e.message}"
-      next
+      Rails.logger.error "[repurpose_import] Unexpected error at line #{index + 2}: #{e.message}"
     end
   end
 
   unless batch.empty?
-    begin
-      Customer.transaction { batch.each(&:save!) }
-      Rails.logger.info "Final batch saved: #{batch.size} customers"
-      repurpose_import_count += batch.size
-    rescue StandardError => e
-      Rails.logger.error "Error while saving final batch: #{e.message}"
+    batch.each do |c|
+      begin
+        c.save!
+        repurpose_import_count += 1
+      rescue => e
+        Rails.logger.error "Unexpected error while saving repurpose customer #{c.company}: #{e.message}"
+      end
     end
   end
 
-  Rails.logger.info "Repurpose import completed. Total saved: #{repurpose_import_count}"
   { repurpose_import_count: repurpose_import_count }
 end
+
     
   EXCLUDE_WORDS = ["合資会社", "株式会社", "合同会社", "社会福祉法人", "有限会社", "協同組合", "医療法人", "一般社団法人"]
         
@@ -575,41 +558,25 @@ def self.draft_import(draft_file)
 
       normalized_current = normalized_name(company)
 
-      # DB上の同一industry内で重複チェック（除外語除去＆4文字一致）
       skip = false
       Customer.where(industry: industry).find_each do |existing|
         existing_normalized = normalized_name(existing.company)
         if has_common_substring?(normalized_current, existing_normalized)
-          Rails.logger.info "Skipped due to 4+ character match in same industry: #{company} - #{industry}"
           skip = true
           break
         end
       end
       next if skip
 
-      # バッチ内の重複チェック（4文字一致）
       skip_in_batch = batch.any? do |c|
         c.industry == industry &&
         has_common_substring?(normalized_current, normalized_name(c.company))
       end
-      if skip_in_batch
-        Rails.logger.info "Skipped duplicate in batch (4+ char match): #{company} - #{industry}"
-        next
-      end
+      next if skip_in_batch
 
-      # DBに完全一致チェック
-      if Customer.where(company: company, industry: industry).exists?
-        Rails.logger.info "Skipped already imported (exact match): #{company} - #{industry}"
-        next
-      end
+      next if Customer.where(company: company, industry: industry).exists?
+      next if batch.any? { |c| c.company == company && c.industry == industry }
 
-      # バッチ内の完全一致チェック
-      if batch.any? { |c| c.company == company && c.industry == industry }
-        Rails.logger.info "Skipped duplicate in batch (exact match): #{company} - #{industry}"
-        next
-      end
-
-      # 顧客追加
       customer = Customer.new(row.to_hash.slice(*updatable_attributes))
       customer.company = company
       customer.store = company
@@ -617,25 +584,33 @@ def self.draft_import(draft_file)
       batch << customer
 
       if batch.size >= batch_size
-        Customer.transaction { batch.each(&:save!) }
-        Rails.logger.info "Batch saved: #{batch.size} customers"
-        draft_count += batch.size
+        batch.each do |c|
+          begin
+            c.save!
+            draft_count += 1
+          rescue => e
+            Rails.logger.error "Unexpected error while saving draft customer #{c.company}: #{e.message}"
+          end
+        end
         batch.clear
       end
 
     rescue CSV::MalformedCSVError => e
-      Rails.logger.warn "Malformed CSV line skipped in draft_import at line #{index + 2}: #{e.message}"
-      next
+      Rails.logger.warn "[draft_import] Malformed CSV line skipped at line #{index + 2}: #{e.message}"
     rescue => e
-      Rails.logger.error "Unexpected error in draft_import at line #{index + 2}: #{e.message}"
-      next
+      Rails.logger.error "[draft_import] Unexpected error at line #{index + 2}: #{e.message}"
     end
   end
 
   unless batch.empty?
-    Customer.transaction { batch.each(&:save!) }
-    Rails.logger.info "Final batch saved: #{batch.size} customers"
-    draft_count += batch.size
+    batch.each do |c|
+      begin
+        c.save!
+        draft_count += 1
+      rescue => e
+        Rails.logger.error "Unexpected error while saving draft customer #{c.company}: #{e.message}"
+      end
+    end
   end
 
   { draft_count: draft_count }
