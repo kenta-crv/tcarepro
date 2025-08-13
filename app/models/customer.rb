@@ -313,7 +313,7 @@ def self.import(file)
   batch = []
 
   # CSVパーサをゆるくして、変なクオート等でもなるべく読み飛ばせる
-  csv = CSV.new(File.open(file.path), headers: true, encoding: 'bom|utf-8')
+  csv = CSV.new(File.open(file.path), headers: true)
 
   csv.each_with_index do |row, index|
     begin
@@ -366,7 +366,7 @@ def self.call_import(call_file)
   batch = []
 
   # CSVパーサをゆるく設定
-  csv = CSV.new(File.open(call_file.path), headers: true, encoding: 'bom|utf-8')
+  csv = CSV.new(File.open(call_file.path), headers: true)
 
   csv.each_with_index do |row, index|
     begin
@@ -434,7 +434,7 @@ def self.repurpose_import(repurpose_file)
   processed_combinations = Set.new
 
   # CSVパーサをゆるくしてエラー行をスキップ可能に
-  csv = CSV.new(File.open(repurpose_file.path), headers: true, encoding: 'bom|utf-8')
+  csv = CSV.new(File.open(repurpose_file.path), headers: true)
 
   csv.each_with_index do |row, index|
     begin
@@ -565,7 +565,7 @@ def self.draft_import(draft_file)
   batch_size = 2500
   batch = []
 
-  csv = CSV.new(File.open(draft_file.path), headers: true, encoding: 'bom|utf-8')
+  csv = CSV.new(File.open(draft_file.path), headers: true)
 
   csv.each_with_index do |row, index|
     begin
