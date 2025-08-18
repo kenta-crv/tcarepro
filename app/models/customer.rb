@@ -535,16 +535,16 @@ scope :before_sended_at, ->(sended_at){
     name.strip
   end
 
-  def self.has_common_substring?(name1, name2, min_length = 4)
-    return false if name1.blank? || name2.blank?
-    (0..name1.length - min_length).each do |i|
-      return true if name2.include?(name1[i, min_length])
-    end
-    (0..name2.length - min_length).each do |i|
-      return true if name1.include?(name2[i, min_length])
-    end
-    false
+def self.has_common_substring?(name1, name2, min_length = 6)
+  return false if name1.blank? || name2.blank?
+  (0..name1.length - min_length).each do |i|
+    return true if name2.include?(name1[i, min_length])
   end
+  (0..name2.length - min_length).each do |i|
+    return true if name1.include?(name2[i, min_length])
+  end
+  false
+end
 
   def self.name_similarity?(name1, name2)
     return false if name1.blank? || name2.blank?
@@ -630,7 +630,7 @@ scope :before_sended_at, ->(sended_at){
   
     { draft_count: draft_count }
   end
-                        
+
   #customer_export
   def self.generate_csv
     CSV.generate(headers:true) do |csv|
