@@ -295,31 +295,20 @@ end
     @customers =  Customer.all
   end
 
-  #def all_import
-  #  skip_repurpose = params[:skip_repurpose]  
-  #  uploaded_file = params[:file]
-  #  temp_file_path = Rails.root.join('tmp', "#{SecureRandom.uuid}_#{uploaded_file.original_filename}")
-  #  File.open(temp_file_path, 'wb') do |file|
-  #    file.write(uploaded_file.read)
-  #  end
-  #  skip_repurpose_flag = params[:skip_repurpose] == "1"
-  #  CustomerImportJob.perform_later(temp_file_path.to_s,{ 'skip_repurpose' => skip_repurpose_flag } )
-  #  redirect_to customers_url, notice: 'インポート処理をバックグラウンドで実行しています。完了までしばらくお待ちください。'
-  #end
-
-  #通常インポート
   def all_import
-    save_count = Customer.import(params[:file])
-    call_count = Customer.call_import(params[:file])
-    if params[:skip_repurpose] == "1"
-      repurpose_count = { repurpose_import_count: 0 }
-    else
-      repurpose_count = Customer.repurpose_import(params[:file])
+    uploaded_file = params[:file]
+  
+    temp_file_path = Rails.root.join('tmp', "#{SecureRandom.uuid}_#{uploaded_file.original_filename}")
+    File.open(temp_file_path, 'wb') do |file|
+      file.write(uploaded_file.read)
     end
-    draft_count = Customer.draft_import(params[:file])
-    notice_message = "新規インポート：#{save_count}件　再掲載件数: #{call_count[:save_count]}件　転用件数: #{repurpose_count[:repurpose_import_count]}件　ドラフト件数: #{draft_count[:draft_count]}件"
-    redirect_to customers_url, notice: notice_message
+  
+    CustomerImportJob.perform_later(temp_file_path.to_s)
+  
+    redirect_to customers_url, notice: 'インポート処理をバックグラウンドで実行しています。完了までしばらくお待ちください。'
   end
+
+
       
 
   def print
@@ -532,69 +521,73 @@ end
     end
   end
           
-  def update_all_status
-    status = params[:status] || 'hidden'
-    published_count = 0
-    hidden_count = 0
-    deleted_count = 0
-    reposted_count = 0
-  
-    @customers.each do |customer|
-      customer.skip_validation = true
-  
-      if customer.status == 'draft'
-        normalized_company = Customer.normalized_name(customer.company)
-        normalized_tel = customer.tel.to_s.delete('-')
-  
-        existing_customer = Customer.where(industry: customer.industry)
-                                    .where.not(id: customer.id)
-                                    .find do |c|
-          # 電話番号比較（ハイフン無視）
-          c_tel = c.tel.to_s.delete('-')
-          tel_match = normalized_tel.present? && c_tel.present? && normalized_tel == c_tel
-  
-          # 会社名比較（法人格除去後、3文字以上一致）
-          c_company = Customer.normalized_name(c.company)
-          name_match = Customer.name_similarity?(normalized_company, c_company)
-  
-          tel_match || name_match
-        end
-  
-        if existing_customer
-          latest_call = existing_customer.calls.order(created_at: :desc).first
-  
-          if latest_call && latest_call.created_at <= 2.months.ago
+def update_all_status
+  status = params[:status] || 'hidden'
+  published_count = 0
+  hidden_count = 0
+  deleted_count = 0
+  reposted_count = 0
+
+  @customers.each do |customer|
+    customer.skip_validation = true
+
+    if customer.status == 'draft'
+      normalized_company = Customer.normalized_name(customer.company)
+      normalized_tel = customer.tel.to_s.delete('-')
+
+      existing_customer = Customer.where(industry: customer.industry, status: nil) # 公開中のみ
+                                  .where.not(id: customer.id)
+                                  .find do |c|
+        # 電話番号比較（ハイフン無視）
+        c_tel = c.tel.to_s.delete('-')
+        tel_match = normalized_tel.present? && c_tel.present? && normalized_tel == c_tel
+
+        # 会社名比較（法人格除去後、3文字以上一致）
+        c_company = Customer.normalized_name(c.company)
+        name_match = Customer.name_similarity?(normalized_company, c_company)
+
+        tel_match || name_match
+      end
+
+      if existing_customer
+        latest_call = existing_customer.calls.order(created_at: :desc).first
+
+        if latest_call && latest_call.created_at <= 2.months.ago
+          # APP・永久NG・見込 の場合は再掲載しない
+          unless %w(APP 永久NG 見込).include?(latest_call.statu)
             existing_customer.calls.create(statu: '再掲載')
-  
+
             if customer.worker.present?
               customer.worker.increment!(:deleted_customer_count)
             end
-  
+
             customer.destroy
             reposted_count += 1
             next
-          else
-            if customer.worker.present?
-              customer.worker.increment!(:deleted_customer_count)
-            end
-  
-            customer.destroy
-            deleted_count += 1
-            next
           end
         end
-      end
-  
-      if status == 'hidden'
-        hidden_count += 1 if customer.update_columns(status: 'hidden')
-      else
-        published_count += 1 if customer.update_columns(status: nil)
+
+        # 再掲載しない場合は単純削除
+        if customer.worker.present?
+          customer.worker.increment!(:deleted_customer_count)
+        end
+
+        customer.destroy
+        deleted_count += 1
+        next
       end
     end
-  
-    flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{reposted_count}件を再掲載に登録しました。#{deleted_count}件のドラフトが重複のため削除されました。"
-    redirect_to customers_path
+
+    if status == 'hidden'
+      hidden_count += 1 if customer.update_columns(status: 'hidden')
+    else
+      published_count += 1 if customer.update_columns(status: nil)
+    end
   end
+
+  flash[:notice] = "#{published_count}件が公開され、#{hidden_count}件が非表示にされ、#{reposted_count}件を再掲載に登録しました。#{deleted_count}件のドラフトが重複のため削除されました。"
+  redirect_to customers_path
+end
 
   def destroy_all_by_company
     all_ids = @customers.flat_map do |customer|
