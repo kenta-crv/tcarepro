@@ -470,15 +470,53 @@ end
     tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
+      latest_tracking = ExtractTracking.where(industry: crowdwork.title)
+                                 .order(id: :desc)
+                                 .first
+      success_count = latest_tracking&.success_count.to_i
+      failure_count = latest_tracking&.failure_count.to_i
+      total = success_count + failure_count
+      rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
       hash[crowdwork.title] = {
         tel_with: tel_with_counts[crowdwork.title] || 0,
-        tel_without: tel_without_counts[crowdwork.title] || 0
+        tel_without: tel_without_counts[crowdwork.title] || 0,
+        success_count: success_count,
+        failure_count: failure_count,
+        rate: rate,
+        status: latest_tracking&.status || "抽出前"
       }
     end
 
     # ページネーション
     @customers = @customers.page(params[:page]).per(100)
+
+    @period_start = Date.today.beginning_of_month
+    @period_end   = Date.today.end_of_month
+
+    # 残り件数取得
+    today_total = ExtractTracking
+                    .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
+                    .sum(:total_count)
+    @remaining_extractable = 13 - today_total
+
   end
+
+  def extract_company_info
+    Rails.logger.info("extract_company_info called.")
+    industry_name = params[:industry_name]
+    total_count = params[:total_count]
+
+    tracking = ExtractTracking.create!(
+      industry:       industry_name,
+      total_count:    total_count,
+      success_count:  0,
+      failure_count:  0,
+      status:         "抽出中"
+    )
+    ExtractCompanyInfoWorker.perform_async(tracking.id)
+    redirect_to draft_path
+  end
+
 
   def filter_by_industry
     # crowdworkタイトルの初期化
@@ -506,14 +544,34 @@ end
     tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
+      latest_tracking = ExtractTracking.where(industry: crowdwork.title)
+                                 .order(id: :desc)
+                                 .first
+      success_count = latest_tracking&.success_count.to_i
+      failure_count = latest_tracking&.failure_count.to_i
+      total = success_count + failure_count
+      rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
       hash[crowdwork.title] = {
         tel_with: tel_with_counts[crowdwork.title] || 0,
-        tel_without: tel_without_counts[crowdwork.title] || 0
+        tel_without: tel_without_counts[crowdwork.title] || 0,
+        success_count: success_count,
+        failure_count: failure_count,
+        rate: rate,
+        status: latest_tracking&.status || "抽出前"
       }
     end
 
     # ページネーション
     @customers = @customers.page(params[:page]).per(100)
+
+    @period_start = Date.today.beginning_of_month
+    @period_end   = Date.today.end_of_month
+
+    # 残り件数取得
+    today_total = ExtractTracking
+                    .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
+                    .sum(:total_count)
+    @remaining_extractable = 10 - today_total
 
     render :draft
   end  

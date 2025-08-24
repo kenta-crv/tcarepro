@@ -104,6 +104,7 @@ Rails.application.routes.draw do
   get 'customers/print', to: 'customers#print', as: :customers_pdf #thinresports
   get 'draft' => 'customers#draft' #締め
   get 'draft/filter_by_industry', to: 'customers#filter_by_industry', as: 'filter_by_industry'
+  post 'draft/extract_company_info', to: 'customers#extract_company_info', as: 'extract_company_info'
   #showからのメール送信
   match 'customers/:id/send_email', to: 'customers#send_email', via: [:get, :post], as: 'send_email_customer'
 

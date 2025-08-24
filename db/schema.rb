@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20250804134515) do
+ActiveRecord::Schema.define(version: 20250824100701) do
 
   create_table "access_logs", force: :cascade do |t|
     t.integer "customer_id", null: false
@@ -238,6 +238,16 @@ ActiveRecord::Schema.define(version: 20250804134515) do
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_email_histories_on_customer_id"
     t.index ["inquiry_id"], name: "index_email_histories_on_inquiry_id"
+  end
+
+  create_table "extract_trackings", force: :cascade do |t|
+    t.string "industry", null: false
+    t.integer "total_count", default: 0, null: false
+    t.integer "success_count", default: 0, null: false
+    t.integer "failure_count", default: 0, null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "images", force: :cascade do |t|

@@ -767,6 +767,9 @@ end
     existing_customer = Customer.where(worker_id: worker_id)
                                 .where(industry: industry)
                                 .where("tel = ? OR company = ?", tel, company)
+
+    # update時は self.id を除外
+    existing_customer = existing_customer.where.not(id: id) if id.present?
   
     if existing_customer.exists?
       errors.add(:base, "過去に同一電話番号または会社名を登録しています。同一ワーカーでの重複登録はできません。")
