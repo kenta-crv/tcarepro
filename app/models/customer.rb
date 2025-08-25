@@ -926,4 +926,8 @@ scope :before_sended_at, ->(sended_at){
     save
   end
 
+  def scraping
+    @scraping ||= Scraping.new
+  end
+
 end
