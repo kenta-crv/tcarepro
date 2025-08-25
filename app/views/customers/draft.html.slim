@@ -1,4 +1,60 @@
 - set_meta_tags noindex: true
+/ ===================== 抽出管理画面（追加） =====================
+.tops-wrapper
+  h2.headline AI抽出
+
+  .extraction-header
+    .period-box
+      - start_txt = (@period_start&.strftime("%Y/%m/%d")   || "__/__/__")
+      - end_txt   = (@period_end&.strftime("%Y/%m/%d")   || "__/__/__")
+      | #{start_txt} ～ #{end_txt}
+    .remain-box
+      - remain = (@remaining_extractable || "___")
+      | 本日残り抽出可能数：#{remain}件
+
+  / 表
+  table.extraction-table[width="100%" cellpadding="0" cellspacing="0"]
+    thead
+      tr
+        th 
+        th インポート件数<br/>(AI抽出前)
+        th 抽出成功数
+        th 抽出失敗数
+        th 抽出成功率
+        th Status
+        th 
+        th
+    tbody
+      - @crowdworks.each do |crowdwork|
+        - company       = crowdwork.title
+        - import_count  = @industry_counts[crowdwork.title][:tel_without] - @industry_counts[crowdwork.title][:tel_with]
+        - success_count =  @industry_counts[crowdwork.title][:success_count]
+        - fail_count    =  @industry_counts[crowdwork.title][:failure_count]
+        - rate_txt      =  "#{@industry_counts[crowdwork.title][:rate]}%"
+        - status_txt    = @industry_counts[crowdwork.title][:status]
+        - total_count = [import_count, @remaining_extractable].min
+
+        tr
+          td = company
+          td
+            = import_count
+          td
+            = success_count
+          td
+            = fail_count
+          td = rate_txt
+          td
+            = status_txt
+
+          td.action-cell
+            / ルーティング未用意でも壊れないように # をデフォルトに
+            .square_btn
+              = link_to "AI抽出開始", extract_company_info_path(industry_name: crowdwork.title, total_count: total_count), method: "post", class: "btn btn-ai"
+          td.action-cell  
+            .square_btn
+              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title), method: :get, class: "btn btn-default"
+
+
 .tops-wrapper
   h2.headline
     | ドラフトリスト

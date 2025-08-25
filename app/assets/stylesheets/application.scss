@@ -1443,3 +1443,39 @@ iframe {
   align-items: center;  /* 縦方向に中央揃え */
   z-index: 9999;        /* 他の要素の上に表示 */
 }
+
+/* 抽出ページのヘッダー */
+.extraction-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 8px 0 12px;
+  flex-wrap: wrap; /* スマホで折り返し */
+
+  .period-box {
+    /* 枠付きボックス（画像の左側） */
+    border: 3px solid #111;            /* 濃い黒フチ */
+    border-radius: 4px;
+    background: #fff;
+    padding: 6px 14px;
+    min-width: 320px;                  /* 画像の幅感 */
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
+    /* 数字/スラッシュの桁が揃うように */
+    font-feature-settings: "tnum" 1, "lnum" 1;
+
+    /* ちょっとだけ立体感（任意） */
+    box-shadow: inset 0 -2px 0 #e9e9e9;
+  }
+
+  .remain-box {
+    /* 画像右側のテキスト */
+    font-weight: 700;
+    font-size: 20px;
+    white-space: nowrap;
+    color: #111;
+  }
+}
