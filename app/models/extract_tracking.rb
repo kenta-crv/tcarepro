@@ -1,0 +1,2 @@
+class ExtractTracking < ApplicationRecord
+end
