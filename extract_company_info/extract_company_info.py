@@ -6,6 +6,7 @@ import re
 from urllib.parse import urlparse
 import time
 import requests
+from typing import Optional
 
 load_dotenv()
 
@@ -69,7 +70,7 @@ def extract_company_info(company: str, location: str) -> tuple[str, list[str]]:
 
     return text, refs
 
-def normalize_to_url(text: str) -> str | None:
+def normalize_to_url(text: str) -> Optional[str]:
     """
     左側の文字列から正しいURLを作る:
     - 既に http(s):// ならそのまま
