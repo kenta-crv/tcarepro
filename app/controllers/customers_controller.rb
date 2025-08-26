@@ -497,7 +497,7 @@ end
     today_total = ExtractTracking
                     .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                     .sum(:total_count)
-    @remaining_extractable = 13 - today_total
+    @remaining_extractable = 500 - today_total
 
   end
 
