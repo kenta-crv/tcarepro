@@ -442,6 +442,31 @@ end
     # crowdworkタイトルの初期化
     @crowdworks = Crowdwork.all || []
 
+    # 期間パラメータの解釈（未指定可）
+    @period_start = nil
+    @period_end   = nil
+    if params[:period_start].present?
+      begin
+        @period_start = Date.parse(params[:period_start])
+      rescue ArgumentError
+        @period_start = nil
+      end
+    end
+    if params[:period_end].present?
+      begin
+        @period_end = Date.parse(params[:period_end])
+      rescue ArgumentError
+        @period_end = nil
+      end
+    end
+
+    # 期間の整合性（逆転していたら入れ替え）
+    if @period_start.present? && @period_end.present? && @period_end < @period_start
+      @period_start, @period_end = @period_end, @period_start
+    end
+    range_start = @period_start&.beginning_of_day
+    range_end   = @period_end&.end_of_day
+
     # Adminを優先した条件分岐
     @customers = case
     when admin_signed_in? && params[:tel_filter] == "with_tel"
@@ -454,9 +479,30 @@ end
       Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
     end
 
+    # 期間でフィルタ（未指定なら全期間）
+    if range_start && range_end
+      @customers = @customers.where(created_at: range_start..range_end)
+    elsif range_start
+      @customers = @customers.where('created_at >= ?', range_start)
+    elsif range_end
+      @customers = @customers.where('created_at <= ?', range_end)
+    end
+
     # タイトルごとの件数を計算
-    tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
-    tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
+    tel_with_scope = Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    if range_start && range_end
+      tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
+      tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
+    elsif range_start
+      tel_with_scope = tel_with_scope.where('created_at >= ?', range_start)
+      tel_without_scope = tel_without_scope.where('created_at >= ?', range_start)
+    elsif range_end
+      tel_with_scope = tel_with_scope.where('created_at <= ?', range_end)
+      tel_without_scope = tel_without_scope.where('created_at <= ?', range_end)
+    end
+    tel_with_counts = tel_with_scope.group(:industry).count
+    tel_without_counts = tel_without_scope.group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
       latest_tracking = ExtractTracking.where(industry: crowdwork.title)
@@ -464,6 +510,7 @@ end
                                  .first
       success_count = latest_tracking&.success_count.to_i
       failure_count = latest_tracking&.failure_count.to_i
+      total_count   = latest_tracking&.total_count.to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
       hash[crowdwork.title] = {
@@ -471,6 +518,7 @@ end
         tel_without: tel_without_counts[crowdwork.title] || 0,
         success_count: success_count,
         failure_count: failure_count,
+        total_count: total_count,
         rate: rate,
         status: latest_tracking&.status || "抽出前"
       }
@@ -479,21 +527,19 @@ end
     # ページネーション
     @customers = @customers.page(params[:page]).per(100)
 
-    @period_start = Date.today.beginning_of_month
-    @period_end   = Date.today.end_of_month
-
     # 残り件数取得
     today_total = ExtractTracking
                     .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                     .sum(:total_count)
-    @remaining_extractable = 500 - today_total
+    daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
+    @remaining_extractable = [daily_limit - today_total, 0].max
 
   end
 
   def extract_company_info
     Rails.logger.info("extract_company_info called.")
     industry_name = params[:industry_name]
-    total_count = params[:total_count]
+    total_count = params[:count]
 
     tracking = ExtractTracking.create!(
       industry:       industry_name,
@@ -506,14 +552,63 @@ end
     redirect_to draft_path
   end
 
+  # 進捗取得API（ポーリング用）
+  # GET /draft/progress.json?industry=業界名
+  def extract_progress
+    industry = params[:industry].to_s.presence
+    tracking = if industry
+                 ExtractTracking.where(industry: industry).order(id: :desc).first
+               else
+                 ExtractTracking.order(id: :desc).first
+               end
+
+    if tracking
+      render json: tracking.progress_payload
+    else
+      render json: { message: 'no_tracking' }
+    end
+  end
+
 
   def filter_by_industry
     # crowdworkタイトルの初期化
     @crowdworks = Crowdwork.all || []
 
+    # 期間パラメータの解釈（未指定可）
+    @period_start = nil
+    @period_end   = nil
+    if params[:period_start].present?
+      begin
+        @period_start = Date.parse(params[:period_start])
+      rescue ArgumentError
+        @period_start = nil
+      end
+    end
+    if params[:period_end].present?
+      begin
+        @period_end = Date.parse(params[:period_end])
+      rescue ArgumentError
+        @period_end = nil
+      end
+    end
+
+    # 期間の整合性（逆転していたら入れ替え）
+    if @period_start.present? && @period_end.present? && @period_end < @period_start
+      @period_start, @period_end = @period_end, @period_start
+    end
+    range_start = @period_start&.beginning_of_day
+    range_end   = @period_end&.end_of_day
+
     # タイトルによるフィルタリング
     industry_name = params[:industry_name]
     base_query = Customer.where(status: "draft")
+    if range_start && range_end
+      base_query = base_query.where(created_at: range_start..range_end)
+    elsif range_start
+      base_query = base_query.where('created_at >= ?', range_start)
+    elsif range_end
+      base_query = base_query.where('created_at <= ?', range_end)
+    end
     base_query = base_query.where(industry: industry_name) if industry_name.present?
 
     # Adminを優先した条件分岐
@@ -528,9 +623,21 @@ end
       base_query.where.not(tel: [nil, '', ' '])
     end
 
-    # タイトルごとの件数を計算
-    tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
-    tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
+    # タイトルごとの件数を計算（期間条件があれば適用）
+    tel_with_scope = Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    if range_start && range_end
+      tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
+      tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
+    elsif range_start
+      tel_with_scope = tel_with_scope.where('created_at >= ?', range_start)
+      tel_without_scope = tel_without_scope.where('created_at >= ?', range_start)
+    elsif range_end
+      tel_with_scope = tel_with_scope.where('created_at <= ?', range_end)
+      tel_without_scope = tel_without_scope.where('created_at <= ?', range_end)
+    end
+    tel_with_counts = tel_with_scope.group(:industry).count
+    tel_without_counts = tel_without_scope.group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
       latest_tracking = ExtractTracking.where(industry: crowdwork.title)
@@ -538,6 +645,7 @@ end
                                  .first
       success_count = latest_tracking&.success_count.to_i
       failure_count = latest_tracking&.failure_count.to_i
+      total_count   = latest_tracking&.total_count.to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
       hash[crowdwork.title] = {
@@ -545,6 +653,7 @@ end
         tel_without: tel_without_counts[crowdwork.title] || 0,
         success_count: success_count,
         failure_count: failure_count,
+        total_count: total_count,
         rate: rate,
         status: latest_tracking&.status || "抽出前"
       }
@@ -553,14 +662,12 @@ end
     # ページネーション
     @customers = @customers.page(params[:page]).per(100)
 
-    @period_start = Date.today.beginning_of_month
-    @period_end   = Date.today.end_of_month
-
     # 残り件数取得
     today_total = ExtractTracking
                     .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                     .sum(:total_count)
-    @remaining_extractable = 10 - today_total
+    daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
+    @remaining_extractable = [daily_limit - today_total, 0].max
 
     render :draft
   end  

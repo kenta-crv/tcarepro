@@ -20,9 +20,9 @@ PROMPT_TMPL = """
 勤務地:{location}
 
 # 会社概要
-- 会社名
-- 電話番号(本社のもの)
-- 住所(本社のもの 郵便番号は含めない)
+- 会社名（無駄な半角はいれない。例：「医療法人 ABC」ではなく、「医療法人ABC」）
+- 電話番号(本社のもの 半角数字と-のみで記載)
+- 住所(本社のもの 郵便番号は含めない 必ず都道府県から始める)
 - 代表者(名前のみ 肩書は含めない)
 # 出力形式
 - 会社名: ここに出力
@@ -132,8 +132,8 @@ def get_industry(url, industry):
         content = fetch_html(url)
     except:
         return f"""
-        - 業種: {industry.split(",")[0]}
-        """
+- 業種: {industry.split(",")[0]}
+"""
     prompt = f"""
     次の選択肢はカンマ区切りは業種の選択肢です。
     選択肢の中からHTMLコンテンツに最も近い業種を一つだけ選択してください
@@ -159,15 +159,14 @@ def get_industry(url, industry):
 
     return resp.text
 
-def get_info_from_url(url):
+def get_inquiry_url_from_url(url):
     time.sleep(15)
     try:
         content = fetch_html(url)
     except:
         return """
-        - 問い合わせURL: 不明
-        - 事業内容: 不明
-        """
+- 問い合わせURL: 不明
+"""
     prompt = f"""
     次のHTMLコンテンツを元に、
     下記の情報を抽出して出力してください。
@@ -177,9 +176,42 @@ def get_info_from_url(url):
     {content}
     # 情報
     - 問い合わせURL(ドメインも含めた完全URL)
-    - 事業内容（URLを参考に事業内容を50文字以内で端的に記載）  
     # 出力形式
     - 問い合わせURL: ここに出力
+    """
+    client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+
+    config = types.GenerateContentConfig()
+
+    resp = client.models.generate_content(
+        model="gemini-2.5-flash-lite",
+        contents=prompt,
+        config=config,
+    )
+
+    return resp.text
+
+def get_genre_from_url(url, genre):
+    time.sleep(15)
+    try:
+        content = fetch_html(url)
+    except:
+        return """
+- 事業内容: {genre}
+"""
+    prompt = f"""
+    次のHTMLコンテンツを元に、事業内容を50文字以内で端的に記載してください。
+    基本的に選択肢に記載されているカンマで区切られているいずれかの文字列を含めるようにしてください。
+    ただし、HTMLコンテンツをみて事業内容が選択肢のどれとも**まったく関連しない**と判断できた場合は
+    事業内容は不明と出力してください。
+
+    # コンテンツ
+    {content}
+    # 選択肢
+    {genre}
+    # 情報
+    - 事業内容（URLを参考に事業内容を50文字以内で端的に記載）  
+    # 出力形式
     - 事業内容: ここに出力
     """
     client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
@@ -193,6 +225,7 @@ def get_info_from_url(url):
     )
 
     return resp.text
+
 
 if __name__ == "__main__":
     text, refs = extract_company_info("UTエイム株式会社", "北海道 苫小牧市")

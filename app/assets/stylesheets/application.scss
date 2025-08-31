@@ -232,20 +232,43 @@ li.progress-list-item {
 }
 
 .square_btn{
+    /* ボタンの外側ラッパー。見た目はリンク側に持たせる */
+    display: inline-block;
+    margin:15px 15px;
+    padding: 0; /* クリック領域がテキストだけになるのを防ぐため外す */
+    background: transparent;
+    border: none;
+}
+
+/* ラッパー内のリンク全体をボタン化してクリック領域を広げる */
+.square_btn > a{
     display: inline-block;
     padding: 0.5em 1em;
     text-decoration: none;
-    background-color: rgba(0, 180, 255, 0.8);
-    color: #FFF;
+    background-color: rgba(0, 180, 255, 0.9);
+    color: #FFF !important; /* visited色やbtn系の上書きを防ぐ */
     border-bottom: solid 4px #627295;
     border-radius: 3px;
-    margin:15px 15px;
 }
-.square_btn:active {/*ボタンを押したとき*/
+
+/* 訪問済みでも文字色を白に維持 */
+.square_btn > a:visited{
+    color: #FFF !important;
+}
+
+/* ホバー時に黒くならないよう専用色で上書き */
+.square_btn > a:hover,
+.square_btn > a:focus{
+    background-color: #29c5ff !important;
+    color: #fff !important;
+}
+
+/* 押下時の沈み込み表現 */
+.square_btn > a:active{
     -ms-transform: translateY(4px);
     -webkit-transform: translateY(4px);
-    transform: translateY(4px);/*下に動く*/
-    border-bottom: none;/*線を消す*/
+    transform: translateY(4px);
+    border-bottom: none;
 }
 
 
@@ -1126,6 +1149,70 @@ a.btn--shadow {
     margin-left: 4px;
     color: #fff;
   }
+}
+
+/* ===================== draft: period UI ===================== */
+.headline#draft-list {
+  /* アンカー遷移時にヘッダー分だけ余白を確保 */
+  scroll-margin-top: 120px;
+}
+
+.extraction-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 0 8px;
+}
+
+.extraction-header .period-box {
+  color: #333;
+  font-weight: bold;
+}
+
+.extraction-header .remain-box {
+  color: #000;
+  font-weight: bold;
+}
+
+.period-form {
+  margin: 8px 0 18px;
+}
+
+.period-form__form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.period-form__group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.period-input {
+  min-width: 160px;
+  height: 36px;
+  padding: 6px 10px;
+  border: 1px solid #cfd8dc;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.period-apply-btn {
+  height: 36px;
+  padding: 0 16px;
+}
+
+.period-clear-btn {
+  color: #666;
+  padding-left: 0;
+}
+
+@media (max-width: 640px) {
+  .period-input { min-width: 130px; }
 }
 
 #information-incentives-show {
