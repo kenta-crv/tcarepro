@@ -5,9 +5,16 @@
 
   .extraction-header
     .period-box
-      - start_txt = (@period_start&.strftime("%Y/%m/%d")   || "__/__/__")
-      - end_txt   = (@period_end&.strftime("%Y/%m/%d")   || "__/__/__")
-      | #{start_txt} ～ #{end_txt}
+      / 期間選択フォーム（GETで現在のページに送信）
+      .period-form
+        = form_tag(request.path, method: :get, class: 'period-form__form') do
+          = hidden_field_tag :industry_name, params[:industry_name] if params[:industry_name].present?
+          = hidden_field_tag :tel_filter, params[:tel_filter] if params[:tel_filter].present?
+          .period-form__group
+            = date_field_tag :period_start, @period_start, class: 'period-input', placeholder: '開始日'
+            | ～
+            = date_field_tag :period_end, @period_end, class: 'period-input', placeholder: '終了日'
+            = submit_tag '適用', class: 'btn btn-primary period-apply-btn'
     .remain-box
       - remain = (@remaining_extractable || "___")
       | 本日残り抽出可能数：#{remain}件
@@ -52,7 +59,7 @@
               = link_to "AI抽出開始", extract_company_info_path(industry_name: crowdwork.title, total_count: total_count), method: "post", class: "btn btn-ai"
           td.action-cell  
             .square_btn
-              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title), method: :get, class: "btn btn-default"
+              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end), method: :get, class: "btn btn-default"
 
 
 .tops-wrapper
@@ -61,7 +68,7 @@
 .tops-wrapper
   - if @crowdworks.present?
     - @crowdworks.each do |crowdwork|
-      = link_to crowdwork.title, filter_by_industry_path(industry_name: crowdwork.title), method: :get, class: "btn btn-default"
+      = link_to crowdwork.title, filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end), method: :get, class: "btn btn-default"
       | (
       = @industry_counts[crowdwork.title][:tel_with]
       | /
@@ -94,9 +101,9 @@
          th
            | 会社名
          th
-           = link_to 'tel_within', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel')
+           = link_to 'tel_within', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel', period_start: @period_start, period_end: @period_end)
            br/
-           = link_to 'tel_without', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel')
+           = link_to 'tel_without', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel', period_start: @period_start, period_end: @period_end)
          th
            | 住所
          th

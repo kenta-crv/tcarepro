@@ -1128,6 +1128,65 @@ a.btn--shadow {
   }
 }
 
+/* ===================== draft: period UI ===================== */
+.extraction-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 0 8px;
+}
+
+.extraction-header .period-box {
+  color: #333;
+  font-weight: bold;
+}
+
+.extraction-header .remain-box {
+  color: #000;
+  font-weight: bold;
+}
+
+.period-form {
+  margin: 8px 0 18px;
+}
+
+.period-form__form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.period-form__group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.period-input {
+  min-width: 160px;
+  height: 36px;
+  padding: 6px 10px;
+  border: 1px solid #cfd8dc;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.period-apply-btn {
+  height: 36px;
+  padding: 0 16px;
+}
+
+.period-clear-btn {
+  color: #666;
+  padding-left: 0;
+}
+
+@media (max-width: 640px) {
+  .period-input { min-width: 130px; }
+}
+
 #information-incentives-show {
   .form {
     padding: 20px 5%;

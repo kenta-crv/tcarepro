@@ -453,6 +453,31 @@ end
     # crowdworkタイトルの初期化
     @crowdworks = Crowdwork.all || []
 
+    # 期間パラメータの解釈（未指定可）
+    @period_start = nil
+    @period_end   = nil
+    if params[:period_start].present?
+      begin
+        @period_start = Date.parse(params[:period_start])
+      rescue ArgumentError
+        @period_start = nil
+      end
+    end
+    if params[:period_end].present?
+      begin
+        @period_end = Date.parse(params[:period_end])
+      rescue ArgumentError
+        @period_end = nil
+      end
+    end
+
+    # 期間の整合性（逆転していたら入れ替え）
+    if @period_start.present? && @period_end.present? && @period_end < @period_start
+      @period_start, @period_end = @period_end, @period_start
+    end
+    range_start = @period_start&.beginning_of_day
+    range_end   = @period_end&.end_of_day
+
     # Adminを優先した条件分岐
     @customers = case
     when admin_signed_in? && params[:tel_filter] == "with_tel"
@@ -465,9 +490,30 @@ end
       Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
     end
 
+    # 期間でフィルタ（未指定なら全期間）
+    if range_start && range_end
+      @customers = @customers.where(created_at: range_start..range_end)
+    elsif range_start
+      @customers = @customers.where('created_at >= ?', range_start)
+    elsif range_end
+      @customers = @customers.where('created_at <= ?', range_end)
+    end
+
     # タイトルごとの件数を計算
-    tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
-    tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
+    tel_with_scope = Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    if range_start && range_end
+      tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
+      tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
+    elsif range_start
+      tel_with_scope = tel_with_scope.where('created_at >= ?', range_start)
+      tel_without_scope = tel_without_scope.where('created_at >= ?', range_start)
+    elsif range_end
+      tel_with_scope = tel_with_scope.where('created_at <= ?', range_end)
+      tel_without_scope = tel_without_scope.where('created_at <= ?', range_end)
+    end
+    tel_with_counts = tel_with_scope.group(:industry).count
+    tel_without_counts = tel_without_scope.group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
       latest_tracking = ExtractTracking.where(industry: crowdwork.title)
@@ -489,9 +535,6 @@ end
 
     # ページネーション
     @customers = @customers.page(params[:page]).per(100)
-
-    @period_start = Date.today.beginning_of_month
-    @period_end   = Date.today.end_of_month
 
     # 残り件数取得
     today_total = ExtractTracking
@@ -522,9 +565,41 @@ end
     # crowdworkタイトルの初期化
     @crowdworks = Crowdwork.all || []
 
+    # 期間パラメータの解釈（未指定可）
+    @period_start = nil
+    @period_end   = nil
+    if params[:period_start].present?
+      begin
+        @period_start = Date.parse(params[:period_start])
+      rescue ArgumentError
+        @period_start = nil
+      end
+    end
+    if params[:period_end].present?
+      begin
+        @period_end = Date.parse(params[:period_end])
+      rescue ArgumentError
+        @period_end = nil
+      end
+    end
+
+    # 期間の整合性（逆転していたら入れ替え）
+    if @period_start.present? && @period_end.present? && @period_end < @period_start
+      @period_start, @period_end = @period_end, @period_start
+    end
+    range_start = @period_start&.beginning_of_day
+    range_end   = @period_end&.end_of_day
+
     # タイトルによるフィルタリング
     industry_name = params[:industry_name]
     base_query = Customer.where(status: "draft")
+    if range_start && range_end
+      base_query = base_query.where(created_at: range_start..range_end)
+    elsif range_start
+      base_query = base_query.where('created_at >= ?', range_start)
+    elsif range_end
+      base_query = base_query.where('created_at <= ?', range_end)
+    end
     base_query = base_query.where(industry: industry_name) if industry_name.present?
 
     # Adminを優先した条件分岐
@@ -539,9 +614,21 @@ end
       base_query.where.not(tel: [nil, '', ' '])
     end
 
-    # タイトルごとの件数を計算
-    tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
-    tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
+    # タイトルごとの件数を計算（期間条件があれば適用）
+    tel_with_scope = Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    if range_start && range_end
+      tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
+      tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
+    elsif range_start
+      tel_with_scope = tel_with_scope.where('created_at >= ?', range_start)
+      tel_without_scope = tel_without_scope.where('created_at >= ?', range_start)
+    elsif range_end
+      tel_with_scope = tel_with_scope.where('created_at <= ?', range_end)
+      tel_without_scope = tel_without_scope.where('created_at <= ?', range_end)
+    end
+    tel_with_counts = tel_with_scope.group(:industry).count
+    tel_without_counts = tel_without_scope.group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
       latest_tracking = ExtractTracking.where(industry: crowdwork.title)
@@ -563,9 +650,6 @@ end
 
     # ページネーション
     @customers = @customers.page(params[:page]).per(100)
-
-    @period_start = Date.today.beginning_of_month
-    @period_end   = Date.today.end_of_month
 
     # 残り件数取得
     today_total = ExtractTracking
