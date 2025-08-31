@@ -19,7 +19,6 @@ class ExtractCompanyInfoWorker
       extract_tracking = ExtractTracking.find(id)
       daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
       today_reamin = daily_limit - (today_total - extract_tracking.total_count)
-      puts(today_reamin)
       if today_reamin == 0 || (extract_tracking.total_count > today_reamin)
         puts("AutoformSchedulerWorker: perform: today limit exceed")
         extract_tracking.update(
@@ -27,18 +26,17 @@ class ExtractCompanyInfoWorker
         )
         return
       end
-      puts("start")
       # 実行
       customers = Customer.where(status: "draft").where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
       crowdwork = Crowdwork.find_by(title: extract_tracking.industry)
       success_count = extract_tracking.success_count
       failure_count = extract_tracking.failure_count
       customers.each do |customer|
-        puts(customer.id)
-        puts(customer.address)
-        puts(crowdwork.business)
 
-        command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH] + [customer.company, customer.address, crowdwork.business]
+        business = crowdwork.business || ""
+        genre = customer.genre || ""
+
+        command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH] + [customer.company, customer.address, business, genre]
         begin
           stdout, stderr, status = execute_python_with_timeout(command)
           if status.success?
@@ -50,7 +48,7 @@ class ExtractCompanyInfoWorker
               case line
               when /\A会社名[^:：]*[:：]\s*(.+)\z/i
                 company = $1.strip
-
+                
               when /\A電話番号[^:：]*[:：]\s*(.+)\z/i
                 tel = $1.strip
 
@@ -70,12 +68,13 @@ class ExtractCompanyInfoWorker
                 business = $1.strip
 
               when /\A事業内容[^:：]*[:：]\s*(.+)\z/i
-                genre = $1.strip
+                if $1.strip == '不明'
+                  genre = ''
+                else
+                  genre = $1.strip
+                end
               end
             end
-            puts(company)
-            puts(tel)
-            puts(business)
             customer.update!(
               company: company,
               tel: tel,
@@ -117,7 +116,7 @@ class ExtractCompanyInfoWorker
   end
 
   def execute_python_with_timeout(command)
-    puts("called")
+    puts("python script start")
     require 'timeout'
     stdout, stderr, status = Timeout.timeout(300) do
       Open3.capture3(*command)
