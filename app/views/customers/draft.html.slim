@@ -60,11 +60,11 @@
                 = link_to "AI抽出開始", "#", class: "btn btn-ai extract_button", data: { max: total_count, company: company }
           td.action-cell  
             .square_btn
-              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end), method: :get, class: "btn btn-default"
+              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end, anchor: 'draft-list'), method: :get, class: "btn btn-default"
 
 
 .tops-wrapper
-  h2.headline
+  h2.headline#draft-list
     | ドラフトリスト
 .tops-wrapper
   - if @crowdworks.present?
