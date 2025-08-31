@@ -37,21 +37,28 @@
         - import_count  = @industry_counts[crowdwork.title][:tel_without] - @industry_counts[crowdwork.title][:tel_with]
         - success_count =  @industry_counts[crowdwork.title][:success_count]
         - fail_count    =  @industry_counts[crowdwork.title][:failure_count]
-        - rate_txt      =  "#{@industry_counts[crowdwork.title][:rate]}%"
+        - rate_txt      =  "#{(@industry_counts[crowdwork.title][:rate].to_f.round(2))}%"
         - status_txt    = @industry_counts[crowdwork.title][:status]
         - total_count = [import_count, @remaining_extractable].min
 
-        tr
+        tr.data-row[data-industry=company]
           td = company
           td
             = import_count
-          td
+          td.js-success
             = success_count
-          td
+          td.js-failure
             = fail_count
-          td = rate_txt
-          td
+          td.js-rate 
+            = rate_txt
+          td.js-status
             = status_txt
+            - if status_txt == '抽出中' || status_txt == '抽出完了'
+              - processed = success_count.to_i + fail_count.to_i
+              - total_tracking = @industry_counts[crowdwork.title][:total_count].to_i
+              br
+              .js-progress-sub
+                | (#{processed}/#{total_tracking})
 
           td.action-cell
             = form_with url: extract_company_info_path(industry_name: crowdwork.title), method: :post, html: { class: "extract-form" } do
@@ -214,4 +221,37 @@ javascript:
         $form.trigger('submit');
       }
     });
+
+    // 進捗ポーリング（全行を対象に数秒おき）
+    function pollProgress() {
+      $("tr.data-row").each(function() {
+        var $row = $(this);
+        var industry = $row.data('industry');
+        if (!industry) { return; }
+        $.getJSON('/draft/progress', { industry: industry })
+          .done(function(resp) {
+            if (!resp || resp.message === 'no_tracking') { return; }
+            if (resp.status) {
+              var $status = $row.find('.js-status');
+              // ベースのステータス文字列
+              $status.contents().filter(function(){ return this.nodeType === 3; }).remove();
+              $status.prepend(resp.status);
+              $row.find('.js-success').text(resp.success);
+              $row.find('.js-failure').text(resp.failure);
+              // 成功率 = success / (success + failure)
+              var totalTried = (resp.success || 0) + (resp.failure || 0);
+              var rate = totalTried > 0 ? (resp.success / totalTried * 100) : 0;
+              $row.find('.js-rate').text((rate).toFixed(1) + '%');
+              $row.find('.js-progress-sub').text('(' + (resp.success + resp.failure) + '/' + resp.total + ')');
+
+            }
+          })
+          .fail(function() { /* noop */ });
+      });
+    }
+
+    // 5秒ごとにポーリング
+    setInterval(pollProgress, 5000);
+    // 初回即時実行
+    pollProgress();
   });

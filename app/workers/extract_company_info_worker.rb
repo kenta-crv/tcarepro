@@ -31,7 +31,8 @@ class ExtractCompanyInfoWorker
       # 実行
       customers = Customer.where(status: "draft").where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
       crowdwork = Crowdwork.find_by(title: extract_tracking.industry)
-      success_count = 0
+      success_count = extract_tracking.success_count
+      failure_count = extract_tracking.failure_count
       customers.each do |customer|
         puts(customer.id)
         puts(customer.address)
@@ -85,20 +86,29 @@ class ExtractCompanyInfoWorker
               business: business,
               genre: genre
             )
-            puts(success_count)
             success_count += 1
-            puts(success_count)
+            extract_tracking.update(
+              success_count: success_count,
+            )
           else
+            failure_count += 1
+            extract_tracking.update(
+              failure_count: failure_count,
+            )
             puts("ExtractCompanyInfoWorker: Python script execution failed for customer ID #{customer.id}. Exit status: #{status.exitstatus}")
             puts(stderr)
           end
         rescue => e
           puts "エラー: #{e.class} - #{e.message}"
+          failure_count += 1
+          extract_tracking.update(
+            failure_count: failure_count,
+          )
         end
       end
       extract_tracking.update(
         success_count: success_count,
-        failure_count: extract_tracking.total_count - success_count,
+        failure_count: failure_count,
         status: "抽出完了"
       )
     rescue => e

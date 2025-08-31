@@ -521,6 +521,7 @@ end
                                  .first
       success_count = latest_tracking&.success_count.to_i
       failure_count = latest_tracking&.failure_count.to_i
+      total_count   = latest_tracking&.total_count.to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
       hash[crowdwork.title] = {
@@ -528,6 +529,7 @@ end
         tel_without: tel_without_counts[crowdwork.title] || 0,
         success_count: success_count,
         failure_count: failure_count,
+        total_count: total_count,
         rate: rate,
         status: latest_tracking&.status || "抽出前"
       }
@@ -559,6 +561,23 @@ end
     )
     ExtractCompanyInfoWorker.perform_async(tracking.id)
     redirect_to draft_path
+  end
+
+  # 進捗取得API（ポーリング用）
+  # GET /draft/progress.json?industry=業界名
+  def extract_progress
+    industry = params[:industry].to_s.presence
+    tracking = if industry
+                 ExtractTracking.where(industry: industry).order(id: :desc).first
+               else
+                 ExtractTracking.order(id: :desc).first
+               end
+
+    if tracking
+      render json: tracking.progress_payload
+    else
+      render json: { message: 'no_tracking' }
+    end
   end
 
 
@@ -637,6 +656,7 @@ end
                                  .first
       success_count = latest_tracking&.success_count.to_i
       failure_count = latest_tracking&.failure_count.to_i
+      total_count   = latest_tracking&.total_count.to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
       hash[crowdwork.title] = {
@@ -644,6 +664,7 @@ end
         tel_without: tel_without_counts[crowdwork.title] || 0,
         success_count: success_count,
         failure_count: failure_count,
+        total_count: total_count,
         rate: rate,
         status: latest_tracking&.status || "抽出前"
       }
