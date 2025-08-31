@@ -540,14 +540,15 @@ end
     today_total = ExtractTracking
                     .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                     .sum(:total_count)
-    @remaining_extractable = 500 - today_total
+    daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
+    @remaining_extractable = [daily_limit - today_total, 0].max
 
   end
 
   def extract_company_info
     Rails.logger.info("extract_company_info called.")
     industry_name = params[:industry_name]
-    total_count = params[:total_count]
+    total_count = params[:count]
 
     tracking = ExtractTracking.create!(
       industry:       industry_name,
@@ -655,7 +656,8 @@ end
     today_total = ExtractTracking
                     .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                     .sum(:total_count)
-    @remaining_extractable = 10 - today_total
+    daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
+    @remaining_extractable = [daily_limit - today_total, 0].max
 
     render :draft
   end  

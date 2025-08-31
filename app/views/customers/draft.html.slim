@@ -54,9 +54,10 @@
             = status_txt
 
           td.action-cell
-            / ルーティング未用意でも壊れないように # をデフォルトに
-            .square_btn
-              = link_to "AI抽出開始", extract_company_info_path(industry_name: crowdwork.title, total_count: total_count), method: "post", class: "btn btn-ai"
+            = form_with url: extract_company_info_path(industry_name: crowdwork.title), method: :post, html: { class: "extract-form" } do
+              = hidden_field_tag :count, "", id: "extract-count"
+              .square_btn
+                = link_to "AI抽出開始", "#", class: "btn btn-ai extract_button", data: { max: total_count, company: company }
           td.action-cell  
             .square_btn
               = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end), method: :get, class: "btn btn-default"
@@ -168,6 +169,49 @@ javascript:
       } else {
         allChecableBox.prop('indeterminate', false);
         allChecableBox.prop('checked', checkedExist);
+      }
+    });
+
+    var extract_button = $('.extract_button');
+    extract_button.click(function(e) {
+      e.preventDefault(); // 通常のリンク遷移を止める
+      const url = this.dataset.url;
+      const max = parseInt(this.dataset.max, 10) || 0;
+      if (max === 0) {
+        alert(`本日の抽出上限に達しています。`);
+        return;
+      }
+      const company = this.dataset.company;
+      const input = window.prompt(
+        `AI抽出を開始します。\n対象: ${company}\n抽出件数を入力（1〜${max}）`,
+        max
+      );
+
+      // キャンセル時
+      if (input === null) return;
+
+      const count = parseInt(input.trim(), 10);
+      if (!count || count < 1 || count > max) {
+        alert(`1〜${max} の数値を入力してください`);
+        return;
+      }
+
+      const $form = $(this).closest('form.extract-form');
+      if ($form.length === 0) {
+        console.error('対応する form が見つかりません');
+        return;
+      }
+
+      const $countField = $form.find('input[name="count"]');
+      $countField.val(count);
+
+      // 件数をクエリに追加して遷移
+      const formEl = $form.get(0);
+      if (formEl.requestSubmit) {
+        formEl.requestSubmit();
+      } else {
+        // 古いブラウザ向けフォールバック
+        $form.trigger('submit');
       }
     });
   });

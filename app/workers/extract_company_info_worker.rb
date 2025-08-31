@@ -17,7 +17,8 @@ class ExtractCompanyInfoWorker
                       .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                       .sum(:total_count)
       extract_tracking = ExtractTracking.find(id)
-      today_reamin = 500 - (today_total - extract_tracking.total_count)
+      daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
+      today_reamin = daily_limit - (today_total - extract_tracking.total_count)
       puts(today_reamin)
       if today_reamin == 0 || (extract_tracking.total_count > today_reamin)
         puts("AutoformSchedulerWorker: perform: today limit exceed")
