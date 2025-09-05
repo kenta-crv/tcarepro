@@ -5,7 +5,7 @@ class ExtractCompanyInfoWorker
   # 大量送信の耐久・耐性を確保
   sidekiq_options retry: 1, queue: 'default', backtrace: true
 
-  PYTHON_SCRIPT_PATH = Rails.root.join('extract_company_info', 'main.py').to_s
+  PYTHON_SCRIPT_PATH = Rails.root.join('extract_company_info', 'app.py').to_s
   PYTHON_EXECUTABLE = 'python3'  # システムのpython3を強制使用
 
   def perform(id)
@@ -36,45 +36,34 @@ class ExtractCompanyInfoWorker
         business = crowdwork.business || ""
         genre = customer.genre || ""
 
-        command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH] + [customer.company, customer.address, business, genre]
+        command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH]
+        payload = {
+          company: customer.company,
+          location: customer.address,
+          industry: business,
+          genre: genre
+        }
         begin
-          stdout, stderr, status = execute_python_with_timeout(command)
+          stdout, stderr, status = execute_python_with_timeout(command, payload.to_json)
           if status.success?
-            puts("start parse")
-            company = tel = address = first_name = url = contact_url = business = genre = "不明"
-            stdout.each_line do |raw|
-              puts(raw)
-              line = raw.to_s.strip.sub(/\A\s*[\-\*\u30fb・]\s*/, "")
-              case line
-              when /\A会社名[^:：]*[:：]\s*(.+)\z/i
-                company = $1.strip
-                
-              when /\A電話番号[^:：]*[:：]\s*(.+)\z/i
-                tel = $1.strip
-
-              when /\A住所[^:：]*[:：]\s*(.+)\z/i
-                address = $1.strip
-
-              when /\A代表者[^:：]*[:：]\s*(.+)\z/i
-                first_name = $1.strip
-              
-              when /\AURL[^:：]*[:：]\s*(.+)\z/i
-                url = $1.strip
-              # 「問い合わせ/お問い合わせ/お問い合わせ先」などの表記ゆれに対応しつつ、コロン直前は任意文字
-              when /\A(?:お?\s*問い合わせ|問い合わせ)\s*(?:先)?\s*URL[^:：]*[:：]\s*(\S+)\z/i
-                contact_url = $1.strip
-
-              when /\A業種[^:：]*[:：]\s*(.+)\z/i
-                business = $1.strip
-
-              when /\A事業内容[^:：]*[:：]\s*(.+)\z/i
-                if $1.strip == '不明'
-                  genre = ''
-                else
-                  genre = $1.strip
-                end
-              end
+            # JSONで受け取り、顧客情報を更新
+            data = JSON.parse(stdout) rescue nil
+            unless data.is_a?(Hash)
+              raise "invalid json stdout"
             end
+
+            company = data['company'].to_s
+            tel = data['tel'].to_s
+            address = data['address'].to_s
+            first_name = data['first_name'].to_s
+            url = data['url'].to_s
+            contact_url = data['contact_url'].to_s
+            business = data['business'].to_s
+            genre = data['genre'].to_s
+
+            # 事業内容が不明の場合は空文字を保存（従来の仕様）
+            genre = '' if genre == '不明'
+
             customer.update!(
               company: company,
               tel: tel,
@@ -115,11 +104,17 @@ class ExtractCompanyInfoWorker
     end
   end
 
-  def execute_python_with_timeout(command)
+  def execute_python_with_timeout(command, stdin_data)
     puts("python script start")
     require 'timeout'
     stdout, stderr, status = Timeout.timeout(300) do
-      Open3.capture3(*command)
+      # 環境変数を渡しつつ、JSONをstdinで投入
+      Open3.capture3(
+        { "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" },
+        *command,
+        stdin_data: stdin_data.encode("UTF-8"),
+      )
+
     end    
     [stdout, stderr, status]
   end
