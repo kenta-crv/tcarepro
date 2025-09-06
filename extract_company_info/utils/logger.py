@@ -3,13 +3,11 @@
 アプリ全体で共通利用するロガーを提供する。
 """
 
-from __future__ import annotations
-
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from settings import settings
+from models.settings import settings
 
 
 def get_logger() -> logging.Logger:

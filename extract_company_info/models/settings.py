@@ -7,7 +7,7 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     # Google API
     GOOGLE_API_KEY: str
+
+    EXCLUDE_DOMAINS: str = ""
 
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR / ".env"),

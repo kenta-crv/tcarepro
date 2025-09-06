@@ -27,3 +27,9 @@ unfixable = [
 
 [tool.ruff.lint.pylint]
 max-args = 6
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.pytest.ini_options]
+disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true

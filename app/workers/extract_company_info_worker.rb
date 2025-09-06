@@ -32,37 +32,44 @@ class ExtractCompanyInfoWorker
       success_count = extract_tracking.success_count
       failure_count = extract_tracking.failure_count
       customers.each do |customer|
+        required_businesses =
+          if crowdwork.business.present?
+            crowdwork.business.split(",")
+          else
+            []
+          end
 
-        business = crowdwork.business || ""
-        genre = customer.genre || ""
-
+        required_genre =
+          if crowdwork.genre.present?
+            crowdwork.genre.split(",")
+          else
+            []
+          end
         command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH]
         payload = {
+          customer_id: customer.id,
           company: customer.company,
           location: customer.address,
-          industry: business,
-          genre: genre
+          required_businesses: required_businesses,
+          required_genre: required_genre
         }
         begin
           stdout, stderr, status = execute_python_with_timeout(command, payload.to_json)
           if status.success?
             # JSONで受け取り、顧客情報を更新
-            data = JSON.parse(stdout) rescue nil
+            data = JSON.parse(stdout.strip) rescue nil
             unless data.is_a?(Hash)
               raise "invalid json stdout"
             end
 
-            company = data['company'].to_s
-            tel = data['tel'].to_s
-            address = data['address'].to_s
-            first_name = data['first_name'].to_s
-            url = data['url'].to_s
-            contact_url = data['contact_url'].to_s
-            business = data['business'].to_s
-            genre = data['genre'].to_s
-
-            # 事業内容が不明の場合は空文字を保存（従来の仕様）
-            genre = '' if genre == '不明'
+            company = data['data']['company'].to_s
+            tel = data['data']['tel'].to_s
+            address = data['data']['address'].to_s
+            first_name = data['data']['first_name'].to_s
+            url = data['data']['url'].to_s
+            contact_url = data['data']['contact_url'].to_s
+            business = data['data']['business'].to_s
+            genre = data['data']['genre'].to_s
 
             customer.update!(
               company: company,
