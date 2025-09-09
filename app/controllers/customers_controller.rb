@@ -121,64 +121,74 @@ def edit
   end
 end
 
-  def update
-    @customer = Customer.find(params[:id])
-  
-    if params[:commit] == '対象外リストとして登録'
-      @customer.skip_validation = true
-      @customer.status = "hidden"
-      @customer.save(validate: false)
-    end
-  
-    # admin または user がサインインしている場合、バリデーションをスキップ
-    if admin_signed_in? || user_signed_in?
-      @customer.skip_validation = true
-    end
-  
-    # 現在のフィルタ条件を考慮して次のdraft顧客を取得
-    @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
-  
-    if params[:industry_name].present?
-      @q = @q.where(industry: params[:industry_name])
-    end
-  
-    if params[:tel_filter] == "with_tel"
-      @q = @q.where.not("TRIM(tel) = ''")
-    elsif params[:tel_filter] == "without_tel"
-      @q = @q.where("TRIM(tel) = ''")
-    end
-  
-    @next_draft = @q.order(:id).first
-  
-    if @customer.update(customer_params)
-      if params[:commit] == '登録＋J Workメール送信'
-        @customer.reload 
-        CustomerMailer.teleapo_send_email(@customer, current_user).deliver_now
-        CustomerMailer.teleapo_reply_email(@customer, current_user).deliver_now
-      elsif params[:commit] == '資料送付'
-        @customer.reload 
-        CustomerMailer.document_send_email(@customer, current_user).deliver_now
-        CustomerMailer.document_reply_email(@customer, current_user).deliver_now
-      end
-      if worker_signed_in?
-        if @next_draft
-          redirect_to edit_customer_path(
-            id: @next_draft.id,
-            industry_name: params[:industry_name],
-            tel_filter: params[:tel_filter]
-          )
-        else
-          redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
-        end
-      else
-        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
-      end
-    else
-      render 'edit'
-    end
+def update
+  @customer = Customer.find(params[:id])
+
+  if params[:commit] == '対象外リストとして登録'
+    @customer.skip_validation = true
+    @customer.status = "hidden"
+    @customer.save(validate: false)
+
+  elsif params[:commit] == '公開して一覧へ'
+    @customer.status = nil
+    @customer.save(validate: false)
+
+    redirect_to customers_path(
+      q: params[:q]&.permit!,
+      industry_name: params[:industry_name],
+      tel_filter: params[:tel_filter]
+    ) and return
   end
 
-  def destroy
+  # admin または user がサインインしている場合、バリデーションをスキップ
+  if admin_signed_in? || user_signed_in?
+    @customer.skip_validation = true
+  end
+
+  # 現在のフィルタ条件を考慮して次のdraft顧客を取得
+  @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
+
+  if params[:industry_name].present?
+    @q = @q.where(industry: params[:industry_name])
+  end
+
+  if params[:tel_filter] == "with_tel"
+    @q = @q.where.not("TRIM(tel) = ''")
+  elsif params[:tel_filter] == "without_tel"
+    @q = @q.where("TRIM(tel) = ''")
+  end
+
+  @next_draft = @q.order(:id).first
+
+  if @customer.update(customer_params)
+    if params[:commit] == '登録＋J Workメール送信'
+      @customer.reload 
+      CustomerMailer.teleapo_send_email(@customer, current_user).deliver_now
+      CustomerMailer.teleapo_reply_email(@customer, current_user).deliver_now
+    elsif params[:commit] == '資料送付'
+      @customer.reload 
+      CustomerMailer.document_send_email(@customer, current_user).deliver_now
+      CustomerMailer.document_reply_email(@customer, current_user).deliver_now
+    end
+    if worker_signed_in?
+      if @next_draft
+        redirect_to edit_customer_path(
+          id: @next_draft.id,
+          industry_name: params[:industry_name],
+          tel_filter: params[:tel_filter]
+        )
+      else
+        redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
+      end
+    else
+      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+    end
+  else
+    render 'edit'
+  end
+end
+
+def destroy
     @customer = Customer.find(params[:id])
     @customer.destroy
     redirect_to customers_path

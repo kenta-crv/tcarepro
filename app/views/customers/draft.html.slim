@@ -92,16 +92,7 @@
     = submit_tag '一括削除（社名）', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;', data: { confirm: '本当に削除しますか？' }
 
   table[width="100%" cellpadding="0" cellspacing="0"]
-     col[width="3%"]
-     col[width="25%"]
-     col[width="8%"]
-     col[width="13%"]
-     col[width="5%"]
-     col[width="7%"]
-     col[width="10%"]
-     col[width="10%"]
-     col[width="5%"]
-     col[width="10%"]
+
      thead
        tr
          th
@@ -109,9 +100,9 @@
          th
            | 会社名
          th
-           = link_to 'tel_within', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel', period_start: @period_start, period_end: @period_end)
+           = link_to 'Check', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel', period_start: @period_start, period_end: @period_end)
            br/
-           = link_to 'tel_without', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel', period_start: @period_start, period_end: @period_end)
+           = link_to 'Draft', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel', period_start: @period_start, period_end: @period_end)
          th
            | 住所
          th
@@ -125,7 +116,9 @@
          th
            | 担当者
          th
-           | 作成日
+           | インポート日
+         th
+           | アップデート日
      - @customers.each do |customer|
        tr
          td
@@ -147,7 +140,9 @@
          td
            = customer.worker&.user_name
          td
-           = customer&.created_at.strftime("%m月%d日 %H時%M分")
+           = customer&.created_at.strftime("%m月%d日%H時%M分")
+         td
+           = customer&.updated_at.strftime("%m月%d日%H時%M分")
      tr
        th[colspan="10"]
          = paginate @customers
