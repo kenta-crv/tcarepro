@@ -1,6 +1,6 @@
 class SendersController < ApplicationController
-  before_action :authenticate_worker_or_admin!, except: [:show]
-  before_action :set_sender, only: [:edit, :update]
+  before_action :authenticate_admin!
+  before_action :set_sender, only: [:show, :edit, :update, :destroy]
 
   def index
     @senders = Sender.all
@@ -30,7 +30,6 @@ class SendersController < ApplicationController
                                         .where.not(contact_url: [nil, ''])
                                         .count
       
-      # エラー数（真のエラーのみ）
       error_count = contact_trackings.where(status: [
         'CAPTCHA detected - requires manual intervention',
         '自動送信エラー',
@@ -52,19 +51,17 @@ class SendersController < ApplicationController
     end
   end
 
-
-
-
   def show
-    @call
+    @sender = Sender.find(params[:id])
     @form = SenderForm.new(
-      sender: Sender.find_by(params[:id]),
+      sender: @sender,
       year: params[:year]&.to_i || Time.zone.now.year,
       month: params[:month]&.to_i || Time.zone.now.month,
     )
-    @data = AutoformResult.where(sender_id:params[:id])
+    @data = AutoformResult.where(sender_id: params[:id])
   end
 
+<<<<<<< HEAD
   def edit
   end
 
@@ -74,22 +71,45 @@ class SendersController < ApplicationController
     else
       render 'edit'
     end
+=======
+  def new
+    @sender = Sender.new
+  end
+
+  def edit
+>>>>>>> Auto_form fixed
+  end
+
+  def create
+    @sender = Sender.new(sender_params)
+
+    if @sender.save
+      redirect_to @sender, notice: 'Sender was successfully created.'
+    else
+      render :new
+    end
+  end
+
+  def update
+    if @sender.update(sender_params)
+      redirect_to @sender, notice: 'Sender was successfully updated.'
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @sender.destroy
+    redirect_to senders_url, notice: 'Sender was successfully destroyed.'
   end
 
   private
-
-  def sender_params
-    params.require(:sender).permit(:user_name, :rate_limit, :email, :url)
-  end
-  # rate_limit delete
 
   def set_sender
     @sender = Sender.find(params[:id])
   end
 
-  def authenticate_worker_or_admin!
-    unless worker_signed_in? || admin_signed_in?
-       redirect_to new_worker_session_path, alert: 'error'
-    end
+  def sender_params
+    params.require(:sender).permit(:user_name, :email, :password, :password_confirmation, :rate_limit, :default_inquiry_id, :url)
   end
 end

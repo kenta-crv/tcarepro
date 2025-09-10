@@ -135,3 +135,5 @@ gem 'sidekiq-cron'
 gem 'open3'
 
 gem 'net-imap', '~>0.3.9'
+
+gem 'rest-client'
