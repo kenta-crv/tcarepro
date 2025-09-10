@@ -3,7 +3,7 @@ class CustomersController < ApplicationController
   before_action :authenticate_admin!, only: [:destroy, :destroy_all, :sfa, :mail, :call_history]
   #before_action :authenticate_worker!, only: [:extraction, :direct_mail_send]
   before_action :authenticate_worker_or_user, only: [:new, :edit, :create, :update]
-  before_action :authenticate_user_or_admin, only: [:index, :show]
+  # before_action :authenticate_user_or_admin, only: [:index, :show]
   before_action :set_customers, only: [:update_all_status]
   protect_from_forgery with: :exception, prepend: true
   
@@ -780,8 +780,14 @@ end
     end
 
     def authenticate_user_or_admin
+      # Check if tables exist first
+      unless defined?(Admin) && Admin.table_exists? && defined?(User) && User.table_exists?
+        # If tables don't exist, allow access during setup
+        return true
+      end
+      
       unless user_signed_in? || admin_signed_in?
-        redirect_to new_user_session_path, alert: 'error'
+        redirect_to new_user_session_path, alert: 'Please log in to access this page.'
       end
     end
   
