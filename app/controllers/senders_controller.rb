@@ -25,6 +25,11 @@ class SendersController < ApplicationController
                                         .where.not(contact_url: [nil, ''])
                                         .count
       
+      # 実送信数（contact_urlがあり、かつ送信済み）
+      unactual_sent_count = contact_trackings.where(status: '送信不可')
+                                        .where.not(contact_url: [nil, ''])
+                                        .count
+      
       # エラー数（真のエラーのみ）
       error_count = contact_trackings.where(status: [
         'CAPTCHA detected - requires manual intervention',
@@ -36,6 +41,7 @@ class SendersController < ApplicationController
       @sender_stats[sender.id] = {
         total: total_customers,
         unsent: unsent_count,  # 追加
+        unsent2: unactual_sent_count,
         sent: sent_count,
         form_exists: form_exists_count,
         actual_sent: actual_sent_count,
@@ -59,16 +65,16 @@ class SendersController < ApplicationController
     @data = AutoformResult.where(sender_id:params[:id])
   end
 
-  #def edit
-  #end
+  def edit
+  end
 
-  #def update
-   # if @sender.update(sender_params)
-   #   redirect_to senders_path
-   # else
-   #   render 'edit'
-   # end
-  #end
+  def update
+    if @sender.update(sender_params)
+      redirect_to senders_path
+    else
+      render 'edit'
+    end
+  end
 
   private
 
