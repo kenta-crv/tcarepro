@@ -1,0 +1,3 @@
+input_company,input_location,input_required_businesses,input_required_genre,expected_company,expected_address,expected_tel,expected_business,expected_genre,expected_url,expected_first_name,expected_contact_url
+佐藤木材工業株式会社,北海道 遠軽町 丸瀬布駅 車50分,,,,,,,,,,
+社会福祉法人敬寿会,山形県山形市,介護,介護,,,,,,,,
