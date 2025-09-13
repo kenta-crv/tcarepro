@@ -2,7 +2,7 @@ FROM python:3.9
 
 WORKDIR /app
 
-# Install Chromium and dependencies
+# Install system dependencies including Chromium AND SQLite tools
 RUN apt-get update && apt-get install -y \
     chromium \
     chromium-driver \
