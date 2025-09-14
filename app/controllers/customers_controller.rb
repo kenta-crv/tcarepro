@@ -116,7 +116,7 @@ def edit
   end
 
   if worker_signed_in?
-    @q = Customer.where(status: "draft").where("TRIM(tel) = ''")
+    @q = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where("TRIM(tel) = ''")
     @customers = @q.ransack(params[:q]).result.page(params[:page]).per(100)
   end
 end
@@ -480,13 +480,13 @@ def destroy
     # Adminを優先した条件分岐
     @customers = case
     when admin_signed_in? && params[:tel_filter] == "with_tel"
-      Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+      Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where.not(tel: [nil, '', ' '])
     when admin_signed_in? && params[:tel_filter] == "without_tel"
-      Customer.where(status: "draft").where(tel: [nil, '', ' '])
+      Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where(tel: [nil, '', ' '])
     when worker_signed_in?
-      Customer.where(status: "draft").where(tel: [nil, '', ' '])
+      Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where(tel: [nil, '', ' '])
     else
-      Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+      Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where.not(tel: [nil, '', ' '])
     end
 
     # 期間でフィルタ（未指定なら全期間）
@@ -499,8 +499,8 @@ def destroy
     end
 
     # タイトルごとの件数を計算
-    tel_with_scope = Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
-    tel_without_scope = Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    tel_with_scope = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where(tel: [nil, '', ' '])
     if range_start && range_end
       tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
       tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
@@ -515,14 +515,25 @@ def destroy
     tel_without_counts = tel_without_scope.group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
-      latest_tracking = ExtractTracking.where(industry: crowdwork.title)
-                                 .order(id: :desc)
-                                 .first
-      success_count = latest_tracking&.success_count.to_i
-      failure_count = latest_tracking&.failure_count.to_i
-      total_count   = latest_tracking&.total_count.to_i
+      count = ExtractTracking.where(industry: crowdwork.title).where(status: "抽出待ち").count
+      is_extract_wait = count >= 1
+      extract_count = Customer
+        .where(industry: crowdwork.title)
+        .where(status: ["ai_success", "ai_failed", "ai_extracting"])
+        .group(:status)
+        .count
+      success_count = extract_count["ai_success"].to_i
+      failure_count = extract_count["ai_failed"].to_i
+      total_count   = success_count + failure_count + extract_count["ai_extracting"].to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
+      if extract_count["ai_extracting"].to_i > 0
+        status = "抽出中"
+      elsif is_extract_wait
+        status = "抽出待ち"
+      else
+        status = "抽出完了"
+      end
       hash[crowdwork.title] = {
         tel_with: tel_with_counts[crowdwork.title] || 0,
         tel_without: tel_without_counts[crowdwork.title] || 0,
@@ -530,7 +541,7 @@ def destroy
         failure_count: failure_count,
         total_count: total_count,
         rate: rate,
-        status: latest_tracking&.status || "抽出前"
+        status: status || "抽出前"
       }
     end
 
@@ -556,8 +567,14 @@ def destroy
       total_count:    total_count,
       success_count:  0,
       failure_count:  0,
-      status:         "抽出中"
+      status:         "抽出待ち"
     )
+    customers = Customer.where(status: "draft").where(tel: [nil, '', ' ']).where(industry: tracking.industry).limit(tracking.total_count)
+    customers.each do |customer|
+      customer.update_columns(
+        status: 'ai_extracting'
+      )
+    end
     ExtractCompanyInfoWorker.perform_async(tracking.id)
     redirect_to draft_path
   end
@@ -611,7 +628,7 @@ def destroy
 
     # タイトルによるフィルタリング
     industry_name = params[:industry_name]
-    base_query = Customer.where(status: "draft")
+    base_query = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"])
     if range_start && range_end
       base_query = base_query.where(created_at: range_start..range_end)
     elsif range_start
@@ -634,8 +651,8 @@ def destroy
     end
 
     # タイトルごとの件数を計算（期間条件があれば適用）
-    tel_with_scope = Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
-    tel_without_scope = Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    tel_with_scope = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where(tel: [nil, '', ' '])
     if range_start && range_end
       tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
       tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
@@ -648,16 +665,26 @@ def destroy
     end
     tel_with_counts = tel_with_scope.group(:industry).count
     tel_without_counts = tel_without_scope.group(:industry).count
-
+    count = ExtractTracking.where(industry: industry_name).where(status: "抽出待ち").count
+    is_extract_wait = count >= 1
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
-      latest_tracking = ExtractTracking.where(industry: crowdwork.title)
-                                 .order(id: :desc)
-                                 .first
-      success_count = latest_tracking&.success_count.to_i
-      failure_count = latest_tracking&.failure_count.to_i
-      total_count   = latest_tracking&.total_count.to_i
+      extract_count = Customer
+        .where(industry: crowdwork.title)
+        .where(status: ["ai_success", "ai_failed", "ai_extracting"])
+        .group(:status)
+        .count
+      success_count = extract_count["ai_success"].to_i
+      failure_count = extract_count["ai_failed"].to_i
+      total_count   = success_count + failure_count + extract_count["ai_extracting"].to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
+      if extract_count["ai_extracting"].to_i > 0
+        status = "抽出中"
+      elsif is_extract_wait
+        status = "抽出待ち"
+      else
+        status = "抽出完了"
+      end
       hash[crowdwork.title] = {
         tel_with: tel_with_counts[crowdwork.title] || 0,
         tel_without: tel_without_counts[crowdwork.title] || 0,
@@ -665,7 +692,7 @@ def destroy
         failure_count: failure_count,
         total_count: total_count,
         rate: rate,
-        status: latest_tracking&.status || "抽出前"
+        status: status || "抽出前"
       }
     end
 

@@ -30,7 +30,7 @@ async def _acrawl_markdown(url: str, depth: int = 0) -> str:
     # 設定を生成（深さに応じてディープクロールを有効化）
     deep_strategy = None
     if depth and depth >= 1:
-        deep_strategy = BFSDeepCrawlStrategy(max_depth=depth, max_pages=10)
+        deep_strategy = BFSDeepCrawlStrategy(max_depth=depth, max_pages=5)
 
     config = CrawlerRunConfig(
         deep_crawl_strategy=deep_strategy,

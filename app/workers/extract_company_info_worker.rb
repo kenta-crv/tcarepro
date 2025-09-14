@@ -27,33 +27,38 @@ class ExtractCompanyInfoWorker
         return
       end
       # 実行
-      customers = Customer.where(status: "draft").where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
+      customers = Customer.where(status: "ai_extracting").where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
+      # ステータス更新
+      extract_tracking.update(
+        status: "抽出中"
+      )
       crowdwork = Crowdwork.find_by(title: extract_tracking.industry)
       success_count = extract_tracking.success_count
       failure_count = extract_tracking.failure_count
       customers.each do |customer|
-        required_businesses =
-          if crowdwork.business.present?
-            crowdwork.business.split(",")
-          else
-            []
-          end
-
-        required_genre =
-          if crowdwork.genre.present?
-            crowdwork.genre.split(",")
-          else
-            []
-          end
-        command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH]
-        payload = {
-          customer_id: customer.id,
-          company: customer.company,
-          location: customer.address,
-          required_businesses: required_businesses,
-          required_genre: required_genre
-        }
         begin
+          required_businesses =
+            if crowdwork.business.present?
+              crowdwork.business.split(",")
+            else
+              []
+            end
+
+          required_genre =
+            if crowdwork.genre.present?
+              crowdwork.genre.split(",")
+            else
+              []
+            end
+          command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH]
+          payload = {
+            customer_id: customer.id,
+            company: customer.company,
+            location: customer.address,
+            required_businesses: required_businesses,
+            required_genre: required_genre
+          }
+
           stdout, stderr, status = execute_python_with_timeout(command, payload.to_json)
           if status.success?
             # JSONで受け取り、顧客情報を更新
@@ -79,7 +84,8 @@ class ExtractCompanyInfoWorker
               url: url,
               contact_url: contact_url,
               business: business,
-              genre: genre
+              genre: genre,
+              status: 'ai_success'
             )
             success_count += 1
             extract_tracking.update(
@@ -98,6 +104,9 @@ class ExtractCompanyInfoWorker
           failure_count += 1
           extract_tracking.update(
             failure_count: failure_count,
+          )
+          customer.update_columns(
+            status: 'ai_failed'
           )
         end
       end

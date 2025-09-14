@@ -25,7 +25,9 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_url.yaml"), encoding="utf-8")
 
     # LLM（検索ツール有効）を呼び出し
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0, google_api_key=settings.GOOGLE_API_KEY)
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash", temperature=0, google_api_key=settings.GOOGLE_API_KEY
+    )
     resp = llm.invoke(
         prompt.format(company=state.company, location=state.location),
         tools=[GenAITool(google_search={})],
@@ -79,7 +81,9 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
         markdown = crawl_markdown(url)
         web_context += f"""# {url}\n{markdown}\n"""
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/select_official.yaml"), encoding="utf-8")
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0, google_api_key=settings.GOOGLE_API_KEY).with_structured_output(
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash-lite", temperature=0, google_api_key=settings.GOOGLE_API_KEY
+    ).with_structured_output(
         URLScoreList,
     )
     resp: URLScoreList = llm.invoke(
@@ -112,7 +116,9 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     web_context = crawl_markdown(url, depth=1)
 
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_contact.yaml"), encoding="utf-8")
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0, google_api_key=settings.GOOGLE_API_KEY).with_structured_output(
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash", temperature=0, google_api_key=settings.GOOGLE_API_KEY
+    ).with_structured_output(
         CompanyInfo,
     )
     resp: CompanyInfo = llm.invoke(

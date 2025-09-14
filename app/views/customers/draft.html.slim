@@ -61,7 +61,7 @@
                 | (#{processed}/#{total_tracking})
 
           td.action-cell
-            = form_with url: extract_company_info_path(industry_name: crowdwork.title), method: :post, html: { class: "extract-form" } do
+            = form_with url: extract_company_info_path(industry_name: crowdwork.title), method: :post, local: true, html: { class: "extract-form" } do
               = hidden_field_tag :count, "", id: "extract-count"
               .square_btn
                 = link_to "AI抽出開始", "#", class: "btn btn-ai extract_button", data: { max: total_count, company: company }
@@ -116,6 +116,8 @@
          th
            | 担当者
          th
+           | ステータス
+         th
            | インポート日
          th
            | アップデート日
@@ -139,6 +141,8 @@
            = truncate(customer&.contact_url, length: 15)
          td
            = customer.worker&.user_name
+         td
+           = customer&.status
          td
            = customer&.created_at.strftime("%m月%d日%H時%M分")
          td
@@ -246,7 +250,7 @@ javascript:
     }
 
     // 5秒ごとにポーリング
-    setInterval(pollProgress, 5000);
+    setInterval(pollProgress, 30000);
     // 初回即時実行
     pollProgress();
   });
