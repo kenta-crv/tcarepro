@@ -1,6 +1,7 @@
 - set_meta_tags noindex: true
 / ===================== 抽出管理画面（追加） =====================
 .tops-wrapper
+ -  if admin_signed_in?
   h2.headline AI抽出
 
   .extraction-header
@@ -31,6 +32,7 @@
         th Status
         th 
         th
+        th 
     tbody
       - @crowdworks.each do |crowdwork|
         - company       = crowdwork.title
@@ -63,11 +65,17 @@
           td.action-cell
             = form_with url: extract_company_info_path(industry_name: crowdwork.title), method: :post, local: true, html: { class: "extract-form" } do
               = hidden_field_tag :count, "", id: "extract-count"
-              .square_btn
-                = link_to "AI抽出開始", "#", class: "btn btn-ai extract_button", data: { max: total_count, company: company }
+              = link_to "AI抽出開始", "#", class: "btn btn-success", data: { max: total_count, company: company }
+              |(
+              = success_count
+              |)
           td.action-cell  
-            .square_btn
-              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end, anchor: 'draft-list'), method: :get, class: "btn btn-default"
+              = link_to "リスト制作開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end), method: :get, class: "btn btn-success"
+              |(
+              = fail_count
+              |)
+          td.action-cell  
+            = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end, anchor: 'draft-list'), method: :get, class: "btn btn-success"
 
 
 .tops-wrapper
