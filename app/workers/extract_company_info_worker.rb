@@ -126,7 +126,7 @@ class ExtractCompanyInfoWorker
   def execute_python_with_timeout(command, stdin_data)
     puts("python script start")
     require 'timeout'
-    stdout, stderr, status = Timeout.timeout(300) do
+    stdout, stderr, status = Timeout.timeout(600) do
       # 環境変数を渡しつつ、JSONをstdinで投入
       Open3.capture3(
         { "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" },
