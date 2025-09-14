@@ -116,7 +116,7 @@ def edit
   end
 
   if worker_signed_in?
-    @q = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where("TRIM(tel) = ''")
+    @q = Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where("TRIM(tel) = ''")
     @customers = @q.ransack(params[:q]).result.page(params[:page]).per(100)
   end
 end
@@ -480,13 +480,13 @@ def destroy
     # Adminを優先した条件分岐
     @customers = case
     when admin_signed_in? && params[:tel_filter] == "with_tel"
-      Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where.not(tel: [nil, '', ' '])
+      Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where.not(tel: [nil, '', ' '])
     when admin_signed_in? && params[:tel_filter] == "without_tel"
-      Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where(tel: [nil, '', ' '])
+      Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where(tel: [nil, '', ' '])
     when worker_signed_in?
-      Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where(tel: [nil, '', ' '])
+      Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where(tel: [nil, '', ' '])
     else
-      Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where.not(tel: [nil, '', ' '])
+      Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where.not(tel: [nil, '', ' '])
     end
 
     # 期間でフィルタ（未指定なら全期間）
@@ -499,8 +499,8 @@ def destroy
     end
 
     # タイトルごとの件数を計算
-    tel_with_scope = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where.not(tel: [nil, '', ' '])
-    tel_without_scope = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where(tel: [nil, '', ' '])
+    tel_with_scope = Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where(tel: [nil, '', ' '])
     if range_start && range_end
       tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
       tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
@@ -519,15 +519,15 @@ def destroy
       is_extract_wait = count >= 1
       extract_count = Customer
         .where(industry: crowdwork.title)
-        .where(status: ["ai_success", "ai_failed", "ai_extracting"])
+        .where(status: [ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')])
         .group(:status)
         .count
-      success_count = extract_count["ai_success"].to_i
-      failure_count = extract_count["ai_failed"].to_i
-      total_count   = success_count + failure_count + extract_count["ai_extracting"].to_i
+      success_count = extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success')].to_i
+      failure_count = extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')].to_i
+      total_count   = success_count + failure_count + extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')].to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
-      if extract_count["ai_extracting"].to_i > 0
+      if extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')].to_i > 0
         status = "抽出中"
       elsif is_extract_wait
         status = "抽出待ち"
@@ -572,7 +572,7 @@ def destroy
     customers = Customer.where(status: "draft").where(tel: [nil, '', ' ']).where(industry: tracking.industry).limit(tracking.total_count)
     customers.each do |customer|
       customer.update_columns(
-        status: 'ai_extracting'
+        status: ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')
       )
     end
     ExtractCompanyInfoWorker.perform_async(tracking.id)
@@ -628,7 +628,7 @@ def destroy
 
     # タイトルによるフィルタリング
     industry_name = params[:industry_name]
-    base_query = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"])
+    base_query = Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')])
     if range_start && range_end
       base_query = base_query.where(created_at: range_start..range_end)
     elsif range_start
@@ -651,8 +651,8 @@ def destroy
     end
 
     # タイトルごとの件数を計算（期間条件があれば適用）
-    tel_with_scope = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where.not(tel: [nil, '', ' '])
-    tel_without_scope = Customer.where(status: ["draft", "ai_success", "ai_failed", "ai_extracting"]).where(tel: [nil, '', ' '])
+    tel_with_scope = Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: ["draft", ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]).where(tel: [nil, '', ' '])
     if range_start && range_end
       tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
       tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
@@ -670,15 +670,15 @@ def destroy
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
       extract_count = Customer
         .where(industry: crowdwork.title)
-        .where(status: ["ai_success", "ai_failed", "ai_extracting"])
+        .where(status: [ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')])
         .group(:status)
         .count
-      success_count = extract_count["ai_success"].to_i
-      failure_count = extract_count["ai_failed"].to_i
-      total_count   = success_count + failure_count + extract_count["ai_extracting"].to_i
+      success_count = extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success')].to_i
+      failure_count = extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')].to_i
+      total_count   = success_count + failure_count + extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')].to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
-      if extract_count["ai_extracting"].to_i > 0
+      if extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')].to_i > 0
         status = "抽出中"
       elsif is_extract_wait
         status = "抽出待ち"

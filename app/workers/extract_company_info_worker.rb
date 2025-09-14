@@ -27,7 +27,7 @@ class ExtractCompanyInfoWorker
         return
       end
       # 実行
-      customers = Customer.where(status: "ai_extracting").where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
+      customers = Customer.where(status: ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')).where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
       # ステータス更新
       extract_tracking.update(
         status: "抽出中"
@@ -85,7 +85,7 @@ class ExtractCompanyInfoWorker
               contact_url: contact_url,
               business: business,
               genre: genre,
-              status: 'ai_success'
+              status: ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success')
             )
             success_count += 1
             extract_tracking.update(
@@ -95,6 +95,9 @@ class ExtractCompanyInfoWorker
             failure_count += 1
             extract_tracking.update(
               failure_count: failure_count,
+            )
+            customer.update_columns(
+              status: ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')
             )
             puts("ExtractCompanyInfoWorker: Python script execution failed for customer ID #{customer.id}. Exit status: #{status.exitstatus}")
             puts(stderr)
@@ -106,7 +109,7 @@ class ExtractCompanyInfoWorker
             failure_count: failure_count,
           )
           customer.update_columns(
-            status: 'ai_failed'
+            status: ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')
           )
         end
       end

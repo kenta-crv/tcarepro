@@ -34,7 +34,7 @@
     tbody
       - @crowdworks.each do |crowdwork|
         - company       = crowdwork.title
-        - import_count  = @industry_counts[crowdwork.title][:tel_without] - @industry_counts[crowdwork.title][:tel_with]
+        - import_count  = @industry_counts[crowdwork.title][:tel_without]
         - success_count =  @industry_counts[crowdwork.title][:success_count]
         - fail_count    =  @industry_counts[crowdwork.title][:failure_count]
         - rate_txt      =  "#{(@industry_counts[crowdwork.title][:rate].to_f.round(2))}%"
@@ -151,7 +151,8 @@
        th[colspan="10"]
          = paginate @customers
 
- 
+
+- refresh_interval = ENV.fetch('EXTRACT_PAGE_REFRESH_INTERVAL', '30000').to_i 
 
 javascript:
   $(function() {
@@ -250,7 +251,7 @@ javascript:
     }
 
     // 5秒ごとにポーリング
-    setInterval(pollProgress, 30000);
+    setInterval(pollProgress, #{refresh_interval});
     // 初回即時実行
     pollProgress();
   });

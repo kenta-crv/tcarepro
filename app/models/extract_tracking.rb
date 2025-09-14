@@ -13,13 +13,13 @@ class ExtractTracking < ApplicationRecord
   def progress_payload
     extract_count = Customer
       .where(industry: industry)
-      .where(status: ["ai_success", "ai_failed", "ai_extracting"])
+      .where(status: [ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'), ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'), ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')])
       .group(:status)
       .count
-    success_count_t = extract_count["ai_success"].to_i
-    failure_count_t = extract_count["ai_failed"].to_i
-    total_count_t   = success_count_t + failure_count_t + extract_count["ai_extracting"].to_i
-    if extract_count["ai_extracting"].to_i > 0
+    success_count_t = extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success')].to_i
+    failure_count_t = extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')].to_i
+    total_count_t   = success_count_t + failure_count_t + extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')].to_i
+    if extract_count[ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')].to_i > 0
       status_t = "抽出中"
     else
       status_t = "抽出完了"
