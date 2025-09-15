@@ -1,3 +1,4 @@
+import random
 import re
 
 from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
@@ -26,7 +27,9 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
 
     # LLM（検索ツール有効）を呼び出し
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", temperature=0, google_api_key=settings.GOOGLE_API_KEY
+        model="gemini-2.5-flash-lite",
+        temperature=0,
+        google_api_key=settings.GOOGLE_API_KEY,
     )
     resp = llm.invoke(
         prompt.format(company=state.company, location=state.location),
@@ -81,8 +84,13 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
         markdown = crawl_markdown(url)
         web_context += f"""# {url}\n{markdown}\n"""
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/select_official.yaml"), encoding="utf-8")
+    r = random.randint(0, 4)  # noqa: S311
+    models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-pro"]
+    model = models[r % 3]
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash-lite", temperature=0, google_api_key=settings.GOOGLE_API_KEY
+        model=model,
+        temperature=0,
+        google_api_key=settings.GOOGLE_API_KEY,
     ).with_structured_output(
         URLScoreList,
     )
@@ -117,7 +125,9 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
 
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_contact.yaml"), encoding="utf-8")
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", temperature=0, google_api_key=settings.GOOGLE_API_KEY
+        model="gemini-2.5-flash-lite",
+        temperature=0,
+        google_api_key=settings.GOOGLE_API_KEY,
     ).with_structured_output(
         CompanyInfo,
     )
