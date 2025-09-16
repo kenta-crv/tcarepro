@@ -20,9 +20,13 @@
       <td> <%= f.text_field :user_name %></td>
     </tr>
     <tr>
-       <th>クラウドワークスワークナンバー<span class="label label-blue">必須</span></br>
-             <small>48276214（8桁）</small></th>
-      <td> <%= f.text_field :number_code %></td>
+        <th>クラウドワークスワークナンバー<span class="label label-blue">必須</span></br>
+              <small>48276214（8 or 9桁）</small></th>
+        <td> 
+              <%= f.text_field :number_code, id: "cloudwork_number" %>
+              <br>
+              <button type="button" id="search_button">クリックしてエラーが表示されなければOK</button>
+        </td>
     </tr>
     <tr>
         <th>今回の業務内容<span class="label label-blue">必須</span></br>
@@ -66,3 +70,22 @@
     <td> <%= link_to "戻る", :back, class:"btn btn-success" %></td>
   </tr>
 </table>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const searchButton = document.getElementById("search_button");
+    const numberInput = document.getElementById("cloudwork_number");
+
+    searchButton.addEventListener("click", function() {
+      const number = numberInput.value.trim();
+      if (number) {
+        const url = `https://crowdworks.jp/proposals/${encodeURIComponent(number)}`;
+        window.open(url, '_blank');
+      } else {
+        alert("クラウドワークナンバーを入力してください。");
+      }
+    });
+  });
+</script>

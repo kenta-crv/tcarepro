@@ -56,8 +56,12 @@ Rails.application.routes.draw do
   end
   resources :crowdworks
 
+<<<<<<< HEAD
   resource :sender, only: [:show]
   
+=======
+  #resource :sender, only: [:show]
+>>>>>>> 08d1dbaf9e2c6e1c34e88f01cf1c3930bb3b6e9f
   #センダーアカウント
   devise_for :senders, controllers: {
     registrations: 'senders/registrations'
@@ -69,7 +73,7 @@ Rails.application.routes.draw do
   
   # Senders with okurite routes - FIXED ROUTE HELPERS
   resources :senders, only: [:index, :show, :edit, :update] do
-    resources :inquiries, except: [:index, :show, :edit, :update, :destroy] do
+    resources :inquiries, only: [:new, :create, :edit, :update, :default] do
       put :default, to: 'inquiries#default'
     end
     
@@ -110,7 +114,11 @@ Rails.application.routes.draw do
   get 'draft' => 'customers#draft' #締め
   get 'draft/filter_by_industry', to: 'customers#filter_by_industry', as: 'filter_by_industry'
   post 'draft/extract_company_info', to: 'customers#extract_company_info', as: 'extract_company_info'
+<<<<<<< HEAD
   
+=======
+  get 'draft/progress', to: 'customers#extract_progress', as: 'extract_progress'
+>>>>>>> 08d1dbaf9e2c6e1c34e88f01cf1c3930bb3b6e9f
   #showからのメール送信
   match 'customers/:id/send_email', to: 'customers#send_email', via: [:get, :post], as: 'send_email_customer'
 

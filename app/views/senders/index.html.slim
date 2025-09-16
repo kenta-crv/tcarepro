@@ -5,23 +5,27 @@
     thead
       tr
         th 取引先企業名
-        th 総顧客数
         th 送信数
-        th 送信率
-        th フォーム存在数
-        th 実送信率
-        th エラー数
+        th 送信不可
+        th 送信エラー
+        th 送信成功率
         th アクション
+        th 送信内容編集
     tbody
       - @senders.each do |sender|
         - stats = @sender_stats[sender.id] || {}
         tr
-          td = sender.user_name
-          td = stats[:total] || 0
+          td = link_to sender.user_name, edit_sender_path(sender)
           td = stats[:sent] || 0
-          td = "#{stats[:send_rate] || 0}%"
-          td = stats[:form_exists] || 0
-          td = "#{stats[:actual_rate] || 0}%"
-          td = stats[:error] || 0
+          td = stats[:unsent2] || 0
+          td = stats[:error_count] || 0
+      
+          - sent = stats[:sent] || 0
+          - unsent2 = stats[:unsent2] || 0
+          - error = stats[:error_count] || 0
+          td  = "#{((sent.to_f) / (sent + unsent2 + error) * 100).round(1)}%"
           td
             = link_to '送信業務開始', sender_okurite_index_path(sender), class: "btn btn-success"
+          td 
+            - sender.inquiries.each do |inquiry|
+              = link_to '編集', edit_sender_inquiry_path(sender, inquiry), class: "btn btn-warning"

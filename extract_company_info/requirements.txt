@@ -1,2 +1,7 @@
 google-genai
 python-dotenv
+pydantic
+pydantic-settings
+langchain-google-genai
+crawl4ai==0.6.3
+langgraph
