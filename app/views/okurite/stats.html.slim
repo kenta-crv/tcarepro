@@ -1,0 +1,76 @@
+- set_meta_tags noindex: true
+
+.tops-wrapper
+  .headline
+    | 自動送信統計
+
+  .row
+    .col-md-6
+      .card
+        .card-header
+          | 送信成功率
+        .card-body
+          - success_rate = @success_count.to_f / [@total_count, 1].max * 100
+          h2.card-text
+            = number_to_percentage(success_rate, precision: 1)
+          p.card-text
+            | 成功: #{@success_count} / 総送信: #{@total_count}
+
+    .col-md-6
+      .card
+        .card-header
+          | 直近の送信状況
+        .card-body
+          - if @recent_submissions.any?
+            table.table
+              thead
+                tr
+                  th 日時
+                  th 企業名
+                  th ステータス
+              tbody
+                - @recent_submissions.each do |submission|
+                  tr
+                    td = submission.created_at.strftime('%Y-%m-%d %H:%M')
+                    td = submission.customer&.company || 'Unknown Company'
+                    td = submission.status
+          - else
+            p 送信記録がありません
+
+  .row.mt-4
+    .col-12
+      .card
+        .card-header
+          | 日別送信統計
+        .card-body
+          canvas id="dailyStatsChart" width="400" height="200"
+
+  javascript:
+    $(function() {
+      var ctx = document.getElementById('dailyStatsChart').getContext('2d');
+      var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: #{raw @daily_stats.keys.to_json},
+          datasets: [{
+            label: '成功率',
+            data: #{raw @daily_stats.values.map { |v| (v[:success].to_f / [v[:total], 1].max * 100).round(1) }.to_json},
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: function(value) {
+                  return value + '%';
+                }
+              }
+            }
+          }
+        }
+      });
+    });

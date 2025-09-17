@@ -36,9 +36,9 @@
         tr
           td
             - if customer.company != nil
-              = link_to customer.company, sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
+              = link_to customer.company, preview_sender_okurite_path(sender_id: params[:sender_id], id: customer.id, q: params[:q]&.permit!), target: :_blank
             - else
-              = link_to "未記入", sender_okurite_preview_path(okurite_id: customer.id, q: params[:q]&.permit!), target: :_blank
+              = link_to "未記入", preview_sender_okurite_path(sender_id: params[:sender_id], id: customer.id, q: params[:q]&.permit!), target: :_blank
           td
             = customer.url&.truncate(30)
           td
@@ -54,7 +54,10 @@
         th[colspan="8"]
           = paginate @customers
 
-  = form_tag sender_okurite_autosettings_path(sender_id: params[:sender_id], q: params[:q]&.permit!, date: params[:date]&.permit!, page: params[:page]) do
+  = form_tag autosettings_sender_okurite_index_path(sender_id: params[:sender_id]), method: :post do
+    = hidden_field_tag 'q', params[:q]&.to_json if params[:q]
+    = hidden_field_tag 'date', params[:date] if params[:date]
+    = hidden_field_tag 'page', params[:page] if params[:page]
     table.space[width="90%"]
       tbody
         tr
@@ -71,7 +74,7 @@
           th
             = submit_tag "自動送信設定", class: 'btn btn-success'
           th
-            = link_to '自動送信予定の一括削除', sender_bulk_delete_path, class: 'btn btn-danger', data: { method: :delete, confirm: '本当に削除しますか？'}
+            = link_to '自動送信予定の一括削除', bulk_delete_sender_okurite_index_path(sender_id: params[:sender_id]), class: 'btn btn-danger', data: { method: :delete, confirm: '本当に削除しますか？'}
 
 #searchModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="dialogHeader" aria-hidden="true"]
   .modal-dialog
@@ -117,7 +120,7 @@
                 th
                   | 業種
                 td
-                  - business_status2 = ["人材関連業","協同組合","登録支援機関","IT・エンジニア","ホームページ制作","Webデザイナー","食品加工業","製造業","広告業","営業","販売","介護","マーケティング業","コンサルティング業","不動産","商社","ドライバー","運送業","タクシー","建設土木業","自動車整備工場","教育業","飲食業","美容院","看護・病院","弁護士","社会保険労務士","保育士","旅行業","警備業","その他"]
+                  - business_status2 = ["人材関連業","協同組合","登録支援機関","IT・エンジニア","ホームページ制作","Webデザイナー","食品加工業","製造業","広告業","営業","販売","介護","マーケティング業","コンサルティング業","不動産","商社","ドライバー","運送業","タクシー","建設土木業","自動車整備工场","教育業","飲食業","美容院","看護・病院","弁護士","社会保険労務士","保育士","旅行業","警備業","その他"]
                   = f.select :business_cont, business_status2, { include_blank: '選択してください' }
                 th
                   | 事業内容

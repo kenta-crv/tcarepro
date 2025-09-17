@@ -95,6 +95,8 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -136,6 +138,9 @@ GEM
       activesupport (>= 5.1)
       haml (>= 4.0.6)
       railties (>= 5.1)
+    http-accept (1.7.0)
+    http-cookie (1.0.8)
+      domain_name (~> 0.5)
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
@@ -190,6 +195,10 @@ GEM
     meta-tags (2.18.0)
       actionpack (>= 3.2.0, < 7.1)
     method_source (1.1.0)
+    mime-types (3.7.0)
+      logger
+      mime-types-data (~> 3.2025, >= 3.2025.0507)
+    mime-types-data (3.2025.0902)
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
@@ -209,6 +218,7 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
+    netrc (0.11.0)
     nio4r (2.7.4)
     nokogiri (1.13.10-arm64-darwin)
       racc (~> 1.4)
@@ -294,6 +304,11 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rexml (3.4.1)
     roo (2.8.3)
       nokogiri (~> 1)
@@ -386,6 +401,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.2.1)
       execjs (>= 0.3.0, < 3)
+    unf (0.2.0)
     unicode-display_width (1.8.0)
     warden (1.2.9)
       rack (>= 2.0.9)
@@ -443,6 +459,7 @@ DEPENDENCIES
   rails_autolink
   ransack
   redis (~> 4.0)
+  rest-client
   roo
   rubocop
   rubocop-rails
@@ -465,4 +482,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   2.3.26
+   2.3.6

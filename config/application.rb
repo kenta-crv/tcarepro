@@ -10,6 +10,11 @@ require_relative 'boot'
 require 'csv'
 require 'rails/all'
 
+require 'rails/all'
+
+require 'bigdecimal'
+require 'mutex_m'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -22,10 +27,14 @@ module Smart
     # config.active_record.default_timezone = :local
     config.generators.template_engine = :slim
 
-        config.time_zone = 'Tokyo'
-        config.i18n.load_path +=
-            Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
-        config.i18n.default_locale = :ja
+    # DISABLE ASSETS COMPLETELY - No JavaScript runtime needed
+    config.assets.enabled = false
+    config.assets.compile = false
+
+    config.time_zone = 'Tokyo'
+    config.i18n.load_path +=
+        Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
+    config.i18n.default_locale = :ja
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -46,5 +55,11 @@ module Smart
     }
 
     Dotenv::Railtie.load
+
+    config.assets.enabled = true
+    config.assets.compile = true
+    
   end
 end
+
+
