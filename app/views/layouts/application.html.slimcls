@@ -4,13 +4,13 @@ html
       = csrf_meta_tags
       = render template: 'layouts/_header.html.slim'
       = include_gon
-      / = javascript_include_tag "application"   # <-- COMMENTED OUT
+      = javascript_include_tag "application"
 
   header
       .row
         .col-xs-3
            = link_to "/"
-
+            =image_tag "rogo2.webp", width: "70%", class:"header-image"
         .col-xs-4
           = render template: 'layouts/_flash.html.erb'
         .col-xs-4.right

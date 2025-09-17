@@ -25,16 +25,7 @@ class SendersController < ApplicationController
                                         .where.not(contact_url: [nil, ''])
                                         .count
       
-<<<<<<< HEAD
       # エラー数（真のエラーののみ）
-=======
-      # 実送信数（contact_urlがあり、かつ送信済み）
-      unactual_sent_count = contact_trackings.where(status: '送信不可')
-                                        .where.not(contact_url: [nil, ''])
-                                        .count
-      
-      # エラー数（真のエラーのみ）
->>>>>>> 08d1dbaf9e2c6e1c34e88f01cf1c3930bb3b6e9f
       error_count = contact_trackings.where(status: [
         'CAPTCHA detected - requires manual intervention',
         '自動送信エラー',
@@ -66,7 +57,6 @@ class SendersController < ApplicationController
     @data = AutoformResult.where(sender_id: params[:id])
   end
 
-<<<<<<< HEAD
   def new
     @sender = Sender.new
   end
@@ -96,18 +86,6 @@ class SendersController < ApplicationController
     @sender.destroy
     redirect_to senders_url, notice: 'Sender was successfully destroyed.'
   end
-=======
-  def edit
-  end
-
-  def update
-    if @sender.update(sender_params)
-      redirect_to senders_path
-    else
-      render 'edit'
-    end
-  end
->>>>>>> 08d1dbaf9e2c6e1c34e88f01cf1c3930bb3b6e9f
 
   private
 

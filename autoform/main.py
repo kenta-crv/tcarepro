@@ -24,8 +24,8 @@ app.config ['JSON_AS_ASCII'] = False
 def get_db_connection():
     # Try multiple possible database paths
     possible_paths = [
-        "/myapp/db/development.sqlite3",
-        "/app/db/development.sqlite3", 
+        "/app/db/development.sqlite3",
+        "/myapp/db/development.sqlite3",  
         "./db/development.sqlite3",
         "../db/development.sqlite3"
     ]

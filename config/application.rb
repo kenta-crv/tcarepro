@@ -55,6 +55,11 @@ module Smart
     }
 
     Dotenv::Railtie.load
+
+    config.assets.enabled = true
+    config.assets.compile = true
+    
   end
-endconfig.assets.enabled = false
-config.assets.compile = false
+end
+
+
