@@ -1,13 +1,12 @@
 require 'open3'
+require 'rest-client'
 
 class AutoformSchedulerWorker
   include Sidekiq::Worker
-  # 大量送信の耐久・耐性を確保
   sidekiq_options retry: 3, queue: 'default', backtrace: true
 
-  PYTHON_SCRIPT_PATH = Rails.root.join('autoform', 'bootio.py').to_s
-  PYTHON_VENV_PATH = Rails.root.join('autoform', 'venv', 'bin', 'python')
-  PYTHON_EXECUTABLE = 'python3'  # システムのpython3を強制使用
+  # Use host.docker.internal to access Windows host from Docker
+  PYTHON_API_URL = "http://python-worker:6400/api/v1/rocketbumb"
 
   def perform(contact_tracking_id)
     contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
@@ -16,9 +15,9 @@ class AutoformSchedulerWorker
       return
     end
 
-    contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
-    unless contact_tracking
-      Sidekiq.logger.error "AutoformSchedulerWorker: ContactTracking with ID #{contact_tracking_id} not found."
+    # Skip if already processed
+    if contact_tracking.status == '送信済' || contact_tracking.status == '自動送信エラー'
+      Sidekiq.logger.info "AutoformSchedulerWorker: ContactTracking #{contact_tracking_id} already processed with status: #{contact_tracking.status}"
       return
     end
 
@@ -30,31 +29,20 @@ class AutoformSchedulerWorker
           sending_started_at: Time.current
         )
 
-        # URL自動検索機能
-        # app/workers/autoform_scheduler_worker.rb の修正
+        # URL自動検索機能 - スキップして直接API呼び出し
         if contact_tracking.contact_url.blank?
-          auto_url = search_contact_url_automatically(contact_tracking)
-          
-          if auto_url.present?
-            # 見つけたURLをContactTrackingに保存
-            contact_tracking.update!(contact_url: auto_url)
-            Rails.logger.info "AutoformSchedulerWorker: Found and saved contact_url: #{auto_url}"
-          else
-            Rails.logger.warn "AutoformSchedulerWorker: Could not find contact_url for CT ID #{contact_tracking_id}"
-            contact_tracking.update!(
-              status: '自動送信エラー',
-              sending_completed_at: Time.current,
-              response_data: 'URL自動検索に失敗しました'
-            )
-            return
-          end
+          contact_tracking.update!(
+            status: '自動送信エラー',
+            sending_completed_at: Time.current,
+            response_data: 'URLがありません'
+          )
+          return
         end
 
-
-        # Always use the most recently updated inquiry
-        inquiry = Inquiry.order(updated_at: :desc).first
+        # Always use the associated inquiry
+        inquiry = contact_tracking.inquiry
         unless inquiry
-          error_message = "No Inquiry records found."
+          error_message = "No Inquiry associated with this contact tracking."
           Sidekiq.logger.error "AutoformSchedulerWorker: #{error_message}"
           contact_tracking.update!(
             status: '自動送信エラー(データ無)',
@@ -64,48 +52,36 @@ class AutoformSchedulerWorker
           return
         end
 
-        # Python引数の構築
-        args = build_python_args(contact_tracking, inquiry)
+        # Send job to Python Flask API
+        send_to_python_api(contact_tracking, inquiry)
 
-        # Python実行可能性チェック
-        unless python_executable_available?
-          error_message = "Python executable '#{PYTHON_EXECUTABLE}' not found."
-          Sidekiq.logger.fatal "AutoformSchedulerWorker: #{error_message}"
-          contact_tracking.update!(
-            status: '自動送信システムエラー(Py無)',
-            sending_completed_at: Time.current,
-            response_data: error_message
-          )
-          return
-        end
+        # Update status to processing
+        contact_tracking.update!(
+          status: '処理中',
+          sending_completed_at: Time.current,
+          response_data: "Job sent to Python API for processing"
+        )
 
-        # Python送信処理実行
-        command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH] + args.map(&:to_s)
-        Sidekiq.logger.info "AutoformSchedulerWorker: Executing command for CT ID #{contact_tracking_id}: #{command.join(' ')}"
+        Sidekiq.logger.info "AutoformSchedulerWorker: Successfully sent job #{contact_tracking_id} to Python API"
+
+      rescue RestClient::Exception => e
+        Sidekiq.logger.error "AutoformSchedulerWorker: Python API communication failed for CT ID #{contact_tracking_id}: #{e.message}"
+        contact_tracking.update!(
+          status: '自動送信システムエラー(API通信失敗)',
+          sending_completed_at: Time.current,
+          response_data: "API Error: #{e.message}"
+        )
         
-        # 処理中ステータスに変更
-        contact_tracking.update!(status: '処理中')
-
-        # Python実行（タイムアウト付き）
-        stdout, stderr, status = execute_python_with_timeout(command, contact_tracking_id)
-
-        # 送信完了時刻の記録
-        contact_tracking.update!(sending_completed_at: Time.current)
-
-        # 送信結果の検証と適切なステータス更新
-        process_python_result(contact_tracking, stdout, stderr, status)
-
       rescue Timeout::Error => e
-        Sidekiq.logger.error "AutoformSchedulerWorker: Python script timeout for CT ID #{contact_tracking_id}"
+        Sidekiq.logger.error "AutoformSchedulerWorker: Python API timeout for CT ID #{contact_tracking_id}"
         contact_tracking.update!(
           status: '自動送信エラー(タイムアウト)',
           sending_completed_at: Time.current,
-          response_data: "Timeout after 300 seconds"
+          response_data: "Timeout after 30 seconds"
         )
-        raise e unless should_not_retry?(e)
-
+        
       rescue StandardError => e
-        Sidekiq.logger.error "AutoformSchedulerWorker: Error executing Python script for CT ID #{contact_tracking_id}: #{e.message}"
+        Sidekiq.logger.error "AutoformSchedulerWorker: Error for CT ID #{contact_tracking_id}: #{e.message}"
         Sidekiq.logger.error e.backtrace.join("\n")
         
         contact_tracking.update!(
@@ -113,194 +89,64 @@ class AutoformSchedulerWorker
           sending_completed_at: Time.current,
           response_data: "Exception: #{e.message}"
         )
-        raise e unless should_not_retry?(e)
       end
     end
   end
 
   private
 
-  def build_python_args(contact_tracking, inquiry)
-    args = [
-      "--url", contact_tracking.contact_url.to_s,
-      "--unique_id", contact_tracking.id.to_s,
-      "--session_code", contact_tracking.auto_job_code.to_s,
-    ]
-    
-    args.concat(["--sender_id", contact_tracking.sender_id.to_s]) if contact_tracking.sender_id
-    args.concat(["--worker_id", contact_tracking.worker_id.to_s]) if contact_tracking.worker_id
-
-    args.concat(["--company", inquiry.from_company.to_s]) if inquiry.from_company.present?
-    args.concat(["--company_kana", inquiry.from_company.to_s]) if inquiry.from_company.present?
-    args.concat(["--manager", inquiry.person.to_s]) if inquiry.person.present?
-    args.concat(["--manager_kana", inquiry.person_kana.to_s]) if inquiry.person_kana.present?
-    args.concat(["--phone", inquiry.from_tel.to_s]) if inquiry.from_tel.present?
-    args.concat(["--fax", inquiry.from_fax.to_s]) if inquiry.from_fax.present?
-    args.concat(["--address", inquiry.address.to_s]) if inquiry.address.present?
-    args.concat(["--zip", inquiry.zip_code.to_s]) if inquiry.respond_to?(:zip_code) && inquiry.zip_code.present?
-    args.concat(["--mail", inquiry.from_mail.to_s]) if inquiry.from_mail.present?
-    args.concat(["--url_on_form", inquiry.url.to_s]) if inquiry.url.present?
-    args.concat(["--subjects", inquiry.title.to_s]) if inquiry.title.present?
-    args.concat(["--body", inquiry.content.to_s]) if inquiry.content.present?
-
-    args
-  end
-
-  def python_executable_available?
-    PYTHON_EXECUTABLE && (File.exist?(PYTHON_EXECUTABLE) || system("which #{PYTHON_EXECUTABLE} > /dev/null 2>&1"))
-  end
-
-  def execute_python_with_timeout(command, contact_tracking_id)
-    require 'timeout'
-    
-    stdout, stderr, status = Timeout.timeout(300) do
-      Open3.capture3(*command)
-    end
-
-    # ログ出力
-    Sidekiq.logger.info "AutoformSchedulerWorker: Python script STDOUT for CT ID #{contact_tracking_id}:\n#{stdout}" unless stdout.blank?
-    Sidekiq.logger.error "AutoformSchedulerWorker: Python script STDERR for CT ID #{contact_tracking_id}:\n#{stderr}" unless stderr.blank?
-
-    [stdout, stderr, status]
-  end
-
-  def process_python_result(contact_tracking, stdout, stderr, status)
-    contact_tracking.reload
-    current_status_after_script = contact_tracking.status
-
-    if status.success?
-      Sidekiq.logger.info "AutoformSchedulerWorker: Python script completed successfully for CT ID #{contact_tracking.id}. Final DB status: #{current_status_after_script}"
-      
-      # 送信成功の判定
-      if current_status_after_script == '送信済'
-        contact_tracking.update!(
-          sended_at: Time.current,
-          response_data: "Success: #{stdout.truncate(500)}"
-        )
-      elsif current_status_after_script == '処理中'
-        # Pythonスクリプトは成功したが、DBステータスが更新されていない場合
-        if sending_appears_successful?(stdout)
-          contact_tracking.update!(
-            status: '送信済',
-            sended_at: Time.current,
-            response_data: "Auto-detected success: #{stdout.truncate(500)}"
-          )
-        else
-          contact_tracking.update!(
-            status: '自動送信エラー(スクリプト未更新)',
-            response_data: "Script completed but status not updated: #{stdout.truncate(500)}"
-          )
-        end
-      end
-    else
-      # Python実行失敗時の処理
-      Sidekiq.logger.error "AutoformSchedulerWorker: Python script execution failed for CT ID #{contact_tracking.id}. Exit status: #{status.exitstatus}"
-      
-      if current_status_after_script == '処理中'
-        contact_tracking.update!(
-          status: '自動送信システムエラー(スクリプト失敗)',
-          response_data: "Script failed. Exit status: #{status.exitstatus}. STDERR: #{stderr.truncate(500)}"
-        )
-      end
-    end
-  end
-
-  def sending_appears_successful?(stdout)
-    return false if stdout.blank?
-    
-    # 成功パターンを検出
-    success_patterns = [
-      'success', 'sent', 'submitted', 'completed', 'ok',
-      '送信完了', '送信成功', '正常終了'
-    ]
-    
-    stdout_lower = stdout.downcase
-    success_patterns.any? { |pattern| stdout_lower.include?(pattern) }
-  end
-
-  def should_not_retry?(exception)
-    # バリデーションエラーや永続的なエラーの場合はリトライしない
-    exception.is_a?(ActiveRecord::RecordInvalid) ||
-    exception.is_a?(ActiveRecord::RecordNotFound) ||
-    exception.message.include?('バリデーション') ||
-    exception.message.include?('not found')
-  end
-
-  # URL自動検索機能
-  def search_contact_url_automatically(contact_tracking)
-    customer = contact_tracking.customer
-    
-    begin
-      # URLからドメイン部分を抽出
-      domain = if customer.url.present?
-        URI.parse(customer.url).host
-      else
-        nil
-      end
-
-      # ドメインが取得できない場合はスキップ
-      return nil unless domain
-
-      # contact_finder.pyを実行
-      command = [
-        PYTHON_EXECUTABLE,
-        Rails.root.join('py_app', 'contact_finder.py').to_s,
-        customer.company.to_s,
-        domain.to_s
-      ]
-      
-      stdout, stderr, status = Open3.capture3(*command)
-      
-      if status.success? && stdout.present?
-        output = stdout.strip
-        
-        # MAILTO検出の場合
-        if output == 'MAILTO_DETECTED'
-          return nil
-        end
-        
-        # 通常のURL（httpで始まる場合）
-        if output.present? && output.start_with?('http')
-          return output
-        end
-      end
-      
-      nil
-    rescue => e
-      Sidekiq.logger.error "AutoformSchedulerWorker: URL search failed: #{e.message}"
-      nil
-    end
-  end
-
-  # Python出力からURL抽出
-  def extract_url_from_output(output)
-    # 出力からURLを抽出
-    lines = output.split("\n")
-    url_line = lines.find { |line| line.include?("http") }
-    url_line&.strip
-  end
-
-  # 除外ドメインの確認
-  def excluded_domain?(url)
-    # 除外ドメインの確認
-    excluded_domains = ['suumo.jp', 'tabelog.com', 'indeed.com', 'xn--pckua2a7gp15o89zb.com']
-    excluded_domains.any? { |domain| url.include?(domain) }
-  end
-
-  # 自動修正機能
-  def self.fix_stuck_records
-    ContactTracking.auto_fix_stuck_records
-  end
-
-  # 健全性チェック
-  def self.health_check
-    stuck_count = ContactTracking.where(status: '処理中').count
-    abnormal_count = ContactTracking.abnormal_processing_records.count
-    
-    {
-      stuck_processing_records: stuck_count,
-      abnormal_processing_records: abnormal_count,
-      healthy: stuck_count == 0 && abnormal_count == 0
+  def send_to_python_api(contact_tracking, inquiry)
+    payload = {
+      worker_id: contact_tracking.worker_id,
+      inquiry_id: contact_tracking.inquiry_id,
+      contact_url: contact_tracking.contact_url,
+      date: contact_tracking.scheduled_date.strftime("%Y-%m-%d %H:%M:%S"),
+      reserve_code: contact_tracking.auto_job_code,
+      generation_code: "gen_#{contact_tracking.id}",
+      company_name: contact_tracking.customer.company,
+      customers_code: contact_tracking.customer_id
     }
+
+    # Add inquiry data to payload
+    add_inquiry_data_to_payload(payload, inquiry)
+
+    Sidekiq.logger.info "AutoformSchedulerWorker: Sending to Python API: #{payload}"
+
+    response = RestClient::Request.execute(
+      method: :post,
+      url: PYTHON_API_URL,
+      payload: payload.to_json,
+      headers: {
+        content_type: :json,
+        accept: :json
+      },
+      timeout: 30
+    )
+
+    Sidekiq.logger.info "AutoformSchedulerWorker: Python API response: #{response.code} - #{response.body}"
+    
+    # Check if Python API accepted the job
+    unless response.code == 200
+      raise RestClient::Exception.new("Python API returned non-200 status: #{response.code}")
+    end
+    
+  rescue RestClient::Exception => e
+    Sidekiq.logger.error "AutoformSchedulerWorker: Failed to send to Python API: #{e.message}"
+    raise e
+  end
+
+  def add_inquiry_data_to_payload(payload, inquiry)
+    payload.merge!({
+      from_company: inquiry.from_company.to_s,
+      person: inquiry.person.to_s,
+      person_kana: inquiry.person_kana.to_s,
+      from_tel: inquiry.from_tel.to_s,
+      from_fax: inquiry.from_fax.to_s,
+      from_mail: inquiry.from_mail.to_s,
+      address: inquiry.address.to_s,
+      title: inquiry.title.to_s,
+      content: inquiry.content.to_s,
+      url: inquiry.url.to_s
+    })
   end
 end

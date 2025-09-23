@@ -1,0 +1,25 @@
+FROM python:3.9
+
+WORKDIR /app
+
+# Install system dependencies including Chromium AND SQLite tools
+RUN apt-get update && apt-get install -y \
+    chromium \
+    chromium-driver \
+    wget \
+    curl \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Chromium as default
+ENV CHROME_BIN=/usr/bin/chromium
+ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
+
+COPY autoform/requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY autoform/ .
+
+EXPOSE 6400
+
+CMD ["python", "main.py"]

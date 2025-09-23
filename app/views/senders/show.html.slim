@@ -1,0 +1,49 @@
+- set_meta_tags noindex: true
+
+.tops-wrapper
+  .headline
+    | 送信者詳細: #{@sender.user_name}
+
+  .row
+    .col-md-6
+      .card
+        .card-header
+          | 基本情報
+        .card-body
+          table.table
+            tr
+              th ユーザー名
+              td = @sender.user_name
+            tr
+              th メール
+              td = @sender.email
+            tr
+              th レート制限
+              td = @sender.rate_limit
+            tr
+              th デフォルト問い合わせ
+              td = @sender.default_inquiry_id
+            tr
+              th URL
+              td = @sender.url
+
+    .col-md-6
+      .card
+        .card-header
+          | 統計情報
+        .card-body
+          - success_count = ContactTracking.where(sender_id: @sender.id, status: '送信済').count
+          - total_count = ContactTracking.where(sender_id: @sender.id).where.not(status: nil).count
+          - success_rate = total_count > 0 ? (success_count.to_f / total_count * 100) : 0
+          
+          h4
+            | 成功率: #{number_to_percentage(success_rate, precision: 1)}
+          p
+            | 成功: #{success_count} / 総送信: #{total_count}
+          
+          = link_to '詳細統計を見る', sender_okurite_index_path(@sender) + '/stats', class: 'btn btn-primary'
+
+  .row.mt-4
+    .col-12
+      = link_to '編集', edit_sender_path(@sender), class: 'btn btn-secondary'
+      = link_to '戻る', senders_path, class: 'btn btn-default ml-2'

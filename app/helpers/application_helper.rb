@@ -14,4 +14,13 @@ module ApplicationHelper
       ]
     }
   end
+  # In app/helpers/application_helper.rb
+  def smart_image_tag(source, options = {})
+    if Rails.application.config.assets.enabled
+      image_tag(source, options)
+    else
+      # Fallback to direct path when assets are disabled
+      tag.img(options.merge(src: "/images/#{source}"))
+    end
+  end
 end
