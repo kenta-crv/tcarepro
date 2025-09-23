@@ -580,8 +580,62 @@ def destroy
   end
 
   # 進捗取得API（ポーリング用）
-  # GET /draft/progress.json?industry=業界名
+  # 1) 単一業界: GET /draft/progress.json?industry=業界名
+  # 2) 複数業界: GET /draft/progress.json?industries[]=A&industries[]=B
   def extract_progress
+    # 複数業界まとめ取得（1リクエスト化）
+    if params[:industries].present?
+      industries = Array(params[:industries]).map(&:to_s).reject(&:blank?)
+      if industries.empty?
+        render json: {} and return
+      end
+
+      # 業界×ステータスで集計（1クエリ）
+      statuses = [
+        ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'),
+        ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'),
+        ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')
+      ]
+      grouped = Customer
+        .where(industry: industries)
+        .where(status: statuses)
+        .group(:industry, :status)
+        .count
+
+      # 各業界の最新トラッキング（Ruby側でpick）
+      latest_trackings = ExtractTracking
+        .where(industry: industries)
+        .order(id: :desc)
+        .to_a
+        .group_by(&:industry)
+        .transform_values { |arr| arr.first }
+
+      payload = {}
+      industries.each do |ind|
+        success = grouped[[ind, ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success')]].to_i
+        failure = grouped[[ind, ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')]].to_i
+        extracting = grouped[[ind, ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]].to_i
+        total = success + failure + extracting
+        status_t = extracting.positive? ? '抽出中' : '抽出完了'
+
+        lt = latest_trackings[ind]
+        payload[ind] = {
+          id: lt&.id,
+          industry: ind,
+          total: total,
+          success: success,
+          failure: failure,
+          processed: success + failure,
+          remaining: [total - (success + failure), 0].max,
+          status: status_t,
+          updated_at: lt&.updated_at
+        }
+      end
+
+      render json: payload and return
+    end
+
+    # 従来の単一業界（後方互換）
     industry = params[:industry].to_s.presence
     tracking = if industry
                  ExtractTracking.where(industry: industry).order(id: :desc).first
