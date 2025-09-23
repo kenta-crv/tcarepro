@@ -9,7 +9,10 @@ from agent.state import ExtractState
 from models.schemas import CompanyInfo, URLScoreList
 from models.settings import BASE_DIR, settings
 from utils.crawl4ai_util import crawl_markdown
+from utils.logger import get_logger
 from utils.net import convert_accessable_urls
+
+logger = get_logger()
 
 
 def node_get_url_candidates(state: ExtractState) -> ExtractState:
@@ -22,9 +25,9 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         dict: `urls` キーに候補URLの配列を追加した新しい状態。
 
     """
+    logger.error("---URL抽出開始----")
     # プロンプトをYAMLからロード
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_url.yaml"), encoding="utf-8")
-
     # LLM（検索ツール有効）を呼び出し
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.5-flash-lite",
@@ -65,6 +68,10 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
 
     # 到達可能URLに正規化
     state.urls = convert_accessable_urls(urls)
+    if not len(state.urls):
+        logger.error("URLが抽出できませんでした")
+        raise Exception("URLが抽出できませんでした")
+    logger.error("---URL抽出終了----")
     return state
 
 
@@ -120,24 +127,65 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         dict: `html` を追加した状態（失敗時は空文字）。
 
     """
+    logger.error("---会社情報抽出開始----")
     url = state.urls.pop(0)
     web_context = crawl_markdown(url, depth=1)
 
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_contact.yaml"), encoding="utf-8")
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash-lite",
-        temperature=0,
-        google_api_key=settings.GOOGLE_API_KEY,
-    ).with_structured_output(
-        CompanyInfo,
-    )
-    resp: CompanyInfo = llm.invoke(
-        prompt.format(
-            required_businesses=state.required_businesses,
-            required_genre=state.required_genre,
-            web_context=web_context,
-        ),
-    )
+    try:
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-2.5-flash",
+            temperature=0,
+            google_api_key=settings.GOOGLE_API_KEY,
+        ).with_structured_output(
+            CompanyInfo,
+        )
+
+        resp: CompanyInfo = llm.invoke(
+            prompt.format(
+                required_businesses=state.required_businesses,
+                required_genre=state.required_genre,
+                web_context=web_context,
+            ),
+        )
+    except Exception as e:
+        try:
+            llm = ChatGoogleGenerativeAI(
+                model="gemini-2.5-pro",
+                temperature=0,
+                google_api_key=settings.GOOGLE_API_KEY,
+            ).with_structured_output(
+                CompanyInfo,
+            )
+
+            resp: CompanyInfo = llm.invoke(
+                prompt.format(
+                    required_businesses=state.required_businesses,
+                    required_genre=state.required_genre,
+                    web_context=web_context,
+                ),
+            )
+        except Exception as e:
+            try:
+                llm = ChatGoogleGenerativeAI(
+                    model="gemini-2.5-flash-lite",
+                    temperature=0,
+                    google_api_key=settings.GOOGLE_API_KEY,
+                ).with_structured_output(
+                    CompanyInfo,
+                )
+
+                resp: CompanyInfo = llm.invoke(
+                    prompt.format(
+                        required_businesses=state.required_businesses,
+                        required_genre=state.required_genre,
+                        web_context=web_context,
+                    ),
+                )
+            except Exception as e:
+                logger.error("会社情報が抽出できませんでした")
+                raise Exception("会社情報が抽出できませんでした")
 
     state.company_info = resp
+    logger.error("---会社情報抽出完了----")
     return state
