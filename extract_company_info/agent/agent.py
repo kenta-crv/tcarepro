@@ -19,12 +19,10 @@ def compile_graph() -> CompiledStateGraph:
     """
     graph = StateGraph(ExtractState)
     graph.add_node("get_urls", nodes.node_get_url_candidates)
-    graph.add_node("select_official", nodes.node_select_official_website)
     graph.add_node("fetch_html", nodes.node_fetch_html)
 
     graph.set_entry_point("get_urls")
-    graph.add_edge("get_urls", "select_official")
-    graph.add_edge("select_official", "fetch_html")
+    graph.add_edge("get_urls", "fetch_html")
     graph.set_finish_point("fetch_html")
 
     return graph.compile()

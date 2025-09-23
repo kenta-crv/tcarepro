@@ -60,7 +60,11 @@ class ExtractCompanyInfoWorker
           }
 
           stdout, stderr, status = execute_python_with_timeout(command, payload.to_json)
+          puts(stderr)
+          
           if status.success?
+            puts("---AI抽出成功---")
+            puts(stdout)
             # JSONで受け取り、顧客情報を更新
             data = JSON.parse(stdout.strip) rescue nil
             unless data.is_a?(Hash)
@@ -92,6 +96,7 @@ class ExtractCompanyInfoWorker
               success_count: success_count,
             )
           else
+            puts("---AI抽出失敗---")
             failure_count += 1
             extract_tracking.update(
               failure_count: failure_count,
@@ -100,7 +105,6 @@ class ExtractCompanyInfoWorker
               status: ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')
             )
             puts("ExtractCompanyInfoWorker: Python script execution failed for customer ID #{customer.id}. Exit status: #{status.exitstatus}")
-            puts(stderr)
           end
         rescue => e
           puts "エラー: #{e.class} - #{e.message}"
@@ -124,9 +128,9 @@ class ExtractCompanyInfoWorker
   end
 
   def execute_python_with_timeout(command, stdin_data)
-    puts("python script start")
+    puts("---AI抽出開始---")
     require 'timeout'
-    stdout, stderr, status = Timeout.timeout(600) do
+    stdout, stderr, status = Timeout.timeout(300) do
       # 環境変数を渡しつつ、JSONをstdinで投入
       Open3.capture3(
         { "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" },
@@ -134,7 +138,7 @@ class ExtractCompanyInfoWorker
         stdin_data: stdin_data.encode("UTF-8"),
       )
 
-    end    
+    end
     [stdout, stderr, status]
   end
 
