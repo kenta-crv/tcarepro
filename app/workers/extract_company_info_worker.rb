@@ -60,6 +60,7 @@ class ExtractCompanyInfoWorker
           }
 
           stdout, stderr, status = execute_python_with_timeout(command, payload.to_json)
+          puts("---Pythonログ---")
           puts(stderr)
           
           if status.success?
@@ -127,19 +128,51 @@ class ExtractCompanyInfoWorker
     end
   end
 
-  def execute_python_with_timeout(command, stdin_data)
+  def execute_python_with_timeout(command, stdin_data, timeout: 300)
+    stdout_str = +""
+    stderr_str = +""
+    status = nil
     puts("---AI抽出開始---")
-    require 'timeout'
-    stdout, stderr, status = Timeout.timeout(300) do
-      # 環境変数を渡しつつ、JSONをstdinで投入
-      Open3.capture3(
-        { "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" },
-        *command,
-        stdin_data: stdin_data.encode("UTF-8"),
-      )
+    Open3.popen3(*command) do |stdin, stdout, stderr, wait_thr|
+      begin
+        stdin.write(stdin_data.to_s)
+      rescue Errno::EPIPE
+        # 子プロセスが先に終了していても無視
+      ensure
+        stdin.close
+      end
 
+      out_reader = Thread.new do
+        begin
+          stdout.each_line { |line| stdout_str << line }
+        rescue IOError, Errno::EIO
+          # パイプ競合は無視
+        end
+      end
+
+      err_reader = Thread.new do
+        begin
+          stderr.each_line { |line| stderr_str << line }
+        rescue IOError, Errno::EIO
+        end
+      end
+
+      unless wait_thr.join(timeout)
+        pid = wait_thr.pid
+        Process.kill("TERM", pid) rescue nil
+        unless wait_thr.join(5)
+          Process.kill("KILL", pid) rescue nil
+          wait_thr.join
+        end
+        puts("タイムアウトしました")
+      end
+
+      out_reader.join
+      err_reader.join
+      status = wait_thr.value
     end
-    [stdout, stderr, status]
+
+    [stdout_str, stderr_str, status]
   end
 
 end

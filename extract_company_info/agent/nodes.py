@@ -29,49 +29,94 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     # プロンプトをYAMLからロード
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_url.yaml"), encoding="utf-8")
     # LLM（検索ツール有効）を呼び出し
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash-lite",
-        temperature=0,
-        google_api_key=settings.GOOGLE_API_KEY,
-    )
-    resp = llm.invoke(
-        prompt.format(company=state.company, location=state.location),
-        tools=[GenAITool(google_search={})],
-    )
-
-    # 応答からURLを抽出
-    urls: list[str] = []
     try:
-        # grounding由来URL
-        reference_urls = [
-            chunk["web"]["uri"]
-            for chunk in resp.response_metadata["grounding_metadata"]["grounding_chunks"]
-        ]
-    except Exception:  # noqa: BLE001
-        reference_urls = []
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-2.5-flash",
+            temperature=0,
+            google_api_key=settings.GOOGLE_API_KEY,
+        )
+        resp = llm.invoke(
+            prompt.format(company=state.company, location=state.location),
+            tools=[GenAITool(google_search={})],
+        )
 
-    # 本文からURLを1つ抜き出す
-    match = re.search(r"https?://[^\s]+", resp.content)
-    if match:
-        urls.append(match.group())
-    urls.extend(reference_urls)
+        # 応答からURLを抽出
+        urls: list[str] = []
+        try:
+            # grounding由来URL
+            reference_urls = [
+                chunk["web"]["uri"]
+                for chunk in resp.response_metadata["grounding_metadata"]["grounding_chunks"]
+            ]
+        except Exception:  # noqa: BLE001
+            reference_urls = []
 
-    # 除外ドメイン設定に基づいて候補URLをフィルタ
-    # サブドメインも含めて末尾一致で除外する
-    def _is_excluded(url: str) -> bool:
-        # EXCLUDE_DOMAINS は改行区切りの文字列 or リストを想定
-        raw = settings.EXCLUDE_DOMAINS
-        domains = [s.strip() for s in raw.splitlines() if s.strip()]
-        return any(domain in url for domain in domains)
+        # 本文からURLを1つ抜き出す
+        match = re.search(r"https?://[^\s]+", resp.content)
+        if match:
+            urls.append(match.group())
+        urls.extend(reference_urls)
 
-    urls = [u for u in urls if not _is_excluded(u)]
+        # 除外ドメイン設定に基づいて候補URLをフィルタ
+        # サブドメインも含めて末尾一致で除外する
+        def _is_excluded(url: str) -> bool:
+            # EXCLUDE_DOMAINS は改行区切りの文字列 or リストを想定
+            raw = settings.EXCLUDE_DOMAINS
+            domains = [s.strip() for s in raw.splitlines() if s.strip()]
+            return any(domain in url for domain in domains)
 
-    # 到達可能URLに正規化
-    state.urls = convert_accessable_urls(urls)
-    if not len(state.urls):
-        logger.error("URLが抽出できませんでした")
-        raise Exception("URLが抽出できませんでした")
-    logger.error("---URL抽出終了----")
+        urls = [u for u in urls if not _is_excluded(u)]
+
+        # 到達可能URLに正規化
+        state.urls = convert_accessable_urls(urls)
+        if not len(state.urls):
+            logger.error("URLが抽出できませんでした")
+            raise Exception("URLが抽出できませんでした")
+        logger.error("---URL抽出終了----")
+    except Exception as e:
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-2.5-flash-lite",
+            temperature=0,
+            google_api_key=settings.GOOGLE_API_KEY,
+        )
+        resp = llm.invoke(
+            prompt.format(company=state.company, location=state.location),
+            tools=[GenAITool(google_search={})],
+        )
+
+        # 応答からURLを抽出
+        urls: list[str] = []
+        try:
+            # grounding由来URL
+            reference_urls = [
+                chunk["web"]["uri"]
+                for chunk in resp.response_metadata["grounding_metadata"]["grounding_chunks"]
+            ]
+        except Exception:  # noqa: BLE001
+            reference_urls = []
+
+        # 本文からURLを1つ抜き出す
+        match = re.search(r"https?://[^\s]+", resp.content)
+        if match:
+            urls.append(match.group())
+        urls.extend(reference_urls)
+
+        # 除外ドメイン設定に基づいて候補URLをフィルタ
+        # サブドメインも含めて末尾一致で除外する
+        def _is_excluded(url: str) -> bool:
+            # EXCLUDE_DOMAINS は改行区切りの文字列 or リストを想定
+            raw = settings.EXCLUDE_DOMAINS
+            domains = [s.strip() for s in raw.splitlines() if s.strip()]
+            return any(domain in url for domain in domains)
+
+        urls = [u for u in urls if not _is_excluded(u)]
+
+        # 到達可能URLに正規化
+        state.urls = convert_accessable_urls(urls)
+        if not len(state.urls):
+            logger.error("URLが抽出できませんでした")
+            raise Exception("URLが抽出できませんでした")
+        logger.error("---URL抽出終了----")
     return state
 
 

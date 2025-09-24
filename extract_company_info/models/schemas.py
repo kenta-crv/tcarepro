@@ -57,33 +57,33 @@ class CompanyInfo(BaseModel):
     def _format_company(cls, v: str) -> str:
         return normalize_company_name(v)
 
-    @field_validator("company", mode="after")
-    @classmethod
-    def _validate_company(cls, v: str) -> str:
-        """会社名をフォーマットルールに基づき検証する.
+    # @field_validator("company", mode="after")
+    # @classmethod
+    # def _validate_company(cls, v: str) -> str:
+    #     """会社名をフォーマットルールに基づき検証する.
 
-        ルールは utils/validator.validate_company_format に準拠。
+    #     ルールは utils/validator.validate_company_format に準拠。
 
-        Args:
-            v: 入力の会社名。
+    #     Args:
+    #         v: 入力の会社名。
 
-        Returns:
-            str: 検証済みの会社名。
+    #     Returns:
+    #         str: 検証済みの会社名。
 
-        Raises:
-            ValueError: 形式に合致しない場合。
+    #     Raises:
+    #         ValueError: 形式に合致しない場合。
 
-        """
-        # バリデーションに失敗したら例外
-        if not validate_company_format(v):
-            msg = (
-                "会社名の形式が不正です。『株式会社/有限会社/社会福祉/合同会社/医療法人/行政書士/一般社団法人/合資会社/法律事務所』の"
-                "いずれかを含み、支店・営業所・括弧・スペースを含まず、全角英数字/記号を含まない必要があります。"
-            )
-            raise ValueError(
-                msg,
-            )
-        return v
+    #     """
+    #     # バリデーションに失敗したら例外
+    #     if not validate_company_format(v):
+    #         msg = (
+    #             "会社名の形式が不正です。『株式会社/有限会社/社会福祉/合同会社/医療法人/行政書士/一般社団法人/合資会社/法律事務所』の"
+    #             "いずれかを含み、支店・営業所・括弧・スペースを含まず、全角英数字/記号を含まない必要があります。"
+    #         )
+    #         raise ValueError(
+    #             msg,
+    #         )
+    #     return v
 
     # 電話番号の形式チェック
     @field_validator("tel", mode="before")
@@ -91,52 +91,52 @@ class CompanyInfo(BaseModel):
     def _format_tel(cls, v: str) -> str:
         return normalize_tel_number(v)
 
-    @field_validator("tel", mode="after")
-    @classmethod
-    def _validate_tel(cls, v: str) -> str:
-        """電話番号をフォーマットルールに基づき検証する.
+    # @field_validator("tel", mode="after")
+    # @classmethod
+    # def _validate_tel(cls, v: str) -> str:
+    #     """電話番号をフォーマットルールに基づき検証する.
 
-        ルールは utils/validator.validate_tel_format に準拠。
+    #     ルールは utils/validator.validate_tel_format に準拠。
 
-        Args:
-            v: 入力の電話番号。
+    #     Args:
+    #         v: 入力の電話番号。
 
-        Returns:
-            str: 検証済みの電話番号。
+    #     Returns:
+    #         str: 検証済みの電話番号。
 
-        Raises:
-            ValueError: 形式に合致しない場合。
+    #     Raises:
+    #         ValueError: 形式に合致しない場合。
 
-        """
-        if not validate_tel_format(v):
-            msg = "電話番号の形式が不正です。半角数字とハイフンのみ、ハイフンを含み、数字のみ/括弧付きは不可です。"
-            raise ValueError(
-                msg,
-            )
-        return v
+    #     """
+    #     if not validate_tel_format(v):
+    #         msg = "電話番号の形式が不正です。半角数字とハイフンのみ、ハイフンを含み、数字のみ/括弧付きは不可です。"
+    #         raise ValueError(
+    #             msg,
+    #         )
+    #     return v
 
-    # 住所の形式チェック
-    @field_validator("address")
-    @classmethod
-    def _validate_address(cls, v: str) -> str:
-        """住所をフォーマットルールに基づき検証する.
+    # # 住所の形式チェック
+    # @field_validator("address")
+    # @classmethod
+    # def _validate_address(cls, v: str) -> str:
+    #     """住所をフォーマットルールに基づき検証する.
 
-        ルールは utils/validator.validate_address_format に準拠。
+    #     ルールは utils/validator.validate_address_format に準拠。
 
-        Args:
-            v: 入力の住所。
+    #     Args:
+    #         v: 入力の住所。
 
-        Returns:
-            str: 検証済みの住所。
+    #     Returns:
+    #         str: 検証済みの住所。
 
-        Raises:
-            ValueError: 形式に合致しない場合。
+    #     Raises:
+    #         ValueError: 形式に合致しない場合。
 
-        """
-        if not validate_address_format(v):
-            msg = "住所の形式が不正です。『都/道/府/県』のいずれかを含めてください。"
-            raise ValueError(msg)
-        return v
+    #     """
+    #     if not validate_address_format(v):
+    #         msg = "住所の形式が不正です。『都/道/府/県』のいずれかを含めてください。"
+    #         raise ValueError(msg)
+    #     return v
 
 
 class ErrorDetail(BaseModel):
