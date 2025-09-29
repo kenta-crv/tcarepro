@@ -41,7 +41,15 @@ class ApplicationController < ActionController::Base
   #rescue_from Exception, with: :render_500
 
   def render_404
-    render template: 'errors/error_404', status: 404, layout: 'application', content_type: 'text/html'
+    respond_to do |format|
+      format.html do
+        render template: 'errors/error_404', status: 404, layout: 'application', content_type: 'text/html'
+      end
+      format.json do
+        render json: { status: 404, error: 'Not Found', message: 'リソースが見つかりません。' }, status: :not_found
+      end
+      format.any { head :not_found }
+    end
   end
 
   def render_500

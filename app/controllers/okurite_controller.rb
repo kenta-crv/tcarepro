@@ -286,7 +286,7 @@ class OkuriteController < ApplicationController
       url_to_submit = cust.contact_url.presence
 
       # Skip if no URL or invalid URL
-      unless url_to_submit.present? && (url_to_submit.start_with?('http://') || url_to_submit.start_with?('https://'))
+      unless url_to_submit.present? && (!url_to_submit.start_with?('http://') && !url_to_submit.start_with?('https://'))
         Rails.logger.warn "OkuriteController: Skipping Customer ID #{cust.id} due to invalid URL: #{url_to_submit}"
         next
       end
