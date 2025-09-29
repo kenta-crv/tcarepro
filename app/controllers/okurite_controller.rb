@@ -298,10 +298,10 @@ class OkuriteController < ApplicationController
       )
 
       # Skip if already processed with final status
-      # if contact_tracking.persisted? && ['送信済', '自動送信エラー'].include?(contact_tracking.status)
-      #   Rails.logger.info "OkuriteController: Skipping already processed Customer ID #{cust.id} with status: #{contact_tracking.status}"
-      #   next
-      # end
+      if contact_tracking.persisted? && ['送信済', '自動送信エラー'].include?(contact_tracking.status)
+        Rails.logger.info "OkuriteController: Skipping already processed Customer ID #{cust.id} with status: #{contact_tracking.status}"
+        next
+      end
 
       # Update attributes
       contact_tracking.assign_attributes(
