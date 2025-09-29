@@ -286,7 +286,7 @@ class OkuriteController < ApplicationController
       url_to_submit = cust.contact_url.presence
 
       # Skip if no URL or invalid URL
-      unless url_to_submit.present? && (url_to_submit.start_with?('http://') || url_to_submit.start_with?('https://'))
+      unless url_to_submit.present? && (!url_to_submit.start_with?('http://') && !url_to_submit.start_with?('https://'))
         Rails.logger.warn "OkuriteController: Skipping Customer ID #{cust.id} due to invalid URL: #{url_to_submit}"
         next
       end
@@ -298,10 +298,10 @@ class OkuriteController < ApplicationController
       )
 
       # Skip if already processed with final status
-      if contact_tracking.persisted? && ['送信済', '自動送信エラー'].include?(contact_tracking.status)
-        Rails.logger.info "OkuriteController: Skipping already processed Customer ID #{cust.id} with status: #{contact_tracking.status}"
-        next
-      end
+      # if contact_tracking.persisted? && ['送信済', '自動送信エラー'].include?(contact_tracking.status)
+      #   Rails.logger.info "OkuriteController: Skipping already processed Customer ID #{cust.id} with status: #{contact_tracking.status}"
+      #   next
+      # end
 
       # Update attributes
       contact_tracking.assign_attributes(
