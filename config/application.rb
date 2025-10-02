@@ -27,14 +27,10 @@ module Smart
     # config.active_record.default_timezone = :local
     config.generators.template_engine = :slim
 
-    # DISABLE ASSETS COMPLETELY - No JavaScript runtime needed
-    config.assets.enabled = false
-    config.assets.compile = false
-
-    config.time_zone = 'Tokyo'
-    config.i18n.load_path +=
-        Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
-    config.i18n.default_locale = :ja
+        config.time_zone = 'Tokyo'
+        config.i18n.load_path +=
+            Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
+        config.i18n.default_locale = :ja
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -61,5 +57,3 @@ module Smart
     
   end
 end
-
-

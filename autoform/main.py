@@ -17,6 +17,8 @@ from threading import Lock
 import random
 import string
 
+matplotlib.use ("agg")
+
 app = Flask (__name__)
 app.config ['JSON_AS_ASCII'] = False
 
