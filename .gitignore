@@ -54,4 +54,3 @@ autoform/__pycache__/
 *.pyc
 extract_company_info/.venv/
 extract_company_info/__pycache__/
-extract_company_info/tests/evaluation_tests/results

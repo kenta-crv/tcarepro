@@ -1,21 +1,12 @@
 - set_meta_tags noindex: true
-/ ===================== 抽出管理画面（追加） =====================
 .tops-wrapper
- -  if admin_signed_in?
   h2.headline AI抽出
 
   .extraction-header
     .period-box
-      / 期間選択フォーム（GETで現在のページに送信）
-      .period-form
-        = form_tag(request.path, method: :get, class: 'period-form__form') do
-          = hidden_field_tag :industry_name, params[:industry_name] if params[:industry_name].present?
-          = hidden_field_tag :tel_filter, params[:tel_filter] if params[:tel_filter].present?
-          .period-form__group
-            = date_field_tag :period_start, @period_start, class: 'period-input', placeholder: '開始日'
-            | ～
-            = date_field_tag :period_end, @period_end, class: 'period-input', placeholder: '終了日'
-            = submit_tag '適用', class: 'btn btn-primary period-apply-btn'
+      - start_txt = (@period_start&.strftime("%Y/%m/%d")   || "__/__/__")
+      - end_txt   = (@period_end&.strftime("%Y/%m/%d")   || "__/__/__")
+      | #{start_txt} ～ #{end_txt}
     .remain-box
       - remain = (@remaining_extractable || "___")
       | 本日残り抽出可能数：#{remain}件
@@ -32,59 +23,44 @@
         th Status
         th 
         th
-        th 
     tbody
       - @crowdworks.each do |crowdwork|
         - company       = crowdwork.title
-        - import_count  = @industry_counts[crowdwork.title][:tel_without]
+        - import_count  = @industry_counts[crowdwork.title][:tel_without] - @industry_counts[crowdwork.title][:tel_with]
         - success_count =  @industry_counts[crowdwork.title][:success_count]
         - fail_count    =  @industry_counts[crowdwork.title][:failure_count]
-        - rate_txt      =  "#{(@industry_counts[crowdwork.title][:rate].to_f.round(2))}%"
+        - rate_txt      =  "#{@industry_counts[crowdwork.title][:rate]}%"
         - status_txt    = @industry_counts[crowdwork.title][:status]
         - total_count = [import_count, @remaining_extractable].min
 
-        tr.data-row[data-industry=company]
+        tr
           td = company
           td
             = import_count
-          td.js-success
+          td
             = success_count
-          td.js-failure
+          td
             = fail_count
-          td.js-rate 
-            = rate_txt
-          td.js-status
+          td = rate_txt
+          td
             = status_txt
-            - if status_txt == '抽出中' || status_txt == '抽出完了'
-              - processed = success_count.to_i + fail_count.to_i
-              - total_tracking = @industry_counts[crowdwork.title][:total_count].to_i
-              br
-              .js-progress-sub
-                | (#{processed}/#{total_tracking})
 
           td.action-cell
-            = form_with url: extract_company_info_path(industry_name: crowdwork.title), method: :post, html: { class: "extract-form" } do
-              = hidden_field_tag :count, "", id: "extract-count"
-              = link_to "AI抽出開始", "#", class: "btn btn-ai extract_button", data: { max: total_count, company: company }
-              |(
-              = success_count
-              |)
+            / ルーティング未用意でも壊れないように # をデフォルトに
+            .square_btn
+              = link_to "AI抽出開始", extract_company_info_path(industry_name: crowdwork.title, total_count: total_count), method: "post", class: "btn btn-ai"
           td.action-cell  
-              = link_to "リスト制作開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end), method: :get, class: "btn btn-success"
-              |(
-              = fail_count
-              |)
-          td.action-cell  
-            = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end, anchor: 'draft-list'), method: :get, class: "btn btn-success"
+            .square_btn
+              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title), method: :get, class: "btn btn-default"
 
 
 .tops-wrapper
-  h2.headline#draft-list
+  h2.headline
     | ドラフトリスト
 .tops-wrapper
   - if @crowdworks.present?
     - @crowdworks.each do |crowdwork|
-      = link_to crowdwork.title, filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end), method: :get, class: "btn btn-default"
+      = link_to crowdwork.title, filter_by_industry_path(industry_name: crowdwork.title), method: :get, class: "btn btn-default"
       | (
       = @industry_counts[crowdwork.title][:tel_with]
       | /
@@ -100,7 +76,16 @@
     = submit_tag '一括削除（社名）', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;', data: { confirm: '本当に削除しますか？' }
 
   table[width="100%" cellpadding="0" cellspacing="0"]
-
+     col[width="3%"]
+     col[width="25%"]
+     col[width="8%"]
+     col[width="13%"]
+     col[width="5%"]
+     col[width="7%"]
+     col[width="10%"]
+     col[width="10%"]
+     col[width="5%"]
+     col[width="10%"]
      thead
        tr
          th
@@ -108,9 +93,9 @@
          th
            | 会社名
          th
-           = link_to 'Check', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel', period_start: @period_start, period_end: @period_end)
+           = link_to 'tel_within', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel')
            br/
-           = link_to 'Draft', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel', period_start: @period_start, period_end: @period_end)
+           = link_to 'tel_without', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel')
          th
            | 住所
          th
@@ -124,11 +109,7 @@
          th
            | 担当者
          th
-           | ステータス
-         th
-           | インポート日
-         th
-           | アップデート日
+           | 作成日
      - @customers.each do |customer|
        tr
          td
@@ -150,17 +131,12 @@
          td
            = customer.worker&.user_name
          td
-           = customer&.status
-         td
-           = customer&.created_at.strftime("%m月%d日%H時%M分")
-         td
-           = customer&.updated_at.strftime("%m月%d日%H時%M分")
+           = customer&.created_at.strftime("%m月%d日 %H時%M分")
      tr
        th[colspan="10"]
          = paginate @customers
 
-
-- refresh_interval = ENV.fetch('EXTRACT_PAGE_REFRESH_INTERVAL', '30000').to_i 
+ 
 
 javascript:
   $(function() {

@@ -5,7 +5,7 @@ class ExtractCompanyInfoWorker
   # 大量送信の耐久・耐性を確保
   sidekiq_options retry: 1, queue: 'default', backtrace: true
 
-  PYTHON_SCRIPT_PATH = Rails.root.join('extract_company_info', 'app.py').to_s
+  PYTHON_SCRIPT_PATH = Rails.root.join('extract_company_info', 'main.py').to_s
   PYTHON_EXECUTABLE = 'python3'  # システムのpython3を強制使用
 
   def perform(id)
@@ -17,8 +17,8 @@ class ExtractCompanyInfoWorker
                       .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                       .sum(:total_count)
       extract_tracking = ExtractTracking.find(id)
-      daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
-      today_reamin = daily_limit - (today_total - extract_tracking.total_count)
+      today_reamin = 500 - (today_total - extract_tracking.total_count)
+      puts(today_reamin)
       if today_reamin == 0 || (extract_tracking.total_count > today_reamin)
         puts("AutoformSchedulerWorker: perform: today limit exceed")
         extract_tracking.update(
@@ -26,38 +26,31 @@ class ExtractCompanyInfoWorker
         )
         return
       end
+      puts("start")
       # 実行
-      customers = Customer.where(status: ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')).where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
-      # ステータス更新
-      extract_tracking.update(
-        status: "抽出中"
-      )
+      customers = Customer.where(status: "draft").where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
       crowdwork = Crowdwork.find_by(title: extract_tracking.industry)
-      success_count = extract_tracking.success_count
-      failure_count = extract_tracking.failure_count
+      success_count = 0
       customers.each do |customer|
-        begin
-          required_businesses =
-            if crowdwork.business.present?
-              crowdwork.business.split(",")
-            else
-              []
-            end
+        puts(customer.id)
+        puts(customer.address)
+        puts(crowdwork.business)
 
-          required_genre =
-            if crowdwork.genre.present?
-              crowdwork.genre.split(",")
-            else
-              []
-            end
-          command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH]
-          payload = {
-            customer_id: customer.id,
-            company: customer.company,
-            location: customer.address,
-            required_businesses: required_businesses,
-            required_genre: required_genre
-          }
+        command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH] + [customer.company, customer.address, crowdwork.business]
+        begin
+          stdout, stderr, status = execute_python_with_timeout(command)
+          if status.success?
+            puts("start parse")
+            company = tel = address = first_name = url = contact_url = business = genre = "不明"
+            stdout.each_line do |raw|
+              puts(raw)
+              line = raw.to_s.strip.sub(/\A\s*[\-\*\u30fb・]\s*/, "")
+              case line
+              when /\A会社名[^:：]*[:：]\s*(.+)\z/i
+                company = $1.strip
+
+              when /\A電話番号[^:：]*[:：]\s*(.+)\z/i
+                tel = $1.strip
 
           stdout, stderr, status = execute_python_with_timeout(command, payload.to_json)
           puts("---Pythonログ---")
@@ -72,15 +65,25 @@ class ExtractCompanyInfoWorker
               raise "invalid json stdout"
             end
 
-            company = data['data']['company'].to_s
-            tel = data['data']['tel'].to_s
-            address = data['data']['address'].to_s
-            first_name = data['data']['first_name'].to_s
-            url = data['data']['url'].to_s
-            contact_url = data['data']['contact_url'].to_s
-            business = data['data']['business'].to_s
-            genre = data['data']['genre'].to_s
+              when /\A代表者[^:：]*[:：]\s*(.+)\z/i
+                first_name = $1.strip
+              
+              when /\AURL[^:：]*[:：]\s*(.+)\z/i
+                url = $1.strip
+              # 「問い合わせ/お問い合わせ/お問い合わせ先」などの表記ゆれに対応しつつ、コロン直前は任意文字
+              when /\A(?:お?\s*問い合わせ|問い合わせ)\s*(?:先)?\s*URL[^:：]*[:：]\s*(\S+)\z/i
+                contact_url = $1.strip
 
+              when /\A業種[^:：]*[:：]\s*(.+)\z/i
+                business = $1.strip
+
+              when /\A事業内容[^:：]*[:：]\s*(.+)\z/i
+                genre = $1.strip
+              end
+            end
+            puts(company)
+            puts(tel)
+            puts(business)
             customer.update!(
               company: company,
               tel: tel,
@@ -89,13 +92,11 @@ class ExtractCompanyInfoWorker
               url: url,
               contact_url: contact_url,
               business: business,
-              genre: genre,
-              status: ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success')
+              genre: genre
             )
+            puts(success_count)
             success_count += 1
-            extract_tracking.update(
-              success_count: success_count,
-            )
+            puts(success_count)
           else
             puts("---AI抽出失敗---")
             failure_count += 1
@@ -109,18 +110,11 @@ class ExtractCompanyInfoWorker
           end
         rescue => e
           puts "エラー: #{e.class} - #{e.message}"
-          failure_count += 1
-          extract_tracking.update(
-            failure_count: failure_count,
-          )
-          customer.update_columns(
-            status: ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')
-          )
         end
       end
       extract_tracking.update(
         success_count: success_count,
-        failure_count: failure_count,
+        failure_count: extract_tracking.total_count - success_count,
         status: "抽出完了"
       )
     rescue => e

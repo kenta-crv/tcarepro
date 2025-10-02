@@ -36,7 +36,6 @@ class SendersController < ApplicationController
       @sender_stats[sender.id] = {
         total: total_customers,
         unsent: unsent_count,  # 追加
-        unsent2: unactual_sent_count,
         sent: sent_count,
         form_exists: form_exists_count,
         actual_sent: actual_sent_count,
