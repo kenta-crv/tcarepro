@@ -1,13 +1,17 @@
-# Use Ruby 2.6 on Debian Bullseye (supported)
-FROM ruby:2.6-bullseye
+FROM ruby:2.6.1
 
-# Install system dependencies (newer, supported repositories)
-RUN apt-get update && apt-get install -y \
+# Update sources list to use archive repositories for Debian Stretch
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list && \
+    echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf.d/90ignore-release-date && \
+    echo "Acquire::AllowInsecureRepositories true;" >> /etc/apt/apt.conf.d/90ignore-release-date && \
+    echo "Acquire::AllowDowngradeToInsecureRepositories true;" >> /etc/apt/apt.conf.d/90ignore-release-date
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --allow-unauthenticated \
     curl \
     sqlite3 \
     libsqlite3-dev \
-    nodejs \
-    npm \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /myapp

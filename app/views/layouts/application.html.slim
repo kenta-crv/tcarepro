@@ -1,40 +1,33 @@
 doctype html
 html
   head
-      = csrf_meta_tags
-      = render template: 'layouts/_header.html.slim'
-      = include_gon
-      / = javascript_include_tag "application"   # <-- COMMENTED OUT
+    = render template: 'layouts/_header.html.slim'
+    = include_gon
+    = javascript_include_tag "application"
 
-  header
+  body
+    header
       .row
         .col-xs-3
-           = link_to "/"
-
+          = link_to "/" do
+            = image_tag "rogo2.webp", width: "70%", class: "header-image"
         .col-xs-4
           = render template: 'layouts/_flash.html.erb'
         .col-xs-4.right
-          - if controller.controller_name == 'okurite' && controller.action_name == 'index' || controller.action_name == 'resend'
+          - if controller.controller_name == 'okurite' && (controller.action_name == 'index' || controller.action_name == 'resend')
             li
               button.btn.btn-success.btn-md[data-toggle="modal" data-target="#searchModal"]
-               |  検索する
+                | 検索する
                
-          - elsif @customers && (controller.action_name != 'list')  && (controller.action_name != 'extraction')
+          - elsif @customers && controller.action_name != 'list' && controller.action_name != 'extraction'
             li
               button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createTicket"]
-               |  検索する
-          /- elsif extraction_path
-            li
-              button.btn.btn-success.btn-md[data-toggle="modal" data-target="#createExtraction"]
-               |  検索する
-          -else
-
-
+                | 検索する
+          - else
+            / Empty else block to maintain structure
 
       .row.navi
 
-
-  body
     p.notice
       = notice
     p.alert

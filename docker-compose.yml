@@ -20,7 +20,7 @@ services:
       - "6400:6400"
     volumes:
       - ./autoform:/app
-      - db-data:/myapp/db
+      - db-data:/app/db
     environment:
       - RAILS_SERVER=http://app:3000
     depends_on:
