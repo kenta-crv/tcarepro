@@ -10,11 +10,6 @@ require_relative 'boot'
 require 'csv'
 require 'rails/all'
 
-require 'rails/all'
-
-require 'bigdecimal'
-require 'mutex_m'
-
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -52,9 +47,4 @@ module Smart
 
     Dotenv::Railtie.load
   end
-<<<<<<< HEAD
 end
-=======
-endconfig.assets.enabled = false
-config.assets.compile = false
->>>>>>> parent of 1b6b12fff... fixed file

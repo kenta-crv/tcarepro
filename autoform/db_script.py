@@ -1,35 +1,16 @@
 import sqlite3
 import os
 
-# Path to the database file - FIXED for external access
+# Path to the database file, relative to this script's location
+# Assumes this script is in the 'autoform' directory
 base_dir = os.path.dirname(os.path.abspath(__file__))
-db_name = "development.sqlite3"
+db_name = "../db/development.sqlite3" # This matches dbname in bootio.py
+db_path = os.path.join(base_dir, db_name)
+db_path = os.path.normpath(db_path) # Normalize path (e.g., resolve "..")
 
-possible_paths = [
-    os.path.join(base_dir, "../../db/development.sqlite3"),
-    os.path.join(base_dir, "../db/development.sqlite3"),
-    os.path.join(base_dir, "db/development.sqlite3"),
-    "/myapp/db/development.sqlite3",
-    "/app/db/development.sqlite3"
-]
+print(f"Database path: {db_path}")
 
-db_path = None
-for path in possible_paths:
-    normalized_path = os.path.normpath(path)
-    if os.path.exists(normalized_path):
-        db_path = normalized_path
-        print(f"Found database at: {db_path}")
-        break
-
-if not db_path:
-    # Create directory and file if doesn't exist
-    db_path = os.path.normpath(os.path.join(base_dir, "../db/development.sqlite3"))
-    os.makedirs(os.path.dirname(db_path), exist_ok=True)
-    print(f"Creating new database at: {db_path}")
-
-print(f"Using database path: {db_path}")
-
-# Ensure the directory exists
+# Ensure the ../db directory exists
 os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
 conn = None

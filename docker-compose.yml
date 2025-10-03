@@ -2,29 +2,23 @@ version: '3.9'
 services:
   app:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:create db:migrate db:seed && bundle exec puma -C config/puma.rb"
-    ports:
-      - "3000:3000"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec pumactl start"
     volumes:
       - .:/myapp
-      - db-data:/myapp/db
+      - tmp-data:/myapp/tmp
     environment:
-      - RAILS_ENV=development
-      - DATABASE_URL=sqlite3:/myapp/db/development.sqlite3
-
-  python-worker:
+      - RAILS_ENV=production
+      - WEB_CONCURRENCY=1
+  nginx:
     build:
       context: .
-      dockerfile: Dockerfile.python
+      dockerfile: Dockerfile-nginx
     ports:
-      - "6400:6400"
+      - "3080:80"
     volumes:
-      - ./autoform:/app
-      - db-data:/app/db
-    environment:
-      - RAILS_SERVER=http://app:3000
+      - .docker/nginx/conf.d:/etc/nginx/conf.d
+      - tmp-data:/myapp/tmp
     depends_on:
       - app
-
 volumes:
-  db-data:
+  tmp-data:

@@ -1,12 +1,20 @@
 - set_meta_tags noindex: true
+/ ===================== 抽出管理画面（追加） =====================
 .tops-wrapper
   h2.headline AI抽出
 
   .extraction-header
     .period-box
-      - start_txt = (@period_start&.strftime("%Y/%m/%d")   || "__/__/__")
-      - end_txt   = (@period_end&.strftime("%Y/%m/%d")   || "__/__/__")
-      | #{start_txt} ～ #{end_txt}
+      / 期間選択フォーム（GETで現在のページに送信）
+      .period-form
+        = form_tag(request.path, method: :get, class: 'period-form__form') do
+          = hidden_field_tag :industry_name, params[:industry_name] if params[:industry_name].present?
+          = hidden_field_tag :tel_filter, params[:tel_filter] if params[:tel_filter].present?
+          .period-form__group
+            = date_field_tag :period_start, @period_start, class: 'period-input', placeholder: '開始日'
+            | ～
+            = date_field_tag :period_end, @period_end, class: 'period-input', placeholder: '終了日'
+            = submit_tag '適用', class: 'btn btn-primary period-apply-btn'
     .remain-box
       - remain = (@remaining_extractable || "___")
       | 本日残り抽出可能数：#{remain}件
@@ -29,38 +37,46 @@
         - import_count  = @industry_counts[crowdwork.title][:tel_without] - @industry_counts[crowdwork.title][:tel_with]
         - success_count =  @industry_counts[crowdwork.title][:success_count]
         - fail_count    =  @industry_counts[crowdwork.title][:failure_count]
-        - rate_txt      =  "#{@industry_counts[crowdwork.title][:rate]}%"
+        - rate_txt      =  "#{(@industry_counts[crowdwork.title][:rate].to_f.round(2))}%"
         - status_txt    = @industry_counts[crowdwork.title][:status]
         - total_count = [import_count, @remaining_extractable].min
 
-        tr
+        tr.data-row[data-industry=company]
           td = company
           td
             = import_count
-          td
+          td.js-success
             = success_count
-          td
+          td.js-failure
             = fail_count
-          td = rate_txt
-          td
+          td.js-rate 
+            = rate_txt
+          td.js-status
             = status_txt
+            - if status_txt == '抽出中' || status_txt == '抽出完了'
+              - processed = success_count.to_i + fail_count.to_i
+              - total_tracking = @industry_counts[crowdwork.title][:total_count].to_i
+              br
+              .js-progress-sub
+                | (#{processed}/#{total_tracking})
 
           td.action-cell
-            / ルーティング未用意でも壊れないように # をデフォルトに
-            .square_btn
-              = link_to "AI抽出開始", extract_company_info_path(industry_name: crowdwork.title, total_count: total_count), method: "post", class: "btn btn-ai"
+            = form_with url: extract_company_info_path(industry_name: crowdwork.title), method: :post, html: { class: "extract-form" } do
+              = hidden_field_tag :count, "", id: "extract-count"
+              .square_btn
+                = link_to "AI抽出開始", "#", class: "btn btn-ai extract_button", data: { max: total_count, company: company }
           td.action-cell  
             .square_btn
-              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title), method: :get, class: "btn btn-default"
+              = link_to "チェック開始", filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end, anchor: 'draft-list'), method: :get, class: "btn btn-default"
 
 
 .tops-wrapper
-  h2.headline
+  h2.headline#draft-list
     | ドラフトリスト
 .tops-wrapper
   - if @crowdworks.present?
     - @crowdworks.each do |crowdwork|
-      = link_to crowdwork.title, filter_by_industry_path(industry_name: crowdwork.title), method: :get, class: "btn btn-default"
+      = link_to crowdwork.title, filter_by_industry_path(industry_name: crowdwork.title, period_start: @period_start, period_end: @period_end), method: :get, class: "btn btn-default"
       | (
       = @industry_counts[crowdwork.title][:tel_with]
       | /
@@ -76,16 +92,7 @@
     = submit_tag '一括削除（社名）', name: 'commit', style: 'width: 80px;margin: 0 0 10px 5%;font-size: 11px;', data: { confirm: '本当に削除しますか？' }
 
   table[width="100%" cellpadding="0" cellspacing="0"]
-     col[width="3%"]
-     col[width="25%"]
-     col[width="8%"]
-     col[width="13%"]
-     col[width="5%"]
-     col[width="7%"]
-     col[width="10%"]
-     col[width="10%"]
-     col[width="5%"]
-     col[width="10%"]
+
      thead
        tr
          th
@@ -93,9 +100,9 @@
          th
            | 会社名
          th
-           = link_to 'tel_within', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel')
+           = link_to 'Check', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'with_tel', period_start: @period_start, period_end: @period_end)
            br/
-           = link_to 'tel_without', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel')
+           = link_to 'Draft', filter_by_industry_path(industry_name: params[:industry_name], tel_filter: 'without_tel', period_start: @period_start, period_end: @period_end)
          th
            | 住所
          th
@@ -109,7 +116,9 @@
          th
            | 担当者
          th
-           | 作成日
+           | インポート日
+         th
+           | アップデート日
      - @customers.each do |customer|
        tr
          td
@@ -131,7 +140,9 @@
          td
            = customer.worker&.user_name
          td
-           = customer&.created_at.strftime("%m月%d日 %H時%M分")
+           = customer&.created_at.strftime("%m月%d日%H時%M分")
+         td
+           = customer&.updated_at.strftime("%m月%d日%H時%M分")
      tr
        th[colspan="10"]
          = paginate @customers
@@ -206,53 +217,36 @@ javascript:
       }
     });
 
-    // 進捗ポーリング（1リクエストでまとめて取得）
+    // 進捗ポーリング（全行を対象に数秒おき）
     function pollProgress() {
-      // ポーリング対象（基本は「抽出中」の行のみ）
-      var $rows = $("tr.data-row");
-      var industries = [];
-      $rows.each(function(){
+      $("tr.data-row").each(function() {
         var $row = $(this);
         var industry = $row.data('industry');
         if (!industry) { return; }
-        var statusText = ($row.find('.js-status').text() || '').trim();
-        // 抽出中のみを優先的にポーリング。全くなければ全行を対象（初回など）
-        if (statusText.indexOf('抽出中') !== -1) {
-          industries.push(industry);
-        }
+        $.getJSON('/draft/progress', { industry: industry })
+          .done(function(resp) {
+            if (!resp || resp.message === 'no_tracking') { return; }
+            if (resp.status) {
+              var $status = $row.find('.js-status');
+              // ベースのステータス文字列
+              $status.contents().filter(function(){ return this.nodeType === 3; }).remove();
+              $status.prepend(resp.status);
+              $row.find('.js-success').text(resp.success);
+              $row.find('.js-failure').text(resp.failure);
+              // 成功率 = success / (success + failure)
+              var totalTried = (resp.success || 0) + (resp.failure || 0);
+              var rate = totalTried > 0 ? (resp.success / totalTried * 100) : 0;
+              $row.find('.js-rate').text((rate).toFixed(1) + '%');
+              $row.find('.js-progress-sub').text('(' + (resp.success + resp.failure) + '/' + resp.total + ')');
+
+            }
+          })
+          .fail(function() { /* noop */ });
       });
-
-      if (industries.length === 0) {
-        // "抽出中" が無ければ全行を対象（過負荷を避けるために一括で1回のみ）
-        industries = $rows.map(function(){ return $(this).data('industry'); }).get().filter(Boolean);
-      }
-
-      if (industries.length === 0) { return; }
-
-      $.getJSON('/draft/progress', { industries: industries })
-        .done(function(resp) {
-          if (!resp) { return; }
-          industries.forEach(function(industry){
-            var data = resp[industry];
-            if (!data) { return; }
-            var $row = $('tr.data-row[data-industry="' + industry + '"]');
-            var $status = $row.find('.js-status');
-            // ベースのステータス文字列のみ置換
-            $status.contents().filter(function(){ return this.nodeType === 3; }).remove();
-            $status.prepend(data.status);
-            $row.find('.js-success').text(data.success);
-            $row.find('.js-failure').text(data.failure);
-            var totalTried = (data.success || 0) + (data.failure || 0);
-            var rate = totalTried > 0 ? (data.success / totalTried * 100) : 0;
-            $row.find('.js-rate').text(rate.toFixed(1) + '%');
-            $row.find('.js-progress-sub').text('(' + totalTried + '/' + data.total + ')');
-          });
-        })
-        .fail(function(){ /* noop */ });
     }
 
-    // 周期的にポーリング
-    setInterval(pollProgress, #{refresh_interval});
+    // 5秒ごとにポーリング
+    setInterval(pollProgress, 5000);
     // 初回即時実行
     pollProgress();
   });

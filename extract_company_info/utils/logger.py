@@ -26,23 +26,23 @@ def get_logger() -> logging.Logger:
     if logger.handlers:
         return logger
 
-    # log_file = settings.APP_LOG_FILE
-    # max_bytes = settings.APP_LOG_MAX_BYTES
-    # backup_count = settings.APP_LOG_BACKUP_COUNT
+    log_file = settings.APP_LOG_FILE
+    max_bytes = settings.APP_LOG_MAX_BYTES
+    backup_count = settings.APP_LOG_BACKUP_COUNT
 
-    # # 出力先ディレクトリを作成
-    # Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+    # 出力先ディレクトリを作成
+    Path(log_file).parent.mkdir(parents=True, exist_ok=True)
 
-    # handler = RotatingFileHandler(
-    #     log_file,
-    #     maxBytes=max_bytes,
-    #     backupCount=backup_count,
-    #     encoding="utf-8",
-    # )
-    # formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-    # handler.setFormatter(formatter)
+    handler = RotatingFileHandler(
+        log_file,
+        maxBytes=max_bytes,
+        backupCount=backup_count,
+        encoding="utf-8",
+    )
+    formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+    handler.setFormatter(formatter)
 
-    # logger.addHandler(handler)
-    # logger.setLevel(logging.INFO)
-    # logger.propagate = False
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
     return logger

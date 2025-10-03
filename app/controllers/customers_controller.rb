@@ -3,7 +3,7 @@ class CustomersController < ApplicationController
   before_action :authenticate_admin!, only: [:destroy, :destroy_all, :sfa, :mail, :call_history]
   #before_action :authenticate_worker!, only: [:extraction, :direct_mail_send]
   before_action :authenticate_worker_or_user, only: [:new, :edit, :create, :update]
-  # before_action :authenticate_user_or_admin, only: [:index, :show]
+  before_action :authenticate_user_or_admin, only: [:index, :show]
   before_action :set_customers, only: [:update_all_status]
   protect_from_forgery with: :exception, prepend: true
   
@@ -121,64 +121,74 @@ def edit
   end
 end
 
-  def update
-    @customer = Customer.find(params[:id])
-  
-    if params[:commit] == '対象外リストとして登録'
-      @customer.skip_validation = true
-      @customer.status = "hidden"
-      @customer.save(validate: false)
-    end
-  
-    # admin または user がサインインしている場合、バリデーションをスキップ
-    if admin_signed_in? || user_signed_in?
-      @customer.skip_validation = true
-    end
-  
-    # 現在のフィルタ条件を考慮して次のdraft顧客を取得
-    @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
-  
-    if params[:industry_name].present?
-      @q = @q.where(industry: params[:industry_name])
-    end
-  
-    if params[:tel_filter] == "with_tel"
-      @q = @q.where.not("TRIM(tel) = ''")
-    elsif params[:tel_filter] == "without_tel"
-      @q = @q.where("TRIM(tel) = ''")
-    end
-  
-    @next_draft = @q.order(:id).first
-  
-    if @customer.update(customer_params)
-      if params[:commit] == '登録＋J Workメール送信'
-        @customer.reload 
-        CustomerMailer.teleapo_send_email(@customer, current_user).deliver_now
-        CustomerMailer.teleapo_reply_email(@customer, current_user).deliver_now
-      elsif params[:commit] == '資料送付'
-        @customer.reload 
-        CustomerMailer.document_send_email(@customer, current_user).deliver_now
-        CustomerMailer.document_reply_email(@customer, current_user).deliver_now
-      end
-      if worker_signed_in?
-        if @next_draft
-          redirect_to edit_customer_path(
-            id: @next_draft.id,
-            industry_name: params[:industry_name],
-            tel_filter: params[:tel_filter]
-          )
-        else
-          redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
-        end
-      else
-        redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
-      end
-    else
-      render 'edit'
-    end
+def update
+  @customer = Customer.find(params[:id])
+
+  if params[:commit] == '対象外リストとして登録'
+    @customer.skip_validation = true
+    @customer.status = "hidden"
+    @customer.save(validate: false)
+
+  elsif params[:commit] == '公開して一覧へ'
+    @customer.status = nil
+    @customer.save(validate: false)
+
+    redirect_to customers_path(
+      q: params[:q]&.permit!,
+      industry_name: params[:industry_name],
+      tel_filter: params[:tel_filter]
+    ) and return
   end
 
-  def destroy
+  # admin または user がサインインしている場合、バリデーションをスキップ
+  if admin_signed_in? || user_signed_in?
+    @customer.skip_validation = true
+  end
+
+  # 現在のフィルタ条件を考慮して次のdraft顧客を取得
+  @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
+
+  if params[:industry_name].present?
+    @q = @q.where(industry: params[:industry_name])
+  end
+
+  if params[:tel_filter] == "with_tel"
+    @q = @q.where.not("TRIM(tel) = ''")
+  elsif params[:tel_filter] == "without_tel"
+    @q = @q.where("TRIM(tel) = ''")
+  end
+
+  @next_draft = @q.order(:id).first
+
+  if @customer.update(customer_params)
+    if params[:commit] == '登録＋J Workメール送信'
+      @customer.reload 
+      CustomerMailer.teleapo_send_email(@customer, current_user).deliver_now
+      CustomerMailer.teleapo_reply_email(@customer, current_user).deliver_now
+    elsif params[:commit] == '資料送付'
+      @customer.reload 
+      CustomerMailer.document_send_email(@customer, current_user).deliver_now
+      CustomerMailer.document_reply_email(@customer, current_user).deliver_now
+    end
+    if worker_signed_in?
+      if @next_draft
+        redirect_to edit_customer_path(
+          id: @next_draft.id,
+          industry_name: params[:industry_name],
+          tel_filter: params[:tel_filter]
+        )
+      else
+        redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
+      end
+    else
+      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+    end
+  else
+    render 'edit'
+  end
+end
+
+def destroy
     @customer = Customer.find(params[:id])
     @customer.destroy
     redirect_to customers_path
@@ -442,6 +452,31 @@ end
     # crowdworkタイトルの初期化
     @crowdworks = Crowdwork.all || []
 
+    # 期間パラメータの解釈（未指定可）
+    @period_start = nil
+    @period_end   = nil
+    if params[:period_start].present?
+      begin
+        @period_start = Date.parse(params[:period_start])
+      rescue ArgumentError
+        @period_start = nil
+      end
+    end
+    if params[:period_end].present?
+      begin
+        @period_end = Date.parse(params[:period_end])
+      rescue ArgumentError
+        @period_end = nil
+      end
+    end
+
+    # 期間の整合性（逆転していたら入れ替え）
+    if @period_start.present? && @period_end.present? && @period_end < @period_start
+      @period_start, @period_end = @period_end, @period_start
+    end
+    range_start = @period_start&.beginning_of_day
+    range_end   = @period_end&.end_of_day
+
     # Adminを優先した条件分岐
     @customers = case
     when admin_signed_in? && params[:tel_filter] == "with_tel"
@@ -454,9 +489,30 @@ end
       Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
     end
 
+    # 期間でフィルタ（未指定なら全期間）
+    if range_start && range_end
+      @customers = @customers.where(created_at: range_start..range_end)
+    elsif range_start
+      @customers = @customers.where('created_at >= ?', range_start)
+    elsif range_end
+      @customers = @customers.where('created_at <= ?', range_end)
+    end
+
     # タイトルごとの件数を計算
-    tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
-    tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
+    tel_with_scope = Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    if range_start && range_end
+      tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
+      tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
+    elsif range_start
+      tel_with_scope = tel_with_scope.where('created_at >= ?', range_start)
+      tel_without_scope = tel_without_scope.where('created_at >= ?', range_start)
+    elsif range_end
+      tel_with_scope = tel_with_scope.where('created_at <= ?', range_end)
+      tel_without_scope = tel_without_scope.where('created_at <= ?', range_end)
+    end
+    tel_with_counts = tel_with_scope.group(:industry).count
+    tel_without_counts = tel_without_scope.group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
       latest_tracking = ExtractTracking.where(industry: crowdwork.title)
@@ -464,6 +520,7 @@ end
                                  .first
       success_count = latest_tracking&.success_count.to_i
       failure_count = latest_tracking&.failure_count.to_i
+      total_count   = latest_tracking&.total_count.to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
       hash[crowdwork.title] = {
@@ -471,6 +528,7 @@ end
         tel_without: tel_without_counts[crowdwork.title] || 0,
         success_count: success_count,
         failure_count: failure_count,
+        total_count: total_count,
         rate: rate,
         status: latest_tracking&.status || "抽出前"
       }
@@ -479,21 +537,19 @@ end
     # ページネーション
     @customers = @customers.page(params[:page]).per(100)
 
-    @period_start = Date.today.beginning_of_month
-    @period_end   = Date.today.end_of_month
-
     # 残り件数取得
     today_total = ExtractTracking
                     .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                     .sum(:total_count)
-    @remaining_extractable = 500 - today_total
+    daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
+    @remaining_extractable = [daily_limit - today_total, 0].max
 
   end
 
   def extract_company_info
     Rails.logger.info("extract_company_info called.")
     industry_name = params[:industry_name]
-    total_count = params[:total_count]
+    total_count = params[:count]
 
     tracking = ExtractTracking.create!(
       industry:       industry_name,
@@ -507,62 +563,8 @@ end
   end
 
   # 進捗取得API（ポーリング用）
-  # 1) 単一業界: GET /draft/progress.json?industry=業界名
-  # 2) 複数業界: GET /draft/progress.json?industries[]=A&industries[]=B
+  # GET /draft/progress.json?industry=業界名
   def extract_progress
-    # 複数業界まとめ取得（1リクエスト化）
-    if params[:industries].present?
-      industries = Array(params[:industries]).map(&:to_s).reject(&:blank?)
-      if industries.empty?
-        render json: {} and return
-      end
-
-      # 業界×ステータスで集計（1クエリ）
-      statuses = [
-        ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success'),
-        ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed'),
-        ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')
-      ]
-      grouped = Customer
-        .where(industry: industries)
-        .where(status: statuses)
-        .group(:industry, :status)
-        .count
-
-      # 各業界の最新トラッキング（Ruby側でpick）
-      latest_trackings = ExtractTracking
-        .where(industry: industries)
-        .order(id: :desc)
-        .to_a
-        .group_by(&:industry)
-        .transform_values { |arr| arr.first }
-
-      payload = {}
-      industries.each do |ind|
-        success = grouped[[ind, ENV.fetch('EXTRACT_AI_STATUS_NAME_SUCCESS', 'ai_success')]].to_i
-        failure = grouped[[ind, ENV.fetch('EXTRACT_AI_STATUS_NAME_FAILED', 'ai_failed')]].to_i
-        extracting = grouped[[ind, ENV.fetch('EXTRACT_AI_STATUS_NAME_EXTRACTING', 'ai_extracting')]].to_i
-        total = success + failure + extracting
-        status_t = extracting.positive? ? '抽出中' : '抽出完了'
-
-        lt = latest_trackings[ind]
-        payload[ind] = {
-          id: lt&.id,
-          industry: ind,
-          total: total,
-          success: success,
-          failure: failure,
-          processed: success + failure,
-          remaining: [total - (success + failure), 0].max,
-          status: status_t,
-          updated_at: lt&.updated_at
-        }
-      end
-
-      render json: payload and return
-    end
-
-    # 従来の単一業界（後方互換）
     industry = params[:industry].to_s.presence
     tracking = if industry
                  ExtractTracking.where(industry: industry).order(id: :desc).first
@@ -582,9 +584,41 @@ end
     # crowdworkタイトルの初期化
     @crowdworks = Crowdwork.all || []
 
+    # 期間パラメータの解釈（未指定可）
+    @period_start = nil
+    @period_end   = nil
+    if params[:period_start].present?
+      begin
+        @period_start = Date.parse(params[:period_start])
+      rescue ArgumentError
+        @period_start = nil
+      end
+    end
+    if params[:period_end].present?
+      begin
+        @period_end = Date.parse(params[:period_end])
+      rescue ArgumentError
+        @period_end = nil
+      end
+    end
+
+    # 期間の整合性（逆転していたら入れ替え）
+    if @period_start.present? && @period_end.present? && @period_end < @period_start
+      @period_start, @period_end = @period_end, @period_start
+    end
+    range_start = @period_start&.beginning_of_day
+    range_end   = @period_end&.end_of_day
+
     # タイトルによるフィルタリング
     industry_name = params[:industry_name]
     base_query = Customer.where(status: "draft")
+    if range_start && range_end
+      base_query = base_query.where(created_at: range_start..range_end)
+    elsif range_start
+      base_query = base_query.where('created_at >= ?', range_start)
+    elsif range_end
+      base_query = base_query.where('created_at <= ?', range_end)
+    end
     base_query = base_query.where(industry: industry_name) if industry_name.present?
 
     # Adminを優先した条件分岐
@@ -599,9 +633,21 @@ end
       base_query.where.not(tel: [nil, '', ' '])
     end
 
-    # タイトルごとの件数を計算
-    tel_with_counts = Customer.where(status: "draft").where.not(tel: [nil, '', ' ']).group(:industry).count
-    tel_without_counts = Customer.where(status: "draft").where(tel: [nil, '', ' ']).group(:industry).count
+    # タイトルごとの件数を計算（期間条件があれば適用）
+    tel_with_scope = Customer.where(status: "draft").where.not(tel: [nil, '', ' '])
+    tel_without_scope = Customer.where(status: "draft").where(tel: [nil, '', ' '])
+    if range_start && range_end
+      tel_with_scope = tel_with_scope.where(created_at: range_start..range_end)
+      tel_without_scope = tel_without_scope.where(created_at: range_start..range_end)
+    elsif range_start
+      tel_with_scope = tel_with_scope.where('created_at >= ?', range_start)
+      tel_without_scope = tel_without_scope.where('created_at >= ?', range_start)
+    elsif range_end
+      tel_with_scope = tel_with_scope.where('created_at <= ?', range_end)
+      tel_without_scope = tel_without_scope.where('created_at <= ?', range_end)
+    end
+    tel_with_counts = tel_with_scope.group(:industry).count
+    tel_without_counts = tel_without_scope.group(:industry).count
 
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
       latest_tracking = ExtractTracking.where(industry: crowdwork.title)
@@ -609,6 +655,7 @@ end
                                  .first
       success_count = latest_tracking&.success_count.to_i
       failure_count = latest_tracking&.failure_count.to_i
+      total_count   = latest_tracking&.total_count.to_i
       total = success_count + failure_count
       rate = total.positive? ? (success_count.to_f / total) * 100 : 0.0
       hash[crowdwork.title] = {
@@ -616,6 +663,7 @@ end
         tel_without: tel_without_counts[crowdwork.title] || 0,
         success_count: success_count,
         failure_count: failure_count,
+        total_count: total_count,
         rate: rate,
         status: latest_tracking&.status || "抽出前"
       }
@@ -624,14 +672,12 @@ end
     # ページネーション
     @customers = @customers.page(params[:page]).per(100)
 
-    @period_start = Date.today.beginning_of_month
-    @period_end   = Date.today.end_of_month
-
     # 残り件数取得
     today_total = ExtractTracking
                     .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
                     .sum(:total_count)
-    @remaining_extractable = 10 - today_total
+    daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
+    @remaining_extractable = [daily_limit - today_total, 0].max
 
     render :draft
   end  
@@ -851,14 +897,8 @@ end
     end
 
     def authenticate_user_or_admin
-      # Check if tables exist first
-      unless defined?(Admin) && Admin.table_exists? && defined?(User) && User.table_exists?
-        # If tables don't exist, allow access during setup
-        return true
-      end
-      
       unless user_signed_in? || admin_signed_in?
-        redirect_to new_user_session_path, alert: 'Please log in to access this page.'
+        redirect_to new_user_session_path, alert: 'error'
       end
     end
   
