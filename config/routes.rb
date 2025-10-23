@@ -146,6 +146,15 @@ Rails.application.routes.draw do
       post "autoform_data_register" => "pybotcenter#graph_register"
       post "pycall" => "pybotcenter#notify_post"
       get "inquiry" => "pybotcenter#get_inquiry"
+      
+      # Customers API
+      resources :customers, only: [:index, :show] do
+        collection do
+          get :search
+          get :by_industry
+          get :by_status
+        end
+      end
     end
   end
 

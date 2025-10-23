@@ -46,6 +46,8 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
+  # Windows file watching optimization
+  gem 'wdm', '>= 0.1.0' if Gem.win_platform?
   # gem 'bullet'
   # gem 'rails-erd'
   # gem 'rack-mini-profiler'
