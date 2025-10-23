@@ -22,7 +22,9 @@ class Customer < ApplicationRecord
   
   
   def industry_mail
-    INDUSTRY_MAPPING[self.industry][:industry_mail]
+    return nil if self.industry.nil?
+    industry_data = INDUSTRY_MAPPING[self.industry]
+    industry_data&.[](:industry_mail)
   end
 
   def set_industry_defaults

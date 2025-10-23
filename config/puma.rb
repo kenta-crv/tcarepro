@@ -17,13 +17,15 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 
 directory ENV.fetch("WEB_ROOT_DIRECTORY") { Dir.pwd }
 
-bind 'unix:///tmp/tcarepro.sock'
+# Unix sockets don't work on Windows, only use them on Unix-like systems
+bind 'unix:///tmp/tcarepro.sock' unless Gem.win_platform?
 
 pidfile "tmp/pid"
 
 state_path "tmp/state"
 
-activate_control_app
+# Control app uses Unix sockets, only enable on non-Windows platforms
+activate_control_app unless Gem.win_platform?
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked webserver processes. If using threads and workers together
@@ -31,7 +33,8 @@ activate_control_app
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
-workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+# Only use workers on non-Windows platforms
+workers ENV.fetch("WEB_CONCURRENCY") { 2 } unless Gem.win_platform?
 
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
@@ -40,7 +43,8 @@ workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 # you need to make sure to reconnect any threads in the `on_worker_boot`
 # block.
 #
-preload_app!
+# Only preload app when using workers (not on Windows)
+preload_app! unless Gem.win_platform?
 
 # If you are preloading your application and using Active Record, it's
 # recommended that you close any connections to the database before workers
