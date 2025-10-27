@@ -161,6 +161,7 @@
 			<th>ステータス</th>
 			<th>次回連絡日</th>
 			<th>コメント</th>
+			<th>録音</th>
 			<th>削除</th>
 		</tr>
 		<tr>
@@ -173,6 +174,18 @@
 			<td><%= call.statu %></td>
 			<td><%= call.time %></td>
 			<td><%= call.comment %></td>
+			<td>
+				<% if call.recording_url.present? %>
+					<audio controls style="width: 200px;">
+						<source src="<%= call.recording_url %>" type="audio/wav">
+						<a href="<%= call.recording_url %>" target="_blank">🎵 録音を再生</a>
+					</audio>
+					<br>
+					<small><%= call.recording_duration %>秒</small>
+				<% else %>
+					<span class="text-muted">録音なし</span>
+				<% end %>
+			</td>
 			<td><%= link_to '編集', edit_customer_call_path(@customer, call), class: 'command'%>
 			<%= link_to '削除',
                     customer_call_path(@customer, call) ,

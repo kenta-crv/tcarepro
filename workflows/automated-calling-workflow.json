@@ -1,0 +1,325 @@
+{
+  "name": "Automated Customer Calling Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "value": 5
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://your-app.com/api/v1/customers",
+        "options": {
+          "headers": {
+            "X-API-Key": "{{$env.RAILS_API_KEY}}"
+          },
+          "qs": {
+            "status": "draft",
+            "per_page": "10"
+          }
+        }
+      },
+      "id": "get-customers",
+      "name": "Get Customers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-customers",
+      "name": "Split Customers",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract customer data for Vapi call\nconst customer = $input.first().json;\n\nreturn {\n  customer_id: customer.id,\n  phone_number: customer.tel,\n  company_name: customer.company,\n  first_name: customer.first_name,\n  industry: customer.industry,\n  address: customer.address\n};"
+      },
+      "id": "prepare-call-data",
+      "name": "Prepare Call Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.vapi.ai/call",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$env.VAPI_API_KEY}}",
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "phoneNumberId": "{{$env.VAPI_PHONE_NUMBER_ID}}",
+            "customer": {
+              "number": "{{$json.phone_number}}",
+              "firstName": "{{$json.first_name}}",
+              "company": "{{$json.company_name}}"
+            },
+            "assistantId": "{{$env.VAPI_ASSISTANT_ID}}",
+            "recordingEnabled": true,
+            "webhookUrl": "https://your-n8n-instance.com/webhook/call-completed"
+          }
+        }
+      },
+      "id": "make-vapi-call",
+      "name": "Make Vapi Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 300,
+        "unit": "seconds"
+      },
+      "id": "wait-for-call",
+      "name": "Wait for Call",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.vapi.ai/call/{{$json.id}}",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$env.VAPI_API_KEY}}"
+          }
+        }
+      },
+      "id": "get-call-status",
+      "name": "Get Call Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process call result and prepare for database update\nconst callResult = $input.first().json;\nconst originalData = $('Prepare Call Data').first().json;\n\nreturn {\n  call_id: callResult.id,\n  customer_id: originalData.customer_id,\n  recording_url: callResult.recordingUrl,\n  recording_duration: callResult.duration,\n  call_status: callResult.status,\n  call_end_reason: callResult.endReason,\n  transcript: callResult.transcript,\n  cost: callResult.cost,\n  phone_number: originalData.phone_number,\n  company_name: originalData.company_name\n};"
+      },
+      "id": "process-call-result",
+      "name": "Process Call Result",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://your-app.com/api/v1/calls",
+        "options": {
+          "headers": {
+            "X-API-Key": "{{$env.RAILS_API_KEY}}",
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "customer_id": "{{$json.customer_id}}",
+            "statu": "{{$json.call_status}}",
+            "recording_url": "{{$json.recording_url}}",
+            "recording_duration": "{{$json.recording_duration}}",
+            "comment": "Automated call via Vapi - {{$json.call_end_reason}}",
+            "transcript": "{{$json.transcript}}",
+            "cost": "{{$json.cost}}"
+          }
+        }
+      },
+      "id": "store-call-record",
+      "name": "Store Call Record",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2000,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Log the call completion\nconst callData = $input.first().json;\nconsole.log(`Call completed for ${callData.company_name} (${callData.phone_number})`);\nconsole.log(`Status: ${callData.call_status}, Duration: ${callData.recording_duration}s`);\n\nreturn callData;"
+      },
+      "id": "log-call-completion",
+      "name": "Log Call Completion",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "Call processing completed"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2440,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Customers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Customers": {
+      "main": [
+        [
+          {
+            "node": "Split Customers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Customers": {
+      "main": [
+        [
+          {
+            "node": "Prepare Call Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Call Data": {
+      "main": [
+        [
+          {
+            "node": "Make Vapi Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make Vapi Call": {
+      "main": [
+        [
+          {
+            "node": "Wait for Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Call": {
+      "main": [
+        [
+          {
+            "node": "Get Call Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Call Status": {
+      "main": [
+        [
+          {
+            "node": "Process Call Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Call Result": {
+      "main": [
+        [
+          {
+            "node": "Store Call Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Call Record": {
+      "main": [
+        [
+          {
+            "node": "Log Call Completion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Call Completion": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-15T10:00:00.000Z",
+  "versionId": "1"
+}

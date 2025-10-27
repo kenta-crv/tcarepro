@@ -155,6 +155,9 @@ Rails.application.routes.draw do
           get :by_status
         end
       end
+      
+      # Calls API
+      resources :calls, only: [:create]
     end
   end
 
