@@ -84,6 +84,7 @@ class CustomersController < ApplicationController
 
   def create
     @customer = Customer.new(customer_params)
+    @customer.status = "hidden"  # 新規作成時は非表示ステータスに設定
      if @customer.save
        if worker_signed_in?
          redirect_to extraction_path
