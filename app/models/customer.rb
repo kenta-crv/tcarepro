@@ -1,6 +1,17 @@
 require 'scraping'
 
 class Customer < ApplicationRecord
+  # 47都道府県リスト
+  PREFECTURES = %w[
+    北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県
+    茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県
+    新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県
+    静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県
+    奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県
+    徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県
+    熊本県 大分県 宮崎県 鹿児島県 沖縄県
+  ].freeze
+
   INDUSTRY_MAPPING = {
     'ワークリレーション' => {industry_code: 21000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"fujita@work-re.com"},
     'ワーク（外国人）' => {industry_code: 30000, company_name: "株式会社ワークリレーション", payment_date: "10日", industry_mail:"fujita@work-re.com"},
@@ -127,6 +138,9 @@ class Customer < ApplicationRecord
   end
 
   before_save :set_industry_defaults
+  before_validation :normalize_phone_number
+  before_validation :extract_prefecture_from_address
+  
   belongs_to :user, optional: true
   belongs_to :worker, optional: true
   #has_many :scrapings, dependent: :destroy
@@ -933,6 +947,34 @@ scope :before_sended_at, ->(sended_at){
 
   def scraping
     @scraping ||= Scraping.new
+  end
+
+  # 電話番号の正規化処理
+  def normalize_phone_number
+    if tel.present?
+      # 半角数字とハイフンのみを残す
+      self.tel = tel.gsub(/[^0-9\-]/, '')
+    end
+    if mobile.present?
+      self.mobile = mobile.gsub(/[^0-9\-]/, '')
+    end
+  end
+
+  # 住所から都道府県を抽出・補完
+  def extract_prefecture_from_address
+    return if address.blank?
+    return if address =~ /都|道|府|県/  # Already has prefecture
+    
+    # Try to detect prefecture from beginning of address
+    PREFECTURES.each do |pref|
+      pref_without_suffix = pref.sub(/[都道府県]$/, '')
+      if address.start_with?(pref_without_suffix)
+        self.address = "#{pref}#{address.sub(/^#{pref_without_suffix}/, '')}"
+        return
+      end
+    end
+    
+    # If no match found, address will fail validation (validate_address_format)
   end
 
 end
