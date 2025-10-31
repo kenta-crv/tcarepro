@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20250909000001) do
+ActiveRecord::Schema.define(version: 20251027130346) do
 
   create_table "access_logs", force: :cascade do |t|
     t.integer "customer_id", null: false
@@ -75,6 +75,12 @@ ActiveRecord::Schema.define(version: 20250909000001) do
     t.integer "admin_id"
     t.integer "user_id"
     t.datetime "latest_confirmed_time"
+    t.string "recording_url"
+    t.integer "recording_duration"
+    t.string "recording_file_path"
+    t.string "vapi_call_id"
+    t.text "transcript"
+    t.decimal "cost"
     t.index ["admin_id"], name: "index_calls_on_admin_id"
     t.index ["customer_id", "created_at"], name: "index_calls_on_customer_id_and_created_at"
     t.index ["customer_id"], name: "index_calls_on_customer_id"

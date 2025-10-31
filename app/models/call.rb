@@ -3,6 +3,13 @@ class Call < ApplicationRecord
   belongs_to :admin, optional: true
   belongs_to :user, optional: true
   belongs_to :client, optional: true
+  
+  # Validations for recording fields
+  validates :recording_url, presence: true, if: :recording_duration?
+  validates :recording_duration, numericality: { greater_than: 0 }, if: :recording_duration?
+  
+  # Scope for automated calls
+  scope :automated, -> { where.not(vapi_call_id: nil) }
   scope :times_last_call, -> {
     last_time = "SELECT sub_call.customer_id, MAX(sub_call.time) as last_time FROM calls as sub_call GROUP BY sub_call.customer_id";
     joins(
