@@ -134,6 +134,4 @@ gem 'dotenv-rails', groups: [:development, :test, :production]
 gem 'sidekiq', '~> 5.2'
 gem 'sidekiq-cron'
 
-gem 'open3'
-
 gem 'net-imap', '~>0.3.9'

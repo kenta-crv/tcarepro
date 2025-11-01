@@ -84,16 +84,23 @@ class CustomersController < ApplicationController
 
   def create
     @customer = Customer.new(customer_params)
-    @customer.status = "hidden"  # 新規作成時は非表示ステータスに設定
-     if @customer.save
-       if worker_signed_in?
-         redirect_to extraction_path
-       else
-         redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
-       end
-     else
-       render 'new'
-     end
+    
+    # バリデーションチェック
+    if @customer.valid?
+      # バリデーション成功 → 通常保存
+      @customer.save
+    else
+      # バリデーション失敗 → 対象外として hidden で強制保存
+      @customer.status = "hidden"
+      @customer.save(validate: false)
+    end
+    
+    # 保存後のリダイレクト
+    if worker_signed_in?
+      redirect_to extraction_path
+    else
+      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+    end
   end
 
 def edit

@@ -224,7 +224,6 @@ GEM
       racc (~> 1.4)
     nokogiri (1.15.7-x64-mingw32)
       racc (~> 1.4)
-    open3 (0.2.1)
     open_uri_redirections (0.2.1)
     orm_adapter (0.5.0)
     os (1.1.4)
@@ -460,7 +459,6 @@ DEPENDENCIES
   lograge
   meta-tags
   net-imap (~> 0.3.9)
-  open3
   open_uri_redirections
   pry-rails
   puma (~> 4.3)
