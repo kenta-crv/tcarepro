@@ -151,11 +151,13 @@ class AutoformSchedulerWorker
   end
 
   def execute_python_with_timeout(command, contact_tracking_id)
-    require 'timeout'
+    require 'subprocess'
     
-    stdout, stderr, status = Timeout.timeout(300) do
-      Open3.capture3(*command)
-    end
+    stdout, stderr, status = Subprocess.run(
+      command: command,
+      env: { "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" },
+      timeout_seconds: 300,
+    )
 
     # ログ出力
     Sidekiq.logger.info "AutoformSchedulerWorker: Python script STDOUT for CT ID #{contact_tracking_id}:\n#{stdout}" unless stdout.blank?
