@@ -1,5 +1,3 @@
-require 'open3'
-
 class ExtractCompanyInfoWorker
   include Sidekiq::Worker
   # 大量送信の耐久・耐性を確保
@@ -10,7 +8,7 @@ class ExtractCompanyInfoWorker
 
   def perform(id)
     begin
-      puts("AutoformSchedulerWorker: perform: start #{id}")
+      puts("ExtractCompanyInfoWorker: perform: start #{id}")
 
       # すでに他のジョブで本日の残り件数を超えている場合は終了
       today_total = ExtractTracking
@@ -113,17 +111,20 @@ class ExtractCompanyInfoWorker
 
   def execute_python_with_timeout(command, stdin_data)
     puts("python script start")
-    require 'timeout'
-    stdout, stderr, status = Timeout.timeout(300) do
-      # 環境変数を渡しつつ、JSONをstdinで投入
-      Open3.capture3(
-        { "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" },
-        *command,
-        stdin_data: stdin_data.encode("UTF-8"),
-      )
+    require 'subprocess'
 
-    end    
-    [stdout, stderr, status]
+    begin
+      stdout, stderr, status = Subprocess.run(
+        command: command,
+        env: { "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" },
+        stdin_data: stdin_data.encode("UTF-8"),
+        timeout_seconds: 300,
+      )
+      [stdout, stderr, status]
+    rescue Timeout::Error
+      puts("Python script execution timeout after 300 seconds")
+      raise
+    end
   end
 
 end
