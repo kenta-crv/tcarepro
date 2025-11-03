@@ -158,6 +158,14 @@ Rails.application.routes.draw do
       
       # Calls API
       resources :calls, only: [:create]
+      
+      # Call Streaming API
+      resources :call_streams, only: [:create] do
+        collection do
+          post 'stream'
+          post 'complete'
+        end
+      end
     end
   end
 
@@ -166,6 +174,9 @@ Rails.application.routes.draw do
 
   resources :scripts, only: [:index, :show]
   resources :knowledges 
+  
+  # Live Call Monitoring
+  resources :calls_monitoring, only: [:index, :show]
 
   resources :recruits do 
     collection do

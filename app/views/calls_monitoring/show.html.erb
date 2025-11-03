@@ -1,0 +1,423 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Live Call Monitoring</h1>
+      <h3>Call ID: <%= @call_sid %></h3>
+      
+      <% if @customer %>
+        <div class="card mb-4">
+          <div class="card-header">
+            Customer Information
+          </div>
+          <div class="card-body">
+            <p><strong>Company:</strong> <%= @customer.company %></p>
+            <p><strong>Phone:</strong> <%= @customer.tel %></p>
+            <p><strong>Address:</strong> <%= @customer.address %></p>
+          </div>
+        </div>
+      <% end %>
+      
+      <div class="card">
+        <div class="card-header">
+          Audio Controls
+        </div>
+        <div class="card-body">
+          <div id="audio-status" class="alert alert-info">
+            Connecting to call stream...
+          </div>
+          
+          <div class="audio-controls">
+            <button id="play-btn" class="btn btn-success" disabled>
+              <i class="fa fa-play"></i> Play
+            </button>
+            <button id="pause-btn" class="btn btn-warning" disabled>
+              <i class="fa fa-pause"></i> Pause
+            </button>
+            <button id="stop-btn" class="btn btn-danger" disabled>
+              <i class="fa fa-stop"></i> Stop
+            </button>
+            
+            <div class="volume-control mt-3">
+              <label for="volume">Volume:</label>
+              <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+            </div>
+          </div>
+          
+          <div class="mt-3">
+            <canvas id="audio-visualizer" width="600" height="100"></canvas>
+          </div>
+          
+          <div class="call-info mt-3">
+            <p><strong>Connected:</strong> <span id="connected-time"><%= @call_info[:connected_at].strftime("%H:%M:%S") %></span></p>
+            <p><strong>Duration:</strong> <span id="call-duration">0:00</span></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-3">
+        <%= link_to "Back to Call List", calls_monitoring_index_path, class: "btn btn-secondary" %>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          Call Events
+        </div>
+        <div class="card-body">
+          <div id="call-events" class="call-events-log">
+            <div class="event">
+              <span class="time"><%= Time.current.strftime("%H:%M:%S") %></span>
+              <span class="message">Monitoring started</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .call-events-log {
+    height: 400px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.9rem;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  .event {
+    margin-bottom: 5px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+  }
+  
+  .time {
+    color: #007bff;
+    margin-right: 10px;
+  }
+  
+  #audio-visualizer {
+    width: 100%;
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+</style>
+
+<script>
+  $(function() {
+    // WebSocket connection
+    const callId = '<%= @call_sid %>';
+    let audioContext, audioSource, analyser, audioData;
+    let audioQueue = [];
+    let isPlaying = false;
+    let startTime = new Date();
+    
+    // Set up WebSocket connection
+    const socket = createSocket();
+    
+    function createSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/cable`;
+      
+      const socket = new WebSocket(wsUrl);
+      
+      socket.onopen = function(event) {
+        console.log('WebSocket connected');
+        $('#audio-status').text('Connected to call stream. Waiting for audio...');
+        
+        // Subscribe to the call stream channel
+        const subscription = {
+          command: 'subscribe',
+          identifier: JSON.stringify({
+            channel: 'CallStreamChannel',
+            call_id: callId
+          })
+        };
+        
+        socket.send(JSON.stringify(subscription));
+        addEvent('WebSocket connected');
+      };
+      
+      socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        
+        // Handle different message types
+        if (data.type === 'ping') {
+          return; // Ignore ping messages
+        }
+        
+        if (data.type === 'welcome') {
+          console.log('Received welcome message');
+          return;
+        }
+        
+        if (data.type === 'confirm_subscription') {
+          console.log('Subscription confirmed');
+          $('#play-btn').prop('disabled', false);
+          addEvent('Subscription to call audio confirmed');
+          return;
+        }
+        
+        if (data.message) {
+          handleAudioMessage(data.message);
+        }
+      };
+      
+      socket.onclose = function(event) {
+        console.log('WebSocket disconnected', event);
+        $('#audio-status').text('Connection lost. Reconnecting...');
+        addEvent('WebSocket disconnected. Reconnecting...');
+        
+        // Try to reconnect after a delay
+        setTimeout(() => {
+          createSocket();
+        }, 3000);
+      };
+      
+      socket.onerror = function(error) {
+        console.error('WebSocket error:', error);
+        $('#audio-status').text('Connection error. Please try again.');
+        addEvent('WebSocket error occurred');
+      };
+      
+      return socket;
+    }
+    
+    function handleAudioMessage(message) {
+      if (message.event === 'call_started') {
+        $('#audio-status').text('Call started. Audio streaming will begin shortly.');
+        addEvent('Call started');
+        return;
+      }
+      
+      if (message.event === 'call_ended') {
+        $('#audio-status').text('Call has ended.');
+        addEvent('Call ended');
+        stopAudio();
+        return;
+      }
+      
+      if (message.chunk) {
+        // Decode base64 audio chunk
+        const audioChunk = atob(message.chunk);
+        audioQueue.push(audioChunk);
+        
+        if (isPlaying && audioQueue.length > 0) {
+          processAudioQueue();
+        }
+        
+        $('#audio-status').text('Receiving audio stream...');
+      }
+    }
+    
+    function initAudio() {
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+        audioData = new Uint8Array(analyser.frequencyBinCount);
+        
+        // Set up audio processing
+        processAudioQueue();
+        
+        // Start visualizer
+        visualize();
+        
+        // Update duration timer
+        setInterval(updateDuration, 1000);
+        
+        isPlaying = true;
+        $('#play-btn').prop('disabled', true);
+        $('#pause-btn').prop('disabled', false);
+        $('#stop-btn').prop('disabled', false);
+        
+        addEvent('Audio playback started');
+      } catch (e) {
+        console.error('Audio initialization error:', e);
+        $('#audio-status').text('Error initializing audio: ' + e.message);
+        addEvent('Error initializing audio: ' + e.message);
+      }
+    }
+    
+    function processAudioQueue() {
+      if (!isPlaying || audioQueue.length === 0) return;
+      
+      // Process the audio data
+      const audioChunk = audioQueue.shift();
+      
+      // Convert string to ArrayBuffer
+      const buffer = new ArrayBuffer(audioChunk.length);
+      const bufferView = new Uint8Array(buffer);
+      for (let i = 0; i < audioChunk.length; i++) {
+        bufferView[i] = audioChunk.charCodeAt(i);
+      }
+      
+      // Decode the audio data
+      audioContext.decodeAudioData(buffer)
+        .then(decodedData => {
+          const source = audioContext.createBufferSource();
+          source.buffer = decodedData;
+          source.connect(analyser);
+          analyser.connect(audioContext.destination);
+          source.start(0);
+          
+          // Process next chunk when this one finishes
+          source.onended = processAudioQueue;
+        })
+        .catch(err => {
+          console.error('Error decoding audio data:', err);
+          // Continue with next chunk even if there's an error
+          processAudioQueue();
+        });
+    }
+    
+    function visualize() {
+      const canvas = document.getElementById('audio-visualizer');
+      const canvasCtx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+      
+      function draw() {
+        requestAnimationFrame(draw);
+        
+        if (!analyser) return;
+        
+        analyser.getByteTimeDomainData(audioData);
+        
+        canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+        canvasCtx.fillRect(0, 0, width, height);
+        
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+        canvasCtx.beginPath();
+        
+        const sliceWidth = width / audioData.length;
+        let x = 0;
+        
+        for (let i = 0; i < audioData.length; i++) {
+          const v = audioData[i] / 128.0;
+          const y = v * height / 2;
+          
+          if (i === 0) {
+            canvasCtx.moveTo(x, y);
+          } else {
+            canvasCtx.lineTo(x, y);
+          }
+          
+          x += sliceWidth;
+        }
+        
+        canvasCtx.lineTo(width, height / 2);
+        canvasCtx.stroke();
+      }
+      
+      draw();
+    }
+    
+    function stopAudio() {
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+      }
+      
+      isPlaying = false;
+      audioQueue = [];
+      
+      $('#play-btn').prop('disabled', false);
+      $('#pause-btn').prop('disabled', true);
+      $('#stop-btn').prop('disabled', true);
+      
+      addEvent('Audio playback stopped');
+    }
+    
+    function pauseAudio() {
+      if (audioContext) {
+        audioContext.suspend();
+      }
+      
+      isPlaying = false;
+      
+      $('#play-btn').prop('disabled', false);
+      $('#pause-btn').prop('disabled', true);
+      
+      addEvent('Audio playback paused');
+    }
+    
+    function resumeAudio() {
+      if (audioContext) {
+        audioContext.resume();
+        processAudioQueue();
+      } else {
+        initAudio();
+      }
+      
+      isPlaying = true;
+      
+      $('#play-btn').prop('disabled', true);
+      $('#pause-btn').prop('disabled', false);
+      
+      addEvent('Audio playback resumed');
+    }
+    
+    function updateDuration() {
+      if (!isPlaying) return;
+      
+      const now = new Date();
+      const diff = Math.floor((now - startTime) / 1000);
+      const minutes = Math.floor(diff / 60);
+      const seconds = diff % 60;
+      
+      $('#call-duration').text(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+    }
+    
+    function addEvent(message) {
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0];
+      
+      $('#call-events').prepend(`
+        <div class="event">
+          <span class="time">${timeStr}</span>
+          <span class="message">${message}</span>
+        </div>
+      `);
+    }
+    
+    // Button event handlers
+    $('#play-btn').on('click', function() {
+      resumeAudio();
+    });
+    
+    $('#pause-btn').on('click', function() {
+      pauseAudio();
+    });
+    
+    $('#stop-btn').on('click', function() {
+      stopAudio();
+    });
+    
+    // Volume control
+    $('#volume').on('input', function() {
+      if (audioContext) {
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = $(this).val();
+        analyser.disconnect();
+        analyser.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+      }
+    });
+    
+    // Clean up when leaving the page
+    $(window).on('beforeunload', function() {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+      
+      if (audioContext) {
+        audioContext.close();
+      }
+    });
+  });
+</script>

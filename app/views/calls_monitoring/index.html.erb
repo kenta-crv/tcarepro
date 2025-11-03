@@ -1,0 +1,66 @@
+<div class="container mt-4">
+  <h1>Live Call Monitoring</h1>
+  
+  <% if @active_calls.empty? %>
+    <div class="alert alert-info">
+      No active calls at the moment. Active calls will appear here when they start.
+    </div>
+  <% else %>
+    <div class="card">
+      <div class="card-header">
+        Active Calls (<%= @active_calls.size %>)
+      </div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Call ID</th>
+              <th>Customer</th>
+              <th>Started</th>
+              <th>Duration</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @active_calls.each do |call| %>
+              <tr>
+                <td><%= call[:call_sid] %></td>
+                <td>
+                  <% if call[:customer] %>
+                    <%= link_to call[:customer].company, customer_path(call[:customer]) %>
+                  <% else %>
+                    Unknown Customer
+                  <% end %>
+                </td>
+                <td><%= call[:connected_at].strftime("%H:%M:%S") %></td>
+                <td><%= call[:duration] %> min</td>
+                <td>
+                  <%= link_to "Listen", calls_monitoring_path(call[:call_sid]), class: "btn btn-primary btn-sm" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+  
+  <div class="mt-3">
+    <button id="refresh-btn" class="btn btn-secondary">Refresh List</button>
+  </div>
+</div>
+
+<script>
+  $(function() {
+    // Auto-refresh the page every 10 seconds
+    setInterval(function() {
+      console.log('Auto-refreshing call list...');
+      location.reload();
+    }, 10000);
+    
+    // Manual refresh button
+    $('#refresh-btn').on('click', function() {
+      location.reload();
+    });
+  });
+</script>
