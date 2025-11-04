@@ -150,20 +150,49 @@ class AutoformSchedulerWorker
     PYTHON_EXECUTABLE && (File.exist?(PYTHON_EXECUTABLE) || system("which #{PYTHON_EXECUTABLE} > /dev/null 2>&1"))
   end
 
-  def execute_python_with_timeout(command, contact_tracking_id)
-    require 'subprocess'
+  def execute_python_with_timeout(command, contact_tracking_id, timeout: 300)
+    stdout_str = +""
+    stderr_str = +""
+    status = nil
+    require 'open3'
     
-    stdout, stderr, status = Subprocess.run(
-      command: command,
-      env: { "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" },
-      timeout_seconds: 300,
-    )
+    Open3.popen3({ "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" }, *command) do |stdin, stdout, stderr, wait_thr|
+      stdin.close
+
+      out_reader = Thread.new do
+        begin
+          stdout.each_line { |line| stdout_str << line }
+        rescue IOError, Errno::EIO
+        end
+      end
+
+      err_reader = Thread.new do
+        begin
+          stderr.each_line { |line| stderr_str << line }
+        rescue IOError, Errno::EIO
+        end
+      end
+
+      unless wait_thr.join(timeout)
+        pid = wait_thr.pid
+        Process.kill("TERM", pid) rescue nil
+        unless wait_thr.join(5)
+          Process.kill("KILL", pid) rescue nil
+          wait_thr.join
+        end
+        Sidekiq.logger.error "AutoformSchedulerWorker: Python script timeout for CT ID #{contact_tracking_id}"
+      end
+
+      out_reader.join
+      err_reader.join
+      status = wait_thr.value
+    end
 
     # ログ出力
-    Sidekiq.logger.info "AutoformSchedulerWorker: Python script STDOUT for CT ID #{contact_tracking_id}:\n#{stdout}" unless stdout.blank?
-    Sidekiq.logger.error "AutoformSchedulerWorker: Python script STDERR for CT ID #{contact_tracking_id}:\n#{stderr}" unless stderr.blank?
+    Sidekiq.logger.info "AutoformSchedulerWorker: Python script STDOUT for CT ID #{contact_tracking_id}:\n#{stdout_str}" unless stdout_str.blank?
+    Sidekiq.logger.error "AutoformSchedulerWorker: Python script STDERR for CT ID #{contact_tracking_id}:\n#{stderr_str}" unless stderr_str.blank?
 
-    [stdout, stderr, status]
+    [stdout_str, stderr_str, status]
   end
 
   def process_python_result(contact_tracking, stdout, stderr, status)
