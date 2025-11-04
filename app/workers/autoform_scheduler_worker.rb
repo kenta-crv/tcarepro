@@ -6,8 +6,7 @@ class AutoformSchedulerWorker
   sidekiq_options retry: 3, queue: 'default', backtrace: true
 
   PYTHON_SCRIPT_PATH = Rails.root.join('autoform', 'bootio.py').to_s
-  PYTHON_VENV_PATH = Rails.root.join('autoform', 'venv', 'bin', 'python')
-  PYTHON_EXECUTABLE = 'python3'  # システムのpython3を強制使用
+  PYTHON_EXECUTABLE = 'python3'
 
   def perform(contact_tracking_id)
     contact_tracking = ContactTracking.find_by(id: contact_tracking_id)

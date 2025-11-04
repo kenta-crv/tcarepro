@@ -4,7 +4,7 @@ class ExtractCompanyInfoWorker
   sidekiq_options retry: 1, queue: 'default', backtrace: true
 
   PYTHON_SCRIPT_PATH = Rails.root.join('extract_company_info', 'app.py').to_s
-  PYTHON_EXECUTABLE = 'python3'  # システムのpython3を強制使用
+  PYTHON_EXECUTABLE = 'python3'
 
   def perform(id)
     begin
