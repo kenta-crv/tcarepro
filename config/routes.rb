@@ -177,6 +177,11 @@ Rails.application.routes.draw do
   
   # Live Call Monitoring
   resources :calls_monitoring, only: [:index, :show]
+  
+  # Twilio routes
+  post 'twilio/voice', to: 'twilio_media#twiml'
+  post 'twilio/status', to: 'twilio_media#status'
+  get 'twilio/media-stream', to: 'twilio_media_stream#stream'
 
   resources :recruits do 
     collection do
@@ -190,6 +195,11 @@ Rails.application.routes.draw do
   end
 
   resources :imports, only: [:create]
+  
+  # Twilio Media Streaming routes
+  post '/twilio/voice', to: 'twilio_media#twiml'
+  post '/twilio/status', to: 'twilio_media#status'
+  get '/twilio-media-stream', to: 'twilio_media_stream#stream'
   
   get '*path', controller: 'application', action: 'render_404'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

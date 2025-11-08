@@ -60,6 +60,18 @@
     </div>
     
     <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          Live Transcript
+        </div>
+        <div class="card-body">
+          <div id="live-transcript" class="transcript-container">
+            <p class="text-muted">Waiting for transcript...</p>
+            <div id="interim-text" class="interim"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-header">
           Call Events
@@ -104,6 +116,34 @@
     background: #f8f9fa;
     border-radius: 4px;
   }
+  
+  .transcript-container {
+    height: 300px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .interim {
+    color: #6c757d;
+    font-style: italic;
+  }
+  
+  .final {
+    color: #212529;
+  }
+  
+  .speaker-agent {
+    color: #007bff;
+    font-weight: bold;
+  }
+  
+  .speaker-customer {
+    color: #28a745;
+    font-weight: bold;
+  }
 </style>
 
 <script>
@@ -115,17 +155,18 @@
     let isPlaying = false;
     let startTime = new Date();
     
-    // Set up WebSocket connection
-    const socket = createSocket();
+    // Set up WebSocket connections
+    const audioSocket = createAudioSocket();
+    const transcriptSocket = createTranscriptSocket();
     
-    function createSocket() {
+    function createAudioSocket() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsUrl = `${protocol}//${window.location.host}/cable`;
       
       const socket = new WebSocket(wsUrl);
       
       socket.onopen = function(event) {
-        console.log('WebSocket connected');
+        console.log('Audio WebSocket connected');
         $('#audio-status').text('Connected to call stream. Waiting for audio...');
         
         // Subscribe to the call stream channel
@@ -138,7 +179,7 @@
         };
         
         socket.send(JSON.stringify(subscription));
-        addEvent('WebSocket connected');
+        addEvent('Audio WebSocket connected');
       };
       
       socket.onmessage = function(event) {
@@ -155,7 +196,7 @@
         }
         
         if (data.type === 'confirm_subscription') {
-          console.log('Subscription confirmed');
+          console.log('Audio subscription confirmed');
           $('#play-btn').prop('disabled', false);
           addEvent('Subscription to call audio confirmed');
           return;
@@ -167,21 +208,101 @@
       };
       
       socket.onclose = function(event) {
-        console.log('WebSocket disconnected', event);
+        console.log('Audio WebSocket disconnected', event);
         $('#audio-status').text('Connection lost. Reconnecting...');
-        addEvent('WebSocket disconnected. Reconnecting...');
+        addEvent('Audio WebSocket disconnected. Reconnecting...');
         
         // Try to reconnect after a delay
         setTimeout(() => {
-          createSocket();
+          createAudioSocket();
         }, 3000);
       };
       
       socket.onerror = function(error) {
-        console.error('WebSocket error:', error);
+        console.error('Audio WebSocket error:', error);
         $('#audio-status').text('Connection error. Please try again.');
-        addEvent('WebSocket error occurred');
+        addEvent('Audio WebSocket error occurred');
       };
+      
+      return socket;
+    }
+    
+    function createTranscriptSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/cable`;
+      
+      const socket = new WebSocket(wsUrl);
+      let transcriptBuffer = '';
+      
+      socket.onopen = function(event) {
+        console.log('Transcript WebSocket connected');
+        
+        // Subscribe to the transcript channel
+        const subscription = {
+          command: 'subscribe',
+          identifier: JSON.stringify({
+            channel: 'TwilioMediaChannel',
+            call_sid: callId
+          })
+        };
+        
+        socket.send(JSON.stringify(subscription));
+        addEvent('Transcript WebSocket connected');
+      };
+      
+      socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        
+        if (data.type === 'ping' || data.type === 'welcome' || data.type === 'confirm_subscription') {
+          return; // Ignore these messages
+        }
+        
+        if (data.message && data.message.transcript) {
+          updateTranscript(data.message.transcript, data.message.is_final);
+        }
+      };
+      
+      socket.onclose = function(event) {
+        console.log('Transcript WebSocket disconnected', event);
+        addEvent('Transcript WebSocket disconnected. Reconnecting...');
+        
+        // Try to reconnect after a delay
+        setTimeout(() => {
+          createTranscriptSocket();
+        }, 3000);
+      };
+      
+      socket.onerror = function(error) {
+        console.error('Transcript WebSocket error:', error);
+        addEvent('Transcript WebSocket error occurred');
+      };
+      
+      function updateTranscript(transcript, isFinal) {
+        if (isFinal) {
+          // Add the final transcript to the buffer
+          transcriptBuffer += formatTranscriptLine(transcript);
+          $('#live-transcript').html(transcriptBuffer + '<div id="interim-text" class="interim"></div>');
+          addEvent('Transcript updated');
+        } else {
+          // Update the interim transcript
+          $('#interim-text').html(transcript);
+        }
+        
+        // Auto-scroll to the bottom
+        const container = document.getElementById('live-transcript');
+        container.scrollTop = container.scrollHeight;
+      }
+      
+      function formatTranscriptLine(text) {
+        // Simple speaker detection (can be improved)
+        if (text.match(/^agent:/i) || text.match(/^rep:/i) || text.match(/^representative:/i)) {
+          return `<p><span class="speaker-agent">Agent:</span> ${text.replace(/^agent:|^rep:|^representative:/i, '').trim()}</p>`;
+        } else if (text.match(/^customer:/i) || text.match(/^caller:/i) || text.match(/^client:/i)) {
+          return `<p><span class="speaker-customer">Customer:</span> ${text.replace(/^customer:|^caller:|^client:/i, '').trim()}</p>`;
+        } else {
+          return `<p>${text}</p>`;
+        }
+      }
       
       return socket;
     }

@@ -137,3 +137,9 @@ gem 'sidekiq-cron'
 gem 'open3'
 
 gem 'net-imap', '~>0.3.9'
+
+# Twilio for call handling
+gem 'twilio-ruby'
+
+# Google Cloud Speech for transcription
+gem 'google-cloud-speech'
