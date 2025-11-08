@@ -41,11 +41,23 @@ class ApplicationController < ActionController::Base
   #rescue_from Exception, with: :render_500
 
   def render_404
-    render template: 'errors/error_404', status: 404, layout: 'application', content_type: 'text/html'
+    respond_to do |format|
+      format.html { render template: 'errors/error_404', status: 404, layout: 'application' }
+      format.json { render json: { error: 'Not found' }, status: 404 }
+      format.any { render plain: '404 Not Found', status: 404 }
+    end
+  rescue ActionController::UnknownFormat
+    render plain: '404 Not Found', status: 404
   end
 
   def render_500
-    render template: 'errors/error_500', status: 500, layout: 'application', content_type: 'text/html'
+    respond_to do |format|
+      format.html { render template: 'errors/error_500', status: 500, layout: 'application' }
+      format.json { render json: { error: 'Internal Server Error' }, status: 500 }
+      format.any { render plain: '500 Internal Server Error', status: 500 }
+    end
+  rescue ActionController::UnknownFormat
+    render plain: '500 Internal Server Error', status: 500
   end
 
   before_action :configure_permitted_parameters, if: :devise_controller?
