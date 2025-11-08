@@ -104,21 +104,6 @@ class ApplicationController < ActionController::Base
     end
 
   # Layout per resource_name
-  # TODO: `layout_by_resource` メソッドがかぶっているので、このメソッドは不要に見える。不要なら消す。
-  def layout_by_resource
-    if devise_controller? && resource_name == :admin
-        "admins"
-    elsif devise_controller? && resource_name == :user
-        "users"
-    elsif devise_controller? && resource_name == :worker
-        "workers"
-    elsif devise_controller? && resource_name == :sender
-        "senders"
-    else
-      "application"
-    end
-  end
-
   def layout_by_resource
     if devise_controller?
       "application"
