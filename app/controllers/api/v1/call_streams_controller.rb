@@ -1,5 +1,6 @@
 class Api::V1::CallStreamsController < ApiController
-  skip_before_action :verify_authenticity_token, if: -> { request.format.json? }
+  # No need to skip verify_authenticity_token since ApiController inherits from ActionController::API
+  # which doesn't have CSRF protection enabled by default
   
   # This endpoint will receive the Twilio WebSocket connection
   def create
