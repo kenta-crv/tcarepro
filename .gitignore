@@ -7,8 +7,6 @@
 # Ignore bundler config.
 /.bundle
 
-/workflows/
-/workflows/*
 config/initializers/sidekiq.rb
 
 # Ignore bundler gems.
