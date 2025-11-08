@@ -1,7 +1,8 @@
 require "google/cloud/speech"
 
 class SpeechToTextService
-  API_KEY = "AIzaSyBQS3OGn0h-1N-09oFqvXLWNwADDjLkjKQ"
+  # API key should be loaded from environment variables, not hardcoded
+  # See config/initializers/google_cloud_speech.rb
   
   def initialize(call_sid)
     @call_sid = call_sid
