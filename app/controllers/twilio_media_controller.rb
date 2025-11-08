@@ -1,5 +1,5 @@
-class TwilioMediaController < ApplicationController
-  skip_before_action :verify_authenticity_token
+class TwilioMediaController < ActionController::Base
+  skip_before_action :verify_authenticity_token, raise: false
   
   def twiml
     # Generate TwiML to instruct Twilio to stream audio to your WebSocket server
