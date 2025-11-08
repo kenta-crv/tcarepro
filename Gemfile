@@ -142,4 +142,7 @@ gem 'net-imap', '~>0.3.9'
 gem 'twilio-ruby'
 
 # Google Cloud Speech for transcription
+gem 'nokogiri', '1.15.7'
+gem 'google-protobuf', '3.25.8'
+gem 'grpc', '1.65.2'
 gem 'google-cloud-speech'
