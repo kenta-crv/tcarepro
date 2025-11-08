@@ -1,5 +1,6 @@
-class TwilioMediaStreamController < ApplicationController
+class TwilioMediaStreamController < ActionController::Base
   include ActionController::Live
+  skip_before_action :verify_authenticity_token, raise: false
   
   def stream
     # This endpoint handles the WebSocket connection from Twilio
