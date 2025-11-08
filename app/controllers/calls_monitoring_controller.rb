@@ -2,18 +2,19 @@ class CallsMonitoringController < ApplicationController
   before_action :authenticate_admin_or_user!
   
   def index
-    # Get all active calls
-    @active_calls = Rails.cache.read_multi(Rails.cache.keys("call_stream_*")).map do |key, value|
-      call_sid = key.gsub("call_stream_", "")
-      customer = Customer.find_by(id: value[:customer_id]) if value[:customer_id].present?
+    # Get all active calls from the database instead of cache
+    @active_calls = Call.where(statu: "通話中").map do |call|
+      call_info = Rails.cache.read("call_stream_#{call.vapi_call_id}")
+      
+      next if call_info.nil?
       
       {
-        call_sid: call_sid,
-        customer: customer,
-        connected_at: value[:connected_at],
-        duration: ((Time.current - value[:connected_at]) / 60).round(2) # in minutes
+        call_sid: call.vapi_call_id,
+        customer: Customer.find_by(id: call_info[:customer_id]),
+        connected_at: call_info[:connected_at],
+        duration: ((Time.current - call_info[:connected_at]) / 60).round(2) # in minutes
       }
-    end
+    end.compact
   end
   
   def show
