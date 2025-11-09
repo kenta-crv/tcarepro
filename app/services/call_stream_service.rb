@@ -1,11 +1,13 @@
 class CallStreamService
   def self.process_media(call_sid, media_chunk)
+    # media_chunk is already base64 encoded from Twilio
     # Broadcast the media chunk to the appropriate channel
     ActionCable.server.broadcast(
       "call_stream_#{call_sid}",
       { 
-        chunk: Base64.encode64(media_chunk),
-        timestamp: Time.current.to_f
+        chunk: media_chunk,
+        timestamp: Time.current.to_f,
+        format: 'mulaw' # Twilio sends audio in mulaw format
       }
     )
   end

@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
+  
+  # Mount ActionCable for WebSocket connections
+  mount ActionCable.server => '/cable'
+  
   root to: 'customers#index'
   # 発信認証用ルーティング
   post 'notifications', to: 'notifications#create'
