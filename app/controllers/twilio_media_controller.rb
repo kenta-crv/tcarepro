@@ -40,7 +40,9 @@ class TwilioMediaController < ActionController::Base
       
       # Stream audio to our WebSocket endpoint
       # Use the cable endpoint for ActionCable WebSocket connections
-      r.start.stream(url: "wss://#{request.host}/cable")
+      r.start do |start|
+        start.stream(url: "wss://#{request.host}/cable")
+      end
       
       # Forward the call to the destination number
       destination = params[:To] || params[:destination]
