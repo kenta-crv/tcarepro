@@ -4,7 +4,14 @@ class ExtractCompanyInfoWorker
   sidekiq_options retry: 1, queue: 'default', backtrace: true
 
   PYTHON_SCRIPT_PATH = Rails.root.join('extract_company_info', 'app.py').to_s
-  PYTHON_EXECUTABLE = 'python3'
+  PYTHON_VENV_PATH = Rails.root.join('extract_company_info', 'venv', 'bin', 'python').to_s
+  
+  # 仮想環境のPythonを使用（必須）
+  unless File.exist?(PYTHON_VENV_PATH)
+    raise "Python venv not found at #{PYTHON_VENV_PATH}. Run: cd extract_company_info && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
+  end
+  
+  PYTHON_EXECUTABLE = PYTHON_VENV_PATH
 
   def perform(id)
     begin
@@ -45,9 +52,9 @@ class ExtractCompanyInfoWorker
           end
         command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH]
         payload = {
-          customer_id: customer.id,
-          company: customer.company,
-          location: customer.address,
+          customer_id: customer.id.to_s,  # 文字列に変換
+          company: customer.company.to_s,
+          location: customer.address.to_s,
           required_businesses: required_businesses,
           required_genre: required_genre
         }
