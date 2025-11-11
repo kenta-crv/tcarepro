@@ -13,6 +13,7 @@ from utils.validator import (
 class ExtractRequest(BaseModel):
     """入力."""
 
+    customer_id: str
     company: str
     location: str
     required_businesses: list[str]
