@@ -309,12 +309,22 @@ scope :before_sended_at, ->(sended_at){
   
     { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
   end
+  
 def self.ensure_defaults(row)
-  row['industry'] ||= '人材関連業'
-  row['business'] ||= '人材紹介'
-  row['genre']    ||= '人材紹介'
-  row['url_2']    = row['url'] if row['url_2'].blank? && row['url'].present?
-  row
+  h = row.to_h
+
+  # デフォルト補完
+  h['industry'] ||= '人材関連業'
+  h['business'] ||= '人材紹介'
+  h['genre']    ||= '人材紹介'
+
+  # CSVのurlを必ずurl_2に入れる
+  h['url_2'] = h['url'] if h['url'].present?
+
+  # ←ここが重要：Customer.url に入らないように元の 'url' キーは削除する
+  h.delete('url')
+
+  h
 end
 
   def self.import(file)
