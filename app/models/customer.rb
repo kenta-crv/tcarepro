@@ -309,7 +309,13 @@ scope :before_sended_at, ->(sended_at){
   
     { save_count: save_count, call_count: call_count, repurpose_count: repurpose_count, draft_count: draft_count }
   end
-
+def self.ensure_defaults(row)
+  row['industry'] ||= '人材関連業'
+  row['business'] ||= '人材紹介'
+  row['genre']    ||= '人材紹介'
+  row['url_2']    = row['url'] if row['url_2'].blank? && row['url'].present?
+  row
+end
 
   def self.import(file)
     save_count = 0
@@ -317,6 +323,7 @@ scope :before_sended_at, ->(sended_at){
     batch = []
   
     CSV.foreach(file.path, headers: true, liberal_parsing: true).with_index do |row, index|
+      row = ensure_defaults(row)
       begin
         customer = find_or_initialize_by(id: row["id"])
         customer.attributes = row.to_hash.slice(*updatable_attributes)
@@ -370,6 +377,7 @@ scope :before_sended_at, ->(sended_at){
     batch = []
   
     CSV.foreach(call_file.path, headers: true, liberal_parsing: true).with_index do |row, index|
+      row = ensure_defaults(row)
       begin
         existing_customer = find_by(company: row['company'], industry: row['industry'])
         
@@ -433,6 +441,7 @@ scope :before_sended_at, ->(sended_at){
     processed_combinations = Set.new
   
     CSV.foreach(repurpose_file.path, headers: true, liberal_parsing: true).with_index do |row, index|
+      row = ensure_defaults(row)
       begin
         company_industry_key = "#{row['company']}_#{row['industry']}"
   
@@ -574,6 +583,7 @@ scope :before_sended_at, ->(sended_at){
     batch = []
   
     CSV.foreach(draft_file.path, headers: true, liberal_parsing: true).with_index do |row, index|
+      row = ensure_defaults(row)
       begin
         company = row['company']
         industry = row['industry']

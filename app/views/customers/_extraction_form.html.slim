@@ -77,7 +77,7 @@
         | 職種
       td.responsive-cell
         .input-container
-          = f.text_field :genre, placeholder:"（例）金属加工 ※【指定のワード記載が絶対条件】"
+          = f.text_field :genre, placeholder:"（例）車の部品製造及び金属加工 ※【指定のキーワードを含む記載が絶対条件。キーワードのみの記載の場合不可】"
           - if @customer.errors[:genre].any?
             .error-message= @customer.errors[:genre].first
     tr
