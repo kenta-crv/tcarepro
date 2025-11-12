@@ -10,7 +10,7 @@ def convert_accessable_urls(urls: list[str], timeout: int = 15) -> list[str]:
     """与えられたURL群を到達確認し、到達可能な最終URLに正規化して返す.
 
     リダイレクトを考慮し、`requests` の最終URL (`Response.url`) を採用する。
-    失敗したURLは結果から除外する。
+    失敗したURLは結果から除外する。404の場合はルートURLも試す。
 
     Args:
         urls (list[str]): 確認対象のURL候補群。
@@ -24,11 +24,31 @@ def convert_accessable_urls(urls: list[str], timeout: int = 15) -> list[str]:
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
     }
     new_urls = []
+    checked_urls = set()  # 重複チェック用
+    
     for url in urls:
         try:
             r = requests.get(url, headers=headers, timeout=timeout)
             r.raise_for_status()  # 4xx/5xx を例外に
-            new_urls.append(r.url)
+            if r.url not in checked_urls:
+                new_urls.append(r.url)
+                checked_urls.add(r.url)
+        except requests.exceptions.HTTPError as e:
+            # 404の場合、ルートURLを試す
+            if e.response.status_code == 404:
+                try:
+                    from urllib.parse import urlparse
+                    parsed = urlparse(url)
+                    root_url = f"{parsed.scheme}://{parsed.netloc}/"
+                    
+                    if root_url not in checked_urls:
+                        r = requests.get(root_url, headers=headers, timeout=timeout)
+                        r.raise_for_status()
+                        if r.url not in checked_urls:
+                            new_urls.append(r.url)
+                            checked_urls.add(r.url)
+                except:  # noqa: E722
+                    pass
         except requests.exceptions.RequestException:  # noqa: PERF203
             pass
 

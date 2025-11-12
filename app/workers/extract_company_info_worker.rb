@@ -45,9 +45,9 @@ class ExtractCompanyInfoWorker
           end
         command = [PYTHON_EXECUTABLE, PYTHON_SCRIPT_PATH]
         payload = {
-          customer_id: customer.id,
-          company: customer.company,
-          location: customer.address,
+          customer_id: customer.id.to_s,  # 文字列に変換
+          company: customer.company.to_s,
+          location: customer.address.to_s,
           required_businesses: required_businesses,
           required_genre: required_genre
         }

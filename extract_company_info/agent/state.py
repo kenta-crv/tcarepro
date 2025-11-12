@@ -14,6 +14,7 @@ class ExtractState(BaseModel):
     """会社情報抽出フローの状態.
 
     Attributes:
+        customer_id: 顧客ID（ログ用）。
         company: 会社名。
         location: 勤務地/所在地のテキスト。
         required_businesses: 業種候補（カンマ区切り文字列）。
@@ -28,6 +29,7 @@ class ExtractState(BaseModel):
     """
 
     # 入力
+    customer_id: str
     company: str
     location: str
     required_businesses: list[str]
