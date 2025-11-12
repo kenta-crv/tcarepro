@@ -42,7 +42,13 @@ def get_logger() -> logging.Logger:
     formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
     handler.setFormatter(formatter)
 
+    # コンソールハンドラーも追加（リアルタイムでログ確認用）
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    console_handler.setLevel(logging.DEBUG)
+    
     logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
+    logger.addHandler(console_handler)
+    logger.setLevel(logging.DEBUG)  # DEBUGレベルで詳細ログ出力
     logger.propagate = False
     return logger
