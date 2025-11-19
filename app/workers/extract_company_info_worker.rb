@@ -45,7 +45,8 @@ class ExtractCompanyInfoWorker
       success_count = extract_tracking.success_count
       failure_count = extract_tracking.failure_count
       quota_exceeded = false
-      customers.each do |customer|
+      customer_count = customers.count
+      customers.each_with_index do |customer, index|
         required_businesses =
           if crowdwork&.business.present?
             crowdwork.business.split(",")
@@ -84,6 +85,31 @@ class ExtractCompanyInfoWorker
             contact_url = data['data']['contact_url'].to_s
             business = data['data']['business'].to_s
             genre = data['data']['genre'].to_s
+
+            # businessとgenreがバリデーション要件を満たしているかチェック
+            business_valid = if crowdwork&.business.present?
+                              required_businesses_array = crowdwork.business.split(',').map(&:strip)
+                              business.present? && required_businesses_array.any? { |req| business.include?(req) }
+                            else
+                              business.present?
+                            end
+
+            genre_valid = if crowdwork&.genre.present?
+                           required_genre_array = crowdwork.genre.split(',').map(&:strip)
+                           genre.present? && required_genre_array.any? { |req| genre.include?(req) }
+                         else
+                           genre.present?
+                         end
+
+            # バリデーション要件を満たしていない場合は失敗として扱う
+            unless business_valid && genre_valid
+              Sidekiq.logger.warn("ExtractCompanyInfoWorker: バリデーション要件を満たしていないため失敗: customer_id=#{customer.id}, business=#{business.inspect}, genre=#{genre.inspect}")
+              failure_count += 1
+              extract_tracking.update(
+                failure_count: failure_count,
+              )
+              next
+            end
 
             customer.update!(
               company: company,
@@ -129,6 +155,12 @@ class ExtractCompanyInfoWorker
           extract_tracking.update(
             failure_count: failure_count,
           )
+        end
+        
+        # API呼び出し間隔を空ける（最後の顧客処理後とbreakで終了する場合はスリープしない）
+        unless quota_exceeded || index == customer_count - 1
+          Sidekiq.logger.info("ExtractCompanyInfoWorker: API呼び出し間隔のため5秒待機中... (#{index + 1}/#{customer_count})")
+          sleep(5)
         end
       end
       # QUOTA_EXCEEDEDで停止した場合は、ステータスを「抽出完了」に更新しない
