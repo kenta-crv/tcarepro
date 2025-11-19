@@ -581,18 +581,43 @@ def destroy
 
   # 進捗取得API（ポーリング用）
   # GET /draft/progress.json?industry=業界名
+  # industryパラメータが指定されていない場合、全業種の進捗を返す
   def extract_progress
+    # ポーリング用のため、キャッシュを無効化
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    
     industry = params[:industry].to_s.presence
-    tracking = if industry
-                 ExtractTracking.where(industry: industry).order(id: :desc).first
-               else
-                 ExtractTracking.order(id: :desc).first
-               end
-
-    if tracking
-      render json: tracking.progress_payload
+    
+    if industry
+      # 後方互換性のため、industryパラメータが指定されている場合は既存の動作を維持
+      tracking = ExtractTracking.where(industry: industry).order(id: :desc).first
+      if tracking
+        render json: tracking.progress_payload
+      else
+        render json: { message: 'no_tracking' }
+      end
     else
-      render json: { message: 'no_tracking' }
+      # 全業種の進捗を返す（N+1クエリを回避）
+      crowdworks = Crowdwork.all || []
+      industry_names = crowdworks.map(&:title)
+      
+      # 各業種の最新のtrackingを一括取得
+      all_trackings = ExtractTracking.where(industry: industry_names).order(id: :desc)
+      latest_trackings = all_trackings.group_by(&:industry).transform_values { |trackings| trackings.first }
+      
+      progress_data = {}
+      crowdworks.each do |crowdwork|
+        tracking = latest_trackings[crowdwork.title]
+        if tracking
+          progress_data[crowdwork.title] = tracking.progress_payload
+        else
+          progress_data[crowdwork.title] = { message: 'no_tracking' }
+        end
+      end
+      
+      render json: progress_data
     end
   end
 
@@ -666,10 +691,14 @@ def destroy
     tel_with_counts = tel_with_scope.group(:industry).count
     tel_without_counts = tel_without_scope.group(:industry).count
 
+    # ExtractTrackingを一括取得してN+1を回避（SQLite対応）
+    industry_names = @crowdworks.map(&:title)
+    all_trackings = ExtractTracking.where(industry: industry_names).order(id: :desc)
+    # Ruby側で各業種の最新のtrackingを取得
+    latest_trackings = all_trackings.group_by(&:industry).transform_values { |trackings| trackings.first }
+
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
-      latest_tracking = ExtractTracking.where(industry: crowdwork.title)
-                                 .order(id: :desc)
-                                 .first
+      latest_tracking = latest_trackings[crowdwork.title]
       success_count = latest_tracking&.success_count.to_i
       failure_count = latest_tracking&.failure_count.to_i
       total_count   = latest_tracking&.total_count.to_i
