@@ -165,7 +165,9 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
                         logger.info(f"      web keys: {list(web_info.keys()) if isinstance(web_info, dict) else 'not a dict'}")
                         if isinstance(web_info, dict):
                             logger.info(f"      web.uri: {web_info.get('uri', 'N/A')}")
-                            logger.info(f"      web全体: {str(web_info)[:200]}")
+                            # webオブジェクトの全フィールドをログに出力
+                            import json
+                            logger.info(f"      web全体 (JSON): {json.dumps(web_info, ensure_ascii=False, indent=2)}")
         
         reference_urls = [
             chunk["web"]["uri"]
