@@ -293,7 +293,8 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     web_context = ""
     
     # URL候補が多すぎる場合は上限を設定（パフォーマンス改善）
-    max_urls = 5
+    # 3個に制限（5個から減らして処理時間を短縮）
+    max_urls = 3
     if len(urls) > max_urls:
         logger.info(f"  ⚠️ URL候補が{len(urls)}個あります。最初の{max_urls}個のみ処理します。")
         urls = urls[:max_urls]
@@ -308,6 +309,11 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
             logger.warning(f"        ⚠️ クロール失敗またはタイムアウト ({crawl_elapsed:.2f}秒)")
             continue  # 失敗したURLはスキップ
         logger.info(f"        ✅ クロール完了 ({crawl_elapsed:.2f}秒, {len(markdown)}文字)")
+        # コンテキストサイズを制限（パフォーマンス改善）
+        # 各URLのクロール結果を10,000文字までに制限
+        if len(markdown) > 10000:
+            markdown = markdown[:10000]
+            logger.debug(f"        ⚠️ コンテキストサイズを制限: {len(markdown)}文字（10,000文字まで）")
         web_context += f"""# {url}\n{markdown}\n"""
     
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/select_official.yaml"), encoding="utf-8")
