@@ -589,6 +589,7 @@ def destroy
   # GET /draft/progress.json?industry=業界名
   # industryパラメータが指定されていない場合、全業種の進捗を返す
   def extract_progress
+    start_time = Time.current
     # ポーリング用のため、キャッシュを無効化
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
@@ -609,9 +610,13 @@ def destroy
       crowdworks = Crowdwork.all || []
       industry_names = crowdworks.map(&:title)
       
-      # 各業種の最新のtrackingを一括取得
-      all_trackings = ExtractTracking.where(industry: industry_names).order(id: :desc)
-      latest_trackings = all_trackings.group_by(&:industry).transform_values { |trackings| trackings.first }
+      # 各業種の最新のtrackingを一括取得（インデックスを活用）
+      # SQLiteでは、各業種ごとに最新の1件を取得する方が効率的
+      latest_trackings = {}
+      industry_names.each do |industry_name|
+        tracking = ExtractTracking.where(industry: industry_name).order(id: :desc).first
+        latest_trackings[industry_name] = tracking if tracking
+      end
       
       progress_data = {}
       crowdworks.each do |crowdwork|
@@ -623,6 +628,8 @@ def destroy
         end
       end
       
+      elapsed = ((Time.current - start_time) * 1000).round(2)
+      Rails.logger.info("extract_progress: completed in #{elapsed}ms")
       render json: progress_data
     end
   end
