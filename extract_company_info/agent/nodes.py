@@ -72,7 +72,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-lite",
+            model="gemini-2.0-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
@@ -100,7 +100,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
             pass
         
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
-        specified_model = getattr(llm, 'model', getattr(llm, 'model_name', 'gemini-2.0-flash-lite'))
+        specified_model = getattr(llm, 'model', getattr(llm, 'model_name', 'gemini-2.0-flash'))
         logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
         _wait_between_api_calls()  # API呼び出し間の間隔
     except Exception as e:
@@ -235,7 +235,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-lite",
+            model="gemini-2.0-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
@@ -264,7 +264,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
         # with_structured_outputを使っている場合、元のllmオブジェクトを取得
         base_llm = llm if not hasattr(llm, 'llm') else llm.llm
-        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash-lite'))
+        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash'))
         logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
         _wait_between_api_calls()  # API呼び出し間の間隔
     except Exception as e:
@@ -334,7 +334,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-lite",
+            model="gemini-2.0-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
@@ -367,7 +367,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
         # with_structured_outputを使っている場合、元のllmオブジェクトを取得
         base_llm = llm if not hasattr(llm, 'llm') else llm.llm
-        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash-lite'))
+        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash'))
         logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
         # 最後のAPI呼び出しなので間隔は不要
         logger.info("  📋 抽出された情報:")
