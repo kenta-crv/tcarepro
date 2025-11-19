@@ -457,6 +457,7 @@ def destroy
   end
 
   def draft
+    start_time = Time.current
     # crowdworkタイトルの初期化
     @crowdworks = Crowdwork.all || []
 
@@ -561,9 +562,12 @@ def destroy
     daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
     @remaining_extractable = [daily_limit - today_total, 0].max
 
+    elapsed = ((Time.current - start_time) * 1000).round(2)
+    Rails.logger.info("draft action: completed in #{elapsed}ms")
   end
 
   def extract_company_info
+    start_time = Time.current
     Rails.logger.info("extract_company_info called.")
     industry_name = params[:industry_name]
     total_count = params[:count]
@@ -576,6 +580,8 @@ def destroy
       status:         "抽出中"
     )
     ExtractCompanyInfoWorker.perform_async(tracking.id)
+    elapsed = ((Time.current - start_time) * 1000).round(2)
+    Rails.logger.info("extract_company_info: completed in #{elapsed}ms (tracking_id: #{tracking.id})")
     redirect_to draft_path
   end
 
