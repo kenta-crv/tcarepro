@@ -158,9 +158,10 @@ class ExtractCompanyInfoWorker
         end
         
         # API呼び出し間隔を空ける（最後の顧客処理後とbreakで終了する場合はスリープしない）
+        # 無料プラン（RPM=15）を考慮し、10秒待機（1分間に6回以下に制限）
         unless quota_exceeded || index == customer_count - 1
-          Sidekiq.logger.info("ExtractCompanyInfoWorker: API呼び出し間隔のため5秒待機中... (#{index + 1}/#{customer_count})")
-          sleep(5)
+          Sidekiq.logger.info("ExtractCompanyInfoWorker: API呼び出し間隔のため10秒待機中... (#{index + 1}/#{customer_count})")
+          sleep(10)
         end
       end
       # QUOTA_EXCEEDEDで停止した場合は、ステータスを「抽出完了」に更新しない

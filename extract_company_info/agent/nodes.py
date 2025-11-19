@@ -13,9 +13,9 @@ from utils.crawl4ai_util import crawl_markdown
 from utils.net import convert_accessable_urls
 from utils.logger import get_logger
 
-RETRY_DELAY_SECONDS = 4.0
+RETRY_DELAY_SECONDS = 8.0  # リトライ時の待機時間を8秒に増加
 RETRY_ATTEMPTS = 1  # 1回リトライ = 最大2回試行
-API_CALL_INTERVAL_SECONDS = 2.0  # API呼び出し間の間隔（秒）
+API_CALL_INTERVAL_SECONDS = 5.0  # API呼び出し間の間隔を5秒に増加（RPM=15の場合、最低4秒必要）
 
 logger = get_logger()
 
