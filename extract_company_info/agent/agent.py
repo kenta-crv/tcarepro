@@ -106,6 +106,17 @@ def extract_company_info(req: ExtractRequest) -> CompanyInfo:
                     company_info_payload["address"] = candidate
                     break
 
+        # 必須フィールドがNoneの場合は空文字列に変換（バリデーションエラーを避けるため）
+        # urlは既にnode_fetch_htmlで補完されているはずだが、念のため
+        if not company_info_payload.get("url"):
+            logger.warning("  ⚠️ urlがNoneのため空文字列に変換します")
+            company_info_payload["url"] = ""
+        
+        # telがNoneの場合は空文字列に変換（バリデーションエラーを避けるため）
+        if company_info_payload.get("tel") is None:
+            logger.warning("  ⚠️ telがNoneのため空文字列に変換します")
+            company_info_payload["tel"] = ""
+
         company_info = CompanyInfo.model_validate(company_info_payload)
         logger.info("  ✅ CompanyInfo変換完了")
         
