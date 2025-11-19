@@ -446,7 +446,15 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         logger.error(f"  エラー: {type(e).__name__}: {str(e)[:200]}")
         raise
 
-    state.company_info = resp.model_dump()
+    # LLMの応答を辞書に変換
+    company_info_dict = resp.model_dump()
+    
+    # urlがNoneの場合は、実際にクロールしたURLを使用
+    if not company_info_dict.get("url"):
+        company_info_dict["url"] = url
+        logger.info(f"  ⚠️ LLMがurlを抽出できなかったため、クロールしたURLを使用: {url}")
+    
+    state.company_info = company_info_dict
     
     node_elapsed = time.time() - node_start
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")
