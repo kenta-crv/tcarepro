@@ -15,7 +15,7 @@ from utils.logger import get_logger
 
 RETRY_DELAY_SECONDS = 8.0  # リトライ時の待機時間を8秒に増加
 RETRY_ATTEMPTS = 1  # 1回リトライ = 最大2回試行
-API_CALL_INTERVAL_SECONDS = 5.0  # API呼び出し間の間隔を5秒に増加（RPM=15の場合、最低4秒必要）
+API_CALL_INTERVAL_SECONDS = 2.0  # API呼び出し間の間隔を2秒に短縮（RPM=15の場合、最低4秒必要だが、実際の使用状況に応じて調整）
 
 logger = get_logger()
 
@@ -120,11 +120,12 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         # Google Searchツール使用時の処理
         # 公式ドキュメント: https://ai.google.dev/gemini-api/docs/google-search?hl=ja
         # Google Searchツールは内部的に複数の検索クエリを実行する可能性があるため、
-        # 通常のAPI呼び出しよりも長い待機時間を設定
+        # 通常のAPI呼び出しよりも少し長い待機時間を設定
         # ただし、公式ドキュメントには固有のレート制限の記載はない
-        logger.debug("  ⏳ Google Searchツール使用後の追加待機時間（2秒）...")
-        time.sleep(2.0)
-        _wait_between_api_calls()  # API呼び出し間の間隔（通常の5秒）
+        # レート制限に達していない場合、過剰な待機時間は不要
+        logger.debug("  ⏳ Google Searchツール使用後の追加待機時間（1秒）...")
+        time.sleep(1.0)  # 2秒から1秒に短縮
+        _wait_between_api_calls()  # API呼び出し間の間隔（通常の2秒）
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")

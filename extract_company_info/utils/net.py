@@ -9,7 +9,7 @@ from utils.logger import get_logger
 logger = get_logger()
 
 
-def convert_accessable_urls(urls: list[str], timeout: int = 30) -> list[str]:
+def convert_accessable_urls(urls: list[str], timeout: int = 10) -> list[str]:
     """与えられたURL群を到達確認し、到達可能な最終URLに正規化して返す.
 
     リダイレクトを考慮し、`requests` の最終URL (`Response.url`) を採用する。
@@ -17,7 +17,7 @@ def convert_accessable_urls(urls: list[str], timeout: int = 30) -> list[str]:
 
     Args:
         urls (list[str]): 確認対象のURL候補群。
-        timeout (int): タイムアウト秒。デフォルトは30秒（15秒から延長）。
+        timeout (int): タイムアウト秒。デフォルトは10秒（30秒から短縮してパフォーマンス改善）。
 
     Returns:
         list[str]: 到達可能だったURLの配列。
