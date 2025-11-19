@@ -371,12 +371,21 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     
     logger.info("  🕷️ Webページクロール中（depth=1, timeout=30秒）...")
     crawl_start = time.time()
-    web_context = crawl_markdown(url, depth=1, timeout=30)
-    crawl_elapsed = time.time() - crawl_start
-    if not web_context:
-        logger.warning(f"  ⚠️ クロール失敗またはタイムアウト ({crawl_elapsed:.2f}秒)")
+    try:
+        web_context = crawl_markdown(url, depth=1, timeout=30)
+        crawl_elapsed = time.time() - crawl_start
+        if not web_context:
+            logger.warning(f"  ⚠️ クロール失敗またはタイムアウト ({crawl_elapsed:.2f}秒)")
+            logger.warning(f"  ⚠️ URL: {url}")
+            raise ValueError(f"URL {url} のクロールに失敗しました（タイムアウトまたはエラー）。")
+        logger.info(f"  ✅ クロール完了 ({crawl_elapsed:.2f}秒, {len(web_context)}文字)")
+    except Exception as e:
+        crawl_elapsed = time.time() - crawl_start
+        logger.error(f"  ❌ クロール例外発生 ({crawl_elapsed:.2f}秒)")
+        logger.error(f"  エラー: {type(e).__name__}: {str(e)[:200]}")
+        import traceback
+        logger.debug(f"  トレースバック: {traceback.format_exc()}")
         raise ValueError(f"URL {url} のクロールに失敗しました（タイムアウトまたはエラー）。")
-    logger.info(f"  ✅ クロール完了 ({crawl_elapsed:.2f}秒, {len(web_context)}文字)")
 
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_contact.yaml"), encoding="utf-8")
     logger.debug("  ✅ プロンプトロード完了")
