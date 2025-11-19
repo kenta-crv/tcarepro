@@ -117,7 +117,11 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         specified_model = getattr(llm, 'model', getattr(llm, 'model_name', 'gemini-2.0-flash'))
         logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
         
-        # Google Searchツール使用時は追加の待機時間（Grounding APIのレート制限を考慮）
+        # Google Searchツール使用時の処理
+        # 公式ドキュメント: https://ai.google.dev/gemini-api/docs/google-search?hl=ja
+        # Google Searchツールは内部的に複数の検索クエリを実行する可能性があるため、
+        # 通常のAPI呼び出しよりも長い待機時間を設定
+        # ただし、公式ドキュメントには固有のレート制限の記載はない
         logger.debug("  ⏳ Google Searchツール使用後の追加待機時間（2秒）...")
         time.sleep(2.0)
         _wait_between_api_calls()  # API呼び出し間の間隔（通常の5秒）
