@@ -21,21 +21,32 @@ logger = get_logger()
 
 
 def _invoke_with_retry(llm, prompt_str: str, *, retries: int = RETRY_ATTEMPTS, **invoke_kwargs):
-    """Gemini API呼び出しを最大retries回再試行（4秒待機）で実行."""
+    """Gemini API呼び出しを最大retries回再試行（エクスポネンシャルバックオフ）で実行."""
     attempts = retries + 1
     for attempt in range(attempts):
         try:
             return llm.invoke(prompt_str, **invoke_kwargs)
         except ResourceExhausted as exc:
             if attempt == retries:
+                # 最後の試行でも失敗した場合、エラーメッセージを詳細にログ出力
+                error_msg = str(exc)
+                logger.error(f"  ❌ ResourceExhaustedエラー（最終試行失敗）: {error_msg[:300]}")
+                # エラーメッセージにクォータ関連のキーワードが含まれているか確認
+                if "quota" in error_msg.lower() or "limit" in error_msg.lower():
+                    logger.error("  ⚠️ クォータ/制限関連のエラーの可能性があります")
+                else:
+                    logger.warning("  ⚠️ 一時的なレート制限の可能性があります（クォータ超過ではない可能性）")
                 raise
+            # エクスポネンシャルバックオフ: 2^attempt * RETRY_DELAY_SECONDS
+            backoff_delay = RETRY_DELAY_SECONDS * (2 ** attempt)
             logger.warning(
-                "  ⚠️ Gemini APIクォータ超過 (attempt %s/%s). %s秒待機して再試行します…",
+                "  ⚠️ ResourceExhaustedエラー (attempt %s/%s). %s秒待機して再試行します…",
                 attempt + 1,
                 attempts,
-                RETRY_DELAY_SECONDS,
+                backoff_delay,
             )
-            time.sleep(RETRY_DELAY_SECONDS)
+            logger.debug(f"  エラー詳細: {str(exc)[:200]}")
+            time.sleep(backoff_delay)
         except Exception:
             raise
 

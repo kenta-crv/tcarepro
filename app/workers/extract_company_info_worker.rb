@@ -146,6 +146,12 @@ class ExtractCompanyInfoWorker
               quota_exceeded = true
               extract_tracking.update(status: "抽出停止（API制限）")
               break
+            elsif error_code == "RATE_LIMIT_ERROR"
+              # 一時的なレート制限の場合は、短い待機後に続行を試みる
+              Sidekiq.logger.warn("ExtractCompanyInfoWorker: Gemini API一時的なレート制限エラー（クォータ超過ではない可能性）")
+              Sidekiq.logger.warn("ExtractCompanyInfoWorker: 30秒待機して続行を試みます...")
+              sleep(30)
+              # 続行を試みる（breakしない）
             end
           end
         rescue => e

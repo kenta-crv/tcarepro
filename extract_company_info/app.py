@@ -140,12 +140,19 @@ def main() -> None:
         error_message = str(e)
         error_code = "API_ERROR"
         
-        # 429エラー（クォータ超過）を検出
-        if "429" in error_message or "quota" in error_message.lower() or "ResourceExhausted" in error_message:
-            error_code = "QUOTA_EXCEEDED"
-            error_message = "Gemini API quota exceeded. Please wait or use a different API key."
-            logger.error("[ERROR] Gemini APIクォータ超過")
-            logger.error(f"  再試行は行いません（max_retries=2で制限）")
+        # ResourceExhaustedエラーの詳細を確認
+        if "ResourceExhausted" in str(type(e).__name__) or "429" in error_message:
+            # エラーメッセージにクォータ関連のキーワードが含まれているか確認
+            if "quota" in error_message.lower() or "limit" in error_message.lower():
+                error_code = "QUOTA_EXCEEDED"
+                error_message = "Gemini API quota exceeded. Please wait or use a different API key."
+                logger.error("[ERROR] Gemini APIクォータ超過")
+            else:
+                # 一時的なレート制限の可能性（クォータ超過ではない）
+                error_code = "RATE_LIMIT_ERROR"
+                error_message = "Gemini API rate limit error (temporary). Please retry later."
+                logger.warning("[WARNING] Gemini API一時的なレート制限（クォータ超過ではない可能性）")
+                logger.warning(f"  エラー詳細: {error_message[:300]}")
         else:
             logger.error(f"[ERROR] 予期しないエラー: {type(e).__name__}")
             logger.error(f"  {str(e)[:500]}")
