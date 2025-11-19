@@ -100,9 +100,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
             pass
         
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
-        # with_structured_outputを使っている場合、元のllmオブジェクトを取得
-        base_llm = llm if not hasattr(llm, 'llm') else llm.llm
-        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash-lite'))
+        specified_model = getattr(llm, 'model', getattr(llm, 'model_name', 'gemini-2.0-flash-lite'))
         logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
         _wait_between_api_calls()  # API呼び出し間の間隔
     except Exception as e:
