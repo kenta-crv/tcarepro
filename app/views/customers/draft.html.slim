@@ -217,36 +217,67 @@ javascript:
       }
     });
 
-    // 進捗ポーリング（全行を対象に数秒おき）
+    // 進捗ポーリング（1つのリクエストで全業種の進捗を取得）
+    var isPolling = false; // ポーリング中のフラグ
+    var pollTimeout = null; // タイムアウトID
+    
     function pollProgress() {
-      $("tr.data-row").each(function() {
-        var $row = $(this);
-        var industry = $row.data('industry');
-        if (!industry) { return; }
-        $.getJSON('/draft/progress', { industry: industry })
-          .done(function(resp) {
-            if (!resp || resp.message === 'no_tracking') { return; }
-            if (resp.status) {
+      // 既にポーリング中の場合はスキップ
+      if (isPolling) {
+        return;
+      }
+      
+      isPolling = true;
+      // キャッシュを無効化するため、タイムスタンプを追加
+      // タイムアウトを設定（10秒でタイムアウト）
+      var xhr = $.ajax({
+        url: '/draft/progress',
+        data: { _t: Date.now() },
+        dataType: 'json',
+        timeout: 10000, // 10秒でタイムアウト
+        success: function(resp) {
+          if (!resp) { 
+            isPolling = false;
+            return; 
+          }
+          
+          // 各行について、対応する業種の進捗データを取得して更新
+          $("tr.data-row").each(function() {
+            var $row = $(this);
+            var industry = $row.data('industry');
+            if (!industry) { return; }
+            
+            var industryProgress = resp[industry];
+            if (!industryProgress || industryProgress.message === 'no_tracking') { return; }
+            
+            if (industryProgress.status) {
               var $status = $row.find('.js-status');
               // ベースのステータス文字列
               $status.contents().filter(function(){ return this.nodeType === 3; }).remove();
-              $status.prepend(resp.status);
-              $row.find('.js-success').text(resp.success);
-              $row.find('.js-failure').text(resp.failure);
+              $status.prepend(industryProgress.status);
+              $row.find('.js-success').text(industryProgress.success);
+              $row.find('.js-failure').text(industryProgress.failure);
               // 成功率 = success / (success + failure)
-              var totalTried = (resp.success || 0) + (resp.failure || 0);
-              var rate = totalTried > 0 ? (resp.success / totalTried * 100) : 0;
+              var totalTried = (industryProgress.success || 0) + (industryProgress.failure || 0);
+              var rate = totalTried > 0 ? (industryProgress.success / totalTried * 100) : 0;
               $row.find('.js-rate').text((rate).toFixed(1) + '%');
-              $row.find('.js-progress-sub').text('(' + (resp.success + resp.failure) + '/' + resp.total + ')');
-
+              $row.find('.js-progress-sub').text('(' + (industryProgress.success + industryProgress.failure) + '/' + industryProgress.total + ')');
             }
-          })
-          .fail(function() { /* noop */ });
+          });
+          isPolling = false;
+        },
+        error: function(xhr, status, error) {
+          // エラー時もフラグをリセット
+          isPolling = false;
+          if (status === 'timeout') {
+            console.warn('進捗取得がタイムアウトしました');
+          }
+        }
       });
     }
 
-    // 5秒ごとにポーリング
-    setInterval(pollProgress, 5000);
+    // 10秒ごとにポーリング（5秒から10秒に変更して負荷を軽減）
+    setInterval(pollProgress, 10000);
     // 初回即時実行
     pollProgress();
   });
