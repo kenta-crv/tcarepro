@@ -79,6 +79,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     # LLM（検索ツール有効）を呼び出し
     # max_retries=2に制限して無限ループを防ぐ
     logger.info("  🤖 Gemini API呼び出し中（Google検索ツール有効）...")
+    logger.info("  🔍 Google Searchツール（Grounding API）を使用します")
     api_start = time.time()
     
     try:
@@ -88,10 +89,12 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
         )
+        # Google Searchツール使用時は追加の待機時間を設定（Grounding APIのレート制限を考慮）
+        google_search_tool = GenAITool(google_search={})
         resp = _invoke_with_retry(
             llm,
             prompt.format(company=state.company, location=state.location),
-            tools=[GenAITool(google_search={})],
+            tools=[google_search_tool],
         )
         api_elapsed = time.time() - api_start
         
@@ -113,7 +116,11 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
         specified_model = getattr(llm, 'model', getattr(llm, 'model_name', 'gemini-2.0-flash'))
         logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
-        _wait_between_api_calls()  # API呼び出し間の間隔
+        
+        # Google Searchツール使用時は追加の待機時間（Grounding APIのレート制限を考慮）
+        logger.debug("  ⏳ Google Searchツール使用後の追加待機時間（2秒）...")
+        time.sleep(2.0)
+        _wait_between_api_calls()  # API呼び出し間の間隔（通常の5秒）
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
