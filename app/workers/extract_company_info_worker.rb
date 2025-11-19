@@ -1,34 +1,50 @@
+require "json"
+
 class ExtractCompanyInfoWorker
   include Sidekiq::Worker
   # 大量送信の耐久・耐性を確保
   sidekiq_options retry: 1, queue: 'default', backtrace: true
 
   PYTHON_SCRIPT_PATH = Rails.root.join('extract_company_info', 'app.py').to_s
-  PYTHON_EXECUTABLE = 'python3'
+  # 仮想環境のPythonを使用
+  PYTHON_VENV_PATH = Rails.root.join('extract_company_info', 'venv', 'bin', 'python').to_s
+  PYTHON_EXECUTABLE = if File.exist?(PYTHON_VENV_PATH)
+                        PYTHON_VENV_PATH
+                      else
+                        'python3'
+                      end
 
   def perform(id)
     begin
-      puts("ExtractCompanyInfoWorker: perform: start #{id}")
+      Sidekiq.logger.info("ExtractCompanyInfoWorker: perform: start #{id}")
 
       # すでに他のジョブで本日の残り件数を超えている場合は終了
-      today_total = ExtractTracking
-                      .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
-                      .sum(:total_count)
       extract_tracking = ExtractTracking.find(id)
       daily_limit = ENV.fetch('EXTRACT_DAILY_LIMIT', '500').to_i
-      today_reamin = daily_limit - (today_total - extract_tracking.total_count)
-      if today_reamin == 0 || (extract_tracking.total_count > today_reamin)
-        puts("AutoformSchedulerWorker: perform: today limit exceed")
+      
+      # 今日の合計件数（現在のextract_trackingを除く）
+      today_total = ExtractTracking
+                      .where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
+                      .where.not(id: extract_tracking.id)
+                      .sum(:total_count)
+      
+      # 残り件数を計算（マイナスにならないようにする）
+      today_reamin = [daily_limit - today_total, 0].max
+      
+      if today_reamin == 0 || extract_tracking.total_count > today_reamin
+        Sidekiq.logger.warn("ExtractCompanyInfoWorker: today limit exceed (remaining: #{today_reamin}, requested: #{extract_tracking.total_count})")
         extract_tracking.update(
           status: "抽出失敗（制限超過）"
         )
         return
       end
-      # 実行
-      customers = Customer.where(status: "draft").where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(extract_tracking.total_count)
+      # 実行（残り件数を超えないように制限）
+      limit_count = [extract_tracking.total_count, today_reamin].min
+      customers = Customer.where(status: "draft").where(tel: [nil, '', ' ']).where(industry: extract_tracking.industry).limit(limit_count)
       crowdwork = Crowdwork.find_by(title: extract_tracking.industry)
       success_count = extract_tracking.success_count
       failure_count = extract_tracking.failure_count
+      quota_exceeded = false
       customers.each do |customer|
         required_businesses =
           if crowdwork&.business.present?
@@ -88,24 +104,44 @@ class ExtractCompanyInfoWorker
             extract_tracking.update(
               failure_count: failure_count,
             )
-            puts("ExtractCompanyInfoWorker: Python script execution failed for customer ID #{customer.id}. Exit status: #{status.exitstatus}")
-            puts(stderr)
+            Sidekiq.logger.error("ExtractCompanyInfoWorker: Python script execution failed for customer ID #{customer.id}. Exit status: #{status.exitstatus}")
+            Sidekiq.logger.error("ExtractCompanyInfoWorker: stderr: #{stderr}")
+
+            # Python側からのエラーコードを解析（例: QUOTA_EXCEEDED）
+            begin
+              response_json = JSON.parse(stdout.strip)
+              error_code = response_json.dig("error", "code")
+            rescue JSON::ParserError
+              error_code = nil
+            end
+
+            if error_code == "QUOTA_EXCEEDED"
+              Sidekiq.logger.warn("ExtractCompanyInfoWorker: Gemini APIクォータ超過が検出されたため処理を一時停止します")
+              quota_exceeded = true
+              extract_tracking.update(status: "抽出停止（API制限）")
+              break
+            end
           end
         rescue => e
-          puts "エラー: #{e.class} - #{e.message}"
+          Sidekiq.logger.error("ExtractCompanyInfoWorker: Error processing customer #{customer.id}: #{e.class} - #{e.message}")
+          Sidekiq.logger.error(e.backtrace.join("\n")) if e.backtrace
           failure_count += 1
           extract_tracking.update(
             failure_count: failure_count,
           )
         end
       end
-      extract_tracking.update(
-        success_count: success_count,
-        failure_count: failure_count,
-        status: "抽出完了"
-      )
+      # QUOTA_EXCEEDEDで停止した場合は、ステータスを「抽出完了」に更新しない
+      unless quota_exceeded
+        extract_tracking.update(
+          success_count: success_count,
+          failure_count: failure_count,
+          status: "抽出完了"
+        )
+      end
     rescue => e
-      puts "エラー: #{e.class} - #{e.message}"
+      Sidekiq.logger.error("ExtractCompanyInfoWorker: Fatal error: #{e.class} - #{e.message}")
+      Sidekiq.logger.error(e.backtrace.join("\n")) if e.backtrace
     end
   end
 
@@ -113,7 +149,7 @@ class ExtractCompanyInfoWorker
     stdout_str = +""
     stderr_str = +""
     status = nil
-    puts("python script start")
+    Sidekiq.logger.debug("ExtractCompanyInfoWorker: Python script start")
     require 'open3'
     
     Open3.popen3({ "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" }, *command) do |stdin, stdout, stderr, wait_thr|
@@ -147,7 +183,7 @@ class ExtractCompanyInfoWorker
           Process.kill("KILL", pid) rescue nil
           wait_thr.join
         end
-        puts("タイムアウトしました")
+        Sidekiq.logger.warn("ExtractCompanyInfoWorker: Python script timeout after #{timeout} seconds")
       end
 
       out_reader.join

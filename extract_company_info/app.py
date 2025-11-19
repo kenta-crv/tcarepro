@@ -123,6 +123,18 @@ def main() -> None:
             1,
             customer_id=customer_id,
         )
+    except ValueError as e:
+        # URL候補が見つからない、クロール失敗などの処理エラー
+        logger.error(f"[ERROR] 処理エラー: {type(e).__name__}")
+        logger.error(f"  {str(e)[:500]}")
+        _write_response(
+            ExtractResponse(
+                success=False,
+                error=ErrorDetail(code="PROCESSING_ERROR", message=str(e)[:500]),
+            ),
+            1,
+            customer_id=customer_id,
+        )
     except Exception as e:
         # API制限エラーやその他のエラーをキャッチ
         error_message = str(e)

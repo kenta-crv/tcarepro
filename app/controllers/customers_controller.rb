@@ -522,10 +522,14 @@ def destroy
     tel_with_counts = tel_with_scope.group(:industry).count
     tel_without_counts = tel_without_scope.group(:industry).count
 
+    # ExtractTrackingを一括取得してN+1を回避（SQLite対応）
+    industry_names = @crowdworks.map(&:title)
+    all_trackings = ExtractTracking.where(industry: industry_names).order(id: :desc)
+    # Ruby側で各業種の最新のtrackingを取得
+    latest_trackings = all_trackings.group_by(&:industry).transform_values { |trackings| trackings.first }
+    
     @industry_counts = @crowdworks.each_with_object({}) do |crowdwork, hash|
-      latest_tracking = ExtractTracking.where(industry: crowdwork.title)
-                                 .order(id: :desc)
-                                 .first
+      latest_tracking = latest_trackings[crowdwork.title]
       success_count = latest_tracking&.success_count.to_i
       failure_count = latest_tracking&.failure_count.to_i
       total_count   = latest_tracking&.total_count.to_i
@@ -542,8 +546,13 @@ def destroy
       }
     end
 
-    # ページネーション
-    @customers = @customers.page(params[:page]).per(100)
+    # 業種でフィルタ
+    if params[:industry_name].present?
+      @customers = @customers.where(industry: params[:industry_name])
+    end
+
+    # ページネーション（workerをincludesしてN+1を回避）
+    @customers = @customers.includes(:worker).page(params[:page]).per(100)
 
     # 残り件数取得
     today_total = ExtractTracking

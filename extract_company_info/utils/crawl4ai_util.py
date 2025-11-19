@@ -14,7 +14,7 @@ from crawl4ai.content_scraping_strategy import LXMLWebScrapingStrategy
 from crawl4ai.deep_crawling import BFSDeepCrawlStrategy
 
 
-async def _acrawl_markdown(url: str, depth: int = 0) -> str:
+async def _acrawl_markdown(url: str, depth: int = 0, timeout: int = 30) -> str:
     """指定URLをクロールし、Markdownを連結して返す非同期関数.
 
     深さが1以上の場合はディープクロール（BFS）を行い、0の場合は通常クロールを行う。
@@ -22,6 +22,7 @@ async def _acrawl_markdown(url: str, depth: int = 0) -> str:
     Args:
         url (str): 対象URL。
         depth (int, optional): クロールの深さ。1以上でディープクロール。既定は0。
+        timeout (int, optional): タイムアウト秒数。既定は30秒。
 
     Returns:
         str: 取得できたMarkdownの連結文字列（失敗時は空文字）。
@@ -39,7 +40,14 @@ async def _acrawl_markdown(url: str, depth: int = 0) -> str:
 
     async with AsyncWebCrawler() as crawler:
         try:
-            result = await crawler.arun(url=url, config=config)
+            # タイムアウトを設定
+            result = await asyncio.wait_for(
+                crawler.arun(url=url, config=config),
+                timeout=timeout
+            )
+        except asyncio.TimeoutError:
+            # タイムアウト時は空文字を返す
+            return ""
         except Exception:  # noqa: BLE001
             # 失敗時は空文字
             return ""
@@ -53,7 +61,7 @@ async def _acrawl_markdown(url: str, depth: int = 0) -> str:
             return getattr(result, "markdown", "")
 
 
-def crawl_markdown(url: str, depth: int = 0) -> str:
+def crawl_markdown(url: str, depth: int = 0, timeout: int = 30) -> str:
     """指定URLをクロールし、Markdown文字列を返す同期関数.
 
     非同期クローラ実装を内部で実行する。既にイベントループが動作中なら
@@ -62,6 +70,7 @@ def crawl_markdown(url: str, depth: int = 0) -> str:
     Args:
         url (str): 対象URL。
         depth (int, optional): クロールの深さ。1以上でディープクロール。既定は0。
+        timeout (int, optional): タイムアウト秒数。既定は30秒。
 
     Returns:
         str: 取得できたMarkdownの連結文字列（失敗時は空文字）。
@@ -72,8 +81,8 @@ def crawl_markdown(url: str, depth: int = 0) -> str:
             loop = asyncio.get_event_loop()
             if loop.is_running():
                 # 既存ループが走っている場合は新規に実行
-                return asyncio.run(_acrawl_markdown(url, depth))  # type: ignore[no-any-return]
-            return loop.run_until_complete(_acrawl_markdown(url, depth))
+                return asyncio.run(_acrawl_markdown(url, depth, timeout))  # type: ignore[no-any-return]
+            return loop.run_until_complete(_acrawl_markdown(url, depth, timeout))
         except RuntimeError:
             # ループ未存在などのケース
-            return asyncio.run(_acrawl_markdown(url, depth))
+            return asyncio.run(_acrawl_markdown(url, depth, timeout))

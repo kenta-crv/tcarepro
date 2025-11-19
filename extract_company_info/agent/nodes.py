@@ -2,17 +2,41 @@ import re
 import time
 
 from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
+from google.api_core.exceptions import ResourceExhausted
 from langchain_core.prompts.loading import load_prompt
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from agent.state import ExtractState
-from models.schemas import CompanyInfo, URLScoreList
+from models.schemas import CompanyInfo, LLMCompanyInfo, URLScoreList
 from models.settings import BASE_DIR, settings
 from utils.crawl4ai_util import crawl_markdown
 from utils.net import convert_accessable_urls
 from utils.logger import get_logger
 
+RETRY_DELAY_SECONDS = 4.0
+RETRY_ATTEMPTS = 1  # 1回リトライ = 最大2回試行
+
 logger = get_logger()
+
+
+def _invoke_with_retry(llm, prompt_str: str, *, retries: int = RETRY_ATTEMPTS, **invoke_kwargs):
+    """Gemini API呼び出しを最大retries回再試行（4秒待機）で実行."""
+    attempts = retries + 1
+    for attempt in range(attempts):
+        try:
+            return llm.invoke(prompt_str, **invoke_kwargs)
+        except ResourceExhausted as exc:
+            if attempt == retries:
+                raise
+            logger.warning(
+                "  ⚠️ Gemini APIクォータ超過 (attempt %s/%s). %s秒待機して再試行します…",
+                attempt + 1,
+                attempts,
+                RETRY_DELAY_SECONDS,
+            )
+            time.sleep(RETRY_DELAY_SECONDS)
+        except Exception:
+            raise
 
 
 def node_get_url_candidates(state: ExtractState) -> ExtractState:
@@ -41,12 +65,13 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash", 
-            temperature=0, 
+            model="gemini-2.0-flash-lite",
+            temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
-            max_retries=2  # デフォルトの無限リトライを制限
+            max_retries=0,
         )
-        resp = llm.invoke(
+        resp = _invoke_with_retry(
+            llm,
             prompt.format(company=state.company, location=state.location),
             tools=[GenAITool(google_search={})],
         )
@@ -62,9 +87,31 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     urls: list[str] = []
     
     # まず本文から全てのURLを抽出（最も信頼性が高い）
-    content_urls = re.findall(r'https?://[^\s<>"]+', resp.content)
-    # リダイレクトURLを除外
-    content_urls = [url for url in content_urls if 'grounding-api-redirect' not in url]
+    # より厳密なURL正規表現を使用（不完全なURLを除外）
+    url_pattern = r'https?://[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*(?:/[^\s<>"]*)?'
+    content_urls = re.findall(url_pattern, resp.content)
+    # リダイレクトURLと不完全なURLを除外
+    def _is_valid_url(url: str) -> bool:
+        """URLが有効かどうかを判定する."""
+        # リダイレクトURLを除外
+        if 'grounding-api-redirect' in url:
+            return False
+        # スキームとドメインを含む必要がある
+        if url.count('/') < 2:
+            return False
+        # ドメインにドットを含む必要がある
+        try:
+            domain = url.split('//')[1].split('/')[0]
+            if '.' not in domain:
+                return False
+            # 日本語文字や全角文字を含むURLを除外（不完全な抽出を防ぐ）
+            if any(ord(c) > 127 for c in url):
+                return False
+        except (IndexError, AttributeError):
+            return False
+        return True
+    
+    content_urls = [url for url in content_urls if _is_valid_url(url)]
     
     if content_urls:
         urls.extend(content_urls)
@@ -142,12 +189,15 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     urls = state.urls
     web_context = ""
     
-    logger.info("  🕷️ 各URLをクロール中...")
+    logger.info("  🕷️ 各URLをクロール中（timeout=20秒）...")
     for i, url in enumerate(urls, 1):
         crawl_start = time.time()
         logger.info(f"     [{i}/{len(urls)}] {url}")
-        markdown = crawl_markdown(url)
+        markdown = crawl_markdown(url, timeout=20)
         crawl_elapsed = time.time() - crawl_start
+        if not markdown:
+            logger.warning(f"        ⚠️ クロール失敗またはタイムアウト ({crawl_elapsed:.2f}秒)")
+            continue  # 失敗したURLはスキップ
         logger.info(f"        ✅ クロール完了 ({crawl_elapsed:.2f}秒, {len(markdown)}文字)")
         web_context += f"""# {url}\n{markdown}\n"""
     
@@ -159,14 +209,13 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash", 
-            temperature=0, 
+            model="gemini-2.0-flash-lite",
+            temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
-            max_retries=2  # 無限ループ防止
-        ).with_structured_output(
-            URLScoreList,
-        )
-        resp: URLScoreList = llm.invoke(
+            max_retries=0,
+        ).with_structured_output(URLScoreList)
+        resp: URLScoreList = _invoke_with_retry(
+            llm,
             prompt.format(company=state.company, location=state.location, web_context=web_context),
         )
         api_elapsed = time.time() - api_start
@@ -211,28 +260,21 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     logger.info("-" * 60)
     logger.info("[NODE 3/3] node_fetch_html - 会社情報抽出")
     
-    # URL候補が無い場合は空のCompanyInfoを返す
+    # URL候補が無い場合はエラーを発生させる（ValidationErrorを避けるため）
     if not state.urls:
-        logger.warning("  ⚠️ URL候補が0個 - 空の情報を返します")
-        state.company_info = CompanyInfo(
-            company="",
-            tel="",
-            address="",
-            first_name="",
-            url="",
-            contact_url="",
-            business="",
-            genre="",
-        )
-        return state
+        logger.warning("  ⚠️ URL候補が0個 - 抽出をスキップします")
+        raise ValueError("URL候補が見つかりませんでした。会社情報を抽出できません。")
     
     url = state.urls.pop(0)
     logger.info(f"  対象URL: {url}")
     
-    logger.info("  🕷️ Webページクロール中（depth=1）...")
+    logger.info("  🕷️ Webページクロール中（depth=1, timeout=30秒）...")
     crawl_start = time.time()
-    web_context = crawl_markdown(url, depth=1)
+    web_context = crawl_markdown(url, depth=1, timeout=30)
     crawl_elapsed = time.time() - crawl_start
+    if not web_context:
+        logger.warning(f"  ⚠️ クロール失敗またはタイムアウト ({crawl_elapsed:.2f}秒)")
+        raise ValueError(f"URL {url} のクロールに失敗しました（タイムアウトまたはエラー）。")
     logger.info(f"  ✅ クロール完了 ({crawl_elapsed:.2f}秒, {len(web_context)}文字)")
 
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_contact.yaml"), encoding="utf-8")
@@ -245,14 +287,13 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash", 
-            temperature=0, 
+            model="gemini-2.0-flash-lite",
+            temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
-            max_retries=2  # 無限ループ防止
-        ).with_structured_output(
-            CompanyInfo,
-        )
-        resp: CompanyInfo = llm.invoke(
+            max_retries=0,
+        ).with_structured_output(LLMCompanyInfo)
+        resp: LLMCompanyInfo = _invoke_with_retry(
+            llm,
             prompt.format(
                 required_businesses=state.required_businesses,
                 required_genre=state.required_genre,
@@ -273,7 +314,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         logger.error(f"  エラー: {type(e).__name__}: {str(e)[:200]}")
         raise
 
-    state.company_info = resp
+    state.company_info = resp.model_dump()
     
     node_elapsed = time.time() - node_start
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")

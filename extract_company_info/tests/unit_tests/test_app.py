@@ -64,6 +64,7 @@ def test_main_success_return_company_info(
     """正常系: agent.extract_company_info をモックし成功レスポンスを検証する."""
     # 入力JSON
     input_json = {
+        "customer_id": "test_123",
         "company": "株式会社サンプル",
         "location": "愛知県高浜市",
         "required_businesses": ["工場", "食品"],

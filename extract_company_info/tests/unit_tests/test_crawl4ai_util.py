@@ -21,7 +21,10 @@ def test_crawl_markdown_concatenates_results(mocker: MockerFixture) -> None:
             self.markdown = text
 
     dummy_instance = mocker.MagicMock()
-    dummy_instance.arun.return_value = [DummyResult("A"), DummyResult("B")]
+    # asyncio.wait_forでラップされるため、コルーチンを返す必要がある
+    async def mock_arun(*args, **kwargs):
+        return [DummyResult("A"), DummyResult("B")]
+    dummy_instance.arun = mock_arun
 
     # 非同期のコンテキストマネージャとして振る舞うよう設定
     dummy_cm = mocker.MagicMock()
@@ -31,13 +34,14 @@ def test_crawl_markdown_concatenates_results(mocker: MockerFixture) -> None:
 
     out = crawl4ai_util.crawl_markdown("https://example.com")
     assert out == "AB"
-    dummy_instance.arun.assert_called_once()
 
 
 def test_crawl_markdown_returns_empty_on_exception(mocker: MockerFixture) -> None:
     """例外発生時に空文字を返すことを確認する."""
     dummy_instance = mocker.MagicMock()
-    dummy_instance.arun.side_effect = RuntimeError("boom")
+    async def mock_arun(*args, **kwargs):
+        raise RuntimeError("boom")
+    dummy_instance.arun = mock_arun
 
     dummy_cm = mocker.MagicMock()
     dummy_cm.__aenter__.return_value = dummy_instance
@@ -57,8 +61,12 @@ def test_crawl_markdown_uses_deep_strategy_when_depth_positive(
     セットされていることを検証する。
     """
 
+    call_args_list = []
+    async def mock_arun(*args, **kwargs):
+        call_args_list.append((args, kwargs))
+        return []
     dummy_instance = mocker.MagicMock()
-    dummy_instance.arun.return_value = []
+    dummy_instance.arun = mock_arun
 
     dummy_cm = mocker.MagicMock()
     dummy_cm.__aenter__.return_value = dummy_instance
@@ -68,8 +76,8 @@ def test_crawl_markdown_uses_deep_strategy_when_depth_positive(
     _ = crawl4ai_util.crawl_markdown("https://example.com", depth=2)
 
     # 引数検証
-    assert dummy_instance.arun.call_count == 1
-    _, kwargs = dummy_instance.arun.call_args
+    assert len(call_args_list) == 1
+    _, kwargs = call_args_list[0]
     assert "config" in kwargs
     config = kwargs["config"]
     assert getattr(config, "deep_crawl_strategy", None) is not None
@@ -80,8 +88,12 @@ def test_crawl_markdown_uses_normal_strategy_when_depth_zero(
 ) -> None:
     """depth==0 のときに DeepCrawl が無効であることを確認する."""
 
+    call_args_list = []
+    async def mock_arun(*args, **kwargs):
+        call_args_list.append((args, kwargs))
+        return []
     dummy_instance = mocker.MagicMock()
-    dummy_instance.arun.return_value = []
+    dummy_instance.arun = mock_arun
 
     dummy_cm = mocker.MagicMock()
     dummy_cm.__aenter__.return_value = dummy_instance
@@ -91,8 +103,8 @@ def test_crawl_markdown_uses_normal_strategy_when_depth_zero(
     _ = crawl4ai_util.crawl_markdown("https://example.com", depth=0)
 
     # 引数検証
-    assert dummy_instance.arun.call_count == 1
-    _, kwargs = dummy_instance.arun.call_args
+    assert len(call_args_list) == 1
+    _, kwargs = call_args_list[0]
     assert "config" in kwargs
     config = kwargs["config"]
     assert getattr(config, "deep_crawl_strategy", None) is None
