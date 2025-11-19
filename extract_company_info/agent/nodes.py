@@ -15,6 +15,7 @@ from utils.logger import get_logger
 
 RETRY_DELAY_SECONDS = 4.0
 RETRY_ATTEMPTS = 1  # 1回リトライ = 最大2回試行
+API_CALL_INTERVAL_SECONDS = 2.0  # API呼び出し間の間隔（秒）
 
 logger = get_logger()
 
@@ -37,6 +38,12 @@ def _invoke_with_retry(llm, prompt_str: str, *, retries: int = RETRY_ATTEMPTS, *
             time.sleep(RETRY_DELAY_SECONDS)
         except Exception:
             raise
+
+
+def _wait_between_api_calls():
+    """API呼び出し間の間隔を空ける."""
+    logger.debug(f"  ⏳ API呼び出し間隔のため{API_CALL_INTERVAL_SECONDS}秒待機中...")
+    time.sleep(API_CALL_INTERVAL_SECONDS)
 
 
 def node_get_url_candidates(state: ExtractState) -> ExtractState:
@@ -77,6 +84,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         )
         api_elapsed = time.time() - api_start
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
+        _wait_between_api_calls()  # API呼び出し間の間隔
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
@@ -220,6 +228,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
         )
         api_elapsed = time.time() - api_start
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
+        _wait_between_api_calls()  # API呼び出し間の間隔
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
@@ -302,6 +311,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         )
         api_elapsed = time.time() - api_start
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
+        # 最後のAPI呼び出しなので間隔は不要
         logger.info("  📋 抽出された情報:")
         logger.info(f"     会社名: {resp.company}")
         logger.info(f"     電話番号: {resp.tel}")
