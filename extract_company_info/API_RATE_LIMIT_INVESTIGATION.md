@@ -72,16 +72,21 @@
 
 ## 推奨される対策
 
-### 1. API呼び出し間隔の増加
+### 1. API呼び出し間隔の増加 ✅ 実装済み
 
 **Python側**:
 ```python
-API_CALL_INTERVAL_SECONDS = 5.0  # 2秒 → 5秒に変更
+API_CALL_INTERVAL_SECONDS = 5.0  # 2秒 → 5秒に変更（実装済み）
 ```
 
 **Worker側**:
 ```ruby
-sleep(10)  # 5秒 → 10秒に変更
+sleep(10)  # 5秒 → 10秒に変更（実装済み）
+```
+
+**リトライ時の待機時間**:
+```python
+RETRY_DELAY_SECONDS = 8.0  # 4秒 → 8秒に変更（実装済み）
 ```
 
 ### 2. クォータの確認
