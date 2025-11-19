@@ -611,11 +611,23 @@ def destroy
       industry_names = crowdworks.map(&:title)
       
       # 各業種の最新のtrackingを一括取得（インデックスを活用）
-      # SQLiteでは、各業種ごとに最新の1件を取得する方が効率的
+      # SQLiteでは、サブクエリを使って各業種の最新の1件を取得
+      # これにより、1つのクエリで全業種の最新trackingを取得できる
       latest_trackings = {}
-      industry_names.each do |industry_name|
-        tracking = ExtractTracking.where(industry: industry_name).order(id: :desc).first
-        latest_trackings[industry_name] = tracking if tracking
+      if industry_names.present?
+        # 各業種の最新IDを取得するサブクエリ
+        max_ids = ExtractTracking
+          .where(industry: industry_names)
+          .group(:industry)
+          .maximum(:id)
+        
+        # 最新IDのtrackingを一括取得
+        if max_ids.present?
+          trackings = ExtractTracking.where(id: max_ids.values)
+          trackings.each do |tracking|
+            latest_trackings[tracking.industry] = tracking
+          end
+        end
       end
       
       progress_data = {}
