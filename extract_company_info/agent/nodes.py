@@ -179,34 +179,29 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         for i, url in enumerate(reference_urls, 1):
             logger.info(f"    {i}. {url}")
         
-        # リダイレクトURLから実際のURLを抽出
+        # リダイレクトURLから実際のURLを抽出（titleフィールドからドメイン名を取得）
         direct_urls = []
-        for url in reference_urls:
-            if url.startswith('https://vertexaisearch.cloud.google.com'):
-                # リダイレクトURLから実際のURLを抽出
-                # 形式: https://vertexaisearch.cloud.google.com/grounding-api-redirect?url=<実際のURL>
-                logger.debug(f"  リダイレクトURLを解析中: {url[:100]}...")
-                try:
-                    from urllib.parse import urlparse, parse_qs, unquote
-                    parsed = urlparse(url)
-                    query_params = parse_qs(parsed.query)
-                    logger.debug(f"    クエリパラメータ: {query_params}")
-                    
-                    # urlパラメータを探す
-                    if 'url' in query_params:
-                        actual_url = query_params['url'][0]
-                        # URLデコード
-                        actual_url = unquote(actual_url)
+        for i, chunk in enumerate(resp.response_metadata["grounding_metadata"]["grounding_chunks"]):
+            uri = chunk["web"]["uri"]
+            web_info = chunk["web"]
+            
+            if uri.startswith('https://vertexaisearch.cloud.google.com'):
+                # リダイレクトURLの場合、titleフィールドからドメイン名を取得
+                if "title" in web_info and web_info["title"]:
+                    domain = web_info["title"].strip()
+                    # ドメイン名からURLを構築
+                    if domain and not domain.startswith('http'):
+                        actual_url = f"https://{domain}"
                         direct_urls.append(actual_url)
-                        logger.info(f"  ✅ リダイレクトURLから抽出: {actual_url}")
+                        logger.info(f"  ✅ リダイレクトURLから抽出（title使用）: {actual_url}")
                     else:
-                        logger.warning(f"  ⚠️ リダイレクトURLにurlパラメータが見つかりません: {url[:100]}")
-                except Exception as e:
-                    logger.warning(f"  ⚠️ リダイレクトURLの解析に失敗: {url[:100]} - {str(e)}")
+                        logger.warning(f"  ⚠️ titleフィールドが無効: {domain}")
+                else:
+                    logger.warning(f"  ⚠️ titleフィールドが見つかりません: {uri[:100]}")
             else:
                 # 直接URL
-                direct_urls.append(url)
-                logger.debug(f"  直接URL: {url}")
+                direct_urls.append(uri)
+                logger.debug(f"  直接URL: {uri}")
         
         if direct_urls:
             direct_count = len([u for u in reference_urls if not u.startswith('https://vertexaisearch.cloud.google.com')])
