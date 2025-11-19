@@ -83,7 +83,27 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
             tools=[GenAITool(google_search={})],
         )
         api_elapsed = time.time() - api_start
+        
+        # 実際に使用されたモデル名をログに記録
+        actual_model = "不明"
+        try:
+            if hasattr(resp, 'response_metadata') and resp.response_metadata:
+                # response_metadataからモデル名を取得
+                metadata = resp.response_metadata
+                if isinstance(metadata, dict):
+                    actual_model = metadata.get('model_name', metadata.get('model', '不明'))
+                elif hasattr(metadata, 'model_name'):
+                    actual_model = metadata.model_name
+                elif hasattr(metadata, 'model'):
+                    actual_model = metadata.model
+        except Exception:
+            pass
+        
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
+        # with_structured_outputを使っている場合、元のllmオブジェクトを取得
+        base_llm = llm if not hasattr(llm, 'llm') else llm.llm
+        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash-lite'))
+        logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
         _wait_between_api_calls()  # API呼び出し間の間隔
     except Exception as e:
         api_elapsed = time.time() - api_start
@@ -227,7 +247,27 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
             prompt.format(company=state.company, location=state.location, web_context=web_context),
         )
         api_elapsed = time.time() - api_start
+        
+        # 実際に使用されたモデル名をログに記録
+        actual_model = "不明"
+        try:
+            # with_structured_outputを使っている場合、元のレスポンスを取得
+            if hasattr(resp, 'response_metadata') and resp.response_metadata:
+                metadata = resp.response_metadata
+                if isinstance(metadata, dict):
+                    actual_model = metadata.get('model_name', metadata.get('model', '不明'))
+                elif hasattr(metadata, 'model_name'):
+                    actual_model = metadata.model_name
+                elif hasattr(metadata, 'model'):
+                    actual_model = metadata.model
+        except Exception:
+            pass
+        
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
+        # with_structured_outputを使っている場合、元のllmオブジェクトを取得
+        base_llm = llm if not hasattr(llm, 'llm') else llm.llm
+        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash-lite'))
+        logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
         _wait_between_api_calls()  # API呼び出し間の間隔
     except Exception as e:
         api_elapsed = time.time() - api_start
@@ -310,7 +350,24 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
             ),
         )
         api_elapsed = time.time() - api_start
+        
+        # 実際に使用されたモデル名をログに記録
+        actual_model = "不明"
+        try:
+            # with_structured_outputを使っている場合、元のレスポンスを取得
+            if hasattr(resp, 'response_metadata') and resp.response_metadata:
+                metadata = resp.response_metadata
+                if isinstance(metadata, dict):
+                    actual_model = metadata.get('model_name', metadata.get('model', '不明'))
+                elif hasattr(metadata, 'model_name'):
+                    actual_model = metadata.model_name
+                elif hasattr(metadata, 'model'):
+                    actual_model = metadata.model
+        except Exception:
+            pass
+        
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
+        logger.info(f"  📊 使用モデル: 指定={llm.model_name if hasattr(llm, 'model_name') else 'gemini-2.0-flash-lite'}, 実際={actual_model}")
         # 最後のAPI呼び出しなので間隔は不要
         logger.info("  📋 抽出された情報:")
         logger.info(f"     会社名: {resp.company}")
