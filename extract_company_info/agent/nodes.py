@@ -292,11 +292,17 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     urls = state.urls
     web_context = ""
     
-    logger.info("  🕷️ 各URLをクロール中（timeout=20秒）...")
+    # URL候補が多すぎる場合は上限を設定（パフォーマンス改善）
+    max_urls = 5
+    if len(urls) > max_urls:
+        logger.info(f"  ⚠️ URL候補が{len(urls)}個あります。最初の{max_urls}個のみ処理します。")
+        urls = urls[:max_urls]
+    
+    logger.info("  🕷️ 各URLをクロール中（timeout=10秒）...")
     for i, url in enumerate(urls, 1):
         crawl_start = time.time()
         logger.info(f"     [{i}/{len(urls)}] {url}")
-        markdown = crawl_markdown(url, timeout=20)
+        markdown = crawl_markdown(url, timeout=10)  # 20秒 → 10秒に短縮
         crawl_elapsed = time.time() - crawl_start
         if not markdown:
             logger.warning(f"        ⚠️ クロール失敗またはタイムアウト ({crawl_elapsed:.2f}秒)")
@@ -392,11 +398,12 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     url = state.urls.pop(0)
     logger.info(f"  対象URL: {url}")
     
-    logger.info("  🕷️ Webページクロール中（depth=0, timeout=30秒）...")
+    logger.info("  🕷️ Webページクロール中（depth=0, timeout=10秒）...")
     crawl_start = time.time()
     try:
         # depth=0に変更（ディープクロールは時間がかかりすぎるため）
-        web_context = crawl_markdown(url, depth=0, timeout=30)
+        # タイムアウトを10秒に短縮（パフォーマンス改善）
+        web_context = crawl_markdown(url, depth=0, timeout=10)  # 30秒 → 10秒に短縮
         crawl_elapsed = time.time() - crawl_start
         if not web_context:
             logger.warning(f"  ⚠️ クロール失敗またはタイムアウト ({crawl_elapsed:.2f}秒)")
