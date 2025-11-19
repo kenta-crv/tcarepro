@@ -147,37 +147,76 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     
     # grounding由来URL（リダイレクトURLから実際のURLを抽出）
     try:
+        # レスポンスメタデータをログに出力（デバッグ用）
+        logger.debug("  📋 response_metadata構造:")
+        logger.debug(f"    response_metadata keys: {list(resp.response_metadata.keys()) if isinstance(resp.response_metadata, dict) else 'not a dict'}")
+        
+        if isinstance(resp.response_metadata, dict) and "grounding_metadata" in resp.response_metadata:
+            grounding_metadata = resp.response_metadata["grounding_metadata"]
+            logger.debug(f"    grounding_metadata keys: {list(grounding_metadata.keys()) if isinstance(grounding_metadata, dict) else 'not a dict'}")
+            
+            if isinstance(grounding_metadata, dict) and "grounding_chunks" in grounding_metadata:
+                chunks = grounding_metadata["grounding_chunks"]
+                logger.info(f"  📋 grounding_chunks数: {len(chunks)}")
+                for i, chunk in enumerate(chunks[:3], 1):  # 最初の3個のみ詳細ログ
+                    logger.info(f"    [chunk {i}] keys: {list(chunk.keys()) if isinstance(chunk, dict) else 'not a dict'}")
+                    if isinstance(chunk, dict) and "web" in chunk:
+                        web_info = chunk["web"]
+                        logger.info(f"      web keys: {list(web_info.keys()) if isinstance(web_info, dict) else 'not a dict'}")
+                        if isinstance(web_info, dict):
+                            logger.info(f"      web.uri: {web_info.get('uri', 'N/A')}")
+                            logger.info(f"      web全体: {str(web_info)[:200]}")
+        
         reference_urls = [
             chunk["web"]["uri"]
             for chunk in resp.response_metadata["grounding_metadata"]["grounding_chunks"]
         ]
+        
+        # 全てのURLをログに出力
+        logger.info(f"  📋 取得したreference_urls ({len(reference_urls)}個):")
+        for i, url in enumerate(reference_urls, 1):
+            logger.info(f"    {i}. {url}")
+        
         # リダイレクトURLから実際のURLを抽出
         direct_urls = []
         for url in reference_urls:
             if url.startswith('https://vertexaisearch.cloud.google.com'):
                 # リダイレクトURLから実際のURLを抽出
                 # 形式: https://vertexaisearch.cloud.google.com/grounding-api-redirect?url=<実際のURL>
+                logger.debug(f"  リダイレクトURLを解析中: {url[:100]}...")
                 try:
-                    from urllib.parse import urlparse, parse_qs
+                    from urllib.parse import urlparse, parse_qs, unquote
                     parsed = urlparse(url)
                     query_params = parse_qs(parsed.query)
+                    logger.debug(f"    クエリパラメータ: {query_params}")
+                    
+                    # urlパラメータを探す
                     if 'url' in query_params:
                         actual_url = query_params['url'][0]
+                        # URLデコード
+                        actual_url = unquote(actual_url)
                         direct_urls.append(actual_url)
-                        logger.debug(f"  リダイレクトURLから抽出: {actual_url}")
-                except Exception:
-                    logger.warning(f"  リダイレクトURLの解析に失敗: {url}")
+                        logger.info(f"  ✅ リダイレクトURLから抽出: {actual_url}")
+                    else:
+                        logger.warning(f"  ⚠️ リダイレクトURLにurlパラメータが見つかりません: {url[:100]}")
+                except Exception as e:
+                    logger.warning(f"  ⚠️ リダイレクトURLの解析に失敗: {url[:100]} - {str(e)}")
             else:
                 # 直接URL
                 direct_urls.append(url)
+                logger.debug(f"  直接URL: {url}")
         
         if direct_urls:
-            logger.info(f"  ✅ Google検索から{len(direct_urls)}個のURL取得（直接: {len([u for u in reference_urls if not u.startswith('https://vertexaisearch.cloud.google.com')])}個, リダイレクトから抽出: {len(direct_urls) - len([u for u in reference_urls if not u.startswith('https://vertexaisearch.cloud.google.com')])}個）")
+            direct_count = len([u for u in reference_urls if not u.startswith('https://vertexaisearch.cloud.google.com')])
+            redirect_extracted_count = len(direct_urls) - direct_count
+            logger.info(f"  ✅ Google検索から{len(direct_urls)}個のURL取得（直接: {direct_count}個, リダイレクトから抽出: {redirect_extracted_count}個）")
             urls.extend(direct_urls)
         else:
             logger.warning(f"  ⚠️ Google検索結果からURLを抽出できませんでした（{len(reference_urls)}個）")
     except Exception as e:  # noqa: BLE001
-        logger.warning(f"  ⚠️ Google検索結果の処理に失敗: {str(e)[:100]}")
+        logger.error(f"  ❌ Google検索結果の処理に失敗: {type(e).__name__}: {str(e)}")
+        import traceback
+        logger.debug(f"  トレースバック: {traceback.format_exc()}")
     
     logger.info(f"  取得したURL候補: {len(urls)}個")
 
