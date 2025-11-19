@@ -369,10 +369,11 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     url = state.urls.pop(0)
     logger.info(f"  対象URL: {url}")
     
-    logger.info("  🕷️ Webページクロール中（depth=1, timeout=30秒）...")
+    logger.info("  🕷️ Webページクロール中（depth=0, timeout=30秒）...")
     crawl_start = time.time()
     try:
-        web_context = crawl_markdown(url, depth=1, timeout=30)
+        # depth=0に変更（ディープクロールは時間がかかりすぎるため）
+        web_context = crawl_markdown(url, depth=0, timeout=30)
         crawl_elapsed = time.time() - crawl_start
         if not web_context:
             logger.warning(f"  ⚠️ クロール失敗またはタイムアウト ({crawl_elapsed:.2f}秒)")
