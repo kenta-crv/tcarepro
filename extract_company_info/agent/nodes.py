@@ -365,7 +365,10 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
             pass
         
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
-        logger.info(f"  📊 使用モデル: 指定={llm.model_name if hasattr(llm, 'model_name') else 'gemini-2.0-flash-lite'}, 実際={actual_model}")
+        # with_structured_outputを使っている場合、元のllmオブジェクトを取得
+        base_llm = llm if not hasattr(llm, 'llm') else llm.llm
+        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash-lite'))
+        logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
         # 最後のAPI呼び出しなので間隔は不要
         logger.info("  📋 抽出された情報:")
         logger.info(f"     会社名: {resp.company}")
