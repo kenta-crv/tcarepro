@@ -28,10 +28,14 @@ async def _acrawl_markdown(url: str, depth: int = 0, timeout: int = 30) -> str:
         str: 取得できたMarkdownの連結文字列（失敗時は空文字）。
 
     """
+    import logging
+    logger = logging.getLogger(__name__)
+    
     # 設定を生成（深さに応じてディープクロールを有効化）
     deep_strategy = None
     if depth and depth >= 1:
         deep_strategy = BFSDeepCrawlStrategy(max_depth=depth, max_pages=10)
+        logger.debug(f"  crawl4ai: ディープクロール有効 (depth={depth}, max_pages=10)")
 
     config = CrawlerRunConfig(
         deep_crawl_strategy=deep_strategy,
@@ -41,24 +45,33 @@ async def _acrawl_markdown(url: str, depth: int = 0, timeout: int = 30) -> str:
     async with AsyncWebCrawler() as crawler:
         try:
             # タイムアウトを設定
+            logger.debug(f"  crawl4ai: クロール開始: {url} (timeout={timeout}秒, depth={depth})")
             result = await asyncio.wait_for(
                 crawler.arun(url=url, config=config),
                 timeout=timeout
             )
+            logger.debug(f"  crawl4ai: クロール成功: {url}")
         except asyncio.TimeoutError:
-            # タイムアウト時は空文字を返す
+            logger.warning(f"  crawl4ai: タイムアウト: {url} (timeout={timeout}秒, depth={depth})")
             return ""
-        except Exception:  # noqa: BLE001
+        except Exception as e:  # noqa: BLE001
             # 失敗時は空文字
+            logger.warning(f"  crawl4ai: エラー: {url} - {type(e).__name__}: {str(e)[:200]}")
+            import traceback
+            logger.debug(f"  crawl4ai: トレースバック: {traceback.format_exc()}")
             return ""
 
         # 返り値が配列（ディープクロール）か単一かを吸収
         try:
             # リスト/イテラブル想定で連結を試みる
-            return "".join(getattr(r, "markdown", "") for r in result)  # type: ignore[arg-type]
+            markdown = "".join(getattr(r, "markdown", "") for r in result)  # type: ignore[arg-type]
+            logger.debug(f"  crawl4ai: Markdown取得成功 (ディープクロール): {len(markdown)}文字")
+            return markdown
         except TypeError:
             # 単一オブジェクト
-            return getattr(result, "markdown", "")
+            markdown = getattr(result, "markdown", "")
+            logger.debug(f"  crawl4ai: Markdown取得成功 (通常クロール): {len(markdown)}文字")
+            return markdown
 
 
 def crawl_markdown(url: str, depth: int = 0, timeout: int = 30) -> str:
