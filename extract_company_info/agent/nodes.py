@@ -145,21 +145,39 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         for url in content_urls[:5]:
             logger.info(f"     - {url}")
     
-    # grounding由来URL（リダイレクトURLは使わない）
+    # grounding由来URL（リダイレクトURLから実際のURLを抽出）
     try:
         reference_urls = [
             chunk["web"]["uri"]
             for chunk in resp.response_metadata["grounding_metadata"]["grounding_chunks"]
         ]
-        # リダイレクトURLを除外
-        direct_urls = [url for url in reference_urls if not url.startswith('https://vertexaisearch.cloud.google.com')]
+        # リダイレクトURLから実際のURLを抽出
+        direct_urls = []
+        for url in reference_urls:
+            if url.startswith('https://vertexaisearch.cloud.google.com'):
+                # リダイレクトURLから実際のURLを抽出
+                # 形式: https://vertexaisearch.cloud.google.com/grounding-api-redirect?url=<実際のURL>
+                try:
+                    from urllib.parse import urlparse, parse_qs
+                    parsed = urlparse(url)
+                    query_params = parse_qs(parsed.query)
+                    if 'url' in query_params:
+                        actual_url = query_params['url'][0]
+                        direct_urls.append(actual_url)
+                        logger.debug(f"  リダイレクトURLから抽出: {actual_url}")
+                except Exception:
+                    logger.warning(f"  リダイレクトURLの解析に失敗: {url}")
+            else:
+                # 直接URL
+                direct_urls.append(url)
+        
         if direct_urls:
-            logger.info(f"  ✅ Google検索から{len(direct_urls)}個の直接URL取得")
+            logger.info(f"  ✅ Google検索から{len(direct_urls)}個のURL取得（直接: {len([u for u in reference_urls if not u.startswith('https://vertexaisearch.cloud.google.com')])}個, リダイレクトから抽出: {len(direct_urls) - len([u for u in reference_urls if not u.startswith('https://vertexaisearch.cloud.google.com')])}個）")
             urls.extend(direct_urls)
         else:
-            logger.warning(f"  ⚠️ Google検索結果は全てリダイレクトURL（{len(reference_urls)}個）- スキップ")
-    except Exception:  # noqa: BLE001
-        logger.warning("  ⚠️ Google検索結果なし")
+            logger.warning(f"  ⚠️ Google検索結果からURLを抽出できませんでした（{len(reference_urls)}個）")
+    except Exception as e:  # noqa: BLE001
+        logger.warning(f"  ⚠️ Google検索結果の処理に失敗: {str(e)[:100]}")
     
     logger.info(f"  取得したURL候補: {len(urls)}個")
 
