@@ -51,6 +51,17 @@ def validate_company_format(company: str) -> bool:
 
 def validate_tel_format(tel: str) -> bool:
     """電話番号の形式を検証する.
+    
+    Args:
+        tel: 電話番号文字列。
+    
+    Returns:
+        bool: 形式が正しい場合True。空文字列の場合はFalse（必須フィールドのため）。
+    """
+    # 空文字列の場合はFalse（必須フィールドのため）
+    if not tel or not tel.strip():
+        return False
+    """電話番号の形式を検証する.
 
     次の条件を検証し、満たさない場合はエラーメッセージを返す。
     - 半角数字とハイフンのみ、かつハイフンが含まれていること
