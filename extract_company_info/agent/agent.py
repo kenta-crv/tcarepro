@@ -5,6 +5,7 @@ from langgraph.graph.state import CompiledStateGraph
 from agent import nodes
 from agent.state import ExtractState
 from models.schemas import CompanyInfo, ExtractRequest
+from utils.validator import validate_address_format, validate_company_format
 from utils.logger import get_logger
 
 logger = get_logger()
@@ -64,7 +65,48 @@ def extract_company_info(req: ExtractRequest) -> CompanyInfo:
         logger.info("  ✅ グラフ実行完了")
         
         logger.info("[STEP 3/4] CompanyInfo への変換中...")
-        company_info = CompanyInfo.model_validate(result.get("company_info"))
+        # resultはExtractStateオブジェクトまたは辞書の可能性がある
+        if isinstance(result, dict):
+            company_info_raw = result.get("company_info")
+        else:
+            company_info_raw = result.company_info if hasattr(result, "company_info") else None
+        
+        # CompanyInfoオブジェクトの場合は辞書に変換
+        if isinstance(company_info_raw, CompanyInfo):
+            company_info_payload = company_info_raw.model_dump()
+        elif isinstance(company_info_raw, dict):
+            company_info_payload = company_info_raw.copy()
+        else:
+            company_info_payload = {}
+
+        # 会社名がバリデーション要件を満たさない場合は入力値から補完
+        company_name = (company_info_payload.get("company") or "").strip()
+        if not validate_company_format(company_name) and req.company:
+            fallback_company = req.company.strip()
+            if validate_company_format(fallback_company):
+                logger.warning(
+                    "  ⚠️ 抽出した会社名がバリデーション要件を満たしていないため input.company で補完します: %s",
+                    fallback_company,
+                )
+                company_info_payload["company"] = fallback_company
+
+        # 住所がバリデーション要件（都/道/府/県を含む）を満たさない場合は location から補完
+        address = (company_info_payload.get("address") or "").strip()
+        if not validate_address_format(address):
+            fallback_candidates = [
+                req.location.strip(),
+                f"{req.location.strip()} {address}".strip() if req.location and address else None,
+            ]
+            for candidate in fallback_candidates:
+                if candidate and validate_address_format(candidate):
+                    logger.warning(
+                        "  ⚠️ 抽出した住所がバリデーション要件を満たしていないため location で補完します: %s",
+                        candidate,
+                    )
+                    company_info_payload["address"] = candidate
+                    break
+
+        company_info = CompanyInfo.model_validate(company_info_payload)
         logger.info("  ✅ CompanyInfo変換完了")
         
         elapsed = time.time() - start_time

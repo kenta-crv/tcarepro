@@ -140,6 +140,19 @@ class CompanyInfo(BaseModel):
         return v
 
 
+class LLMCompanyInfo(BaseModel):
+    """LLMから受け取るための緩い会社情報スキーマ."""
+
+    company: Optional[str] = None
+    tel: Optional[str] = None
+    address: Optional[str] = None
+    first_name: Optional[str] = None
+    url: Optional[str] = None
+    contact_url: Optional[str] = None
+    business: Optional[str] = None
+    genre: Optional[str] = None
+
+
 class ErrorDetail(BaseModel):
     """失敗時のエラー情報."""
 

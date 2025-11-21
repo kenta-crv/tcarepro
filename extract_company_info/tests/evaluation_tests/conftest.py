@@ -59,6 +59,7 @@ def _build_dataset_from_csv(
     for row in rows:
         # 入力（ExtractRequest）は必ず構築する
         req = ExtractRequest(
+            customer_id=(row.get("input_customer_id") or f"test_{len(dataset)}").strip(),
             company=(row.get("input_company") or "").strip(),
             location=(row.get("input_location") or "").strip(),
             required_businesses=_split_multi(

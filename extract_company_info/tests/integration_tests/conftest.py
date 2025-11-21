@@ -7,6 +7,7 @@ from models.schemas import CompanyInfo, ExtractRequest
 def sample_dataset() -> tuple[ExtractRequest, CompanyInfo]:
     return (
         ExtractRequest(
+            customer_id="test_integration_001",
             company="北海道古川電気工業株式会社",
             location="北海道 札幌市 栄町駅 車15分",
             required_businesses=["工場"],
