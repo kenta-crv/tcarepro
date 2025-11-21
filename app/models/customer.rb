@@ -313,16 +313,14 @@ scope :before_sended_at, ->(sended_at){
 def self.ensure_defaults(row)
   h = row.to_h
 
-  # デフォルト補完
-  h['industry'] ||= '人材関連業'
-  h['business'] ||= '人材紹介'
-  h['genre']    ||= '人材紹介'
+  # 空欄または nil の場合のみデフォルト値を補完（CSV を優先）
+  h['industry'] = h['industry'].presence || '人材関連業'
+  h['business'] = h['business'].presence || '人材紹介'
+  h['genre']    = h['genre'].presence    || '人材紹介'
 
-  # CSVのurlを必ずurl_2に入れる
-  h['url_2'] = h['url'] if h['url'].present?
-
-  # ←ここが重要：Customer.url に入らないように元の 'url' キーは削除する
-  h.delete('url')
+  # url 関連の強制移動処理は削除
+  # h['url_2'] = h['url'] if h['url'].present?
+  # h.delete('url')
 
   h
 end
