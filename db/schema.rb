@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20251027130346) do
+ActiveRecord::Schema.define(version: 20251119163320) do
 
   create_table "access_logs", force: :cascade do |t|
     t.integer "customer_id", null: false
@@ -254,6 +254,8 @@ ActiveRecord::Schema.define(version: 20251027130346) do
     t.string "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["industry", "id"], name: "index_extract_trackings_on_industry_and_id"
+    t.index ["industry"], name: "index_extract_trackings_on_industry"
   end
 
   create_table "images", force: :cascade do |t|

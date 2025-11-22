@@ -106,6 +106,7 @@ Rails.application.routes.draw do
   get 'draft/filter_by_industry', to: 'customers#filter_by_industry', as: 'filter_by_industry'
   post 'draft/extract_company_info', to: 'customers#extract_company_info', as: 'extract_company_info'
   get 'draft/progress', to: 'customers#extract_progress', as: 'extract_progress'
+  post 'draft/stop_extraction', to: 'customers#stop_extraction', as: 'stop_extraction'
   #showからのメール送信
   match 'customers/:id/send_email', to: 'customers#send_email', via: [:get, :post], as: 'send_email_customer'
 

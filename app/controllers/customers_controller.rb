@@ -646,6 +646,37 @@ def destroy
     end
   end
 
+  # 抽出停止API
+  # POST /draft/stop_extraction
+  def stop_extraction
+    start_time = Time.current
+    Rails.logger.info("stop_extraction called.")
+    industry_name = params[:industry_name]
+    
+    if industry_name.present?
+      # 指定された業種の最新の抽出中レコードを停止
+      tracking = ExtractTracking.where(industry: industry_name, status: "抽出中").order(id: :desc).first
+      if tracking
+        tracking.update(status: "抽出停止")
+        Rails.logger.info("stop_extraction: 抽出を停止しました (tracking_id: #{tracking.id}, industry: #{industry_name})")
+        render json: { success: true, message: "抽出を停止しました", tracking_id: tracking.id }
+      else
+        Rails.logger.warn("stop_extraction: 抽出中のレコードが見つかりませんでした (industry: #{industry_name})")
+        render json: { success: false, message: "抽出中のレコードが見つかりませんでした" }, status: :not_found
+      end
+    else
+      # 業種が指定されていない場合は、全ての抽出中レコードを停止
+      trackings = ExtractTracking.where(status: "抽出中")
+      count = trackings.count
+      trackings.update_all(status: "抽出停止")
+      Rails.logger.info("stop_extraction: #{count}件の抽出を停止しました")
+      render json: { success: true, message: "#{count}件の抽出を停止しました", count: count }
+    end
+    
+    elapsed = ((Time.current - start_time) * 1000).round(2)
+    Rails.logger.info("stop_extraction: completed in #{elapsed}ms")
+  end
+
 
   def filter_by_industry
     # crowdworkタイトルの初期化
