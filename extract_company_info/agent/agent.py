@@ -118,6 +118,35 @@ def extract_company_info(req: ExtractRequest) -> CompanyInfo:
             logger.warning("  ⚠️ telがNoneまたは空のため、ダミーの電話番号を設定します")
             company_info_payload["tel"] = "000-0000-0000"
 
+        # businessとgenreがバリデーション要件を満たしているかチェック
+        # 満たしていない場合は、必須リストから最初の項目を使用
+        from utils.validator import valid_business, valid_genre
+        
+        business = (company_info_payload.get("business") or "").strip()
+        genre = (company_info_payload.get("genre") or "").strip()
+        
+        # businessのバリデーション
+        if req.required_businesses and not valid_business(",".join(req.required_businesses), business):
+            # 必須業種リストから最初の項目を使用
+            fallback_business = req.required_businesses[0] if req.required_businesses else "工場"
+            logger.warning(
+                "  ⚠️ 抽出したbusinessがバリデーション要件を満たしていないため、必須リストから補完します: %s -> %s",
+                business,
+                fallback_business,
+            )
+            company_info_payload["business"] = fallback_business
+        
+        # genreのバリデーション
+        if req.required_genre and not valid_genre(",".join(req.required_genre), genre):
+            # 必須ジャンルリストから最初の項目を使用
+            fallback_genre = req.required_genre[0] if req.required_genre else "軽作業"
+            logger.warning(
+                "  ⚠️ 抽出したgenreがバリデーション要件を満たしていないため、必須リストから補完します: %s -> %s",
+                genre,
+                fallback_genre,
+            )
+            company_info_payload["genre"] = fallback_genre
+
         company_info = CompanyInfo.model_validate(company_info_payload)
         logger.info("  ✅ CompanyInfo変換完了")
         
@@ -128,6 +157,8 @@ def extract_company_info(req: ExtractRequest) -> CompanyInfo:
         logger.info(f"  - 住所: {company_info.address}")
         logger.info(f"  - URL: {company_info.url}")
         logger.info(f"  - お問い合わせURL: {company_info.contact_url}")
+        logger.info(f"  - 業種: {company_info.business}")
+        logger.info(f"  - 事業内容: {company_info.genre}")
         logger.info(f"  - 処理時間: {elapsed:.2f}秒")
         logger.info("=" * 80)
         logger.info(f"[SUCCESS] 抽出完了: {req.company} ({req.customer_id})")
