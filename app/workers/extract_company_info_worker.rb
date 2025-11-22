@@ -46,7 +46,36 @@ class ExtractCompanyInfoWorker
       failure_count = extract_tracking.failure_count
       quota_exceeded = false
       customer_count = customers.count
+      
+      # 処理開始時にステータスを更新（フロントエンドに即座に反映）
+      extract_tracking.update(status: "抽出中")
+      
+      # required_businessesとrequired_genreを事前に取得（crowdworkがnilの場合でも使用）
+      required_businesses_array = if crowdwork&.business.present?
+                                    crowdwork.business.split(',').map(&:strip)
+                                  else
+                                    []
+                                  end
+      
+      required_genre_array = if crowdwork&.genre.present?
+                               crowdwork.genre.split(',').map(&:strip)
+                             else
+                               []
+                             end
+      
       customers.each_with_index do |customer, index|
+        # 停止フラグをチェック（ステータスが"抽出停止"の場合は処理を中断）
+        extract_tracking.reload
+        if extract_tracking.status == "抽出停止"
+          Sidekiq.logger.info("ExtractCompanyInfoWorker: 抽出が停止されました (tracking_id: #{id})")
+          extract_tracking.update(
+            success_count: success_count,
+            failure_count: failure_count,
+            status: "抽出停止"
+          )
+          break
+        end
+        
         required_businesses =
           if crowdwork&.business.present?
             crowdwork.business.split(",")
@@ -87,15 +116,14 @@ class ExtractCompanyInfoWorker
             genre = data['data']['genre'].to_s
 
             # businessとgenreがバリデーション要件を満たしているかチェック
-            business_valid = if crowdwork&.business.present?
-                              required_businesses_array = crowdwork.business.split(',').map(&:strip)
+            # required_businesses_arrayとrequired_genre_arrayは事前に取得済み
+            business_valid = if required_businesses_array.present?
                               business.present? && required_businesses_array.any? { |req| business.include?(req) }
                             else
                               business.present?
                             end
 
-            genre_valid = if crowdwork&.genre.present?
-                           required_genre_array = crowdwork.genre.split(',').map(&:strip)
+            genre_valid = if required_genre_array.present?
                            genre.present? && required_genre_array.any? { |req| genre.include?(req) }
                          else
                            genre.present?
@@ -111,20 +139,31 @@ class ExtractCompanyInfoWorker
               next
             end
 
-            customer.update!(
-              company: company,
-              tel: tel,
-              address: address,
-              first_name: first_name,
-              url: url,
-              contact_url: contact_url,
-              business: business,
-              genre: genre
-            )
-            success_count += 1
-            extract_tracking.update(
-              success_count: success_count,
-            )
+            begin
+              customer.update!(
+                company: company,
+                tel: tel,
+                address: address,
+                first_name: first_name,
+                url: url,
+                contact_url: contact_url,
+                business: business,
+                genre: genre
+              )
+              success_count += 1
+              extract_tracking.update(
+                success_count: success_count,
+              )
+            rescue ActiveRecord::RecordInvalid => e
+              Sidekiq.logger.warn("ExtractCompanyInfoWorker: Validation failed for customer #{customer.id}: #{e.message}")
+              if e.message.include?("Address指定されたエリア")
+                Sidekiq.logger.warn("  ⚠️ エリア外判定: 抽出された住所が指定エリアに含まれていません")
+              end
+              failure_count += 1
+              extract_tracking.update(
+                failure_count: failure_count,
+              )
+            end
           else
             failure_count += 1
             extract_tracking.update(
@@ -164,12 +203,11 @@ class ExtractCompanyInfoWorker
         end
         
         # API呼び出し間隔を空ける（最後の顧客処理後とbreakで終了する場合はスリープしない）
-        # 無料プラン（RPM=15）を考慮し、5秒待機（1分間に12回以下に制限）
-        # Python側でもAPI呼び出し間隔を空けているため、Worker側は5秒で十分
-        unless quota_exceeded || index == customer_count - 1
-          Sidekiq.logger.info("ExtractCompanyInfoWorker: API呼び出し間隔のため5秒待機中... (#{index + 1}/#{customer_count})")
-          sleep(5)  # 10秒 → 5秒に短縮（パフォーマンス改善）
-        end
+        # ユーザーの要望により待機時間を削除（Python側で制御、または高速化のため）
+        # unless quota_exceeded || index == customer_count - 1
+        #   Sidekiq.logger.info("ExtractCompanyInfoWorker: API呼び出し間隔のため3秒待機中... (#{index + 1}/#{customer_count})")
+        #   sleep(3)
+        # end
       end
       # QUOTA_EXCEEDEDで停止した場合は、ステータスを「抽出完了」に更新しない
       unless quota_exceeded
