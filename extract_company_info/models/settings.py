@@ -23,6 +23,7 @@ class Settings(BaseSettings):
 
     # Google API
     GOOGLE_API_KEY: str
+    DISABLE_GOOGLE_SEARCH: bool = False
 
     EXCLUDE_DOMAINS: str = ""
 
