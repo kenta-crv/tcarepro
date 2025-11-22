@@ -70,3 +70,4 @@ venv/
 venvs/
 ENV/
 env/
+.pytest_cache/
