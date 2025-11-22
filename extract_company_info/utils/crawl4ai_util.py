@@ -64,12 +64,12 @@ async def _acrawl_markdown(url: str, depth: int = 0, timeout: int = 30) -> str:
         # 返り値が配列（ディープクロール）か単一かを吸収
         try:
             # リスト/イテラブル想定で連結を試みる
-            markdown = "".join(getattr(r, "markdown", "") for r in result)  # type: ignore[arg-type]
+            markdown = "".join((getattr(r, "markdown", "") or "") for r in result)  # type: ignore[arg-type]
             logger.debug(f"  crawl4ai: Markdown取得成功 (ディープクロール): {len(markdown)}文字")
             return markdown
         except TypeError:
             # 単一オブジェクト
-            markdown = getattr(result, "markdown", "")
+            markdown = getattr(result, "markdown", "") or ""
             logger.debug(f"  crawl4ai: Markdown取得成功 (通常クロール): {len(markdown)}文字")
             return markdown
 
