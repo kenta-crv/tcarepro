@@ -1,53 +1,71 @@
+import json
 import re
 import time
+from typing import Literal, Optional
 
-from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
+from google import genai
 from google.api_core.exceptions import ResourceExhausted
+from google.genai import types as genai_types
+from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
 from langchain_core.prompts.loading import load_prompt
+from langchain_core.messages import HumanMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
+from pydantic import Field, create_model, field_validator
 
 from agent.state import ExtractState
+from agent.tools import (
+    get_check_url_accessibility_declaration,
+    get_crawl_footer_links_declaration,
+    get_crawl_website_declaration,
+    get_report_company_info_declaration,
+    get_report_url_scores_declaration,
+    get_validate_company_info_declaration,
+    handle_function_call,
+)
 from models.schemas import CompanyInfo, LLMCompanyInfo, URLScoreList
 from models.settings import BASE_DIR, settings
 from utils.crawl4ai_util import crawl_markdown
 from utils.net import convert_accessable_urls
 from utils.logger import get_logger
 
-RETRY_DELAY_SECONDS = 8.0  # リトライ時の待機時間を8秒に増加
-RETRY_ATTEMPTS = 1  # 1回リトライ = 最大2回試行
-API_CALL_INTERVAL_SECONDS = 2.0  # API呼び出し間の間隔を2秒に短縮（RPM=15の場合、最低4秒必要だが、実際の使用状況に応じて調整）
+RETRY_DELAY_SECONDS = 10.0  # ResourceExhausted時は常に10秒待機
+RETRY_ATTEMPTS = 9  # 最大10回試行 (retries + 1)
+API_CALL_INTERVAL_SECONDS = 5.0  # API呼び出し間の間隔を5秒に増加（安全マージン）
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 
 logger = get_logger()
 
 
-def _invoke_with_retry(llm, prompt_str: str, *, retries: int = RETRY_ATTEMPTS, **invoke_kwargs):
-    """Gemini API呼び出しを最大retries回再試行（エクスポネンシャルバックオフ）で実行."""
+def _invoke_with_retry(operation, *, retries: int = RETRY_ATTEMPTS):
+    """任意のGemini API呼び出しを最大retries回再試行（エクスポネンシャルバックオフ）で実行."""
     attempts = retries + 1
     for attempt in range(attempts):
         try:
-            return llm.invoke(prompt_str, **invoke_kwargs)
+            return operation()
         except ResourceExhausted as exc:
             if attempt == retries:
-                # 最後の試行でも失敗した場合、エラーメッセージを詳細にログ出力
                 error_msg = str(exc)
                 logger.error(f"  ❌ ResourceExhaustedエラー（最終試行失敗）: {error_msg[:300]}")
-                # エラーメッセージにクォータ関連のキーワードが含まれているか確認
                 if "quota" in error_msg.lower() or "limit" in error_msg.lower():
                     logger.error("  ⚠️ クォータ/制限関連のエラーの可能性があります")
                 else:
                     logger.warning("  ⚠️ 一時的なレート制限の可能性があります（クォータ超過ではない可能性）")
                 raise
-            # エクスポネンシャルバックオフ: 2^attempt * RETRY_DELAY_SECONDS
-            backoff_delay = RETRY_DELAY_SECONDS * (2 ** attempt)
+            backoff_delay = RETRY_DELAY_SECONDS
             logger.warning(
-                "  ⚠️ ResourceExhaustedエラー (attempt %s/%s). %s秒待機して再試行します…",
+                "  ⚠️ ResourceExhaustedエラー (attempt %s/%s). %s秒後に再試行します…",
                 attempt + 1,
                 attempts,
                 backoff_delay,
             )
             logger.debug(f"  エラー詳細: {str(exc)[:200]}")
             time.sleep(backoff_delay)
-        except Exception:
+        except Exception as exc:
+            error_type = type(exc).__name__
+            error_msg = str(exc)
+            logger.error(f"  ❌ {error_type}エラー: {error_msg[:300]}")
+            import traceback
+            logger.debug(f"  トレースバック: {traceback.format_exc()}")
             raise
 
 
@@ -55,6 +73,95 @@ def _wait_between_api_calls():
     """API呼び出し間の間隔を空ける."""
     logger.debug(f"  ⏳ API呼び出し間隔のため{API_CALL_INTERVAL_SECONDS}秒待機中...")
     time.sleep(API_CALL_INTERVAL_SECONDS)
+
+
+def _load_json_from_text(text: str) -> Optional[dict]:
+    """テキストから最初のJSONオブジェクトまたは配列を抽出して辞書に変換."""
+    if not text:
+        return None
+
+    pattern_object = r"```json\s*(\{.*?\})\s*```"
+    pattern_array = r"```json\s*(\[.*?\])\s*```"
+    match = re.search(pattern_object, text, re.DOTALL) or re.search(pattern_array, text, re.DOTALL)
+    json_candidate = None
+    if match:
+        json_candidate = match.group(1)
+    else:
+        start_idx = text.find("{")
+        if start_idx == -1:
+            start_idx = text.find("[")
+        if start_idx != -1:
+            brace = text[start_idx]
+            stack = 0
+            for i in range(start_idx, len(text)):
+                char = text[i]
+                if char == brace:
+                    stack += 1
+                elif (brace == "{" and char == "}") or (brace == "[" and char == "]"):
+                    stack -= 1
+                    if stack == 0:
+                        json_candidate = text[start_idx : i + 1]
+                        break
+    if not json_candidate:
+        return None
+    try:
+        return json.loads(json_candidate)
+    except json.JSONDecodeError:
+        return None
+
+
+def _normalize_url_scores_payload(data: Optional[dict | list]) -> Optional[dict]:
+    if data is None:
+        return None
+    if isinstance(data, list):
+        return {"urls": data}
+    if isinstance(data, dict) and "urls" in data:
+        return data
+    return None
+
+
+def _create_gemini_client() -> genai.Client:
+    return genai.Client(api_key=settings.GOOGLE_API_KEY)
+
+
+def _build_user_content(text: str) -> genai_types.Content:
+    return genai_types.Content(
+        role="user",
+        parts=[genai_types.Part.from_text(text=text)],
+    )
+
+
+def _content_to_text(content: Optional[genai_types.Content]) -> str:
+    if not content:
+        return ""
+    parts = content.parts or []
+    return "".join(part.text or "" for part in parts if part.text)
+
+
+def _iter_function_calls(content: Optional[genai_types.Content]):
+    if not content or not content.parts:
+        return []
+    return [
+        part.function_call
+        for part in content.parts
+        if part.function_call is not None
+    ]
+
+
+def _append_function_response_message(
+    messages: list[genai_types.Content], function_name: str, response_data: dict
+):
+    messages.append(
+        genai_types.Content(
+            role="tool",
+            parts=[
+                genai_types.Part.from_function_response(
+                    name=function_name,
+                    response=response_data,
+                )
+            ],
+        )
+    )
 
 
 def node_get_url_candidates(state: ExtractState) -> ExtractState:
@@ -80,164 +187,149 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     # max_retries=2に制限して無限ループを防ぐ
     logger.info("  🤖 Gemini API呼び出し中（Google検索ツール有効）...")
     logger.info("  🔍 Google Searchツール（Grounding API）を使用します")
-    api_start = time.time()
     
-    try:
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
-            temperature=0,
-            google_api_key=settings.GOOGLE_API_KEY,
-            max_retries=0,
-        )
-        # Google Searchツール使用時は追加の待機時間を設定（Grounding APIのレート制限を考慮）
-        google_search_tool = GenAITool(google_search={})
-        resp = _invoke_with_retry(
-            llm,
-            prompt.format(company=state.company, location=state.location),
-            tools=[google_search_tool],
-        )
-        api_elapsed = time.time() - api_start
-        
-        # 実際に使用されたモデル名をログに記録
-        actual_model = "不明"
-        try:
-            if hasattr(resp, 'response_metadata') and resp.response_metadata:
-                # response_metadataからモデル名を取得
-                metadata = resp.response_metadata
-                if isinstance(metadata, dict):
-                    actual_model = metadata.get('model_name', metadata.get('model', '不明'))
-                elif hasattr(metadata, 'model_name'):
-                    actual_model = metadata.model_name
-                elif hasattr(metadata, 'model'):
-                    actual_model = metadata.model
-        except Exception:
-            pass
-        
-        logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
-        specified_model = getattr(llm, 'model', getattr(llm, 'model_name', 'gemini-2.0-flash'))
-        logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
-        
-        # Google Searchツール使用時の処理
-        # 公式ドキュメント: https://ai.google.dev/gemini-api/docs/google-search?hl=ja
-        # Google Searchツールは内部的に複数の検索クエリを実行する可能性があるため、
-        # 通常のAPI呼び出しよりも少し長い待機時間を設定
-        # ただし、公式ドキュメントには固有のレート制限の記載はない
-        # レート制限に達していない場合、過剰な待機時間は不要
-        logger.debug("  ⏳ Google Searchツール使用後の追加待機時間（1秒）...")
-        time.sleep(1.0)  # 2秒から1秒に短縮
-        _wait_between_api_calls()  # API呼び出し間の間隔（通常の2秒）
-    except Exception as e:
-        api_elapsed = time.time() - api_start
-        logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
-        logger.error(f"  エラー: {type(e).__name__}: {str(e)[:200]}")
-        raise
+    client = _create_gemini_client()
+    google_search_tool = genai_types.Tool(google_search=genai_types.GoogleSearch())
+    config = genai_types.GenerateContentConfig(
+        tools=[google_search_tool],
+        temperature=0,
+    )
+    prompt_text = prompt.format(company=state.company, location=state.location)
 
-    # 応答からURLを抽出
     urls: list[str] = []
-    
-    # まず本文から全てのURLを抽出（最も信頼性が高い）
-    # より厳密なURL正規表現を使用（不完全なURLを除外）
-    url_pattern = r'https?://[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*(?:/[^\s<>"]*)?'
-    content_urls = re.findall(url_pattern, resp.content)
-    # リダイレクトURLと不完全なURLを除外
-    def _is_valid_url(url: str) -> bool:
-        """URLが有効かどうかを判定する."""
-        # リダイレクトURLを除外
-        if 'grounding-api-redirect' in url:
-            return False
-        # スキームとドメインを含む必要がある
-        if url.count('/') < 2:
-            return False
-        # ドメインにドットを含む必要がある
+    MAX_SEARCH_RETRIES = 3  # URL取得のリトライ回数
+
+    for attempt in range(MAX_SEARCH_RETRIES):
+        logger.info(f"  🔄 検索実行 (試行 {attempt + 1}/{MAX_SEARCH_RETRIES})")
+        api_start = time.time()
+        
         try:
-            domain = url.split('//')[1].split('/')[0]
-            if '.' not in domain:
-                return False
-            # 日本語文字や全角文字を含むURLを除外（不完全な抽出を防ぐ）
-            if any(ord(c) > 127 for c in url):
-                return False
-        except (IndexError, AttributeError):
-            return False
-        return True
-    
-    content_urls = [url for url in content_urls if _is_valid_url(url)]
-    
-    if content_urls:
-        urls.extend(content_urls)
-        logger.info(f"  ✅ 本文から{len(content_urls)}個のURL抽出:")
-        for url in content_urls[:5]:
-            logger.info(f"     - {url}")
-    
-    # grounding由来URL（リダイレクトURLから実際のURLを抽出）
-    try:
-        # レスポンスメタデータをログに出力（デバッグ用）
-        logger.debug("  📋 response_metadata構造:")
-        logger.debug(f"    response_metadata keys: {list(resp.response_metadata.keys()) if isinstance(resp.response_metadata, dict) else 'not a dict'}")
+            logger.info("  🔧 Google Searchツールを有効化")
+            resp = _invoke_with_retry(
+                    lambda: client.models.generate_content(
+                        model=DEFAULT_GEMINI_MODEL,
+                    contents=[_build_user_content(prompt_text)],
+                    config=config,
+                )
+            )
+            api_elapsed = time.time() - api_start
+            actual_model = getattr(resp, "model_version", "不明")
+            logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
+            logger.info(f"  📊 使用モデル: 実際={actual_model}")
+
+            logger.debug("  ⏳ Google Searchツール使用後の追加待機時間（1秒）...")
+            time.sleep(1.0)
+            _wait_between_api_calls()
+        except Exception as e:
+            api_elapsed = time.time() - api_start
+            logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
+            logger.error(f"  エラー: {type(e).__name__}: {str(e)[:200]}")
+            if attempt == MAX_SEARCH_RETRIES - 1:
+                raise
+            time.sleep(5.0) # エラー時の待機
+            continue
+
+        # 応答からURLを抽出
+        candidate = resp.candidates[0] if resp.candidates else None
+        resp_text = resp.text or _content_to_text(candidate.content if candidate else None)
         
-        if isinstance(resp.response_metadata, dict) and "grounding_metadata" in resp.response_metadata:
-            grounding_metadata = resp.response_metadata["grounding_metadata"]
-            logger.debug(f"    grounding_metadata keys: {list(grounding_metadata.keys()) if isinstance(grounding_metadata, dict) else 'not a dict'}")
-            
-            if isinstance(grounding_metadata, dict) and "grounding_chunks" in grounding_metadata:
-                chunks = grounding_metadata["grounding_chunks"]
+        # まず本文から全てのURLを抽出（最も信頼性が高い）
+        # より厳密なURL正規表現を使用（不完全なURLを除外）
+        url_pattern = r'https?://[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*(?:/[^\s<>"]*)?'
+        content_urls = re.findall(url_pattern, resp_text)
+        
+        # リダイレクトURLと不完全なURLを除外
+        def _is_valid_url(url: str) -> bool:
+            """URLが有効かどうかを判定する."""
+            # リダイレクトURLを除外
+            if 'grounding-api-redirect' in url:
+                return False
+            # スキームとドメインを含む必要がある
+            if url.count('/') < 2:
+                return False
+            # ドメインにドットを含む必要がある
+            try:
+                domain = url.split('//')[1].split('/')[0]
+                if '.' not in domain:
+                    return False
+                # 日本語文字や全角文字を含むURLを除外（不完全な抽出を防ぐ）
+                if any(ord(c) > 127 for c in url):
+                    return False
+            except (IndexError, AttributeError):
+                return False
+            return True
+        
+        content_urls = [url for url in content_urls if _is_valid_url(url)]
+        
+        if content_urls:
+            urls.extend(content_urls)
+            logger.info(f"  ✅ 本文から{len(content_urls)}個のURL抽出:")
+            for url in content_urls[:5]:
+                logger.info(f"     - {url}")
+        
+        # grounding由来URL（リダイレクトURLから実際のURLを抽出）
+        try:
+            reference_urls = []
+            if candidate and getattr(candidate, "grounding_metadata", None):
+                grounding_metadata = candidate.grounding_metadata
+                chunks = getattr(grounding_metadata, "grounding_chunks", None) or []
                 logger.info(f"  📋 grounding_chunks数: {len(chunks)}")
-                for i, chunk in enumerate(chunks[:3], 1):  # 最初の3個のみ詳細ログ
-                    logger.info(f"    [chunk {i}] keys: {list(chunk.keys()) if isinstance(chunk, dict) else 'not a dict'}")
-                    if isinstance(chunk, dict) and "web" in chunk:
-                        web_info = chunk["web"]
-                        logger.info(f"      web keys: {list(web_info.keys()) if isinstance(web_info, dict) else 'not a dict'}")
-                        if isinstance(web_info, dict):
-                            logger.info(f"      web.uri: {web_info.get('uri', 'N/A')}")
-                            # webオブジェクトの全フィールドをログに出力
-                            import json
-                            logger.info(f"      web全体 (JSON): {json.dumps(web_info, ensure_ascii=False, indent=2)}")
-        
-        reference_urls = [
-            chunk["web"]["uri"]
-            for chunk in resp.response_metadata["grounding_metadata"]["grounding_chunks"]
-        ]
-        
-        # 全てのURLをログに出力
-        logger.info(f"  📋 取得したreference_urls ({len(reference_urls)}個):")
-        for i, url in enumerate(reference_urls, 1):
-            logger.info(f"    {i}. {url}")
-        
-        # リダイレクトURLから実際のURLを抽出（titleフィールドからドメイン名を取得）
-        direct_urls = []
-        for i, chunk in enumerate(resp.response_metadata["grounding_metadata"]["grounding_chunks"]):
-            uri = chunk["web"]["uri"]
-            web_info = chunk["web"]
+                for i, chunk in enumerate(chunks[:3], 1):
+                    web_info = getattr(chunk, "web", None)
+                    if web_info:
+                        logger.info(f"    [chunk {i}] web.uri: {getattr(web_info, 'uri', 'N/A')}")
+                reference_urls = [
+                    getattr(chunk.web, "uri", "")
+                    for chunk in chunks
+                    if getattr(chunk, "web", None)
+                ]
             
-            if uri.startswith('https://vertexaisearch.cloud.google.com'):
-                # リダイレクトURLの場合、titleフィールドからドメイン名を取得
-                if "title" in web_info and web_info["title"]:
-                    domain = web_info["title"].strip()
-                    # ドメイン名からURLを構築
-                    if domain and not domain.startswith('http'):
-                        actual_url = f"https://{domain}"
+            # 全てのURLをログに出力
+            logger.info(f"  📋 取得したreference_urls ({len(reference_urls)}個):")
+            for i, url in enumerate(reference_urls, 1):
+                logger.info(f"    {i}. {url}")
+            
+            direct_urls = []
+            if candidate and getattr(candidate, "grounding_metadata", None):
+                chunks = getattr(candidate.grounding_metadata, "grounding_chunks", None) or []
+                for chunk in chunks:
+                    web_info = getattr(chunk, "web", None)
+                    if not web_info:
+                        continue
+                    uri = getattr(web_info, "uri", "")
+                    title = getattr(web_info, "title", "")
+                    if uri.startswith("https://vertexaisearch.cloud.google.com") and title:
+                        if not title.startswith("http"):
+                            actual_url = f"https://{title.strip()}"
+                        else:
+                            actual_url = title.strip()
                         direct_urls.append(actual_url)
                         logger.info(f"  ✅ リダイレクトURLから抽出（title使用）: {actual_url}")
                     else:
-                        logger.warning(f"  ⚠️ titleフィールドが無効: {domain}")
-                else:
-                    logger.warning(f"  ⚠️ titleフィールドが見つかりません: {uri[:100]}")
+                        direct_urls.append(uri)
+                        logger.debug(f"  直接URL: {uri}")
+            
+            if direct_urls:
+                direct_count = len([u for u in reference_urls if not u.startswith('https://vertexaisearch.cloud.google.com')])
+                redirect_extracted_count = len(direct_urls) - direct_count
+                logger.info(f"  ✅ Google検索から{len(direct_urls)}個のURL取得（直接: {direct_count}個, リダイレクトから抽出: {redirect_extracted_count}個）")
+                urls.extend(direct_urls)
             else:
-                # 直接URL
-                direct_urls.append(uri)
-                logger.debug(f"  直接URL: {uri}")
+                logger.warning(f"  ⚠️ Google検索結果からURLを抽出できませんでした（{len(reference_urls)}個）")
+        except Exception as e:
+            logger.error(f"  ❌ Google検索結果の処理に失敗: {type(e).__name__}: {str(e)}")
+            import traceback
+            logger.debug(f"  トレースバック: {traceback.format_exc()}")
         
-        if direct_urls:
-            direct_count = len([u for u in reference_urls if not u.startswith('https://vertexaisearch.cloud.google.com')])
-            redirect_extracted_count = len(direct_urls) - direct_count
-            logger.info(f"  ✅ Google検索から{len(direct_urls)}個のURL取得（直接: {direct_count}個, リダイレクトから抽出: {redirect_extracted_count}個）")
-            urls.extend(direct_urls)
-        else:
-            logger.warning(f"  ⚠️ Google検索結果からURLを抽出できませんでした（{len(reference_urls)}個）")
-    except Exception as e:  # noqa: BLE001
-        logger.error(f"  ❌ Google検索結果の処理に失敗: {type(e).__name__}: {str(e)}")
-        import traceback
-        logger.debug(f"  トレースバック: {traceback.format_exc()}")
-    
+        # URLが見つかった場合はループを抜ける
+        if urls:
+            break
+        
+        logger.warning(f"  ⚠️ URL候補が見つかりませんでした (試行 {attempt + 1}/{MAX_SEARCH_RETRIES})")
+        if attempt < MAX_SEARCH_RETRIES - 1:
+            logger.info("  🔄 再検索のため待機中...")
+            time.sleep(2.0)
+
     logger.info(f"  取得したURL候補: {len(urls)}個")
 
     # 除外ドメイン設定に基づいて候補URLをフィルタ
@@ -292,14 +384,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     urls = state.urls
     web_context = ""
     
-    # URL候補が多すぎる場合は上限を設定（パフォーマンス改善）
-    # 3個に制限（5個から減らして処理時間を短縮）
-    max_urls = 3
-    if len(urls) > max_urls:
-        logger.info(f"  ⚠️ URL候補が{len(urls)}個あります。最初の{max_urls}個のみ処理します。")
-        urls = urls[:max_urls]
-    
-    logger.info("  🕷️ 各URLをクロール中（timeout=10秒）...")
+    logger.info(f"  🕷️ 各URLをクロール中（timeout=10秒, 計{len(urls)}件）...")
     for i, url in enumerate(urls, 1):
         crawl_start = time.time()
         logger.info(f"     [{i}/{len(urls)}] {url}")
@@ -315,54 +400,108 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
             markdown = markdown[:10000]
             logger.debug(f"        ⚠️ コンテキストサイズを制限: {len(markdown)}文字（10,000文字まで）")
         web_context += f"""# {url}\n{markdown}\n"""
-    
+    if not web_context:
+        logger.warning("  ⚠️ Webコンテキストが空のため、公式サイト選定をスキップします")
+        raise ValueError("候補URLのクロールにすべて失敗し、Webコンテキストを取得できませんでした。")
+
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/select_official.yaml"), encoding="utf-8")
     logger.debug("  ✅ プロンプトロード完了")
     
     logger.info("  🤖 Gemini API呼び出し中（公式サイト選定）...")
     api_start = time.time()
+    client = _create_gemini_client()
+    tools = [
+        genai_types.Tool(
+            function_declarations=[
+                get_crawl_website_declaration(),
+                get_crawl_footer_links_declaration(),
+                get_report_url_scores_declaration(),
+            ]
+        )
+    ]
+    config = genai_types.GenerateContentConfig(
+        tools=tools,
+        temperature=0,
+    )
+    messages = [
+        _build_user_content(
+            prompt.format(
+                company=state.company,
+                location=state.location,
+                web_context=web_context,
+            )
+        )
+    ]
+    MAX_REPORT_RETRIES = 2
+    max_iterations = MAX_REPORT_RETRIES + 1  # 初回 + 最大2回のリトライ
+    url_score_payload: Optional[dict] = None
+    report_retry_count = 0
     
     try:
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
-            temperature=0,
-            google_api_key=settings.GOOGLE_API_KEY,
-            max_retries=0,
-        ).with_structured_output(URLScoreList)
-        resp: URLScoreList = _invoke_with_retry(
-            llm,
-            prompt.format(company=state.company, location=state.location, web_context=web_context),
-        )
-        api_elapsed = time.time() - api_start
-        
-        # 実際に使用されたモデル名をログに記録
-        actual_model = "不明"
-        try:
-            # with_structured_outputを使っている場合、元のレスポンスを取得
-            if hasattr(resp, 'response_metadata') and resp.response_metadata:
-                metadata = resp.response_metadata
-                if isinstance(metadata, dict):
-                    actual_model = metadata.get('model_name', metadata.get('model', '不明'))
-                elif hasattr(metadata, 'model_name'):
-                    actual_model = metadata.model_name
-                elif hasattr(metadata, 'model'):
-                    actual_model = metadata.model
-        except Exception:
-            pass
-        
-        logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
-        # with_structured_outputを使っている場合、元のllmオブジェクトを取得
-        base_llm = llm if not hasattr(llm, 'llm') else llm.llm
-        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash'))
-        logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
-        _wait_between_api_calls()  # API呼び出し間の間隔
+        for iteration in range(max_iterations):
+            resp = _invoke_with_retry(
+                lambda: client.models.generate_content(
+                    model=DEFAULT_GEMINI_MODEL,
+                    contents=messages,
+                    config=config,
+                )
+            )
+            candidate = resp.candidates[0] if resp.candidates else None
+            if not candidate:
+                raise ValueError("LLMの応答が空でした。")
+            tool_calls = _iter_function_calls(candidate.content)
+            messages.append(candidate.content)
+            
+            # report_url_scores が生成されたらそれを採用
+            report_call = next((fc for fc in tool_calls if fc.name == "report_url_scores"), None)
+            if report_call:
+                url_score_payload = _normalize_url_scores_payload(dict(report_call.args or {}))
+                break
+            
+            fallback_handled = False
+            if not tool_calls:
+                fallback_json = _load_json_from_text(_content_to_text(candidate.content))
+                url_score_payload = _normalize_url_scores_payload(fallback_json)
+                if url_score_payload:
+                    break
+                fallback_handled = True
+            
+            if tool_calls and not fallback_handled:
+                for fc in tool_calls:
+                    if fc.name == "report_url_scores":
+                        continue
+                    result = handle_function_call(fc.name, dict(fc.args or {}))
+                    _append_function_response_message(messages, fc.name, result)
+                _wait_between_api_calls()
+
+            if url_score_payload:
+                break
+
+            if iteration < max_iterations - 1:
+                report_retry_count += 1
+                reminder = _build_user_content(
+                    "上記の情報を踏まえて公式サイトのみを対象とし、必ず `report_url_scores` 関数を呼び出してスコア付きURL一覧を出力してください。"
+                )
+                messages.append(reminder)
+                logger.info(f"  🔁 report_url_scoresの再リクエスト ({report_retry_count}/{MAX_REPORT_RETRIES})")
+
+        else:
+            logger.error("  ❌ report_url_scoresが生成されませんでした")
+            # デバッグ用にレスポンス内容を出力
+            raw_response = _content_to_text(candidate.content)
+            logger.error(f"  🔍 LLM生応答 (先頭1000文字): {raw_response[:1000]}")
+            raise ValueError("LLMがURLスコアを出力できませんでした。")
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
         logger.error(f"  エラー: {type(e).__name__}: {str(e)[:200]}")
         raise
     
-    sorted_urls = sorted(resp.urls, key=lambda x: x.score, reverse=True)
+    if not url_score_payload:
+        raise ValueError("LLMの応答からURLスコアを取得できませんでした。")
+    
+    resp_scores = URLScoreList.model_validate(url_score_payload)
+    sorted_urls = sorted(resp_scores.urls, key=lambda x: x.score, reverse=True)
     logger.info("  📊 URLスコアリング結果:")
     for i, url_score in enumerate(sorted_urls[:5], 1):
         logger.info(f"     {i}. {url_score.url} (スコア: {url_score.score})")
@@ -380,6 +519,13 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")
 
     return state
+
+
+def _split_text_into_chunks(text: str, chunk_size: int = 8000) -> list[str]:
+    """テキストを指定した文字数で分割する."""
+    if not text:
+        return [""]
+    return [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
 
 
 def node_fetch_html(state: ExtractState) -> ExtractState:
@@ -424,6 +570,9 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         logger.debug(f"  トレースバック: {traceback.format_exc()}")
         raise ValueError(f"URL {url} のクロールに失敗しました（タイムアウトまたはエラー）。")
 
+    web_context_chunks = _split_text_into_chunks(web_context, chunk_size=8000)
+    current_chunk_index = 0
+    
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_contact.yaml"), encoding="utf-8")
     logger.debug("  ✅ プロンプトロード完了")
     
@@ -432,63 +581,141 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     logger.info(f"     必須ジャンル: {state.required_genre}")
     api_start = time.time()
     
-    try:
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
-            temperature=0,
-            google_api_key=settings.GOOGLE_API_KEY,
-            max_retries=0,
-        ).with_structured_output(LLMCompanyInfo)
-        resp: LLMCompanyInfo = _invoke_with_retry(
-            llm,
-            prompt.format(
-                required_businesses=state.required_businesses,
-                required_genre=state.required_genre,
-                web_context=web_context,
-            ),
+    # 以前のPydanticモデル定義をstr + validator形式に変更
+    fields = {
+        "company": (Optional[str], None),
+        "tel": (Optional[str], None),
+        "address": (Optional[str], None),
+        "first_name": (Optional[str], None),
+        "url": (Optional[str], None),
+        "contact_url": (Optional[str], None),
+    }
+    DynamicLLMCompanyInfo = create_model("DynamicLLMCompanyInfo", **fields)
+
+    prompt_content = prompt.format(
+        web_context=web_context_chunks[0],
+        chunk_info=f"パート 1/{len(web_context_chunks)}",
+    )
+    
+    client = _create_gemini_client()
+    
+    # read_next_chunk ツールの定義
+    read_next_chunk_tool = genai_types.FunctionDeclaration(
+        name="read_next_chunk",
+        description="現在のテキストチャンクだけでは情報が不足している場合に、次のテキストチャンクを読み込みます。",
+        parameters=genai_types.Schema(
+            type=genai_types.Type.OBJECT,
+            properties={},
         )
-        api_elapsed = time.time() - api_start
-        
-        # 実際に使用されたモデル名をログに記録
-        actual_model = "不明"
-        try:
-            # with_structured_outputを使っている場合、元のレスポンスを取得
-            if hasattr(resp, 'response_metadata') and resp.response_metadata:
-                metadata = resp.response_metadata
-                if isinstance(metadata, dict):
-                    actual_model = metadata.get('model_name', metadata.get('model', '不明'))
-                elif hasattr(metadata, 'model_name'):
-                    actual_model = metadata.model_name
-                elif hasattr(metadata, 'model'):
-                    actual_model = metadata.model
-        except Exception:
-            pass
-        
-        logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
-        # with_structured_outputを使っている場合、元のllmオブジェクトを取得
-        base_llm = llm if not hasattr(llm, 'llm') else llm.llm
-        specified_model = getattr(base_llm, 'model', getattr(base_llm, 'model_name', 'gemini-2.0-flash'))
-        logger.info(f"  📊 使用モデル: 指定={specified_model}, 実際={actual_model}")
-        # 最後のAPI呼び出しなので間隔は不要
-        logger.info("  📋 抽出された情報:")
-        logger.info(f"     会社名: {resp.company}")
-        logger.info(f"     電話番号: {resp.tel}")
-        logger.info(f"     住所: {resp.address}")
-        logger.info(f"     URL: {resp.url}")
-        logger.info(f"     お問い合わせURL: {resp.contact_url}")
+    )
+
+    tools = [
+        genai_types.Tool(
+            function_declarations=[
+                get_crawl_website_declaration(),
+                get_crawl_footer_links_declaration(),
+                get_validate_company_info_declaration(),
+                get_report_company_info_declaration(),
+                read_next_chunk_tool,
+            ]
+        )
+    ]
+    config = genai_types.GenerateContentConfig(
+        tools=tools,
+        temperature=0,
+    )
+    messages = [_build_user_content(prompt_content)]
+    max_iterations = 15
+    company_info_payload: Optional[dict] = None
+    
+    try:
+        for iteration in range(max_iterations):
+            resp = _invoke_with_retry(
+                lambda: client.models.generate_content(
+                    model=DEFAULT_GEMINI_MODEL,
+                    contents=messages,
+                    config=config,
+                )
+            )
+            candidate = resp.candidates[0] if resp.candidates else None
+            if not candidate:
+                raise ValueError("LLMの応答が空でした。")
+            tool_calls = _iter_function_calls(candidate.content)
+            messages.append(candidate.content)
+            
+            report_call = next((fc for fc in tool_calls if fc.name == "report_company_info"), None)
+            if report_call:
+                company_info_payload = dict(report_call.args or {})
+                break
+            
+            if not tool_calls:
+                company_info_payload = _load_json_from_text(_content_to_text(candidate.content))
+                if company_info_payload:
+                    break
+            
+            for fc in tool_calls:
+                if fc.name == "report_company_info":
+                    continue
+                
+                if fc.name == "read_next_chunk":
+                    current_chunk_index += 1
+                    if current_chunk_index < len(web_context_chunks):
+                        next_chunk = web_context_chunks[current_chunk_index]
+                        logger.info(f"  📖 次のチャンクを読み込み中: パート {current_chunk_index + 1}/{len(web_context_chunks)}")
+                        result = {"success": True, "message": f"次のテキストチャンク（パート {current_chunk_index + 1}/{len(web_context_chunks)}）:\n\n{next_chunk}"}
+                    else:
+                        logger.warning("  ⚠️ 最後のチャンクまで到達しました")
+                        result = {"success": False, "message": "これ以上テキストはありません。現在得られている情報で判断してください。"}
+                else:
+                    result = handle_function_call(fc.name, dict(fc.args or {}))
+                
+                _append_function_response_message(messages, fc.name, result)
+            _wait_between_api_calls()
+        else:
+            logger.error("  ❌ report_company_infoが生成されませんでした")
+            # デバッグ用にレスポンス内容を出力
+            raw_response = _content_to_text(candidate.content)
+            logger.error(f"  🔍 LLM生応答 (先頭1000文字): {raw_response[:1000]}")
+            raise ValueError("LLMが会社情報を出力できませんでした。")
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
         logger.error(f"  エラー: {type(e).__name__}: {str(e)[:200]}")
         raise
-
-    # LLMの応答を辞書に変換
-    company_info_dict = resp.model_dump()
+    
+    if not company_info_payload:
+        raise ValueError("LLMの応答から会社情報を取得できませんでした。")
+    
+    resp_info = DynamicLLMCompanyInfo.model_validate(company_info_payload)
+    logger.info("  ✅ 会社情報の構造化に成功")
+    logger.info(f"     会社名: {resp_info.company}")
+    logger.info(f"     電話番号: {resp_info.tel}")
+    logger.info(f"     住所: {resp_info.address}")
+    logger.info(f"     URL: {resp_info.url}")
+    logger.info(f"     お問い合わせURL: {resp_info.contact_url}")
+    # 業種・ジャンルはまだないので出力しない（後で追加）
+    
+    company_info_dict = resp_info.model_dump()
     
     # urlがNoneの場合は、実際にクロールしたURLを使用
     if not company_info_dict.get("url"):
         company_info_dict["url"] = url
         logger.info(f"  ⚠️ LLMがurlを抽出できなかったため、クロールしたURLを使用: {url}")
+    
+    # businessとgenreは入力データのrequired_businessesとrequired_genreから取得（LLMの誤抽出を避けるため）
+    if state.required_businesses and len(state.required_businesses) > 0:
+        company_info_dict["business"] = state.required_businesses[0]
+        logger.info(f"  📝 businessを入力データから取得: {company_info_dict['business']}")
+    else:
+        company_info_dict["business"] = ""
+        logger.info("  📝 businessを入力データから取得できませんでした（空文字を設定）")
+    
+    if state.required_genre and len(state.required_genre) > 0:
+        company_info_dict["genre"] = state.required_genre[0]
+        logger.info(f"  📝 genreを入力データから取得: {company_info_dict['genre']}")
+    else:
+        company_info_dict["genre"] = ""
+        logger.info("  📝 genreを入力データから取得できませんでした（空文字を設定）")
     
     state.company_info = company_info_dict
     
