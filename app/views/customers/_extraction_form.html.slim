@@ -25,11 +25,20 @@
           - if @customer.errors[:company].any?
             .error-message= @customer.errors[:company].first
     tr
-      td.label-cell
+      - if signed_in?(:worker) && @customer.new_record?
+       td.label-cell
+        strong.label 必須
+       th.arrow-box-cell
+        | 指定キーワード
+       td.responsive-cell
+        .input-container
+          = f.text_field :industry
+      - else
+       td.label-cell
         strong.label 
-      th.arrow-box-cell
+       th.arrow-box-cell
         | 参考情報
-      td.responsive-cell
+       td.responsive-cell
         .input-container
           = @customer.store
     tr
@@ -101,5 +110,7 @@
   table 
     tr
       td = f.submit '登録して次へ', class: "btn btn-success"
-      td = f.submit '公開して一覧へ', class: "btn btn-success"
-      td = f.submit '対象外リストとして登録', name: 'commit', value: '対象外リストとして登録', class: "btn btn-warning"
+      - unless signed_in?(:worker) && @customer.new_record?
+       td = f.submit '公開して一覧へ', class: "btn btn-success"
+       td = f.submit '対象外リストとして登録', name: 'commit', value: '対象外リストとして登録', class: "btn btn-warning"
+ 

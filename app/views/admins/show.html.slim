@@ -149,18 +149,17 @@
            | なし
    = submit_tag '割り当てを保存'
   br
- 
+
+
   h2.headline
-    | リスト制作のワーカー
-  br/
-  br/
+    | 新リスト制作のワーカー
+  br
+  br
   = form_with url: assign_workers_admin_path(@admin), method: :post, local: true do |f|
-    table[width="90%" class="header-table space"]
+    table width="90%" class="header-table space"
       colgroup
-        |
       tr
-        th
-          | チェック
+        th チェック
         th Worker
         th 配置先
         th 本日の件数
@@ -172,17 +171,20 @@
         th 契約
         th 削除
         th 解除
-      = form_with url: assign_workers_admin_path(@admin), method: :post do
-       - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
-        - count_day = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_day).where('customers.updated_at <= ?', Time.current.end_of_day).count 
-        - count_week = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_week).where('customers.updated_at <= ?', Time.current.end_of_week).count 
-        - count_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.beginning_of_month).where('customers.updated_at <= ?', Time.current.end_of_month).count 
-        - count_before_month = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month).where('customers.updated_at <= ?', Time.current.prev_month.end_of_month).count + worker.deleted_customer_count        
-        - total_number = worker.customers.where(status: nil).or(worker.customers.where(status: "draft")).where.not(tel: nil).count
-        - count_month_price = count_before_month * 3
-        - assigned_crowdwork = @assigned_crowdworks[worker.id]
-
-        tr 
+  
+      - @workers.select { |worker| worker.select == "リスト制作" }.each do |worker|
+        -base_scope = worker.first_edited_customers.where.not(tel: nil)
+        -base_scope = base_scope.where("customers.status IS NULL OR customers.status = 'draft'")
+        -current_time = Time.current        
+        -count_day = base_scope.where('customers.updated_at >= ? AND customers.updated_at <= ?', current_time.beginning_of_day, current_time.end_of_day).count 
+        -count_week = base_scope.where('customers.updated_at >= ? AND customers.updated_at <= ?', current_time.beginning_of_week, current_time.end_of_week).count 
+        -count_month = base_scope.where('customers.updated_at >= ? AND customers.updated_at <= ?', current_time.beginning_of_month, current_time.end_of_month).count 
+        -prev_month_start = current_time.prev_month.beginning_of_month
+        -prev_month_end = current_time.prev_month.end_of_month
+        -count_before_month = base_scope.where('customers.updated_at >= ? AND customers.updated_at <= ?', prev_month_start, prev_month_end).count + worker.deleted_customer_count        
+        -count_month_price = count_before_month * 3
+        -assigned_crowdwork = @assigned_crowdworks[worker.id]
+        tr
           td
             = select_tag "crowdwork_ids[#{worker.id}]", options_for_select(Crowdwork.all.map { |cw| [cw.title, cw.id] }, assigned_crowdwork&.id), prompt: "Crowdworkを選択", id: "crowdwork_select_#{worker.id}"
           td = worker.user_name
@@ -205,6 +207,7 @@
           td = link_to '削除', worker_path(worker), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger"
           td
             - if assigned_crowdwork
-              = button_to '解除', remove_worker_admin_path(@admin, crowdwork_id: assigned_crowdwork.id, worker_id: worker.id), method: :post, data: { confirm: '本当に解除しますか？' }  
+              = button_to '解除', remove_worker_admin_path(@admin, crowdwork_id: assigned_crowdwork.id, worker_id: worker.id), method: :post, data: { confirm: '本当に解除しますか？' }
+              
     .field
       = f.submit "割り当てる"

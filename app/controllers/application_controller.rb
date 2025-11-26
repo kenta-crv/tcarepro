@@ -118,5 +118,14 @@ class ApplicationController < ActionController::Base
   #       redirect_to root_path, alert: 'error'
   #    end
   #  end
-
+  def set_current_worker_for_model
+    # current_worker はログインしているworkerオブジェクトを返すメソッドを想定
+    if current_worker.present?
+      Thread.current[:current_worker_id] = current_worker.id
+    end
+    yield # アクションを実行
+  ensure
+    # アクション実行後、必ずクリアする
+    Thread.current[:current_worker_id] = nil
+  end
 end

@@ -1,22 +1,9 @@
 - set_meta_tags noindex: true
-h2.heading
+.tops-wrapper
+ h2.headline
     | 新規登録
--if user_signed_in?
- = render 'form', customer: @customer
--else worker_signed_in?
- = render 'extraction_form', customer: @customer
-br
-br
-= form_tag import_customers_path, multipart: true do
-  table[width="90%"]
-    tbody
-      tr
-        th[colspan="3"]
-          | CSVファイルインポート
-      tr
-        td
-          = file_field_tag :file
-        th
-          = submit_tag "インポート",  class: 'btn btn-success'
-        th
-          = link_to 'エクスポート', customers_path(format: :csv), class: 'btn btn-success'
+ -if user_signed_in?
+  = render 'form', customer: @customer
+ -else worker_signed_in?
+  = render 'extraction_form', customer: @customer
+ br

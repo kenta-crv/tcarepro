@@ -10,7 +10,30 @@ class OkuriteController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid, with: :handle_validation_error
   rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
 
-  def index
+def index
+    # =========================================================================
+    # 🚨 追加するアクセス制御ロジック (最優先で実行) 🚨
+    # =========================================================================
+    if request.query_string.blank?
+      # クエリ文字列（?以降）が存在しない場合
+      
+      # ログイン中のワーカーを取得 (current_workerはauthenticate_worker_or_admin!などで利用可能と仮定)
+      worker = current_worker 
+      
+      if worker
+        # ワーカーIDを取得し、/workers/:id へリダイレクトし、noticeを表示
+        # 【注意】 `worker_path(worker)` は、実際のルーティングヘルパーに置き換えてください。
+        # 例: worker_dashboard_path(worker) など
+        redirect_to worker_path(worker), notice: "検索条件を外れました。再度実行をしてください。"
+      else
+        # ログイン情報がない場合は、ルートパスなどにリダイレクト
+        redirect_to root_path, alert: "アクセスエラーが発生しました。"
+      end
+      # リダイレクトが完了したら、このアクションの残りの処理を中断
+      return
+    end
+    # =========================================================================
+
     # この`sender`に紐づく全ての`ContactTracking`をベースとして取得
     base_contact_trackings = ContactTracking.for_sender(@sender.id)
 

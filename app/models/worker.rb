@@ -3,13 +3,14 @@ class Worker < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-  has_many :customers
   has_many :contact_trackings
   has_many :assignments, dependent: :destroy
   has_many :tests, dependent: :destroy
   has_many :crowdworks, through: :assignments
   has_many :sender_assignments, dependent: :destroy
   has_many :senders, through: :sender_assignments
+  #has_many :customers, foreign_key: 'updated_by_worker_id', inverse_of: :updated_by_worker
+  has_many :first_edited_customers, class_name: 'Customer', foreign_key: 'updated_by_worker_id'
   
     def self.import_customers(file)
       save_count = 0

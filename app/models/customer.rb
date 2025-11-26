@@ -179,7 +179,19 @@ class Customer < ApplicationRecord
   #has_one :direct_mail_contact_tracking, ->{
   #  eager_load(:direct_mail_contact_trackings).order(sended_at: :desc)
   #}
+attr_accessor :current_worker_id_for_tracking 
 
+  belongs_to :updated_by_worker, class_name: 'Worker', foreign_key: 'updated_by_worker_id', optional: true
+
+  # 作成時 or updated_by_worker_id が nil の場合にのみ、IDをセットする
+  before_save :set_updated_by_worker, if: -> { new_record? || updated_by_worker_id.nil? }
+
+  def set_updated_by_worker
+    # コントローラーからセットされた current_worker_id_for_tracking があれば使用する
+    if current_worker_id_for_tracking.present?
+      self.updated_by_worker_id = current_worker_id_for_tracking
+    end
+  end
 
   scope :with_is_contact_tracking, -> is_contact_tracking {
     if is_contact_tracking == "true"
@@ -919,18 +931,22 @@ end
   end
   
   def valid_genre?(required_genre, customer_genre)
-    if required_genre.blank?
-      # required_genreが空の場合は無条件で通過
-      true
-    elsif customer_genre.present?
-      # required_genreをカンマ区切りで分割して部分一致を確認
-      required_genre.split(',').any? { |required| customer_genre.include?(required.strip) }
-    else
-      # required_genreが存在し、customer_genreが空の場合はエラー
-      false
+    return false if customer_genre.blank?
+
+    # required_genre が空の場合は通過
+    return true if required_genre.blank?
+
+    required_genre.split(',').any? do |required|
+      required = required.strip
+
+      # 完全一致は NG（部分一致のみ許可）
+      next false if customer_genre == required
+
+      # 部分一致なら OK
+      customer_genre.include?(required)
     end
   end
-  
+    
   def valid_area?(required_area, customer_address)
     # required_area がJSON形式の文字列として渡されている場合、配列に変換
     if required_area.is_a?(String) && required_area.start_with?('[')

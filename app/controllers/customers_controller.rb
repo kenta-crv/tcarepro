@@ -82,26 +82,35 @@ class CustomersController < ApplicationController
     @customers = Customer.where(branch: branch, address: address)
   end
 
-  def create
-    @customer = Customer.new(customer_params)
-    
-    # バリデーションチェック
-    if @customer.valid?
-      # バリデーション成功 → 通常保存
-      @customer.save
-    else
-      # バリデーション失敗 → 対象外として hidden で強制保存
-      @customer.status = "hidden"
-      @customer.save(validate: false)
-    end
-    
-    # 保存後のリダイレクト
-    if worker_signed_in?
-      redirect_to extraction_path
-    else
-      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
-    end
+def create
+  @customer = Customer.new(customer_params)
+
+  # 🌟 修正ポイント: worker がログインしている場合、IDをモデルに一時的にセット
+  if worker_signed_in? && current_worker.present?
+    @customer.current_worker_id_for_tracking = current_worker.id
   end
+  
+  # バリデーションチェック
+  if @customer.valid?
+    # バリデーション成功 → 通常保存
+    @customer.save
+  else
+    # バリデーション失敗 → 対象外として hidden で強制保存
+    @customer.status = "hidden"
+    # 🌟 current_worker_id_for_tracking がここでセットされることを保証するため、save(validate: false) の前にもう一度セット
+    if worker_signed_in? && current_worker.present?
+      @customer.current_worker_id_for_tracking = current_worker.id 
+    end
+    @customer.save(validate: false)
+  end
+  
+  # 保存後のリダイレクト
+  if worker_signed_in?
+    # 🌟 worker_signed_in? の場合の共通リダイレクトを考慮し、ここでは edit_customer_path へリダイレクトする方が自然かもしれませんが、
+    # 既存のコードが extraction_path のため、そのまま維持します。
+    redirect_to new_customer_path
+  end
+end
 
 def edit
   @customer = Customer.find(params[:id])
@@ -129,8 +138,15 @@ def edit
   end
 end
 
+# app/controllers/customers_controller.rb
+
 def update
   @customer = Customer.find(params[:id])
+
+  # 🌟 修正ポイント: worker がログインしている場合、IDをモデルに一時的にセット
+  if worker_signed_in? && current_worker.present?
+    @customer.current_worker_id_for_tracking = current_worker.id
+  end
 
   if params[:commit] == '対象外リストとして登録'
     @customer.skip_validation = true
@@ -153,7 +169,7 @@ def update
     @customer.skip_validation = true
   end
 
-  # 現在のフィルタ条件を考慮して次のdraft顧客を取得
+  # ... (次のdraft顧客を取得するロジックは変更なし) ...
   @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
 
   if params[:industry_name].present?
@@ -169,6 +185,7 @@ def update
   @next_draft = @q.order(:id).first
 
   if @customer.update(customer_params)
+  # ... (メール送信ロジックは変更なし) ...
     if params[:commit] == '登録＋J Workメール送信'
       @customer.reload 
       CustomerMailer.teleapo_send_email(@customer, current_user).deliver_now

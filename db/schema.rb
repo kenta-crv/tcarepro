@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20251027130346) do
+ActiveRecord::Schema.define(version: 20251125130027) do
 
   create_table "access_logs", force: :cascade do |t|
     t.integer "customer_id", null: false
@@ -212,7 +212,9 @@ ActiveRecord::Schema.define(version: 20251027130346) do
     t.integer "worker_update_count_month"
     t.integer "sender_id"
     t.datetime "next_date"
+    t.integer "updated_by_worker_id"
     t.index ["created_at"], name: "index_customers_on_created_at"
+    t.index ["updated_by_worker_id"], name: "index_customers_on_updated_by_worker_id"
     t.index ["worker_id"], name: "index_customers_on_worker_id"
   end
 
@@ -254,6 +256,8 @@ ActiveRecord::Schema.define(version: 20251027130346) do
     t.string "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["industry", "id"], name: "index_extract_trackings_on_industry_and_id"
+    t.index ["industry"], name: "index_extract_trackings_on_industry"
   end
 
   create_table "images", force: :cascade do |t|
@@ -338,6 +342,15 @@ ActiveRecord::Schema.define(version: 20251027130346) do
     t.datetime "updated_at", null: false
     t.integer "admin_id"
     t.index ["admin_id"], name: "index_ng_customers_on_admin_id"
+  end
+
+  create_table "ng_domains", force: :cascade do |t|
+    t.string "domain", null: false
+    t.string "reason"
+    t.boolean "is_active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_ng_domains_on_domain", unique: true
   end
 
   create_table "pynotifies", force: :cascade do |t|

@@ -5,7 +5,7 @@ class WorkersController < ApplicationController
     #@contact = @worker.contacts.new
     
     # Retrieve customers related to the worker
-    @customers = @worker.customers
+    @customers = @worker.first_edited_customers
   
     # Calculate daily, weekly, monthly, and total customer counts
     @daily_number = @customers.where(created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).count
