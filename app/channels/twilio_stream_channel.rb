@@ -3,9 +3,17 @@ class TwilioStreamChannel < ApplicationCable::Channel
     # This channel handles incoming WebSocket connections from Twilio
     # Twilio will send media stream data here
     stream_from "twilio_stream_#{params[:stream_sid]}" if params[:stream_sid].present?
+    
+    # Initialize speech service for transcription
+    @speech_service = nil
   end
 
   def unsubscribed
+    # Clean up speech service
+    if @speech_service
+      @speech_service.stop_streaming
+      @speech_service = nil
+    end
     stop_all_streams
   end
 
@@ -43,6 +51,15 @@ class TwilioStreamChannel < ApplicationCable::Channel
       call_info[:stream_started_at] = Time.current
       Rails.cache.write("call_stream_#{call_sid}", call_info, expires_in: 1.hour)
       
+      # Initialize speech-to-text service for this call
+      begin
+        @speech_service = SpeechToTextService.new(call_sid)
+        @speech_service.start_streaming
+        Rails.logger.info "Speech-to-text service started for call: #{call_sid}"
+      rescue => e
+        Rails.logger.error "Failed to start speech-to-text service: #{e.message}"
+      end
+      
       # Notify monitoring clients that stream has started
       ActionCable.server.broadcast(
         "call_stream_#{call_sid}",
@@ -72,20 +89,27 @@ class TwilioStreamChannel < ApplicationCable::Channel
       # Broadcast the audio data to monitoring clients
       CallStreamService.process_media(call_sid, payload)
       
-      # Also send to speech-to-text service if available
-      if defined?(SpeechToTextService)
-        # Decode the base64 payload
-        audio_data = Base64.decode64(payload)
-        
-        # Broadcast to transcript channel
-        ActionCable.server.broadcast(
-          "call_audio_#{call_sid}",
-          { 
-            audio: payload,
-            timestamp: timestamp
-          }
-        )
+      # Send audio to speech-to-text service for transcription
+      if @speech_service
+        begin
+          # Decode the base64 payload
+          audio_data = Base64.decode64(payload)
+          
+          # Process audio for transcription
+          @speech_service.process_audio(audio_data)
+        rescue => e
+          Rails.logger.error "Error processing audio for transcription: #{e.message}"
+        end
       end
+      
+      # Also broadcast to transcript channel for any other listeners
+      ActionCable.server.broadcast(
+        "call_audio_#{call_sid}",
+        { 
+          audio: payload,
+          timestamp: timestamp
+        }
+      )
     end
   end
 
@@ -94,6 +118,18 @@ class TwilioStreamChannel < ApplicationCable::Channel
     call_sid = find_call_sid_by_stream(stream_sid)
     
     Rails.logger.info "Twilio stream stopped: #{stream_sid}"
+    
+    # Stop speech-to-text service
+    if @speech_service
+      begin
+        @speech_service.stop_streaming
+        Rails.logger.info "Speech-to-text service stopped for call: #{call_sid}"
+      rescue => e
+        Rails.logger.error "Error stopping speech-to-text service: #{e.message}"
+      ensure
+        @speech_service = nil
+      end
+    end
     
     if call_sid.present?
       # Notify monitoring clients that stream has stopped
