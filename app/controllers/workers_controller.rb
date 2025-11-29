@@ -85,16 +85,20 @@ class WorkersController < ApplicationController
     redirect_to confirm_worker_path(@worker)
   end
 
-  def destroy
-    @worker = Worker.find(params[:id])
-  
-    # 関連レコードのworker_idをnullにする
-    @worker.customers.update_all(worker_id: nil)
-    @worker.contact_trackings.update_all(worker_id: nil)
-  
-    @worker.destroy
+def destroy
+  @worker = Worker.find(params[:id])
+
+  # 関連レコードの外部キーをNULLにする
+  @worker.first_edited_customers.update_all(updated_by_worker_id: nil)
+  @worker.contact_trackings.update_all(worker_id: nil)
+
+  # Workerを削除
+  if @worker.destroy
     redirect_to admin_path(current_admin), notice: 'ワーカーを削除しました'
+  else
+    redirect_to admin_path(current_admin), alert: 'ワーカーの削除に失敗しました'
   end
+end
 
   def confirm
     @worker = Worker.find(params[:id])
