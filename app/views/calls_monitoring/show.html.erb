@@ -1,4 +1,8 @@
-<div class="container mt-4">
+<% content_for :head do %>
+  <meta name="turbolinks-visit-control" content="reload">
+<% end %>
+
+<div class="container mt-4" data-turbolinks="false">
   <div class="row">
     <div class="col-md-8">
       <h1>Live Call Monitoring</h1>
@@ -44,6 +48,9 @@
       
       <div class="mt-3">
         <%= link_to "Back to Call List", calls_monitoring_index_path, class: "btn btn-secondary" %>
+        <button id="refresh-btn" class="btn btn-primary ml-2" onclick="location.reload()">
+          <i class="fa fa-refresh"></i> Refresh
+        </button>
       </div>
     </div>
     
@@ -134,11 +141,56 @@
   }
 </style>
 
+<!-- Load ActionCable from CDN as fallback if not loaded via asset pipeline -->
+<%= javascript_include_tag "action_cable", "data-turbolinks-track": "reload" %>
 <script>
-  $(function() {
+  // Wait for ActionCable to be available
+  function waitForActionCable(callback, maxAttempts) {
+    maxAttempts = maxAttempts || 50;
+    var attempts = 0;
+    
+    function check() {
+      attempts++;
+      if (typeof ActionCable !== 'undefined') {
+        callback();
+      } else if (attempts < maxAttempts) {
+        setTimeout(check, 100);
+      } else {
+        console.error('ActionCable failed to load after ' + maxAttempts + ' attempts');
+        // Try loading from CDN as last resort
+        var script = document.createElement('script');
+        script.src = 'https://cdn.rawgit.com/rails/rails/v5.1.7/actioncable/app/assets/javascripts/action_cable.js';
+        script.onload = callback;
+        script.onerror = function() {
+          $('#audio-status').text('Error: Could not load ActionCable. Please refresh the page.');
+        };
+        document.head.appendChild(script);
+      }
+    }
+    check();
+  }
+  
+  // Initialize when ActionCable is ready
+  waitForActionCable(function() {
+    if (typeof jQuery !== 'undefined') {
+      $(document).ready(function() {
+        initializeMonitoring();
+      });
+    } else {
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          if (typeof jQuery !== 'undefined') {
+            initializeMonitoring();
+          }
+        }, 100);
+      });
+    }
+  });
+  
+  function initializeMonitoring() {
     // Check if ActionCable is available
     if (typeof ActionCable === 'undefined') {
-      console.error('ActionCable is not loaded. Please ensure action_cable is included in application.js');
+      console.error('ActionCable is still not loaded');
       $('#audio-status').text('Error: ActionCable not loaded. Please refresh the page.');
       return;
     }
@@ -421,5 +473,15 @@
         audioContext.close();
       }
     });
-  });
+  }
+</script>
+
+<!-- Disable Turbolinks for this page to prevent auto-reload -->
+<script>
+  if (typeof Turbolinks !== 'undefined') {
+    document.addEventListener('turbolinks:load', function() {
+      // Prevent Turbolinks from reloading this page
+      Turbolinks.controller.adapter.progressBar.hide();
+    });
+  }
 </script>
