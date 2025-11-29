@@ -24,7 +24,7 @@ class VapiWebhooksController < ApplicationController
       return
     end
     
-    # Use VAPI's call ID as the primary identifier if CallSid not available
+    # Use VAPI's call ID as the primary identifier if CallSid not available 
     # We'll update it later when Twilio CallSid becomes available
     identifier = call_sid.present? ? call_sid : call_id
     
