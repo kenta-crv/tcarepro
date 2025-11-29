@@ -141,51 +141,76 @@
   }
 </style>
 
-<!-- Load ActionCable from CDN as fallback if not loaded via asset pipeline -->
-<%= javascript_include_tag "action_cable", "data-turbolinks-track": "reload" %>
+<!-- Load ActionCable from CDN if not already loaded -->
 <script>
-  // Wait for ActionCable to be available
-  function waitForActionCable(callback, maxAttempts) {
-    maxAttempts = maxAttempts || 50;
-    var attempts = 0;
-    
-    function check() {
-      attempts++;
+  // Check if ActionCable is already loaded, if not load from CDN
+  (function() {
+    function loadActionCable(callback) {
       if (typeof ActionCable !== 'undefined') {
+        // ActionCable already loaded
         callback();
-      } else if (attempts < maxAttempts) {
-        setTimeout(check, 100);
-      } else {
-        console.error('ActionCable failed to load after ' + maxAttempts + ' attempts');
-        // Try loading from CDN as last resort
-        var script = document.createElement('script');
-        script.src = 'https://cdn.rawgit.com/rails/rails/v5.1.7/actioncable/app/assets/javascripts/action_cable.js';
-        script.onload = callback;
-        script.onerror = function() {
-          $('#audio-status').text('Error: Could not load ActionCable. Please refresh the page.');
+        return;
+      }
+      
+      // Try to load from CDN
+      console.log('Loading ActionCable from CDN...');
+      var script = document.createElement('script');
+      // Use a reliable CDN source for ActionCable 5.1
+      script.src = 'https://cdn.jsdelivr.net/gh/rails/rails@v5.1.7/actioncable/app/assets/javascripts/action_cable.js';
+      script.onload = function() {
+        console.log('ActionCable loaded from CDN');
+        callback();
+      };
+      script.onerror = function() {
+        console.error('Failed to load ActionCable from CDN, trying alternative source...');
+        // Try alternative CDN
+        var script2 = document.createElement('script');
+        script2.src = 'https://rawcdn.githack.com/rails/rails/v5.1.7/actioncable/app/assets/javascripts/action_cable.js';
+        script2.onload = function() {
+          console.log('ActionCable loaded from alternative CDN');
+          callback();
         };
-        document.head.appendChild(script);
+        script2.onerror = function() {
+          console.error('Failed to load ActionCable from all sources');
+          if (typeof jQuery !== 'undefined') {
+            $('#audio-status').html('<div class="alert alert-danger">Error: Could not load ActionCable. Please refresh the page or check your internet connection.</div>');
+          }
+        };
+        document.head.appendChild(script2);
+      };
+      document.head.appendChild(script);
+    }
+    
+    // Wait for DOM and jQuery, then load ActionCable
+    function init() {
+      if (typeof jQuery !== 'undefined') {
+        loadActionCable(function() {
+          $(document).ready(function() {
+            initializeMonitoring();
+          });
+        });
+      } else {
+        document.addEventListener('DOMContentLoaded', function() {
+          setTimeout(function() {
+            if (typeof jQuery !== 'undefined') {
+              loadActionCable(function() {
+                initializeMonitoring();
+              });
+            } else {
+              console.error('jQuery not loaded');
+            }
+          }, 100);
+        });
       }
     }
-    check();
-  }
-  
-  // Initialize when ActionCable is ready
-  waitForActionCable(function() {
-    if (typeof jQuery !== 'undefined') {
-      $(document).ready(function() {
-        initializeMonitoring();
-      });
+    
+    // Start initialization
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
     } else {
-      document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-          if (typeof jQuery !== 'undefined') {
-            initializeMonitoring();
-          }
-        }, 100);
-      });
+      init();
     }
-  });
+  })();
   
   function initializeMonitoring() {
     // Check if ActionCable is available
