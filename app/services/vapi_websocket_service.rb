@@ -14,6 +14,13 @@ class VapiWebsocketService
   
   def start
     Rails.logger.info "Starting VAPI WebSocket service for call #{@call_sid}"
+    Rails.logger.info "Listen URL: #{@listen_url}"
+    
+    # Validate listen URL
+    unless @listen_url.present? && (@listen_url.start_with?('wss://') || @listen_url.start_with?('ws://'))
+      Rails.logger.error "Invalid VAPI listen URL: #{@listen_url}"
+      return
+    end
     
     # Initialize speech-to-text service
     begin
@@ -66,57 +73,89 @@ class VapiWebsocketService
   
   def connect_to_vapi_websocket
     begin
+      Rails.logger.info "Attempting to connect to VAPI WebSocket: #{@listen_url}"
+      
       # EventMachine.run blocks, so it's already in a thread from start()
       EM.run do
-        ws = Faye::WebSocket::Client.new(@listen_url)
-        @websocket = ws
-        
-        ws.on :open do |event|
-          Rails.logger.info "Connected to VAPI WebSocket for call #{@call_id} (#{@call_sid})"
+        begin
+          ws = Faye::WebSocket::Client.new(@listen_url)
+          @websocket = ws
           
-          # Broadcast to monitoring clients
-          ActionCable.server.broadcast(
-            "call_stream_#{@call_sid}",
-            {
-              event: 'vapi_websocket_connected',
-              call_sid: @call_sid,
-              timestamp: Time.current.to_f
-            }
-          )
-        end
-        
-        ws.on :message do |event|
-          handle_websocket_message(event.data) if @running
-        end
-        
-        ws.on :close do |event|
-          Rails.logger.info "VAPI WebSocket closed for call #{@call_id} (#{@call_sid})"
-          @speech_service&.stop_streaming
+          ws.on :open do |event|
+            Rails.logger.info "Connected to VAPI WebSocket for call #{@call_id} (#{@call_sid})"
+            
+            # Broadcast to monitoring clients
+            ActionCable.server.broadcast(
+              "call_audio_#{@call_sid}",
+              {
+                event: 'vapi_websocket_connected',
+                call_sid: @call_sid,
+                timestamp: Time.current.to_f
+              }
+            )
+            
+            ActionCable.server.broadcast(
+              "call_stream_#{@call_sid}",
+              {
+                event: 'vapi_websocket_connected',
+                call_sid: @call_sid,
+                timestamp: Time.current.to_f
+              }
+            )
+          end
           
-          ActionCable.server.broadcast(
-            "call_stream_#{@call_sid}",
-            {
-              event: 'vapi_websocket_closed',
-              call_sid: @call_sid,
-              timestamp: Time.current.to_f
-            }
-          )
+          ws.on :message do |event|
+            handle_websocket_message(event.data) if @running
+          end
           
-          EM.stop if @running == false
-        end
-        
-        ws.on :error do |error|
-          Rails.logger.error "VAPI WebSocket error for call #{@call_id}: #{error.message}"
-          Rails.logger.error error.backtrace.join("\n") if error.respond_to?(:backtrace)
+          ws.on :close do |event|
+            Rails.logger.info "VAPI WebSocket closed for call #{@call_id} (#{@call_sid}), code: #{event.code}, reason: #{event.reason}"
+            @speech_service&.stop_streaming
+            
+            ActionCable.server.broadcast(
+              "call_stream_#{@call_sid}",
+              {
+                event: 'vapi_websocket_closed',
+                call_sid: @call_sid,
+                timestamp: Time.current.to_f
+              }
+            )
+            
+            EM.stop if @running == false
+          end
+          
+          ws.on :error do |error|
+            Rails.logger.error "VAPI WebSocket error for call #{@call_id} (#{@call_sid}): #{error.message}"
+            Rails.logger.error "Error class: #{error.class}"
+            Rails.logger.error "Listen URL: #{@listen_url}"
+            Rails.logger.error error.backtrace.join("\n") if error.respond_to?(:backtrace)
+            
+            # Broadcast error to monitoring clients
+            ActionCable.server.broadcast(
+              "call_stream_#{@call_sid}",
+              {
+                event: 'vapi_websocket_error',
+                call_sid: @call_sid,
+                error: error.message,
+                timestamp: Time.current.to_f
+              }
+            )
+          end
+        rescue => e
+          Rails.logger.error "Error creating WebSocket client: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          EM.stop
         end
       end
     rescue => e
       Rails.logger.error "Error in VAPI WebSocket connection: #{e.message}"
+      Rails.logger.error "Listen URL: #{@listen_url}"
       Rails.logger.error e.backtrace.join("\n")
       
       # Try to reconnect after a delay
       if @running
         sleep(5)
+        Rails.logger.info "Retrying VAPI WebSocket connection..."
         connect_to_vapi_websocket if @running
       end
     end
@@ -215,6 +254,17 @@ class VapiWebsocketService
     # Broadcast to monitoring clients (encode as base64 for consistency with Twilio format)
     begin
       encoded_audio = Base64.encode64(audio_data.is_a?(String) ? audio_data.force_encoding('BINARY') : audio_data.to_s)
+      
+      # Broadcast to call_audio channel for TwilioMediaChannel subscribers
+      ActionCable.server.broadcast(
+        "call_audio_#{@call_sid}",
+        {
+          audio: encoded_audio,
+          timestamp: Time.current.to_f
+        }
+      )
+      
+      # Also use CallStreamService for compatibility
       CallStreamService.process_media(@call_sid, encoded_audio)
     rescue => e
       Rails.logger.error "Error broadcasting audio: #{e.message}"

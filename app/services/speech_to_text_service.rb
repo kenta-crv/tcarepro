@@ -75,7 +75,9 @@ class SpeechToTextService
     return unless @streaming_recognizer
     
     begin
-      @streaming_recognizer.stop
+      # streaming_recognize returns an Enumerator, not an object with a stop method
+      # We just need to stop writing to it and let it finish naturally
+      # The thread will exit when the enumerator finishes
       @results_thread&.exit
     rescue => e
       Rails.logger.error("Error stopping streaming: #{e.message}")
