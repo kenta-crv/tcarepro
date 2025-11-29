@@ -59,11 +59,12 @@ After your VAPI call node, add an HTTP Request node:
     "listenUrl": "{{$json.monitor.listenUrl}}",
     "controlUrl": "{{$json.monitor.controlUrl}}"
   },
-  "callSid": "{{$json.callSid}}",
   "callId": "{{$json.id}}",
   "to": "{{$json.customer.number}}"
 }
 ```
+
+**Note:** VAPI doesn't provide `callSid` (Twilio CallSid) in the initial response. The system will use VAPI's `id` as the identifier and update it when Twilio CallSid becomes available.
 
 **Headers:**
 - `Content-Type: application/json`

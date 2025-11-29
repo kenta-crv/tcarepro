@@ -29,11 +29,12 @@ After your VAPI call node, add an **HTTP Request** node:
     "listenUrl": "{{$json.monitor.listenUrl}}",
     "controlUrl": "{{$json.monitor.controlUrl}}"
   },
-  "callSid": "{{$json.callSid}}",
   "callId": "{{$json.id}}",
   "to": "{{$json.customer.number}}"
 }
 ```
+
+**Note:** VAPI doesn't provide `callSid` in the initial response. The system uses VAPI's `id` as the identifier.
 
 ### 3. Restart Rails Server
 ```bash

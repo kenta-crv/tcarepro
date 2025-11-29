@@ -4,7 +4,14 @@ class CallsMonitoringController < ApplicationController
   def index
     # Get all active calls from the database
     db_calls = Call.where(statu: "通話中").map do |call|
+      # Try to find call info by vapi_call_id
       call_info = Rails.cache.read("call_stream_#{call.vapi_call_id}")
+      
+      # If not found, try to find by VAPI ID mapping
+      if call_info.nil?
+        vapi_id = Rails.cache.read("twilio_sid_to_vapi_id_#{call.vapi_call_id}")
+        call_info = Rails.cache.read("call_stream_#{vapi_id}") if vapi_id.present?
+      end
       
       next if call_info.nil?
       
@@ -24,18 +31,25 @@ class CallsMonitoringController < ApplicationController
       cache_keys = cache_data.keys.select { |k| k.to_s.start_with?('call_stream_') }
       
       cache_calls = cache_keys.map do |key|
-        call_sid = key.to_s.sub('call_stream_', '')
+        identifier = key.to_s.sub('call_stream_', '')
         call_info = Rails.cache.read(key)
         
         next if call_info.nil? || call_info[:connected_at].nil?
-        next if Call.exists?(vapi_call_id: call_sid) # Skip if already in DB
+        
+        # Skip if already in DB (check by both identifiers)
+        in_db = Call.exists?(vapi_call_id: identifier)
+        if !in_db && call_info[:twilio_call_sid].present?
+          in_db = Call.exists?(vapi_call_id: call_info[:twilio_call_sid])
+        end
+        next if in_db
         
         {
-          call_sid: call_sid,
+          call_sid: identifier,
           customer: call_info[:customer_id] ? Customer.find_by(id: call_info[:customer_id]) : nil,
           connected_at: call_info[:connected_at],
           duration: ((Time.current - call_info[:connected_at]) / 60).round(2),
-          to_number: call_info[:to_number]
+          to_number: call_info[:to_number],
+          vapi_call_id: call_info[:vapi_call_id]
         }
       end.compact
     rescue => e
