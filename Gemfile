@@ -143,3 +143,7 @@ gem 'twilio-ruby'
 
 # Google Cloud Speech for transcription
 gem 'google-cloud-speech'
+
+# WebSocket client for VAPI integration
+gem 'faye-websocket'
+gem 'eventmachine'

@@ -205,6 +205,9 @@ Rails.application.routes.draw do
   post '/twilio/status', to: 'twilio_media#status'
   get '/twilio-media-stream', to: 'twilio_media_stream#stream'
   
+  # VAPI Webhooks
+  post 'vapi/webhook', to: 'vapi_webhooks#receive'
+  
   get '*path', controller: 'application', action: 'render_404'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
