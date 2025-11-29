@@ -136,6 +136,13 @@
 
 <script>
   $(function() {
+    // Check if ActionCable is available
+    if (typeof ActionCable === 'undefined') {
+      console.error('ActionCable is not loaded. Please ensure action_cable is included in application.js');
+      $('#audio-status').text('Error: ActionCable not loaded. Please refresh the page.');
+      return;
+    }
+    
     const callId = '<%= @call_sid %>';
     let audioContext, analyser, audioData, gainNode;
     let audioQueue = [];
@@ -145,7 +152,8 @@
     let audioInitialized = false;
     
     // Initialize ActionCable connection
-    const cable = ActionCable.createConsumer();
+    // Use App.cable if available (from cable.js), otherwise create new consumer
+    const cable = (typeof App !== 'undefined' && App.cable) ? App.cable : ActionCable.createConsumer();
     
     // Subscribe to audio and transcript channel (TwilioMediaChannel streams from both)
     const mediaChannel = cable.subscriptions.create(
