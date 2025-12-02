@@ -29,12 +29,9 @@ class Customer < ApplicationRecord
     'ミライユ（警備）' => {industry_code: 0, company_name: "", payment_date: "", industry_mail:""},
   }
 
-
-  before_update :set_first_edited_at, if: :will_save_change_to_attribute?
-
-def set_first_edited_at
-  if self.first_edited_at.nil?
-    self.first_edited_at = Time.current
+def assign_first_editor(worker)
+  if self.updated_by_worker_id.nil?
+    self.updated_by_worker_id = worker.id
   end
 end
 

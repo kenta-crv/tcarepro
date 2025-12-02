@@ -143,9 +143,9 @@ end
 def update
   @customer = Customer.find(params[:id])
 
-  # 🌟 修正ポイント: worker がログインしている場合、IDをモデルに一時的にセット
+  # 🌟 修正ポイント: worker がログインしている場合、初回更新者をセット
   if worker_signed_in? && current_worker.present?
-    @customer.current_worker_id_for_tracking = current_worker.id
+    @customer.assign_first_editor(current_worker)
   end
 
   if params[:commit] == '対象外リストとして登録'
@@ -165,36 +165,33 @@ def update
   end
 
   # admin または user がサインインしている場合、バリデーションをスキップ
-  if admin_signed_in? || user_signed_in?
-    @customer.skip_validation = true
-  end
+  @customer.skip_validation = true if admin_signed_in? || user_signed_in?
 
-  # ... (次のdraft顧客を取得するロジックは変更なし) ...
+  # 次の draft 顧客を取得（フィルタ考慮）
   @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
+  @q = @q.where(industry: params[:industry_name]) if params[:industry_name].present?
 
-  if params[:industry_name].present?
-    @q = @q.where(industry: params[:industry_name])
-  end
-
-  if params[:tel_filter] == "with_tel"
+  case params[:tel_filter]
+  when "with_tel"
     @q = @q.where.not("TRIM(tel) = ''")
-  elsif params[:tel_filter] == "without_tel"
+  when "without_tel"
     @q = @q.where("TRIM(tel) = ''")
   end
 
   @next_draft = @q.order(:id).first
 
+  # update 実行
   if @customer.update(customer_params)
-  # ... (メール送信ロジックは変更なし) ...
+    # メール送信
     if params[:commit] == '登録＋J Workメール送信'
-      @customer.reload 
       CustomerMailer.teleapo_send_email(@customer, current_user).deliver_now
       CustomerMailer.teleapo_reply_email(@customer, current_user).deliver_now
     elsif params[:commit] == '資料送付'
-      @customer.reload 
       CustomerMailer.document_send_email(@customer, current_user).deliver_now
       CustomerMailer.document_reply_email(@customer, current_user).deliver_now
     end
+
+    # worker リダイレクト
     if worker_signed_in?
       if @next_draft
         redirect_to edit_customer_path(
@@ -206,7 +203,11 @@ def update
         redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
       end
     else
-      redirect_to customer_path(id: @customer.id, q: params[:q]&.permit!, last_call: params[:last_call]&.permit!)
+      redirect_to customer_path(
+        id: @customer.id,
+        q: params[:q]&.permit!,
+        last_call: params[:last_call]&.permit!
+      )
     end
   else
     render 'edit'

@@ -40,7 +40,7 @@ class Worker < ApplicationRecord
     WorkerMailer.with(worker: self, subject: subject, body: body).warning_email.deliver_now
   end
 
-  def customers_updated(period: :week)
+def customers_updated(period: :week)
   range = case period
           when :day
             Time.current.beginning_of_day..Time.current.end_of_day
@@ -52,7 +52,9 @@ class Worker < ApplicationRecord
             nil
           end
 
-  # 初回更新のみ記録されている customer を数える
+  return 0 unless range
+
+  # updated_by_worker_id がセットされている初回更新のみ
   first_edited_customers.where(first_edited_at: range).count
 end
 end
