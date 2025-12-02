@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
+  Sidekiq::Web.use ActionDispatch::Cookies
+  Sidekiq::Web.use Rails.application.config.session_store, Rails.application.config.session_options
+
   
   # Mount ActionCable for WebSocket connections
   mount ActionCable.server => '/cable'

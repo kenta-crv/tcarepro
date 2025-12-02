@@ -2,6 +2,7 @@
   "name": "smart",
   "private": true,
   "dependencies": {
+    "@playwright/test": "^1.57.0",
     "chart.js": "^3.7.1",
     "chartkick": "^4.1.1"
   }

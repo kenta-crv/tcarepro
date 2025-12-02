@@ -39,4 +39,20 @@ class Worker < ApplicationRecord
   def send_warning_email(subject, body)
     WorkerMailer.with(worker: self, subject: subject, body: body).warning_email.deliver_now
   end
+
+  def customers_updated(period: :week)
+  range = case period
+          when :day
+            Time.current.beginning_of_day..Time.current.end_of_day
+          when :week
+            Time.current.beginning_of_week..Time.current.end_of_week
+          when :month
+            Time.current.beginning_of_month..Time.current.end_of_month
+          else
+            nil
+          end
+
+  # 初回更新のみ記録されている customer を数える
+  first_edited_customers.where(first_edited_at: range).count
+end
 end
