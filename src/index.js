@@ -129,24 +129,24 @@ Note: Email listener runs automatically in the background
       case 'test': {
         logger.info('Running with test data...');
         companies = [
-          // {
-          //   id: "12278433",
-          //   name: 'YASUI',
-          //   url: 'yasui-f.co.jp',
-          //   contact_url: ""
-          // },
+          {
+            id: "1",
+            name: 'riplus',
+            url: 'https://ri-plus.jp/',
+            contact_url: ""
+          },
           // {
           //   id: 2,
-          //   name: 'YUMEMI',
-          //   url: 'yumemi.co.jp/ja',
-          //   contact_url: "https://info.yumemi.co.jp/l/886303/2021-09-27/24gyd",
+          //   name: 'JWork',
+          //   url: 'https://j-work.jp/',
+          //   contact_url: "",
           // },
-          {
-            id: 3,
-            name: 'Yatho',
-            url: 'http://www.yatoh.co.jp/',
-            contact_url: "",
-          },
+          // {
+          //   id: 3,
+          //   name: 'new351c2sh',
+          //   url: ' https://xn--new351c2sh.net/',
+          //   contact_url: "https://xn--new351c2sh.net/estimates/new",
+          // },
         ];
         
         await processDirect(companies);

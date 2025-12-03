@@ -36,8 +36,7 @@ class ContactFormProcessor {
           width: 1920,
           height: 1080
         },
-        ignoreHTTPSErrors: true  // ADD THIS - Most important!
-
+        ignoreHTTPSErrors: true
       });
 
       logger.info('Browser initialized successfully');
@@ -106,42 +105,42 @@ class ContactFormProcessor {
 
       logger.info(`Final homepage: ${homepage}`);
 
-         // ADD THIS: Test if homepage is accessible before proceeding
-    try {
-      const testResponse = await page.goto(homepage, {
-        waitUntil: 'domcontentloaded',
-        timeout: 15000
-      });
+      // Test if homepage is accessible before proceeding
+      try {
+        const testResponse = await page.goto(homepage, {
+          waitUntil: 'domcontentloaded',
+          timeout: 15000
+        });
 
-      if (!testResponse || testResponse.status() === 0) {
-        throw new Error('Site unreachable - possible certificate error');
-      }
-    } catch (testError) {
-      if (testError.message.includes('ERR_CERT_') || 
-          testError.message.includes('SSL') || 
-          testError.message.includes('certificate')) {
-        
-        const processingTime = Date.now() - startTime;
-        const result = {
-          id: company.id,
-          name: company.name,
-          homepage: homepage,
-          contact_form_url: null,
-          status: 'SKIPPED',
-          message: 'SSL/Certificate error - site unreachable',
-          error_details: testError.message,
-          processing_time_ms: processingTime,
-          timestamp: new Date().toISOString()
-        };
+        if (!testResponse || testResponse.status() === 0) {
+          throw new Error('Site unreachable - possible certificate error');
+        }
+      } catch (testError) {
+        if (testError.message.includes('ERR_CERT_') || 
+            testError.message.includes('SSL') || 
+            testError.message.includes('certificate')) {
+          
+          const processingTime = Date.now() - startTime;
+          const result = {
+            id: company.id,
+            name: company.name,
+            homepage: homepage,
+            contact_form_url: null,
+            status: 'SKIPPED',
+            message: 'SSL/Certificate error - site unreachable',
+            error_details: testError.message,
+            processing_time_ms: processingTime,
+            timestamp: new Date().toISOString()
+          };
 
-        logger.error(`Skipping company ${company.name}: Certificate error`);
-        await this.resultsManager.saveResult(result);
-        await this.processTracker.saveProcessedCompany(company.id, 'SKIPPED', homepage);
-        
-        return result;
+          logger.error(`Skipping company ${company.name}: Certificate error`);
+          await this.resultsManager.saveResult(result);
+          await this.processTracker.saveProcessedCompany(company.id, 'SKIPPED', homepage);
+          
+          return result;
+        }
+        throw testError;
       }
-      throw testError; // Re-throw if it's a different error
-    }
 
       // Step 2: Determine contact form URL
       let contactFormUrl = null;
@@ -182,10 +181,16 @@ class ContactFormProcessor {
 
       logger.info(`Contact form URL: ${contactFormUrl}`);
 
-      // Step 3: Analyze form - PASS THE PAGE INSTANCE
+      // Step 3: Analyze form
       logger.info('Analyzing contact form...');
       const analyzer = new FormAnalyzer(this.browser);
-      const formAnalysis = await analyzer.analyzeForm(contactFormUrl, page);
+      
+      // FIXED: Pass parameters in correct order: url, baseUrl (for relative URL resolution), existingPage
+      const formAnalysis = await analyzer.analyzeForm(
+        contactFormUrl,
+        homepage,  // baseUrl for resolving relative URLs
+        page       // existingPage to reuse current page
+      );
       
       if (!formAnalysis.contactForm) {
         const processingTime = Date.now() - startTime;
@@ -209,7 +214,7 @@ class ContactFormProcessor {
 
       logger.info(`Found contact form with ${formAnalysis.contactForm.inputs.length} fields`);
 
-      // Step 4: Fill and submit form - PASS THE PAGE INSTANCE
+      // Step 4: Fill and submit form
       logger.info('Filling and submitting form...');
       const submitter = new FormSubmitter(this.browser);
       const submissionResult = await submitter.submitForm(

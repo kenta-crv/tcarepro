@@ -4,14 +4,14 @@ class FormSubmitter {
   constructor(browser) {
     this.browser = browser;
     this.testData = {
-      email: process.env.TEST_EMAIL || 'test@example.com',
+      email: process.env.TEST_EMAIL || 'mail@ebisu-hotel.tokyo',
       phone: process.env.TEST_PHONE || '+1234567890',
-      website: process.env.TEST_WEBSITE || 'https://example.com',
+      website: process.env.TEST_WEBSITE || 'https://ri-plus.jp/',
       message: process.env.TEST_MESSAGE || 'This is a test submission from automated form filler.',
       firstname: 'Test',
       lastname: 'User',
       fullname: 'Test User',
-      company: 'Test Company Inc.',
+      company: 'Ri Plus Co., Ltd.',
       subject: 'General Inquiry'
     };
   }
@@ -395,7 +395,7 @@ class FormSubmitter {
     if (fieldName.includes('last') || fieldName.includes('lastname')) return this.testData.lastname;
     if (fieldName.includes('name') && fieldName.includes('full')) return this.testData.fullname;
     if (fieldName.includes('name')) return this.testData.fullname;
-    if (fieldName.includes('company') || fieldName.includes('organisation') || fieldName.includes('organization')) return this.testData.company;
+    if (fieldName.includes('company') || fieldName.includes('organisation')  || fieldName.includes('organization')) return this.testData.company;
     if (fieldName.includes('subject') || fieldName.includes('title')) return this.testData.subject;
     
     // Fallback based on fieldType
@@ -508,139 +508,170 @@ class FormSubmitter {
     }
   }
 
-  /**
-   * Click submit button with multi-language support
-   */
-  async clickSubmitButton(page, formData) {
-    try {
-      const submitButtons = formData.submitButtons;
-      
-      if (!submitButtons || submitButtons.length === 0) {
-        logger.warn('No submit button found in form data');
-        return { success: false, error: 'No submit button found' };
-      }
-
-      // Check if submit button is still disabled
-      const isDisabled = await page.evaluate(() => {
-        const submitBtn = document.querySelector('input[type="submit"], button[type="submit"]');
-        return submitBtn ? submitBtn.disabled : false;
-      });
-
-      if (isDisabled) {
-        logger.warn('Submit button is still disabled - may need additional validation');
-      }
-
-      // Try to click the submit button
-      const clicked = await page.evaluate((btnInfo) => {
-        // Multi-language submit button keywords
-        const submitKeywords = [
-          // English
-          'submit', 'send', 'contact', 'post', 'ok', 'confirm', 'go',
-          // Hebrew
-          'שלח', 'שליחה', 'שלוח',
-          // Japanese
-          '送信', '送る', 'submit',
-          // Spanish
-          'enviar', 'envio',
-          // French
-          'envoyer', 'soumettre',
-          // German
-          'senden', 'absenden', 'abschicken',
-          // Italian
-          'inviare', 'spedire',
-          // Portuguese
-          'enviar', 'submeter',
-          // Arabic
-          'إرسال', 'أرسل',
-          // Korean
-          '보내기', '제출', '전송',
-          // Chinese
-          '发送', '提交', '送出',
-          // Dutch
-          'verzenden', 'versturen',
-          // Swedish
-          'skicka', 'skapa',
-          // Polish
-          'wyślij', 'prześlij'
-        ];
-
-        // Strategy 1: Try by ID first
-        if (btnInfo.id) {
-          const btn = document.getElementById(btnInfo.id);
-          if (btn && !btn.disabled) {
-            btn.click();
-            return true;
-          }
-        }
-
-        // Strategy 2: Try input[type="submit"]
-        const submitInputs = document.querySelectorAll('input[type="submit"]');
-        for (const btn of submitInputs) {
-          if (btn.disabled) continue;
-          
-          const value = (btn.value || '').trim();
-          const text = (btn.textContent || '').trim();
-          const searchText = (value || text).toLowerCase();
-          
-          // Check if button text matches any submit keyword
-          const isSubmitButton = submitKeywords.some(keyword => 
-            searchText.includes(keyword.toLowerCase())
-          );
-          
-          if (isSubmitButton) {
-            btn.click();
-            return true;
-          }
-        }
-
-        // Strategy 3: Try button[type="submit"]
-        const submitButtons = document.querySelectorAll('button[type="submit"]');
-        for (const btn of submitButtons) {
-          if (btn.disabled) continue;
-          
-          const text = (btn.textContent || '').trim().toLowerCase();
-          const isSubmitButton = submitKeywords.some(keyword => 
-            text.includes(keyword.toLowerCase())
-          );
-          
-          if (isSubmitButton) {
-            btn.click();
-            return true;
-          }
-        }
-
-        // Strategy 4: Try any button (fallback)
-        const allButtons = document.querySelectorAll('button, input[type="button"]');
-        for (const btn of allButtons) {
-          if (btn.disabled) continue;
-          
-          const text = (btn.textContent || btn.value || '').trim().toLowerCase();
-          const isSubmitButton = submitKeywords.some(keyword => 
-            text.includes(keyword.toLowerCase())
-          );
-          
-          if (isSubmitButton) {
-            btn.click();
-            return true;
-          }
-        }
-
-        return false;
-      }, submitButtons[0]);
-
-      if (clicked) {
-        logger.info('Submit button clicked successfully');
-        return { success: true };
-      } else {
-        logger.warn('Could not click submit button');
-        return { success: false, error: 'Could not click submit button' };
-      }
-
-    } catch (error) {
-      logger.error('Error clicking submit button:', { error: error.message });
-      return { success: false, error: error.message };
+ // Enhanced clickSubmitButton method with better Japanese support
+async clickSubmitButton(page, formData) {
+  try {
+    const submitButtons = formData.submitButtons;
+    
+    if (!submitButtons || submitButtons.length === 0) {
+      logger.warn('No submit button found in form data');
+      return { success: false, error: 'No submit button found' };
     }
+
+    // Check if submit button is still disabled
+    const isDisabled = await page.evaluate(() => {
+      const submitBtn = document.querySelector('input[type="submit"], button[type="submit"]');
+      return submitBtn ? submitBtn.disabled : false;
+    });
+
+    if (isDisabled) {
+      logger.warn('Submit button is still disabled - may need additional validation');
+    }
+
+    // Try to click the submit button with expanded keyword support
+    const clicked = await page.evaluate((btnInfo) => {
+      // Extended multi-language submit button keywords
+      const submitKeywords = [
+        // English
+        'submit', 'send', 'contact', 'post', 'ok', 'confirm', 'go',
+        // Japanese (EXPANDED)
+        '送信', '送る', 'submit', '確認', '確認画面', '実行', '次へ', 'を続ける',
+        // Spanish
+        'enviar', 'envio',
+        // French
+        'envoyer', 'soumettre',
+        // German
+        'senden', 'absenden', 'abschicken',
+        // Italian
+        'inviare', 'spedire',
+        // Portuguese
+        'enviar', 'submeter',
+        // Arabic
+        'إرسال', 'أرسل',
+        // Korean
+        '보내기', '제출', '전송',
+        // Chinese
+        '发送', '提交', '送出',
+        // Dutch
+        'verzenden', 'versturen',
+        // Swedish
+        'skicka', 'skapa',
+        // Polish
+        'wyślij', 'prześlij'
+      ];
+
+      // Strategy 1: Try by ID first
+      if (btnInfo.id) {
+        const btn = document.getElementById(btnInfo.id);
+        if (btn && !btn.disabled) {
+          console.log(`Clicking button by ID: ${btnInfo.id}`);
+          btn.click();
+          return true;
+        }
+      }
+
+      // Strategy 2: Try input[type="submit"] with enhanced matching
+      const submitInputs = document.querySelectorAll('input[type="submit"]');
+      for (const btn of submitInputs) {
+        if (btn.disabled) continue;
+        
+        const value = (btn.value || '').trim();
+        const searchText = value.toLowerCase();
+        
+        // Log the button value for debugging
+        console.log(`Found submit input with value: "${value}"`);
+        
+        // Check if button text matches any submit keyword
+        const isSubmitButton = submitKeywords.some(keyword => {
+          // Case-insensitive for Latin characters
+          if (searchText.includes(keyword.toLowerCase())) {
+            return true;
+          }
+          // Exact match for Japanese/CJK characters (case-insensitive not applicable)
+          if (value.includes(keyword)) {
+            return true;
+          }
+          return false;
+        });
+        
+        if (isSubmitButton) {
+          console.log(`Clicking submit input with value: "${value}"`);
+          btn.click();
+          return true;
+        }
+      }
+
+      // Strategy 3: Try button[type="submit"]
+      const submitButtons = document.querySelectorAll('button[type="submit"]');
+      for (const btn of submitButtons) {
+        if (btn.disabled) continue;
+        
+        const text = (btn.textContent || '').trim();
+        const searchText = text.toLowerCase();
+        
+        console.log(`Found submit button with text: "${text}"`);
+        
+        const isSubmitButton = submitKeywords.some(keyword => {
+          if (searchText.includes(keyword.toLowerCase())) {
+            return true;
+          }
+          if (text.includes(keyword)) {
+            return true;
+          }
+          return false;
+        });
+        
+        if (isSubmitButton) {
+          console.log(`Clicking submit button with text: "${text}"`);
+          btn.click();
+          return true;
+        }
+      }
+
+      // Strategy 4: Fallback - click ANY input[type="submit"] (last resort)
+      if (submitInputs.length > 0) {
+        const btn = Array.from(submitInputs).find(b => !b.disabled);
+        if (btn) {
+          console.log(`Fallback: Clicking first available submit input`);
+          btn.click();
+          return true;
+        }
+      }
+
+      // Strategy 5: Try any button (fallback)
+      const allButtons = document.querySelectorAll('button, input[type="button"]');
+      for (const btn of allButtons) {
+        if (btn.disabled) continue;
+        
+        const text = (btn.textContent || btn.value || '').trim();
+        const isSubmitButton = submitKeywords.some(keyword => 
+          text.includes(keyword)
+        );
+        
+        if (isSubmitButton) {
+          console.log(`Clicking any button with text: "${text}"`);
+          btn.click();
+          return true;
+        }
+      }
+
+      console.log('No suitable button found to click');
+      return false;
+    }, submitButtons[0]);
+
+    if (clicked) {
+      logger.info('Submit button clicked successfully');
+      return { success: true };
+    } else {
+      logger.warn('Could not click submit button - check console logs above');
+      return { success: false, error: 'Could not click submit button' };
+    }
+
+  } catch (error) {
+    logger.error('Error clicking submit button:', { error: error.message });
+    return { success: false, error: error.message };
   }
+}
 
   /**
    * Detect success response with multi-language support

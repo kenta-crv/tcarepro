@@ -36,8 +36,43 @@ class ContactPageFinder {
   }
 
   /**
+   * Check if a URL is valid for navigation
+   */
+  isValidNavigableUrl(url) {
+    if (!url || typeof url !== 'string') {
+      return false;
+    }
+    
+    // Reject javascript: URLs and other invalid protocols
+    if (url.startsWith('javascript:') || 
+        url.startsWith('data:') || 
+        url.startsWith('about:') ||
+        url.trim() === '#' ||
+        url.includes('void')) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Check if homepage has a contact form
+   */
+  async hasContactFormOnPage(page) {
+    try {
+      const formCount = await page.evaluate(() => {
+        return document.querySelectorAll('form').length;
+      });
+      
+      return formCount > 0;
+    } catch (error) {
+      logger.debug('Error checking for form on page:', { error: error.message });
+      return false;
+    }
+  }
+
+  /**
    * Find contact page by trying common URL patterns
-   * UPDATED: Now reuses existingPage instead of creating new ones
    */
   async findByDirectUrl(homepage, existingPage) {
     try {
@@ -56,8 +91,12 @@ class ContactPageFinder {
           const isValid = response && response.status() === 200;
           
           if (isValid) {
-            logger.info(`Contact page found via direct URL: ${testUrl}`);
-            return testUrl;
+            // Verify this page has a form
+            const hasForm = await this.hasContactFormOnPage(existingPage);
+            if (hasForm) {
+              logger.info(`Contact page found via direct URL: ${testUrl}`);
+              return testUrl;
+            }
           }
         } catch (error) {
           logger.debug(`Direct URL failed: ${testUrl}`, { error: error.message });
@@ -73,7 +112,6 @@ class ContactPageFinder {
 
   /**
    * Find contact page by analyzing homepage links (including nested span text)
-   * UPDATED: Now reuses existingPage instead of creating new one
    */
   async findByHomepageLinks(homepage, existingPage) {
     try {
@@ -132,6 +170,12 @@ class ContactPageFinder {
       for (const link of links) {
         const searchText = link.text;
         
+        // Skip invalid URLs immediately
+        if (!this.isValidNavigableUrl(link.href)) {
+          logger.debug(`Skipping invalid URL: ${link.href}`);
+          continue;
+        }
+        
         // Check if any keyword list contains contact keywords
         const hasContactKeyword = Object.values(this.contactKeywords).some(keywords =>
           keywords.some(keyword => searchText.includes(keyword.toLowerCase()))
@@ -141,13 +185,30 @@ class ContactPageFinder {
         const isExcluded = excludeKeywords.some(keyword => searchText.includes(keyword));
         
         if (hasContactKeyword && !isExcluded) {
-          logger.info(`Contact page found via homepage link: ${link.href}`);
+          logger.info(`Found potential contact link: ${link.href}`);
           logger.debug(`Matched text: "${link.text}"`);
-          return link.href;
+          
+          // Verify this URL actually has a form before returning
+          try {
+            await existingPage.goto(link.href, {
+              timeout: 15000,
+              waitUntil: 'domcontentloaded'
+            });
+            
+            const hasForm = await this.hasContactFormOnPage(existingPage);
+            if (hasForm) {
+              logger.info(`Verified contact page with form: ${link.href}`);
+              return link.href;
+            } else {
+              logger.debug(`No form found on: ${link.href}`);
+            }
+          } catch (error) {
+            logger.debug(`Could not verify link: ${link.href}`, { error: error.message });
+          }
         }
       }
 
-      logger.warn('No contact page found in homepage links');
+      logger.warn('No valid contact page found in homepage links');
       return null;
 
     } catch (error) {
@@ -158,10 +219,9 @@ class ContactPageFinder {
 
   /**
    * Find contact page using both methods
-   * UPDATED: Now accepts and uses existingPage parameter
    */
   async findContactPage(homepage, existingPage = null) {
-    const page = existingPage;
+    let page = existingPage;
     const shouldClosePage = !existingPage;
 
     try {
@@ -174,7 +234,24 @@ class ContactPageFinder {
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
       }
 
+      // FIRST: Check if homepage itself has a contact form
+      try {
+        await page.goto(homepage, {
+          waitUntil: 'networkidle2',
+          timeout: 30000
+        });
+
+        const hasFormOnHomepage = await this.hasContactFormOnPage(page);
+        if (hasFormOnHomepage) {
+          logger.info(`Contact form found directly on homepage`);
+          return homepage;
+        }
+      } catch (error) {
+        logger.debug('Could not check homepage for form:', { error: error.message });
+      }
+
       // Method 1: Analyze homepage links (primary method)
+      logger.info('No form on homepage, searching for contact page links...');
       const linkResult = await this.findByHomepageLinks(homepage, page);
       if (linkResult) {
         return linkResult;

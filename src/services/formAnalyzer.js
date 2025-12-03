@@ -6,11 +6,50 @@ class FormAnalyzer {
   }
 
   /**
+   * Validate if URL is valid and can be navigated to
+   */
+  isValidUrl(url) {
+    if (!url || typeof url !== 'string') {
+      return false;
+    }
+    
+    // Reject javascript: URLs and other invalid protocols
+    if (url.startsWith('javascript:') || url.startsWith('data:') || url.startsWith('about:')) {
+      return false;
+    }
+    
+    // Check if it's a relative URL - convert to placeholder for validation
+    if (url.startsWith('/') || url.startsWith('#')) {
+      return true; // Valid relative URL
+    }
+    
+    // Check if it's an absolute URL
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * Extract and analyze all input fields from a page
    * @param {string} url - The URL to analyze
+   * @param {string} baseUrl - Base URL for resolving relative URLs
    * @param {Page} existingPage - Optional existing page to reuse
    */
-  async analyzeForm(url, existingPage = null) {
+  async analyzeForm(url, baseUrl = null, existingPage = null) {
+    // Validate URL
+    if (!this.isValidUrl(url)) {
+      logger.error('Invalid URL provided to analyzeForm', { url });
+      return {
+        allForms: [],
+        contactForm: null,
+        totalForms: 0,
+        error: `Invalid URL: ${url}`
+      };
+    }
+
     let page = existingPage;
     const shouldClosePage = !existingPage;
     
@@ -23,7 +62,19 @@ class FormAnalyzer {
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
       }
       
-      await page.goto(url, {
+      // Resolve relative URLs if baseUrl is provided
+      let finalUrl = url;
+      if (baseUrl && (url.startsWith('/') || url.startsWith('#'))) {
+        try {
+          finalUrl = new URL(url, baseUrl).toString();
+          logger.info(`Resolved relative URL to: ${finalUrl}`);
+        } catch (e) {
+          logger.warn(`Could not resolve relative URL: ${url}`, { baseUrl });
+          finalUrl = url;
+        }
+      }
+
+      await page.goto(finalUrl, {
         waitUntil: 'networkidle2',
         timeout: 30000
       });
@@ -32,7 +83,7 @@ class FormAnalyzer {
       try {
         await page.waitForSelector('form', { timeout: 5000 });
       } catch (e) {
-        logger.warn('No forms found in DOM', { url });
+        logger.warn('No forms found in DOM', { url: finalUrl });
       }
 
       // Extended wait for dynamic content
@@ -171,14 +222,14 @@ class FormAnalyzer {
       
       if (contactForm) {
         logger.info(`Found contact form with ${contactForm.inputs.length} fields`, {
-          url,
+          url: finalUrl,
           formIndex: contactForm.index,
           inputCount: contactForm.inputs.length,
           score: contactForm.score
         });
       } else {
         logger.warn('No suitable contact form found', { 
-          url,
+          url: finalUrl,
           totalForms: formData.length,
           formScores: analyzedForms.map(f => ({
             index: f.index,

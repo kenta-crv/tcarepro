@@ -246,10 +246,8 @@ async function checkEmails() {
     const pop3 = new POP3Client(mailConfig.pop3Host, mailConfig.pop3Port, true);
     
     await pop3.connect();
-    console.log('✅ Connected');
 
     await pop3.auth(mailConfig.email, mailConfig.password);
-    console.log('✅ Authenticated');
 
     const stat = await pop3.stat();
     const emailCount = stat.count;
@@ -283,11 +281,9 @@ async function checkEmails() {
       
       lastEmailCount = emailCount;
     } else {
-      console.log('✓ No new emails\n');
     }
 
     await pop3.close();
-    console.log('🔌 Disconnected\n');
 
   } catch (error) {
     console.error('❌ Error:', error.message, '\n');

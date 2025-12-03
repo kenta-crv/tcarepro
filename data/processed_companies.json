@@ -4117,14 +4117,20 @@
   },
   {
     "id": 2,
-    "processedOn": "2025-11-26T05:34:25.518Z",
-    "status": "SUCCESS",
-    "url": "https://yumemi.co.jp/ja"
+    "processedOn": "2025-12-01T06:28:15.588Z",
+    "status": "SKIPPED",
+    "url": "https://j-work.jp/"
   },
   {
     "id": 3,
-    "processedOn": "2025-11-26T05:37:20.130Z",
-    "status": "SKIPPED",
-    "url": "http://www.yatoh.co.jp/"
+    "processedOn": "2025-12-01T06:29:07.928Z",
+    "status": "SUCCESS",
+    "url": "https://xn--new351c2sh.net/"
+  },
+  {
+    "id": "1",
+    "processedOn": "2025-12-03T05:54:26.734Z",
+    "status": "SUCCESS",
+    "url": "https://ri-plus.jp/"
   }
 ]
