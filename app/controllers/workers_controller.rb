@@ -1,76 +1,110 @@
 class WorkersController < ApplicationController
-  def show
-    # Retrieve worker and initialize a new contact
-    @worker = Worker.find(params[:id])
-    #@contact = @worker.contacts.new
-    
-    # Retrieve customers related to the worker
-    @customers = @worker.first_edited_customers
-  
-    # Calculate daily, weekly, monthly, and total customer counts
-    @daily_number = @customers.where(created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).count
-    @weekly_number = @customers.where(created_at: Time.zone.now.beginning_of_week..Time.zone.now.end_of_week).count
-    @monthly_number = @customers.where(created_at: Time.zone.now.beginning_of_month..Time.zone.now.end_of_month).count
-    @last_month_number = @customers.where(created_at: Time.zone.now.last_month.beginning_of_month..Time.zone.now.last_month.end_of_month).count
-    @total_number = @customers.count
-    
-    # Retrieve assigned crowdworks for the worker
-    @assigned_crowdworks = @worker.crowdworks
-  
-    # Calculate counts of customers updated today, this week, and this month
-    @count_day = @customers.where(status: nil).or(@customers.where(status: "draft"))
-    .where.not(tel: nil)
-    .where('customers.updated_at >= ?', Time.current.beginning_of_day)
-    .where('customers.updated_at <= ?', Time.current.end_of_day)
-    .count + @worker.deleted_customer_count
+def show
+  @worker = Worker.find(params[:id])
+  @customers = @worker.first_edited_customers
 
-@count_week = @customers.where(status: nil).or(@customers.where(status: "draft"))
-    .where.not(tel: nil)
-    .where('customers.updated_at >= ?', Time.current.beginning_of_week)
-    .where('customers.updated_at <= ?', Time.current.end_of_week)
-    .count + @worker.deleted_customer_count
+  @registrations = @customers
+                     .where.not(tel: nil)
+                     .where("customers.status IS NULL OR customers.status = ?", "draft")
 
-@count_month = @customers.where(status: nil).or(@customers.where(status: "draft"))
-    .where.not(tel: nil)
-    .where('customers.updated_at >= ?', Time.current.beginning_of_month)
-    .where('customers.updated_at <= ?', Time.current.end_of_month)
-    .count + @worker.deleted_customer_count
+  current = Time.zone.now
 
-@count_before_month = @customers.where(status: nil).or(@customers.where(status: "draft"))
-    .where.not(tel: nil)
-    .where('customers.updated_at >= ?', Time.current.prev_month.beginning_of_month)
-    .where('customers.updated_at <= ?', Time.current.prev_month.end_of_month)
-    .count + @worker.deleted_customer_count
-@total_count = @customers.count
-    # Retrieve contact trackings for the current and previous month, day, and week
-    @contact_trackings_month = @worker.contact_trackings.where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
-    @contact_trackings_before_month = @worker.contact_trackings.where(created_at: 1.month.ago.beginning_of_month..1.month.ago.end_of_month)
-    @contact_trackings_day = @worker.contact_trackings.where(created_at: Time.current.beginning_of_day..Time.current.end_of_day)
-    @contact_trackings_week = @worker.contact_trackings.where(created_at: Time.current.beginning_of_week..Time.current.end_of_week)
-    
-    # Calculate counts of successful, error, and NG contact trackings for the current month
-    @send_success_count_day = @contact_trackings_day.where(status: '送信済').count
-    @send_success_count_week = @contact_trackings_week.where(status: '送信済').count
-    @send_success_count_month = @contact_trackings_month.where(status: '送信済').count
-    @send_success_count_before_month = @contact_trackings_before_month.where(status: '送信済').count
-    
-    @send_error_count_month = @contact_trackings_month.where(status: '送信不可').count
-    @send_ng_count_month = @contact_trackings_month.where(status: '営業NG').count
-    @send_count_month = @send_success_count_month + @send_error_count_month + @send_ng_count_month
-  
-    # Calculate send success rate for the current month
-    @send_rate = if @send_count_month > 0
-                   (@send_success_count_month / @send_count_month.to_f) * 100
-                 else
-                   0
-                 end
-    
-    # Calculate total send counts for the day and week
-    @send_count_day = @contact_trackings_day.count
-    @send_count_week = @contact_trackings_week.count
+  @daily_number =
+    @registrations.where(created_at: current.beginning_of_day..current.end_of_day).count
 
-    @assigned_senders = @worker.senders
-  end
+  @weekly_number =
+    @registrations.where(created_at: current.beginning_of_week..current.end_of_week).count
+
+  @monthly_number =
+    @registrations.where(created_at: current.beginning_of_month..current.end_of_month).count
+
+  @last_month_number =
+    @registrations.where(
+      created_at: current.prev_month.beginning_of_month..current.prev_month.end_of_month
+    ).count
+
+  @total_number = @registrations.count
+
+  @assigned_crowdworks = @worker.crowdworks
+
+  @count_day =
+    @customers.where(status: nil).or(@customers.where(status: "draft"))
+      .where.not(tel: nil)
+      .where('customers.updated_at >= ?', current.beginning_of_day)
+      .where('customers.updated_at <= ?', current.end_of_day)
+      .count + @worker.deleted_customer_count
+
+  @count_week =
+    @customers.where(status: nil).or(@customers.where(status: "draft"))
+      .where.not(tel: nil)
+      .where('customers.updated_at >= ?', current.beginning_of_week)
+      .where('customers.updated_at <= ?', current.end_of_week)
+      .count + @worker.deleted_customer_count
+
+  @count_month =
+    @customers.where(status: nil).or(@customers.where(status: "draft"))
+      .where.not(tel: nil)
+      .where('customers.updated_at >= ?', current.beginning_of_month)
+      .where('customers.updated_at <= ?', current.end_of_month)
+      .count + @worker.deleted_customer_count
+
+  @count_before_month =
+    @customers.where(status: nil).or(@customers.where(status: "draft"))
+      .where.not(tel: nil)
+      .where('customers.updated_at >= ?', current.prev_month.beginning_of_month)
+      .where('customers.updated_at <= ?', current.prev_month.end_of_month)
+      .count + @worker.deleted_customer_count
+
+  @total_count = @customers.count
+
+  @contact_trackings_month =
+    @worker.contact_trackings.where(created_at: current.beginning_of_month..current.end_of_month)
+
+  @contact_trackings_before_month =
+    @worker.contact_trackings.where(
+      created_at: 1.month.ago.beginning_of_month..1.month.ago.end_of_month
+    )
+
+  @contact_trackings_day =
+    @worker.contact_trackings.where(created_at: current.beginning_of_day..current.end_of_day)
+
+  @contact_trackings_week =
+    @worker.contact_trackings.where(created_at: current.beginning_of_week..current.end_of_week)
+
+  @send_success_count_day =
+    @contact_trackings_day.where(status: '送信済').count
+
+  @send_success_count_week =
+    @contact_trackings_week.where(status: '送信済').count
+
+  @send_success_count_month =
+    @contact_trackings_month.where(status: '送信済').count
+
+  @send_success_count_before_month =
+    @contact_trackings_before_month.where(status: '送信済').count
+
+  @send_error_count_month =
+    @contact_trackings_month.where(status: '送信不可').count
+
+  @send_ng_count_month =
+    @contact_trackings_month.where(status: '営業NG').count
+
+  @send_count_month =
+    @send_success_count_month + @send_error_count_month + @send_ng_count_month
+
+  @send_rate =
+    if @send_count_month > 0
+      (@send_success_count_month / @send_count_month.to_f) * 100
+    else
+      0
+    end
+
+  @send_count_day = @contact_trackings_day.count
+  @send_count_week = @contact_trackings_week.count
+
+  @assigned_senders = @worker.senders
+end
+
   
 
   def upload
