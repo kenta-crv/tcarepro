@@ -330,18 +330,14 @@ scope :before_sended_at, ->(sended_at){
   
 def self.ensure_defaults(row)
   h = row.to_h
-
-  # 空欄または nil の場合のみデフォルト値を補完（CSV を優先）
-  h['industry'] = h['industry'].presence || '人材関連業'
-  h['business'] = h['business'].presence || '人材紹介'
-  h['genre']    = h['genre'].presence    || '人材紹介'
-
-  # url 関連の強制移動処理は削除
-  # h['url_2'] = h['url'] if h['url'].present?
-  # h.delete('url')
-
+  h['industry'] ||= '人材関連業'
+  h['business'] ||= '人材派遣'
+  h['genre']    ||= '人材派遣'
+  h['url_2'] = h['url'] if h['url'].present?
+  h.delete('url')
   h
 end
+
 
   def self.import(file)
     save_count = 0
