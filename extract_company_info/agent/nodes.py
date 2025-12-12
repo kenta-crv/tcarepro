@@ -10,7 +10,7 @@ from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
 from langchain_core.prompts.loading import load_prompt
 from langchain_core.messages import HumanMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
-from pydantic import Field, create_model, field_validator
+from pydantic import BaseModel, Field, create_model, field_validator
 
 from agent.state import ExtractState
 from agent.tools import (
@@ -570,8 +570,9 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         logger.debug(f"  トレースバック: {traceback.format_exc()}")
         raise ValueError(f"URL {url} のクロールに失敗しました（タイムアウトまたはエラー）。")
 
-    web_context_chunks = _split_text_into_chunks(web_context, chunk_size=8000)
-    current_chunk_index = 0
+    # 構造化出力では全コンテキストを一度に処理
+    # web_context_chunks = _split_text_into_chunks(web_context, chunk_size=8000)
+    # current_chunk_index = 0
     
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_contact.yaml"), encoding="utf-8")
     logger.debug("  ✅ プロンプトロード完了")
@@ -581,102 +582,47 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     logger.info(f"     必須ジャンル: {state.required_genre}")
     api_start = time.time()
     
-    # 以前のPydanticモデル定義をstr + validator形式に変更
-    fields = {
-        "company": (Optional[str], None),
-        "tel": (Optional[str], None),
-        "address": (Optional[str], None),
-        "first_name": (Optional[str], None),
-        "url": (Optional[str], None),
-        "contact_url": (Optional[str], None),
-    }
-    DynamicLLMCompanyInfo = create_model("DynamicLLMCompanyInfo", **fields)
+    # 構造化出力用のPydanticモデル定義
+    class StructuredCompanyInfo(BaseModel):
+        """構造化出力用の会社情報モデル"""
+        company: Optional[str] = Field(None, description="会社名。株式会社/有限会社等を含む正式名称")
+        tel: Optional[str] = Field(None, description="電話番号。半角数字とハイフンのみの形式")
+        address: Optional[str] = Field(None, description="住所。都道府県を含む完全な住所")
+        first_name: Optional[str] = Field(None, description="担当者名・代表者名")
+        url: Optional[str] = Field(None, description="公式サイトのURL")
+        contact_url: Optional[str] = Field(None, description="お問い合わせページのURL")
 
     prompt_content = prompt.format(
-        web_context=web_context_chunks[0],
-        chunk_info=f"パート 1/{len(web_context_chunks)}",
+        web_context=web_context,
+        chunk_info="完全なコンテンツ",
     )
     
     client = _create_gemini_client()
     
-    # read_next_chunk ツールの定義
-    read_next_chunk_tool = genai_types.FunctionDeclaration(
-        name="read_next_chunk",
-        description="現在のテキストチャンクだけでは情報が不足している場合に、次のテキストチャンクを読み込みます。",
-        parameters=genai_types.Schema(
-            type=genai_types.Type.OBJECT,
-            properties={},
-        )
-    )
 
-    tools = [
-        genai_types.Tool(
-            function_declarations=[
-                get_crawl_website_declaration(),
-                get_crawl_footer_links_declaration(),
-                get_validate_company_info_declaration(),
-                get_report_company_info_declaration(),
-                read_next_chunk_tool,
-            ]
-        )
-    ]
     config = genai_types.GenerateContentConfig(
-        tools=tools,
-        temperature=0,
+        response_mime_type="application/json",
+        response_schema=StructuredCompanyInfo.model_json_schema(),
+        temperature=0.3,
     )
     messages = [_build_user_content(prompt_content)]
-    max_iterations = 15
-    company_info_payload: Optional[dict] = None
     
     try:
-        for iteration in range(max_iterations):
-            resp = _invoke_with_retry(
-                lambda: client.models.generate_content(
-                    model=DEFAULT_GEMINI_MODEL,
-                    contents=messages,
-                    config=config,
-                )
+        resp = _invoke_with_retry(
+            lambda: client.models.generate_content(
+                model=DEFAULT_GEMINI_MODEL,
+                contents=messages,
+                config=config,
             )
-            candidate = resp.candidates[0] if resp.candidates else None
-            if not candidate:
-                raise ValueError("LLMの応答が空でした。")
-            tool_calls = _iter_function_calls(candidate.content)
-            messages.append(candidate.content)
-            
-            report_call = next((fc for fc in tool_calls if fc.name == "report_company_info"), None)
-            if report_call:
-                company_info_payload = dict(report_call.args or {})
-                break
-            
-            if not tool_calls:
-                company_info_payload = _load_json_from_text(_content_to_text(candidate.content))
-                if company_info_payload:
-                    break
-            
-            for fc in tool_calls:
-                if fc.name == "report_company_info":
-                    continue
-                
-                if fc.name == "read_next_chunk":
-                    current_chunk_index += 1
-                    if current_chunk_index < len(web_context_chunks):
-                        next_chunk = web_context_chunks[current_chunk_index]
-                        logger.info(f"  📖 次のチャンクを読み込み中: パート {current_chunk_index + 1}/{len(web_context_chunks)}")
-                        result = {"success": True, "message": f"次のテキストチャンク（パート {current_chunk_index + 1}/{len(web_context_chunks)}）:\n\n{next_chunk}"}
-                    else:
-                        logger.warning("  ⚠️ 最後のチャンクまで到達しました")
-                        result = {"success": False, "message": "これ以上テキストはありません。現在得られている情報で判断してください。"}
-                else:
-                    result = handle_function_call(fc.name, dict(fc.args or {}))
-                
-                _append_function_response_message(messages, fc.name, result)
-            _wait_between_api_calls()
-        else:
-            logger.error("  ❌ report_company_infoが生成されませんでした")
-            # デバッグ用にレスポンス内容を出力
-            raw_response = _content_to_text(candidate.content)
-            logger.error(f"  🔍 LLM生応答 (先頭1000文字): {raw_response[:1000]}")
-            raise ValueError("LLMが会社情報を出力できませんでした。")
+        )
+        # 構造化出力から直接データを取得
+        candidate = resp.candidates[0] if resp.candidates else None
+        if not candidate:
+            raise ValueError("LLMの応答が空でした。")
+        
+        response_text = _content_to_text(candidate.content)
+        company_info_payload = json.loads(response_text)
+        
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
@@ -686,7 +632,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     if not company_info_payload:
         raise ValueError("LLMの応答から会社情報を取得できませんでした。")
     
-    resp_info = DynamicLLMCompanyInfo.model_validate(company_info_payload)
+    resp_info = StructuredCompanyInfo.model_validate(company_info_payload)
     logger.info("  ✅ 会社情報の構造化に成功")
     logger.info(f"     会社名: {resp_info.company}")
     logger.info(f"     電話番号: {resp_info.tel}")
