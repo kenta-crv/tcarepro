@@ -76,6 +76,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
+            request_options={'timeout': 120},
         )
         resp = _invoke_with_retry(
             llm,
@@ -95,8 +96,8 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     urls: list[str] = []
     
     # まず本文から全てのURLを抽出（最も信頼性が高い）
-    # より厳密なURL正規表現を使用（不完全なURLを除外）
-    url_pattern = r'https?://[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*(?:/[^\s<>"]*)?'
+    # より緩い正規表現を使用して、新しいTLD（.tech, .siteなど）を弾かないようにする
+    url_pattern = r'https?://[a-zA-Z0-9.-]+(?:\.[a-zA-Z]{2,})+(?:/[^\s<>"]*)?'
     content_urls = re.findall(url_pattern, resp.content)
     # リダイレクトURLと不完全なURLを除外
     def _is_valid_url(url: str) -> bool:
@@ -111,9 +112,6 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         try:
             domain = url.split('//')[1].split('/')[0]
             if '.' not in domain:
-                return False
-            # 日本語文字や全角文字を含むURLを除外（不完全な抽出を防ぐ）
-            if any(ord(c) > 127 for c in url):
                 return False
         except (IndexError, AttributeError):
             return False
@@ -221,6 +219,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
+            request_options={'timeout': 120},
         ).with_structured_output(URLScoreList)
         resp: URLScoreList = _invoke_with_retry(
             llm,
@@ -300,6 +299,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
+            request_options={'timeout': 120},
         ).with_structured_output(LLMCompanyInfo)
         resp: LLMCompanyInfo = _invoke_with_retry(
             llm,
