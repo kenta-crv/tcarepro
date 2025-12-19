@@ -1,5 +1,6 @@
 import re
 import time
+import sys
 
 from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
 from google.api_core.exceptions import ResourceExhausted
@@ -43,6 +44,7 @@ def _invoke_with_retry(llm, prompt_str: str, *, retries: int = RETRY_ATTEMPTS, *
 def _wait_between_api_calls():
     """API呼び出し間の間隔を空ける."""
     logger.debug(f"  ⏳ API呼び出し間隔のため{API_CALL_INTERVAL_SECONDS}秒待機中...")
+    sys.stdout.flush()
     time.sleep(API_CALL_INTERVAL_SECONDS)
 
 
@@ -60,6 +62,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     logger.info("-" * 60)
     logger.info("[NODE 1/3] node_get_url_candidates - URL候補の取得")
     logger.info(f"  入力: {state.company} @ {state.location}")
+    sys.stdout.flush()
     
     # プロンプトをYAMLからロード
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_url.yaml"), encoding="utf-8")
@@ -167,6 +170,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     if len(state.urls) > 5:
         logger.info(f"     ... 他{len(state.urls) - 5}個")
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")
+    sys.stdout.flush()
     
     return state
 
@@ -185,6 +189,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     logger.info("-" * 60)
     logger.info("[NODE 2/3] node_select_official_website - 公式サイト選定")
     logger.info(f"  候補URL数: {len(state.urls)}個")
+    sys.stdout.flush()
     
     # URL候補が1個以下の場合、選定不要（最適化）
     if len(state.urls) <= 1:
@@ -250,6 +255,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     node_elapsed = time.time() - node_start
     logger.info(f"  ✅ 選定されたURL: {len(state.urls)}個")
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")
+    sys.stdout.flush()
 
     return state
 
@@ -267,6 +273,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     node_start = time.time()
     logger.info("-" * 60)
     logger.info("[NODE 3/3] node_fetch_html - 会社情報抽出")
+    sys.stdout.flush()
     
     # URL候補が無い場合はエラーを発生させる（ValidationErrorを避けるため）
     if not state.urls:
@@ -318,6 +325,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         logger.info(f"     住所: {resp.address}")
         logger.info(f"     URL: {resp.url}")
         logger.info(f"     お問い合わせURL: {resp.contact_url}")
+        sys.stdout.flush()
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
@@ -328,5 +336,6 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     
     node_elapsed = time.time() - node_start
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")
+    sys.stdout.flush()
     
     return state
