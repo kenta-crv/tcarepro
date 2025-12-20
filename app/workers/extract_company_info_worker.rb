@@ -1,9 +1,8 @@
 require "json"
 
 class ExtractCompanyInfoWorker
-  include Sidekiq::Worker
-  # 大量送信の耐久・耐性を確保
-  sidekiq_options retry: 1, queue: 'default', backtrace: true
+  # include Sidekiq::Worker
+  # sidekiq_options retry: 1, queue: 'default', backtrace: true
 
   PYTHON_SCRIPT_PATH = Rails.root.join('extract_company_info', 'app.py').to_s
   # 仮想環境のPythonを使用
@@ -16,7 +15,7 @@ class ExtractCompanyInfoWorker
 
   def perform(id)
     begin
-      Sidekiq.logger.info("ExtractCompanyInfoWorker: perform: start #{id}")
+      Rails.logger.info("ExtractCompanyInfoWorker: perform: start #{id}")
 
       # すでに他のジョブで本日の残り件数を超えている場合は終了
       extract_tracking = ExtractTracking.find(id)
@@ -32,7 +31,7 @@ class ExtractCompanyInfoWorker
       today_reamin = [daily_limit - today_total, 0].max
       
       if today_reamin == 0 || extract_tracking.total_count > today_reamin
-        Sidekiq.logger.warn("ExtractCompanyInfoWorker: today limit exceed (remaining: #{today_reamin}, requested: #{extract_tracking.total_count})")
+        Rails.logger.warn("ExtractCompanyInfoWorker: today limit exceed (remaining: #{today_reamin}, requested: #{extract_tracking.total_count})")
         extract_tracking.update(
           status: "抽出失敗（制限超過）"
         )
@@ -103,7 +102,7 @@ class ExtractCompanyInfoWorker
 
             # バリデーション要件を満たしていない場合は失敗として扱う
             unless business_valid && genre_valid
-              Sidekiq.logger.warn("ExtractCompanyInfoWorker: バリデーション要件を満たしていないため失敗: customer_id=#{customer.id}, business=#{business.inspect}, genre=#{genre.inspect}")
+              Rails.logger.warn("ExtractCompanyInfoWorker: バリデーション要件を満たしていないため失敗: customer_id=#{customer.id}, business=#{business.inspect}, genre=#{genre.inspect}")
               failure_count += 1
               extract_tracking.update(
                 failure_count: failure_count,
@@ -130,8 +129,8 @@ class ExtractCompanyInfoWorker
             extract_tracking.update(
               failure_count: failure_count,
             )
-            Sidekiq.logger.error("ExtractCompanyInfoWorker: Python script execution failed for customer ID #{customer.id}. Exit status: #{status.exitstatus}")
-            Sidekiq.logger.error("ExtractCompanyInfoWorker: stderr: #{stderr}")
+            Rails.logger.error("ExtractCompanyInfoWorker: Python script execution failed for customer ID #{customer.id}. Exit status: #{status.exitstatus}")
+            Rails.logger.error("ExtractCompanyInfoWorker: stderr: #{stderr}")
 
             # Python側からのエラーコードを解析（例: QUOTA_EXCEEDED）
             begin
@@ -142,15 +141,15 @@ class ExtractCompanyInfoWorker
             end
 
             if error_code == "QUOTA_EXCEEDED"
-              Sidekiq.logger.warn("ExtractCompanyInfoWorker: Gemini APIクォータ超過が検出されたため処理を一時停止します")
+              Rails.logger.warn("ExtractCompanyInfoWorker: Gemini APIクォータ超過が検出されたため処理を一時停止します")
               quota_exceeded = true
               extract_tracking.update(status: "抽出停止（API制限）")
               break
             end
           end
         rescue => e
-          Sidekiq.logger.error("ExtractCompanyInfoWorker: Error processing customer #{customer.id}: #{e.class} - #{e.message}")
-          Sidekiq.logger.error(e.backtrace.join("\n")) if e.backtrace
+          Rails.logger.error("ExtractCompanyInfoWorker: Error processing customer #{customer.id}: #{e.class} - #{e.message}")
+          Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
           failure_count += 1
           extract_tracking.update(
             failure_count: failure_count,
@@ -159,7 +158,7 @@ class ExtractCompanyInfoWorker
         
         # API呼び出し間隔を空ける（最後の顧客処理後とbreakで終了する場合はスリープしない）
         unless quota_exceeded || index == customer_count - 1
-          Sidekiq.logger.info("ExtractCompanyInfoWorker: API呼び出し間隔のため5秒待機中... (#{index + 1}/#{customer_count})")
+          Rails.logger.info("ExtractCompanyInfoWorker: API呼び出し間隔のため5秒待機中... (#{index + 1}/#{customer_count})")
           sleep(5)
         end
       end
@@ -172,8 +171,8 @@ class ExtractCompanyInfoWorker
         )
       end
     rescue => e
-      Sidekiq.logger.error("ExtractCompanyInfoWorker: Fatal error: #{e.class} - #{e.message}")
-      Sidekiq.logger.error(e.backtrace.join("\n")) if e.backtrace
+      Rails.logger.error("ExtractCompanyInfoWorker: Fatal error: #{e.class} - #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
     end
   end
 
@@ -181,7 +180,7 @@ class ExtractCompanyInfoWorker
     stdout_str = +""
     stderr_str = +""
     status = nil
-    Sidekiq.logger.debug("ExtractCompanyInfoWorker: Python script start")
+    Rails.logger.debug("ExtractCompanyInfoWorker: Python script start")
     require 'open3'
     
     Open3.popen3({ "RAILS_ENV" => Rails.env, "PYTHONIOENCODING" => "utf-8" }, *command) do |stdin, stdout, stderr, wait_thr|
@@ -215,7 +214,7 @@ class ExtractCompanyInfoWorker
           Process.kill("KILL", pid) rescue nil
           wait_thr.join
         end
-        Sidekiq.logger.warn("ExtractCompanyInfoWorker: Python script timeout after #{timeout} seconds")
+        Rails.logger.warn("ExtractCompanyInfoWorker: Python script timeout after #{timeout} seconds")
       end
 
       out_reader.join
