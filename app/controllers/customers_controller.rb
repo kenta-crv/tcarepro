@@ -586,7 +586,7 @@ def destroy
 
   def extract_company_info
     start_time = Time.current
-    Rails.logger.info("extract_company_info called.")
+    Rails.logger.info("extract_company_info called (SYNC MODE).")
     industry_name = params[:industry_name]
     total_count = params[:count]
 
@@ -597,7 +597,23 @@ def destroy
       failure_count:  0,
       status:         "抽出中"
     )
-    ExtractCompanyInfoWorker.perform_async(tracking.id)
+
+    # 同期実行に変更
+    # ExtractCompanyInfoWorker.perform_async(tracking.id)
+    begin
+      ExtractCompanyInfoWorker.new.perform(tracking.id)
+      tracking.reload
+      
+      if tracking.status == "抽出完了"
+        flash[:notice] = "抽出処理が正常に完了しました。（#{tracking.success_count}件成功 / #{tracking.failure_count}件失敗）"
+      else
+        flash[:alert] = "抽出処理が中断または失敗しました。（ステータス: #{tracking.status}）"
+      end
+    rescue => e
+      Rails.logger.error("Sync execution failed: #{e.message}")
+      flash[:alert] = "システムエラーにより抽出処理が失敗しました。"
+    end
+
     elapsed = ((Time.current - start_time) * 1000).round(2)
     Rails.logger.info("extract_company_info: completed in #{elapsed}ms (tracking_id: #{tracking.id})")
     redirect_to draft_path
