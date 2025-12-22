@@ -79,12 +79,12 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
-            request_options={'timeout': 120},
+            timeout=120,
         )
         resp = _invoke_with_retry(
             llm,
             prompt.format(company=state.company, location=state.location),
-            tools=[GenAITool(google_search={})],
+            tools=[{'google_search': {}}],
         )
         api_elapsed = time.time() - api_start
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
@@ -224,7 +224,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
-            request_options={'timeout': 120},
+            timeout=120,
         ).with_structured_output(URLScoreList)
         resp: URLScoreList = _invoke_with_retry(
             llm,
@@ -306,7 +306,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
-            request_options={'timeout': 120},
+            timeout=120,
         ).with_structured_output(LLMCompanyInfo)
         resp: LLMCompanyInfo = _invoke_with_retry(
             llm,
