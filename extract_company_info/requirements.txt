@@ -1,7 +1,40 @@
+# --- AI & Agent Core ---
+google-generativeai
 google-genai
-python-dotenv
+langchain-google-genai
+langchain-core
+langgraph
+crawl4ai
+
+# --- Data & Validation ---
 pydantic
 pydantic-settings
-langchain-google-genai
-crawl4ai==0.6.3
-langgraph
+python-dotenv
+marshmallow
+pandas
+
+# --- Web Scraping & Browser Control ---
+requests
+beautifulsoup4
+selenium
+webdriver-manager
+tldextract
+urllib3
+chardet
+lxml
+aiohttp
+chromedriver-binary
+
+# --- Web App & Scheduler ---
+flask
+schedule
+apscheduler
+gunicorn
+
+# --- Image Processing & Visualization ---
+matplotlib
+Pillow
+
+# --- Testing ---
+pytest
+pytest-mock
