@@ -24,6 +24,10 @@ html
              li
               - if sender_signed_in?
                 = link_to "取引先マイページ", sender_path(current_sender)
+             br
+             li
+              - if sender_signed_in?
+                = link_to "メール認証統計", sender_sender_okurite_email_verification_path(sender_id: current_sender.id)
     main
       = yield
       / = debug(params) if Rails.env.development?

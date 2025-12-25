@@ -6,7 +6,15 @@ class AutoformSchedulerWorker
   sidekiq_options retry: 3, queue: 'default', backtrace: true
 
   PYTHON_SCRIPT_PATH = Rails.root.join('autoform', 'bootio.py').to_s
-  PYTHON_EXECUTABLE = 'python3'
+  # Try virtual environment first, then system Python
+  VENV_PYTHON = Rails.root.join('autoform', '.venv', 'Scripts', 'python.exe').to_s
+  PYTHON_EXECUTABLE = if File.exist?(VENV_PYTHON)
+    VENV_PYTHON
+  elsif RUBY_PLATFORM =~ /mswin|mingw|cygwin/
+    'python'  # Windows uses 'python', not 'python3'
+  else
+    'python3'  # Unix/Linux uses 'python3'
+  end
 
   def perform(contact_tracking_id)
     contact_tracking = ContactTracking.find_by(id: contact_tracking_id)
@@ -23,6 +31,15 @@ class AutoformSchedulerWorker
 
     ContactTracking.transaction do
       begin
+        # Check if this is a scheduled submission (自動送信予定)
+        # If so, let the Python bootio.py service handle it (it polls the database)
+        # The Sidekiq worker should not execute Python for scheduled submissions
+        if contact_tracking.status == '自動送信予定'
+          Sidekiq.logger.info "AutoformSchedulerWorker: ContactTracking ID #{contact_tracking_id} is scheduled. Python bootio.py service will handle execution. Skipping Python call."
+          # Don't change status - let Python service handle it
+          return
+        end
+
         # 送信開始状態の記録
         contact_tracking.update!(
           status: '送信中',
@@ -48,7 +65,6 @@ class AutoformSchedulerWorker
             return
           end
         end
-
 
         # Always use the most recently updated inquiry
         inquiry = Inquiry.order(updated_at: :desc).first
@@ -146,7 +162,19 @@ class AutoformSchedulerWorker
   end
 
   def python_executable_available?
-    PYTHON_EXECUTABLE && (File.exist?(PYTHON_EXECUTABLE) || system("which #{PYTHON_EXECUTABLE} > /dev/null 2>&1"))
+    return false unless PYTHON_EXECUTABLE
+    
+    # Check if it's an absolute path that exists
+    return true if File.exist?(PYTHON_EXECUTABLE)
+    
+    # Check if it's available in PATH (works on both Windows and Unix)
+    if RUBY_PLATFORM =~ /mswin|mingw|cygwin/
+      # Windows: use 'where' command
+      system("where #{PYTHON_EXECUTABLE} >nul 2>&1")
+    else
+      # Unix/Linux: use 'which' command
+      system("which #{PYTHON_EXECUTABLE} > /dev/null 2>&1")
+    end
   end
 
   def execute_python_with_timeout(command, contact_tracking_id, timeout: 300)

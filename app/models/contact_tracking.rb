@@ -55,6 +55,22 @@ class ContactTracking < ApplicationRecord
     status == '送信済' || status == '送信成功'
   end
 
+  # メール受信判定
+  def email_received?
+    email_received == true
+  end
+
+  # メール受信待ち判定
+  def waiting_for_email?
+    success? && !email_received?
+  end
+
+  # メール受信までの時間（秒）
+  def email_receipt_duration
+    return nil unless email_received? && sended_at.present? && email_received_at.present?
+    email_received_at - sended_at
+  end
+
   # 送信処理中判定
   def processing?
     status == '処理中' || status == '送信中'

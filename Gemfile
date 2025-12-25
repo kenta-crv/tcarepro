@@ -57,7 +57,7 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '>= 3.2', '< 4.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -94,7 +94,7 @@ gem 'simple_enum'
 
 #gem 'will_paginate'
 
-gem 'haml-rails'
+gem 'haml-rails', '~> 2.0'
 
 gem 'ransack'
 
@@ -135,9 +135,10 @@ gem 'sidekiq', '~> 5.2'
 gem 'sidekiq-cron'
 
 gem 'net-imap', '~>0.3.9'
+gem 'mail', '~> 2.8'
 
 # Twilio for call handling
 gem 'twilio-ruby'
 
-# Google Cloud Speech for transcription
-gem 'google-cloud-speech'
+# Google Cloud Speech for transcription (older version to satisfy deps)
+gem 'google-cloud-speech', '~> 0.36.0'

@@ -20,7 +20,10 @@ import traceback
 import chromedriver_binary
 
 options = webdriver.ChromeOptions()
-options.add_argument('--headless')
+# Temporarily disable headless mode for debugging
+# options.add_argument('--headless')
+options.add_argument('--disable-blink-features=AutomationControlled')
+options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
 #options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 start = time.perf_counter()
 serv = Service(ChromeDriverManager().install())
@@ -109,6 +112,9 @@ class Place_enter():
                 placeholder = element.get('placeholder')
                 if placeholder:
                     data['placeholder'] = placeholder
+                element_id = element.get('id')
+                if element_id:
+                    data['id'] = element_id
 
             return data
 
@@ -116,6 +122,9 @@ class Place_enter():
             data = {'object': 'textarea', 'name': element.get('name')}
             if 'class' in element.attrs:
                 data['class'] = element.get('class')
+            element_id = element.get('id')
+            if element_id:
+                data['id'] = element_id
             return data
 
         def extract_select_data(element):
@@ -123,6 +132,9 @@ class Place_enter():
             data = {'object': 'select', 'name': element.get('name')}
             if 'class' in element.attrs:
                 data['class'] = element.get('class')
+            element_id = element.get('id')
+            if element_id:
+                data['id'] = element_id
             data_list.append(data)
             for option in element.find_all('option'):
                 option_data = {'object': 'option', 'link': element.get('name'), 'value': option.get('value')}
@@ -167,40 +179,93 @@ class Place_enter():
             print("extract_elements_from_dtdl: " + str(data_list))
             return data_list
 
-        def find_and_add_to_namelist(tables):
+        def find_and_add_to_namelist(table):
             data_dict = {}  # name をキーとしてデータを保存（後の値が上書きされる）
+            data_list_by_id = []  # IDベースのデータ（nameがない場合）
 
-            for row in tables.find_all('tr', recursive=False):  # ネストされた tr を無視
-                th = row.find('th')  # `th` がある場合はそれを優先
+            # Try multiple table row patterns
+            rows = table.find_all('tr', recursive=False)
+            if not rows:
+                # Try finding rows with recursive search
+                rows = table.find_all('tr')
+            
+            print(f"Found {len(rows)} rows in table")
+
+            for row_idx, row in enumerate(rows):
+                # Get label from th (header cell)
+                th = row.find('th')
                 label_text = th.get_text(strip=True) if th else ""
+                
+                # Also check for label in first td if no th
+                if not label_text:
+                    first_td = row.find('td')
+                    if first_td:
+                        label_text = first_td.get_text(strip=True)
 
+                # Find all form elements in this row
                 for elem_type in ['input', 'textarea', 'select']:
-                    for col in row.find_all('td', recursive=False):  # ネストされた `td` を無視
-                        elem = col.find(elem_type)
-                        if elem and 'name' in elem.attrs:
-                            name = elem['name']
+                    elements = row.find_all(elem_type)
+                    
+                    for elem in elements:
+                        # Get name attribute (primary identifier)
+                        name = elem.get('name', '')
+                        element_id = elem.get('id', '')
+                        
+                        # If no name, try to use ID or create a unique identifier
+                        if not name:
+                            if element_id:
+                                name = f"id_{element_id}"
+                            else:
+                                # Create unique identifier based on position and type
+                                name = f"field_{row_idx}_{elem_type}_{len(data_list_by_id)}"
+                        
+                        # Get label text from various sources
+                        text_from_td = ""
+                        for td in row.find_all('td'):
+                            td_text = td.get_text(strip=True)
+                            if td_text and td_text != label_text:
+                                text_from_td = td_text
+                                break
+                        
+                        final_label = label_text if label_text else text_from_td
+                        
+                        # If still no label, try to get from parent td
+                        if not final_label:
+                            try:
+                                parent_td = elem.find_parent('td')
+                                if parent_td:
+                                    final_label = parent_td.get_text(strip=True)
+                            except:
+                                pass
 
-                            # `label` の取得方法を調整（th > td の順で取得）
-                            text_from_td = col.get_text(strip=True)
-                            final_label = label_text if label_text else text_from_td
+                        data = {
+                            'object': elem_type,
+                            'name': name,
+                            'label': final_label,
+                        }
 
-                            data = {
-                                'object': elem_type,
-                                'name': name,
-                                'label': final_label,  # より近い `th` のテキストを使用
-                            }
+                        if elem_type == 'input':
+                            data['type'] = elem.get('type', 'text')
+                            data['value'] = elem.get('value', '')
+                            placeholder = elem.get('placeholder')
+                            if placeholder:
+                                data['placeholder'] = placeholder
+                        
+                        if element_id:
+                            data['id'] = element_id
 
-                            if elem_type == 'input':
-                                data['type'] = elem.get('type', 'text')  # `None` を防ぐ
-                                data['value'] = elem.get('value', '')  # `None` を防ぐ
-
-                            # **既に `name` が存在する場合、後の値で上書き**
+                        # Store by name if it's a real name attribute
+                        if 'name' in elem.attrs and elem['name']:
                             data_dict[name] = data
+                            print(f"Added field by name: {data}")
+                        else:
+                            # Store by ID or generated name for fields without name attribute
+                            data_list_by_id.append(data)
+                            print(f"Added field by ID/position: {data}")
 
-                            print(f"Added/Updated: {data}")
-
-            # **辞書の値だけをリストに変換**
-            data_list = list(data_dict.values())
+            # Combine both lists
+            data_list = list(data_dict.values()) + data_list_by_id
+            print(f"Total fields found: {len(data_list)}")
             return data_list
 
 
@@ -228,6 +293,17 @@ class Place_enter():
         self.namelist = namelist
         self.logicer(self.namelist)
         print("namelist" + str(self.namelist))
+        
+        # Debug: Print mapped fields
+        print("=" * 50)
+        print("FIELD MAPPING RESULTS:")
+        print(f"  company: {self.company}")
+        print(f"  manager: {self.manager}")
+        print(f"  phone: {self.phone}")
+        print(f"  mail: {self.mail}")
+        print(f"  address: {self.address}")
+        print(f"  body: {self.body}")
+        print("=" * 50)
 
 
     def target_form(self):
@@ -253,148 +329,259 @@ class Place_enter():
         else:
             return 0
 
+    def _matches_any(self, text, patterns):
+        """Check if any pattern matches in text (case-insensitive)"""
+        if not text:
+            return False
+        text_lower = text.lower()
+        for pattern in patterns:
+            if pattern.lower() in text_lower:
+                return True
+        return False
+
     def logicer(self, lists):
         for olist in lists:
             label = olist.get('label', '')
             name = olist.get('name', '')
-            if olist["object"] == "input":
-                self.subjects = olist["name"]
-            if olist["object"] == "textarea":
-                self.subjects = olist["name"]
+            placeholder = olist.get('placeholder', '')
+            element_id = olist.get('id', '')
+            
+            # Combine all text sources for matching
+            all_text = ' '.join([str(x) for x in [name, label, placeholder, element_id] if x])
+            
+            # Determine field identifier: use name if available, otherwise use element_id
+            # Skip generated identifiers (id_* or field_*)
+            if name and not name.startswith('id_') and not name.startswith('field_'):
+                field_identifier = name
+            elif element_id:
+                field_identifier = element_id
+            else:
+                field_identifier = name if name else ''
+            
+            # Note: subjects assignment is handled in specific field detection below
+            # Don't assign subjects for all inputs/textareas - only for specific inquiry fields
 
-            print("label: " + label)
-            print("name: " + name)
+            print("label: " + str(label))
+            print("name: " + str(name))
+            if placeholder:
+                print("placeholder: " + placeholder)
+            if element_id:
+                print("id: " + element_id)
 
-            if name:
+            # Process if we have a name attribute or ID
+            if field_identifier:
                 if olist["object"] == "input":
-                    if "会社" in name or "社名" in name or "店名" in name or "社" in name:
-                        self.company = olist["name"]
-                    elif "会社ふりがな" in name or "会社フリガナ" in name:
-                        self.company_kana = olist["name"]
-                    elif "名前" in name or "担当者" in name or "氏名" in name:
-                        self.manager = olist["name"]
-                    elif "ふりがな" in name or "フリガナ" in name:
-                        self.manager_kana = olist["name"]
-                    elif "郵便番号" in name:
-                        self.zip = olist["name"]
-                    elif "住所" in name:
-                        self.address = olist["name"]
-                    elif "都道府県" in name:
-                        self.pref = olist["name"]
-                    elif "市区町村" in name:
-                        self.address_city = olist["name"]
-                    elif "番地" in name:
-                        self.address_thin = olist["name"]
-                    elif "電話番号" in name:
-                        self.phone = olist["name"]
-                    elif ("メールアドレス" in name or "mail" in name) and "確認" not in name:
-                        if(self.mail):
-                            self.mail_c = olist["name"]
-                        else:
-                            self.mail = olist["name"]
-                    elif ("メールアドレス" in name or "mail" in name) and "確認" in name:
-                        self.mail_c = olist["name"]
-                    elif "用件" in name or "お問い合わせ" in name or "本文" in name or "内容" in name:
-                        self.subjects = olist["name"]
-                    elif olist["type"] == "radio":
-                        self.radio.append({"radioname": olist["name"], "value": olist["value"]})
-                    elif olist["type"] == "checkbox":
-                        self.chk.append({"checkname": olist["name"], "value": olist["value"]})
+                    # Company name detection - enhanced for Japanese forms
+                    if (self._matches_any(name, ["会社", "社名", "店名", "company", "corp", "御社名", "会社名"]) or
+                        self._matches_any(label, ["会社", "社名", "店名", "御社名", "会社名", "御社名または店名"]) or
+                        self._matches_any(placeholder, ["会社", "社名", "店名", "御社名"]) or
+                        self._matches_any(element_id, ["company", "corp", "company_name"])):
+                        if not self.company:  # Only set if not already set
+                            self.company = field_identifier
+                    # Company kana detection
+                    elif (self._matches_any(name, ["会社ふりがな", "会社フリガナ", "company_kana", "corp_kana"]) or
+                          self._matches_any(label, ["会社ふりがな", "会社フリガナ"]) or
+                          self._matches_any(placeholder, ["会社ふりがな", "会社フリガナ"])):
+                        if not self.company_kana:
+                            self.company_kana = field_identifier
+                    # Manager/Name detection (English: name, manager, contact_name, etc.)
+                    elif (self._matches_any(name, ["名前", "担当者", "氏名", "担当者名", "name", "manager", "contact_name", "person_name", "user_name"]) or
+                          self._matches_any(label, ["名前", "担当者", "氏名", "担当者名"]) or
+                          self._matches_any(placeholder, ["名前", "担当者", "氏名", "担当者名", "name"]) or
+                          self._matches_any(element_id, ["name", "manager", "contact_name", "person_name"])):
+                        if not self.manager:
+                            self.manager = field_identifier
+                    # Manager kana detection (English: kana, furigana, name_kana)
+                    elif (self._matches_any(name, ["ふりがな", "フリガナ", "kana", "furigana", "name_kana", "manager_kana"]) or
+                          self._matches_any(label, ["ふりがな", "フリガナ"]) or
+                          self._matches_any(placeholder, ["ふりがな", "フリガナ", "kana"]) or
+                          self._matches_any(element_id, ["kana", "furigana"])):
+                        if not self.manager_kana:
+                            self.manager_kana = field_identifier
+                    # Zip code detection
+                    elif (self._matches_any(name, ["郵便番号", "zip", "postal", "postcode", "zipcode"]) or
+                          self._matches_any(label, ["郵便番号"]) or
+                          self._matches_any(placeholder, ["郵便番号", "zip"]) or
+                          self._matches_any(element_id, ["zip", "postal", "postcode"])):
+                        if not self.zip:
+                            self.zip = field_identifier
+                    # Address detection (English: addr, address, street, location)
+                    elif (self._matches_any(name, ["住所", "ご住所", "addr", "address", "street", "location"]) or
+                          self._matches_any(label, ["住所", "ご住所"]) or
+                          self._matches_any(placeholder, ["住所", "ご住所", "address", "addr"]) or
+                          self._matches_any(element_id, ["addr", "address", "street"])):
+                        if not self.address:
+                            self.address = field_identifier
+                    # Prefecture detection
+                    elif (self._matches_any(name, ["都道府県", "pref", "prefecture"]) or
+                          self._matches_any(label, ["都道府県"]) or
+                          self._matches_any(placeholder, ["都道府県"])):
+                        if not self.pref:
+                            self.pref = field_identifier
+                    # City detection
+                    elif (self._matches_any(name, ["市区町村", "city"]) or
+                          self._matches_any(label, ["市区町村"]) or
+                          self._matches_any(placeholder, ["市区町村"])):
+                        if not self.address_city:
+                            self.address_city = field_identifier
+                    # Street number detection
+                    elif (self._matches_any(name, ["番地", "street_number", "building"]) or
+                          self._matches_any(label, ["番地"]) or
+                          self._matches_any(placeholder, ["番地"])):
+                        if not self.address_thin:
+                            self.address_thin = field_identifier
+                    # Phone detection (English: tel, phone, telephone, mobile)
+                    elif (self._matches_any(name, ["電話番号", "tel", "phone", "telephone", "mobile", "cell"]) or
+                          self._matches_any(label, ["電話番号"]) or
+                          self._matches_any(placeholder, ["電話番号", "tel", "phone"]) or
+                          self._matches_any(element_id, ["tel", "phone", "telephone"])):
+                        if not self.phone:
+                            self.phone = field_identifier
+                    # Email detection (English: mail, email, e-mail)
+                    elif (self._matches_any(name, ["メールアドレス", "mail", "email", "e-mail"]) and 
+                          not self._matches_any(name, ["確認", "confirm", "verify"]) and
+                          not self._matches_any(label, ["確認"]) and
+                          not self._matches_any(placeholder, ["確認", "confirm"])):
+                        if not self.mail:
+                            self.mail = field_identifier
+                        elif not self.mail_c:
+                            self.mail_c = field_identifier
+                    # Email confirmation detection
+                    elif (self._matches_any(name, ["メールアドレス", "mail", "email", "e-mail"]) and
+                          (self._matches_any(name, ["確認", "confirm", "verify"]) or
+                           self._matches_any(label, ["確認"]) or
+                           self._matches_any(placeholder, ["確認", "confirm"]))):
+                        if not self.mail_c:
+                            self.mail_c = field_identifier
+                    # Subject/Content detection for input
+                    elif (self._matches_any(name, ["用件", "お問い合わせ", "本文", "内容", "subject", "content", "message", "inquiry"]) or
+                          self._matches_any(label, ["用件", "お問い合わせ", "本文", "内容"]) or
+                          self._matches_any(placeholder, ["用件", "お問い合わせ", "本文", "内容", "subject", "message"]) or
+                          self._matches_any(element_id, ["subject", "content", "message"])):
+                        if not self.subjects:
+                            self.subjects = field_identifier
+                    # Radio button
+                    elif olist.get("type") == "radio":
+                        if field_identifier:
+                            self.radio.append({"radioname": field_identifier, "value": olist.get("value", "")})
+                    # Checkbox
+                    elif olist.get("type") == "checkbox":
+                        if field_identifier:
+                            self.chk.append({"checkname": field_identifier, "value": olist.get("value", "")})
                 elif olist["object"] == "textarea":
-                    if "用件" in name or "お問い合わせ" in name or "本文" in name or "内容" in name:
-                        self.body = olist["name"]
+                    # Subject/Content detection for textarea
+                    if (self._matches_any(name, ["用件", "お問い合わせ", "本文", "内容", "subject", "content", "message", "body", "inquiry"]) or
+                        self._matches_any(label, ["用件", "お問い合わせ", "本文", "内容"]) or
+                        self._matches_any(placeholder, ["用件", "お問い合わせ", "本文", "内容", "subject", "message", "body"]) or
+                        self._matches_any(element_id, ["subject", "content", "message", "body"])):
+                        if not self.body:
+                            self.body = field_identifier
                 elif olist["object"] == "select":
-                    if "都道府県" in name:
-                        self.pref = olist["name"]
-                    if "用件" in name or "お問い合わせ" in name or "本文" in name or "内容" in name:
-                        self.subjects = olist["name"]
-
-            if label:
-                if olist["object"] == "input":
-                    if "会社" in label or "社名" in label or "店名" in label or "社" in label:
-                        self.company = olist["name"]
-                    elif "会社ふりがな" in label or "会社フリガナ" in label:
-                        self.company_kana = olist["name"]
-                    elif "名前" in label or "担当者" in label or "氏名" in label:
-                        self.manager = olist["name"]
-                    elif "ふりがな" in label or "フリガナ" in label:
-                        self.manager_kana = olist["name"]
-                    elif "郵便番号" in label:
-                        self.zip = olist["name"]
-                    elif "住所" in label:
-                        self.address = olist["name"]
-                    elif "都道府県" in label:
-                        self.pref = olist["name"]
-                    elif "市区町村" in label:
-                        self.address_city = olist["name"]
-                    elif "番地" in label:
-                        self.address_thin = olist["name"]
-                    elif "電話番号" in label:
-                        self.phone = olist["name"]
-                    elif ("メールアドレス" in label or "mail" in label) and "確認" not in label:
-                        if(self.mail):
-                            self.mail_c = olist["name"]
-                        else:
-                            self.mail = olist["name"]
-                        self.mail = olist["name"]
-                    elif ("メールアドレス" in label or "mail" in label) and "確認" in label:
-                        self.mail_c = olist["name"]
-                    elif "用件" in label or "お問い合わせ" in label or "本文" in label or "内容" in label:
-                        self.subjects = olist["name"]
-                    elif olist["type"] == "radio":
-                        self.radio.append({"radioname": olist["name"], "value": olist["value"]})
-                    elif olist["type"] == "checkbox":
-                        self.chk.append({"checkname": olist["name"], "value": olist["value"]})
-                elif olist["object"] == "textarea":
-                    if "用件" in label or "お問い合わせ" in label or "本文" in label or "内容" in label:
-                        self.body = olist["name"]
-                elif olist["object"] == "select":
-                    if "都道府県" in label:
-                        self.pref = olist["name"]
-                    if "用件" in label or "お問い合わせ" in label or "本文" in label or "内容" in label:
-                        self.subjects = olist["name"]
+                    # Prefecture detection for select
+                    if (self._matches_any(name, ["都道府県", "pref", "prefecture"]) or
+                        self._matches_any(label, ["都道府県"]) or
+                        self._matches_any(placeholder, ["都道府県"])):
+                        if not self.pref:
+                            self.pref = field_identifier
+                    # Subject/Content detection for select
+                    if (self._matches_any(name, ["用件", "お問い合わせ", "本文", "内容", "subject", "content"]) or
+                        self._matches_any(label, ["用件", "お問い合わせ", "本文", "内容"]) or
+                        self._matches_any(placeholder, ["用件", "お問い合わせ", "本文", "内容"])):
+                        if not self.subjects:
+                            self.subjects = field_identifier
 
 
     def go_selenium(self):
         # webdriver.Chrome(...) を呼び出して、あらかじめ用意されたサービスオブジェクト（serv）とオプション（ヘッドレスなどの設定）を利用してブラウザを起動
         driver = webdriver.Chrome(service=serv,options=options)
-        driver.get(self.endpoint)
+        # Set timeouts to handle slow-loading pages
+        driver.set_page_load_timeout(180)  # 3 minutes for page load
+        driver.implicitly_wait(10)  # 10 seconds for element finding
+        
+        try:
+            print(f"Navigating to: {self.endpoint}")
+            driver.get(self.endpoint)
+            print("Page loaded successfully")
+        except Exception as e:
+            print(f"Error loading page: {e}")
+            driver.close()
+            return 'NG'
+        
         time.sleep(3)
 
-        def input_text_field(driver, field_name, value):
-            """テキストフィールドに値を入力するための関数"""
-            print(f"Field Name: {field_name}, Value: {value}")
-            if field_name and value:
+        def input_text_field(driver, field_identifier, value):
+            """テキストフィールドに値を入力するための関数（NAMEまたはIDで検索）"""
+            # Skip if field_identifier is empty
+            if not field_identifier or not value:
+                return
+            
+            print(f"Field Name: {field_identifier}, Value: {value}")
+            try:
+                # Try to find by NAME first, then by ID
+                element = None
                 try:
-                    driver.find_element(By.NAME, field_name).send_keys(value)
-                except Exception as e:
-                    print(f"Error inputting into {field_name}: {e}")
-
-        def select_radio_button(driver, radio_name):
-            """ラジオボタンを選択するための関数"""
-            try:
-                radian = driver.find_elements(By.XPATH, f"//input[@type='radio' and @name='{radio_name}']")
-                if radian:
-                    if not radian[0].is_selected():
-                        radian[0].click()
+                    element = driver.find_element(By.NAME, field_identifier)
+                except:
+                    try:
+                        element = driver.find_element(By.ID, field_identifier)
+                    except:
+                        # Field not found, skip silently
+                        return
+                
+                # Check if element is enabled and not read-only
+                if not element.is_enabled() or element.get_attribute('readonly'):
+                    print(f"Skipping {field_identifier}: field is disabled or read-only")
+                    return
+                
+                # Clear and fill the field
+                element.clear()
+                element.send_keys(value)
             except Exception as e:
-                print(f"Error clicking radio button {radio_name}: {e}")
+                # Only print error if it's not a "not found" error
+                if "no such element" not in str(e).lower() and "could not be located" not in str(e).lower():
+                    print(f"Error inputting into {field_identifier}: {e}")
 
-        def select_checkbox(driver, checkbox_name):
-            """チェックボックスを選択するための関数"""
+        def select_radio_button(driver, radio_identifier):
+            """ラジオボタンを選択するための関数（NAMEまたはIDで検索）"""
+            if not radio_identifier:
+                return
             try:
-                checkboxes = driver.find_elements(By.XPATH, f"//input[@type='checkbox' and @name='{checkbox_name}']")
+                # Try by name first, then by id
+                radian = driver.find_elements(By.XPATH, f"//input[@type='radio' and (@name='{radio_identifier}' or @id='{radio_identifier}')]")
+                if radian:
+                    # Try normal click first, fallback to JavaScript click
+                    try:
+                        if not radian[0].is_selected():
+                            radian[0].click()
+                    except:
+                        # If normal click fails, try JavaScript click
+                        driver.execute_script("arguments[0].click();", radian[0])
+            except Exception as e:
+                print(f"Error clicking radio button {radio_identifier}: {e}")
+
+        def select_checkbox(driver, checkbox_identifier):
+            """チェックボックスを選択するための関数（NAMEまたはIDで検索）"""
+            if not checkbox_identifier:
+                return
+            try:
+                # Try by name first, then by id
+                checkboxes = driver.find_elements(By.XPATH, f"//input[@type='checkbox' and (@name='{checkbox_identifier}' or @id='{checkbox_identifier}')]")
                 for checkbox in checkboxes:
                     if not checkbox.is_selected():
-                        checkbox.click()
+                        # Try normal click first, fallback to JavaScript click
+                        try:
+                            checkbox.click()
+                        except:
+                            driver.execute_script("arguments[0].click();", checkbox)
             except Exception as e:
-                print(f"Error clicking checkbox {checkbox_name}: {e}")
+                print(f"Error clicking checkbox {checkbox_identifier}: {e}")
 
         
         def fill_all_fields(driver, formdata):
             """
             すべての <input> フィールドに formdata['company'] を入力し、
             すべての <textarea> フィールドに formdata['subjects'] を入力する。
+            （フォールバック用：特定のフィールドが検出されなかった場合のみ使用）
             """
             try:
                 # すべての <input> タグに `company` を入力
@@ -403,17 +590,33 @@ class Place_enter():
                     input_type = input_field.get_attribute("type")
 
                     # `hidden` や `submit` タイプのものはスキップ
-                    if input_type not in ["hidden", "submit", "button", "reset"]:
-                        input_field.clear()
-                        input_field.send_keys(formdata['company'])
-                        print(f"Filled input field: {input_field.get_attribute('name')} with {formdata['company']}")
+                    if input_type not in ["hidden", "submit", "button", "reset", "checkbox", "radio"]:
+                        # Skip if field is disabled or read-only
+                        if not input_field.is_enabled() or input_field.get_attribute('readonly'):
+                            continue
+                        try:
+                            input_field.clear()
+                            input_field.send_keys(formdata['company'])
+                            field_name = input_field.get_attribute('name') or input_field.get_attribute('id') or 'unnamed'
+                            print(f"Filled input field: {field_name} with {formdata['company']}")
+                        except Exception as e:
+                            # Skip fields that can't be filled (e.g., invalid element state)
+                            continue
 
                 # すべての <textarea> タグに `subjects` を入力
                 textarea_fields = driver.find_elements(By.TAG_NAME, "textarea")
                 for textarea in textarea_fields:
-                    textarea.clear()
-                    textarea.send_keys(formdata['subjects'])
-                    print(f"Filled textarea field: {textarea.get_attribute('name')} with {formdata['subjects']}")
+                    # Skip if field is disabled or read-only
+                    if not textarea.is_enabled() or textarea.get_attribute('readonly'):
+                        continue
+                    try:
+                        textarea.clear()
+                        textarea.send_keys(formdata['subjects'])
+                        field_name = textarea.get_attribute('name') or textarea.get_attribute('id') or 'unnamed'
+                        print(f"Filled textarea field: {field_name} with {formdata['subjects']}")
+                    except Exception as e:
+                        # Skip fields that can't be filled
+                        continue
 
             except Exception as e:
                 print(f"Error filling fields: {e}")
@@ -426,7 +629,11 @@ class Place_enter():
                 print("iframe not found")
                 print(e)
             driver.switch_to.frame(iframe)
-            fill_all_fields(driver, self.formdata)
+            # Only use fill_all_fields as fallback if we don't have proper field mappings
+            has_proper_mappings = bool(self.company or self.manager or self.phone or self.mail or self.address or self.body)
+            if not has_proper_mappings:
+                print("No proper field mappings detected, using fallback fill_all_fields")
+                fill_all_fields(driver, self.formdata)
             # bootioから送信されたフォーム内容を入力
             input_text_field(driver, self.company, self.formdata['company'])
             input_text_field(driver, self.company_kana, self.formdata['company_kana'])
@@ -555,9 +762,25 @@ class Place_enter():
             try:
                 # フォームの本文欄に、フォームデータから取得した内容を入力
                 if self.body != '':
-                    driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
+                    try:
+                        # Try by NAME first, then by ID
+                        element = driver.find_element(By.NAME, self.body)
+                    except:
+                        try:
+                            element = driver.find_element(By.ID, self.body)
+                        except:
+                            print(f"Body field '{self.body}' not found")
+                            return
+                    
+                    # Check if element is enabled and not read-only
+                    if not element.is_enabled() or element.get_attribute('readonly'):
+                        print(f"Body field '{self.body}' is disabled or read-only")
+                        return
+                    
+                    element.clear()
+                    element.send_keys(self.formdata['body'])
             except Exception as e:
-                print(f"Error encountered: {e}")
+                print(f"Error filling body field: {e}")
                 # ここに追加のエラー処理を書くことができます。
 
             # 複数の候補テキスト（例：「確認」、「送信」）を用いて、該当するボタンを XPath で探索し、見つかり次第クリックします。
@@ -653,7 +876,11 @@ class Place_enter():
             """
 
         else:
-            fill_all_fields(driver, self.formdata)
+            # Only use fill_all_fields as fallback if we don't have proper field mappings
+            has_proper_mappings = bool(self.company or self.manager or self.phone or self.mail or self.address or self.body)
+            if not has_proper_mappings:
+                print("No proper field mappings detected, using fallback fill_all_fields")
+                fill_all_fields(driver, self.formdata)
             input_text_field(driver, self.company, self.formdata['company'])
             print("company:"+self.company)
             input_text_field(driver, self.company_kana, self.formdata['company_kana'])
@@ -766,9 +993,25 @@ class Place_enter():
 
             try:
                 if self.body != '':
-                    driver.find_element(By.NAME,self.body).send_keys(self.formdata['body'])
+                    try:
+                        # Try by NAME first, then by ID
+                        element = driver.find_element(By.NAME, self.body)
+                    except:
+                        try:
+                            element = driver.find_element(By.ID, self.body)
+                        except:
+                            print(f"Body field '{self.body}' not found")
+                            return
+                    
+                    # Check if element is enabled and not read-only
+                    if not element.is_enabled() or element.get_attribute('readonly'):
+                        print(f"Body field '{self.body}' is disabled or read-only")
+                        return
+                    
+                    element.clear()
+                    element.send_keys(self.formdata['body'])
             except Exception as e:
-                print(f"Error encountered: {e}")
+                print(f"Error filling body field: {e}")
                 # ここに追加のエラー処理を書くことができます。
 
 

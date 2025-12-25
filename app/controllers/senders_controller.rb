@@ -1,6 +1,6 @@
 class SendersController < ApplicationController
   before_action :authenticate_worker_or_admin!, except: [:show]
-  before_action :set_sender, only: [:edit, :update]
+  before_action :set_sender, only: [:show, :edit, :update]
 
   def index
     @senders = Sender.all
@@ -56,13 +56,14 @@ class SendersController < ApplicationController
 
 
   def show
+    # @sender is set by before_action :set_sender
     @call
     @form = SenderForm.new(
-      sender: Sender.find_by(params[:id]),
+      sender: @sender,
       year: params[:year]&.to_i || Time.zone.now.year,
       month: params[:month]&.to_i || Time.zone.now.month,
     )
-    @data = AutoformResult.where(sender_id:params[:id])
+    @data = AutoformResult.where(sender_id: @sender.id)
   end
 
   def edit
