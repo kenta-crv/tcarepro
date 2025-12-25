@@ -67,4 +67,4 @@ __pycache__/
 venv/
 venvs/
 ENV/
-env/
+env/venv/
