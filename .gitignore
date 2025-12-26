@@ -32,7 +32,7 @@ doc/
 .idea
 .secret
 /db/development.sqlite3
-
+db/development.sqlite3.bak
 db/development.sqlite3
 development.sqlite3
 
@@ -67,4 +67,46 @@ __pycache__/
 venv/
 venvs/
 ENV/
-env/venv/
+env/
+
+# Testing and utility scripts (local development only - root level only)
+# Python testing scripts in root directory
+/test_*.py
+/check_*.py
+/verify_*.py
+/fix_*.py
+/reset_*.py
+/update_*.py
+/execute_*.py
+/schedule.py
+
+# Ruby testing scripts in root directory
+/test_*.rb
+/check_*.rb
+/verify_*.rb
+/fix_*.rb
+/reset_*.rb
+/update_*.rb
+/schedule.rb
+/email_verification_report.rb
+/find_auto_reply_emails.rb
+/check_and_verify_emails.rb
+/test_now.rb
+/test_submission_now.rb
+/check_scheduled_status.rb
+/check_verified_email.rb
+/check_email_status.rb
+/check_cron_jobs.rb
+/test_email_verification.rb
+/check_arch_email_match.rb
+/check_all_scheduled.rb
+/fix_arch_sended_at.rb
+/verify_arch_email.rb
+/fix_future_sended_at.rb
+/fix_future_sended_at_proper.rb
+/verify_submission_status.rb
+/reset_all_errors.py
+/update_scheduled_time.py
+/update_all_scheduled_now.py
+/reset_submission.py
+/execute_scheduled_now.py

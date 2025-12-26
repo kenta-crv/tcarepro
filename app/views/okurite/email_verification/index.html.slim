@@ -1,0 +1,191 @@
+- set_meta_tags noindex: true
+
+.tops-wrapper
+  .headline
+    | メール認証統計
+    - if sender_signed_in?
+      .pull-right
+        = link_to "CSVエクスポート", sender_sender_okurite_email_verification_path(sender_id: current_sender.id, format: :csv), class: 'btn btn-success btn-sm', style: 'margin-right: 10px;'
+        = button_to "今すぐチェック", sender_sender_okurite_email_verification_trigger_path(sender_id: current_sender.id), method: :post, class: 'btn btn-primary btn-sm', data: { confirm: 'メール認証チェックを開始しますか？' }, form: { style: 'display: inline-block;' }
+
+  .row
+    .col-md-3
+      .card
+        .card-header
+          | 認証率
+        .card-body
+          - if @total_sent > 0
+            h2.card-text
+              = number_to_percentage(@verification_rate, precision: 1)
+            p.card-text
+              | 認証済み: #{@verified_count} / 送信済み: #{@total_sent}
+          - else
+            h2.card-text
+              | 0%
+            p.card-text
+              | 送信記録がありません
+
+    .col-md-3
+      .card
+        .card-header
+          | 認証済み
+        .card-body
+          h2.card-text.text-success
+            = @verified_count
+          p.card-text
+            | 件
+
+    .col-md-3
+      .card
+        .card-header
+          | 待機中
+        .card-body
+          h2.card-text.text-warning
+            = @waiting_count
+          p.card-text
+            | 件
+
+    .col-md-3
+      .card
+        .card-header
+          | 平均受信時間
+        .card-body
+          - if @avg_time_minutes > 0
+            h2.card-text
+              = @avg_time_minutes
+              | 分
+            p.card-text
+              | 送信後から受信まで
+          - else
+            h2.card-text
+              | -
+            p.card-text
+              | データ不足
+
+  .row.mt-4
+    .col-md-6
+      .card
+        .card-header
+          | 最近認証されたメール
+        .card-body
+          - if @recent_verified.any?
+            table.table.table-sm
+              thead
+                tr
+                  th 日時
+                  th 企業名
+                  th 送信者
+                  th 受信時間
+              tbody
+                - @recent_verified.each do |submission|
+                  tr
+                    td = submission.email_received_at&.strftime('%Y-%m-%d %H:%M')
+                    td = submission.customer&.company || 'Unknown'
+                    td.text-muted.small = submission.email_from&.truncate(30)
+                    td
+                      - if submission.email_receipt_duration
+                        = "#{(submission.email_receipt_duration / 60.0).round(1)}分"
+                      - else
+                        | -
+          - else
+            p.text-muted 認証されたメールがありません
+
+    .col-md-6
+      .card
+        .card-header
+          | メール待機中の送信
+        .card-body
+          - if @waiting_submissions.any?
+            table.table.table-sm
+              thead
+                tr
+                  th 送信日時
+                  th 企業名
+                  th 経過時間
+              tbody
+                - @waiting_submissions.each do |submission|
+                  tr
+                    td = submission.sended_at&.strftime('%Y-%m-%d %H:%M')
+                    td = submission.customer&.company || 'Unknown'
+                    td
+                      - if submission.sended_at
+                        - elapsed = (Time.current - submission.sended_at) / 3600.0
+                        - if elapsed < 0
+                          | 予定済み
+                        - elsif elapsed < 1
+                          = "#{(elapsed * 60).round(0)}分前"
+                        - elsif elapsed < 24
+                          = "#{elapsed.round(1)}時間前"
+                        - else
+                          = "#{(elapsed / 24.0).round(1)}日前"
+                      - else
+                        | -
+          - else
+            p.text-muted メール待機中の送信がありません
+
+  .row.mt-4
+    .col-12
+      .card
+        .card-header
+          | 日別認証統計
+        .card-body
+          canvas id="dailyVerificationChart" width="400" height="200"
+
+  script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"
+  javascript:
+    function initChart() {
+      if (typeof Chart === 'undefined') {
+        setTimeout(initChart, 100);
+        return;
+      }
+      var ctx = document.getElementById('dailyVerificationChart');
+      if (ctx) {
+        var chart = new Chart(ctx.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: #{raw @daily_stats.keys.to_json},
+            datasets: [{
+              label: '認証率 (%)',
+              data: #{raw @daily_stats.values.map { |v| v[:rate] }.to_json},
+              borderColor: 'rgb(75, 192, 192)',
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              tension: 0.1
+            }, {
+              label: '認証済み数',
+              data: #{raw @daily_stats.values.map { |v| v[:verified] }.to_json},
+              borderColor: 'rgb(255, 99, 132)',
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              tension: 0.1,
+              yAxisID: 'y1'
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                position: 'left',
+                ticks: {
+                  callback: function(value) {
+                    return value + '%';
+                  }
+                }
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                beginAtZero: true,
+                grid: {
+                  drawOnChartArea: false
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+    $(document).ready(function() {
+      initChart();
+    });
+

@@ -20,6 +20,10 @@ aside#sidebar
          br
          li
           = link_to "インポート情報","/news"
+         -if admin_signed_in?
+          br
+          li
+           = link_to "Sidekiq (Jobs & Cron)","/sidekiq", target: "_blank"
     li.sub-menu
       = link_to "#"
        = image_tag "mypage.gif", width:"40px"

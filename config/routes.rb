@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
+  require 'sidekiq/cron/web'
   Sidekiq::Web.use ActionDispatch::Cookies
   Sidekiq::Web.use Rails.application.config.session_store, Rails.application.config.session_options
 
@@ -84,6 +85,9 @@ Rails.application.routes.draw do
     #get 'okurite/index01', to: 'okurite#index01'
     post 'okurite/autosettings', to: 'okurite#autosettings'
     delete 'bulk_delete', to: 'okurite#bulk_delete'
+    # Email verification stats (must come before resources :okurite to avoid route conflict)
+    get 'okurite/email_verification', to: 'okurite/email_verification#index', as: 'sender_okurite_email_verification'
+    post 'okurite/email_verification/trigger', to: 'okurite/email_verification#trigger_verification', as: 'sender_okurite_email_verification_trigger'
     # okurite
     resources :okurite, only: [:index, :show] do
       get :preview, to: 'okurite#preview'

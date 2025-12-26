@@ -162,6 +162,25 @@ class Reservation:
 
         return False
 
+    def check_by_unique_id(self, unique_id):
+        """Check if a reservation exists by unique_id"""
+        for item in self.boottime:
+            if item["unique_id"] == unique_id:
+                return True
+        return False
+
+    def remove_by_unique_id(self, unique_id):
+        """Remove a reservation by unique_id"""
+        self.boottime = [item for item in self.boottime if item["unique_id"] != unique_id]
+
+    def update_time_by_unique_id(self, unique_id, new_time):
+        """Update the scheduled time for a reservation by unique_id"""
+        for item in self.boottime:
+            if item["unique_id"] == unique_id:
+                item["time"] = new_time
+                return True
+        return False
+
     def alltime(self):
         return self.boottime
 
@@ -268,11 +287,55 @@ def sql_reservation():
         # 現在処理中の予約の送信予定日時を score オブジェクトにセットしています（後続のグラフ作成などで利用）。
         score.time = gotime
 
-        # すでに同じURLと送信元IDが予約リストに登録されているかをチェック
-        c = reservation.check(url, sender_id)
-        # if c == True:
-        #     print("This already exists")
-        #     pass
+        # Check if reservation exists by unique_id (more reliable than URL/sender_id)
+        should_skip = False
+        if reservation.check_by_unique_id(unique_id):
+            # Reservation exists - check if time has changed
+            for existing_item in reservation.alltime():
+                if existing_item["unique_id"] == unique_id:
+                    # Normalize time strings for comparison (remove microseconds if present)
+                    existing_time = str(existing_item["time"]).split('.')[0] if existing_item["time"] else ""
+                    gotime_normalized = str(gotime).split('.')[0] if gotime else ""
+                    
+                    if existing_time != gotime_normalized:
+                        # Time has changed - remove old and re-add with new time
+                        print(f"Time updated for unique_id {unique_id}: {existing_item['time']} -> {gotime}")
+                        reservation.remove_by_unique_id(unique_id)
+                        # Will be added below, don't skip
+                        break
+                    else:
+                        # Same time, skip adding
+                        print(f"Reservation already exists with same time: {url} (unique_id: {unique_id})")
+                        should_skip = True
+                        break
+        else:
+            # Check by URL/sender_id for backward compatibility
+            c = reservation.check(url, sender_id)
+            if c == True:
+                # Found by URL/sender_id - check if time changed
+                for existing_item in reservation.alltime():
+                    if existing_item.get("url") == url and existing_item.get("sender_id") == sender_id:
+                        # Normalize time strings for comparison (remove microseconds if present)
+                        existing_time = str(existing_item.get("time", "")).split('.')[0] if existing_item.get("time") else ""
+                        gotime_normalized = str(gotime).split('.')[0] if gotime else ""
+                        
+                        # If time changed, remove old entry and re-add
+                        if existing_time != gotime_normalized:
+                            print(f"Time updated for URL {url}: {existing_item.get('time')} -> {gotime}")
+                            # Remove the old entry
+                            reservation.boottime = [item for item in reservation.boottime 
+                                                   if not (item.get("url") == url and item.get("sender_id") == sender_id)]
+                            # Will be added below, don't skip
+                            break
+                        else:
+                            # Same time, skip adding
+                            print(f"This already exists in reservation list: {url}")
+                            should_skip = True
+                            break
+                # If we didn't find a match in the loop, should_skip remains False
+        
+        if should_skip:
+            continue  # Skip adding duplicate
         # URLが None（存在しない）なら、送信不能と判断
         if url == None:
             print("No URL!!")
@@ -308,14 +371,27 @@ def sql_reservation():
     # sabun や fime は不要なケースが多いので省略
     for i, trigger in enumerate(reservation.alltime()):
         strtime = trigger["time"]  # "YYYY-MM-DD HH:MM:SS" 形式
-        # 予約日時をパース
-        scheduled_dt = datetime.datetime.strptime(strtime, "%Y-%m-%d %H:%M:%S")
+        # 予約日時をパース（SQLiteから取得した日時は東京時間として解釈）
+        try:
+            scheduled_dt = datetime.datetime.strptime(strtime, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            # 異なる形式の場合のフォールバック
+            try:
+                scheduled_dt = datetime.datetime.strptime(strtime, "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                print(f"日時パースエラー: {strtime}")
+                continue
 
         now = datetime.datetime.now()
 
-        # 「予約日が今日の日付」と一致するかチェック
-        # 元コードでは year,month,day を比較していたが、.date() でまとめて比較可能
-        if scheduled_dt.date() == now.date():
+        # 予約日時が現在時刻より後（未来）で、かつ24時間以内の場合に登録
+        # これによりタイムゾーンの問題を回避し、今日または明日の予約を処理
+        time_diff = scheduled_dt - now
+        hours_ahead = time_diff.total_seconds() / 3600
+        
+        # 過去の予約（1時間以上前）はスキップ、未来の予約（24時間以内）を登録
+        # 1時間以内の過去も許容（タイムゾーン誤差を考慮）
+        if hours_ahead >= -1 and hours_ahead <= 24:
             print(f"このデータは起動する準備ができています -> {strtime}")
 
             # もし同じ日に複数の予約がある場合、4件ごとに1分後ろにずらす
@@ -323,20 +399,58 @@ def sql_reservation():
             shift_minutes = (i // 4)
             scheduled_dt += datetime.timedelta(minutes=shift_minutes)
 
-            # schedule ライブラリに渡すために "HH:MM" 形式の文字列を作成
-            schedule_str = scheduled_dt.strftime("%H:%M")
+            # シフト後の時間で再度時間差を計算
+            time_diff_after_shift = scheduled_dt - now
+            hours_ahead_after_shift = time_diff_after_shift.total_seconds() / 3600
 
-            # 毎日 schedule_str の時刻に実行されるように登録
-            schedule.every().day.at(schedule_str).do(
-                boot,
-                trigger["url"],
-                trigger["sender_id"],
-                i,  # num に相当
-                trigger["worker_id"],
-                session_code,
-                trigger["unique_id"],
-            )
-            print(f"登録 -> {schedule_str} / shift={shift_minutes}分後ろ倒し")
+            # 予約時間が過去（10分以内）の場合は即座に実行
+            if hours_ahead_after_shift < 0 and hours_ahead_after_shift >= -0.167:  # Within 10 minutes in the past
+                # Check current status in database before executing
+                conn_check = sqlite3.connect(dbname)
+                cur_check = conn_check.cursor()
+                cur_check.execute("SELECT status FROM contact_trackings WHERE id = ?", (trigger["unique_id"],))
+                status_result = cur_check.fetchone()
+                conn_check.close()
+                
+                # Skip if status is no longer "自動送信予定"
+                if not status_result or status_result[0] != "自動送信予定":
+                    print(f"スキップ: ContactTracking ID {trigger['unique_id']} のステータスが '{status_result[0] if status_result else '見つかりません'}' のため実行をスキップします")
+                    continue
+                
+                print(f"実行時間が過去のため、即座に実行します -> {strtime} (shift後: {scheduled_dt.strftime('%H:%M')})")
+                
+                # Update status to "処理中" (processing) to prevent duplicate execution
+                conn = sqlite3.connect(dbname)
+                cur = conn.cursor()
+                cur.execute("UPDATE contact_trackings SET status = ? WHERE id = ?", ("処理中", trigger["unique_id"]))
+                conn.commit()
+                conn.close()
+                
+                # Execute immediately
+                boot(
+                    trigger["url"],
+                    trigger["sender_id"],
+                    i,
+                    trigger["worker_id"],
+                    session_code,
+                    trigger["unique_id"],
+                )
+                print(f"即座に実行しました")
+            else:
+                # schedule ライブラリに渡すために "HH:MM" 形式の文字列を作成
+                schedule_str = scheduled_dt.strftime("%H:%M")
+
+                # 毎日 schedule_str の時刻に実行されるように登録
+                schedule.every().day.at(schedule_str).do(
+                    boot,
+                    trigger["url"],
+                    trigger["sender_id"],
+                    i,  # num に相当
+                    trigger["worker_id"],
+                    session_code,
+                    trigger["unique_id"],
+                )
+                print(f"登録 -> {schedule_str} / shift={shift_minutes}分後ろ倒し")
 
     print("-----------------------------------------")
     print(f"      {score.count} 件登録しました。        ")

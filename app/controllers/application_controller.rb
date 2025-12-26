@@ -81,7 +81,8 @@ class ApplicationController < ActionController::Base
           flash[:notice] = "案件の内容を登録してください"
           new_sender_inquiry_path(current_sender)
         else
-          sender_path
+          # Redirect to okurite list page (main page for senders)
+          sender_okurite_index_path(current_sender)
         end
       else
         super

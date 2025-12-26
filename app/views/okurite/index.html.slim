@@ -11,6 +11,9 @@
     = @customers.page(1).per(30).total_count
     | 件中
     | )
+    - if sender_signed_in?
+      .pull-right
+        = link_to "メール認証統計", sender_sender_okurite_email_verification_path(sender_id: current_sender.id), class: 'btn btn-info btn-sm'
     
   = form_tag({ controller: :customers, action: :destroy_all}, method: 'delete') do
     table[style="margin: 0 30px;"]
