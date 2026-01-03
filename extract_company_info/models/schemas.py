@@ -1,8 +1,15 @@
+"""Pydanticスキーマ定義.
+
+【修正履歴】
+- 2026/01/03: address に normalize_address を適用する field_validator を追加
+- 2026/01/03: first_name を Optional[str] = None に変更（Geminiが返さない場合の対応）
+"""
+
 from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from utils.formtter import normalize_company_name, normalize_tel_number
+from utils.formtter import normalize_company_name, normalize_tel_number, normalize_address
 from utils.validator import (
     validate_address_format,
     validate_company_format,
@@ -39,10 +46,12 @@ class CompanyInfo(BaseModel):
     )
     address: str = Field(description="住所。『都/道/府/県』のいずれかを含む必要があります。")
     first_name: Optional[str] = Field(
+        default=None,  # ★追加: Geminiが返さない場合のデフォルト値
         description="担当者名/代表者名。肩書は含めず、苗字と名前の間には空欄をいれない",
     )
     url: str = Field(description="公式サイトのURL")
     contact_url: Optional[str] = Field(
+        default=None,  # ★追加: 明示的にデフォルト値を設定
         description="問い合わせページのURL。",
     )
     business: str = Field(
@@ -116,8 +125,19 @@ class CompanyInfo(BaseModel):
             )
         return v
 
+    # ★追加: 住所の正規化処理
+    @field_validator("address", mode="before")
+    @classmethod
+    def _format_address(cls, v: str) -> str:
+        """住所を正規化する.
+        
+        - 郵便番号を除去
+        - 都道府県を補完
+        """
+        return normalize_address(v)
+
     # 住所の形式チェック
-    @field_validator("address")
+    @field_validator("address", mode="after")
     @classmethod
     def _validate_address(cls, v: str) -> str:
         """住所をフォーマットルールに基づき検証する.
@@ -138,6 +158,33 @@ class CompanyInfo(BaseModel):
             msg = "住所の形式が不正です。『都/道/府/県』のいずれかを含めてください。"
             raise ValueError(msg)
         return v
+
+    # ★追加: first_name の正規化（空文字をNoneに）
+    @field_validator("first_name", mode="before")
+    @classmethod
+    def _format_first_name(cls, v) -> Optional[str]:
+        """first_nameを正規化する."""
+        if v is None:
+            return None
+        s = str(v).strip()
+        if s == "" or s == "不明":
+            return None
+        # 肩書を除去
+        import re
+        s = re.sub(r"(代表取締役|取締役|社長|会長|専務|常務|理事長|院長|所長|代表)\s*", "", s)
+        return s if s else None
+
+    # ★追加: contact_url の正規化（空文字や「不明」をNoneに）
+    @field_validator("contact_url", mode="before")
+    @classmethod
+    def _format_contact_url(cls, v) -> Optional[str]:
+        """contact_urlを正規化する."""
+        if v is None:
+            return None
+        s = str(v).strip()
+        if s == "" or s == "不明" or not s.startswith("http"):
+            return None
+        return s
 
 
 class LLMCompanyInfo(BaseModel):
