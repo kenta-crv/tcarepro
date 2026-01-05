@@ -11,8 +11,7 @@ class EmailVerificationWorker
   IMAP_USERNAME = 'mail@tele-match.net'
   IMAP_PASSWORD = ENV['EMAIL_PASSWORD'] || 'fssds_t84kAd4' # Fallback to provided password
   
-  # How far back to check for emails (in hours)
-  CHECK_HOURS_BACK = 24
+  CHECK_HOURS_BACK = 168
 
   def perform
     Rails.logger.info "EmailVerificationWorker: Starting email verification check"
@@ -22,10 +21,7 @@ class EmailVerificationWorker
       imap = connect_to_imap
       return unless imap
 
-      # Select inbox
       imap.select('INBOX')
-      
-      # Get recent emails (last 24 hours)
       since_time = (Time.now - CHECK_HOURS_BACK.hours)
       search_criteria = ['SINCE', since_time.strftime('%d-%b-%Y')]
       
@@ -34,7 +30,6 @@ class EmailVerificationWorker
       
       Rails.logger.info "EmailVerificationWorker: Found #{email_ids.length} emails to check"
       
-      # Process each email
       email_ids.each do |email_id|
         process_email(imap, email_id)
       end
@@ -79,7 +74,27 @@ class EmailVerificationWorker
     else
       'unknown@unknown.com'
     end
-    # Parse email date - ensure it's a Time object
+    
+    email_to_addresses = []
+    begin
+      if envelope.to
+        envelope.to.each do |to_addr|
+          if to_addr.respond_to?(:mailbox) && to_addr.respond_to?(:host)
+            email_to_addresses << "#{to_addr.mailbox}@#{to_addr.host}"
+          end
+        end
+      end
+      if mail.to
+        email_to_addresses += Array(mail.to).map(&:to_s)
+      end
+      if mail.header['To']
+        email_to_addresses += mail.header['To'].to_s.split(',').map(&:strip)
+      end
+      email_to_addresses = email_to_addresses.compact.uniq.map(&:downcase)
+    rescue => e
+      Rails.logger.warn "EmailVerificationWorker: Error extracting TO addresses: #{e.message}"
+    end
+    
     email_date = begin
       date_obj = envelope.date || mail.date
       if date_obj.nil?
@@ -91,7 +106,6 @@ class EmailVerificationWorker
       elsif date_obj.is_a?(Date)
         date_obj.to_time
       else
-        # Try parsing as string
         parsed = Time.parse(date_obj.to_s)
         parsed
       end
@@ -101,12 +115,18 @@ class EmailVerificationWorker
     end
     
     Rails.logger.info "EmailVerificationWorker: Processing email - From: #{email_from}, Subject: #{email_subject}, Date: #{email_date}"
+    Rails.logger.info "EmailVerificationWorker: Processing email ID #{email_id}"
+    Rails.logger.info "  From: #{email_from}"
+    Rails.logger.info "  Subject: #{email_subject}"
+    Rails.logger.info "  Date: #{email_date}"
+    Rails.logger.info "  TO addresses: #{email_to_addresses.inspect}"
     
-    # Try to match email to a submission
-    matched_tracking = match_email_to_submission(email_from, email_subject, email_date, mail)
+    matched_tracking = match_email_to_submission(email_from, email_subject, email_date, mail, email_to_addresses)
     
     if matched_tracking
-      Rails.logger.info "EmailVerificationWorker: Matched email to ContactTracking ID #{matched_tracking.id}"
+      Rails.logger.info "EmailVerificationWorker: ✓ Matched email to ContactTracking ID #{matched_tracking.id}"
+      Rails.logger.info "  Company: #{matched_tracking.customer&.company}"
+      Rails.logger.info "  Inquiry Email: #{matched_tracking.inquiry&.from_mail}"
       update_tracking_with_email(matched_tracking, email_subject, email_from, email_date)
     else
       Rails.logger.debug "EmailVerificationWorker: Could not match email to any submission"
@@ -116,8 +136,7 @@ class EmailVerificationWorker
     Rails.logger.error "EmailVerificationWorker: Error processing email #{email_id}: #{e.message}"
   end
 
-  def match_email_to_submission(email_from, email_subject, email_date, mail)
-    # Ensure email_date is a Time object (should already be from process_email, but double-check)
+  def match_email_to_submission(email_from, email_subject, email_date, mail, email_to_addresses = [])
     email_date = begin
       if email_date.is_a?(Time)
         email_date
@@ -133,22 +152,59 @@ class EmailVerificationWorker
       Time.now
     end
     
-    # Find submissions that were sent recently (within 24 hours before email date)
-    # and haven't been matched yet
-    time_window_start = email_date - 24.hours
-    time_window_end = email_date + 1.hour # Allow 1 hour buffer after email
+    time_window_start = email_date - 7.days
+    time_window_end = email_date + 1.hour
     
-    # Get candidate submissions
     candidates = ContactTracking.where(
       status: ['送信済', '送信成功'],
       email_received: false
     ).where(
-      'sended_at >= ? AND sended_at <= ?',
-      time_window_start,
-      time_window_end
+      '(sended_at >= ? AND sended_at <= ?) OR (sending_completed_at >= ? AND sending_completed_at <= ?)',
+      time_window_start, time_window_end,
+      time_window_start, time_window_end
     )
     
-    # Try to match by company name in subject/body
+    inquiry_emails = Inquiry.joins(:contact_trackings)
+                           .where(contact_trackings: { id: candidates.pluck(:id) })
+                           .pluck(:from_mail)
+                           .compact
+                           .uniq
+                           .map(&:downcase)
+    
+    email_to_addresses = Array(email_to_addresses).map(&:downcase).compact.uniq
+    
+    Rails.logger.info "EmailVerificationWorker: Checking email from #{email_from}, subject: #{email_subject}"
+    Rails.logger.info "EmailVerificationWorker: Email TO addresses: #{email_to_addresses.inspect}"
+    Rails.logger.info "EmailVerificationWorker: Inquiry emails to match: #{inquiry_emails.inspect}"
+    Rails.logger.info "EmailVerificationWorker: Found #{candidates.count} candidate submissions"
+    
+    if email_to_addresses.any? && inquiry_emails.any?
+      email_to_addresses.each do |to_addr|
+        inquiry_emails.each do |inquiry_email|
+          if to_addr == inquiry_email || 
+             to_addr.include?(inquiry_email) || 
+             inquiry_email.include?(to_addr) ||
+             to_addr.split('@').first == inquiry_email.split('@').first
+            matching_trackings = candidates.joins(:inquiry)
+                                          .where("LOWER(inquiries.from_mail) = ?", inquiry_email)
+            
+            matching_trackings.each do |matching_tracking|
+              if matches_submission?(matching_tracking, email_from, email_subject, mail)
+                Rails.logger.info "EmailVerificationWorker: Matched by email TO address: #{to_addr} -> #{inquiry_email}"
+                return matching_tracking
+              end
+            end
+            
+            if matching_trackings.any?
+              best_match = matching_trackings.order(sended_at: :desc).first
+              Rails.logger.info "EmailVerificationWorker: Matched by email TO address: #{to_addr} -> #{inquiry_email}"
+              return best_match
+            end
+          end
+        end
+      end
+    end
+    
     candidates.each do |tracking|
       if matches_submission?(tracking, email_from, email_subject, mail)
         return tracking
@@ -166,14 +222,11 @@ class EmailVerificationWorker
     return false if company_name.blank?
     
     begin
-      # Normalize company name for matching (remove common suffixes and variations)
       normalized_company = company_name.gsub(/株式会社|有限会社|合同会社|合資会社|一般社団法人|公益社団法人|医療法人|学校法人|社会福祉法人|特定非営利活動法人|NPO法人|\(株\)|\(有\)|\(合\)|\(医\)|\(学\)|\(社\)|\(特\)|\(NPO\)/, '').strip
       
-      # Also try company kana name
       company_kana = customer.company_kana || ''
       normalized_kana = company_kana.gsub(/カブシキガイシャ|ユウゲンガイシャ|ゴウドウガイシャ|ゴウシガイシャ/, '').strip
       
-      # Decode email subject if it's encoded (MIME encoded)
       decoded_subject = begin
         if email_subject.to_s.include?('=?')
           Mail::Encodings.value_decode(email_subject)
@@ -184,7 +237,6 @@ class EmailVerificationWorker
         email_subject.to_s
       end
       
-      # Get email body with proper encoding
       body_content = begin
         if mail.body
           mail.body.decoded
@@ -195,37 +247,30 @@ class EmailVerificationWorker
         ''
       end
       
-      # Normalize all text to UTF-8 and lowercase for comparison
       subject_text = decoded_subject.to_s.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace).downcase
       body_text = body_content.to_s.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace).downcase
       company_text = normalized_company.to_s.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace).downcase
       kana_text = normalized_kana.to_s.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace).downcase
       
-      # Strategy 1: Match if company name (normalized) is in subject or body
       if company_text.present? && (subject_text.include?(company_text) || body_text.include?(company_text))
         Rails.logger.info "EmailVerificationWorker: Matched by company name: #{company_name}"
         return true
       end
       
-      # Strategy 2: Match if company kana name is in subject or body
       if kana_text.present? && (subject_text.include?(kana_text) || body_text.include?(kana_text))
         Rails.logger.info "EmailVerificationWorker: Matched by company kana name: #{company_kana}"
         return true
       end
       
-      # Strategy 3: Match if full company name (with suffixes) is in subject or body
       full_company_text = company_name.to_s.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace).downcase
       if subject_text.include?(full_company_text) || body_text.include?(full_company_text)
         Rails.logger.info "EmailVerificationWorker: Matched by full company name: #{company_name}"
         return true
       end
       
-      # Strategy 4: Match by partial company name (at least 3 characters)
       if company_text.length >= 3
-        # Try matching first 3+ characters of company name
         company_prefix = company_text[0..2]
         if subject_text.include?(company_prefix) || body_text.include?(company_prefix)
-          # Additional check: make sure it's not too generic
           if company_text.length >= 5 || company_prefix.length >= 4
             Rails.logger.info "EmailVerificationWorker: Matched by company name prefix: #{company_name}"
             return true
@@ -235,33 +280,27 @@ class EmailVerificationWorker
       
     rescue => e
       Rails.logger.warn "EmailVerificationWorker: Error in matching logic for company #{company_name}: #{e.message}"
-      # Continue to try domain matching
     end
     
-    # Strategy 5: Match if the email is from the company's domain
     if customer.contact_url.present? || customer.website_url.present?
       begin
         url_to_check = customer.contact_url.presence || customer.website_url
         company_domain = URI.parse(url_to_check).host rescue nil
         
         if company_domain
-          # Remove www. prefix for comparison
           clean_domain = company_domain.gsub(/^www\./, '')
           email_domain = email_from.split('@').last.downcase if email_from.include?('@')
           
           if email_domain
-            # Direct domain match
             if email_domain == clean_domain || email_domain.include?(clean_domain) || clean_domain.include?(email_domain)
               Rails.logger.info "EmailVerificationWorker: Matched by domain: #{email_domain} -> #{clean_domain}"
               return true
             end
             
-            # Match by domain without TLD (e.g., "example" from "example.co.jp")
             domain_parts = clean_domain.split('.')
             email_parts = email_domain.split('.')
             
             if domain_parts.any? && email_parts.any?
-              # Check if main domain part matches (first part before first dot)
               if domain_parts.first == email_parts.first && domain_parts.first.length >= 3
                 Rails.logger.info "EmailVerificationWorker: Matched by domain root: #{domain_parts.first}"
                 return true

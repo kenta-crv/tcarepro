@@ -231,6 +231,16 @@ class AutoformSchedulerWorker
       
       # 送信成功の判定
       if current_status_after_script == '送信済'
+        inquiry = contact_tracking.inquiry
+        Sidekiq.logger.info "AutoformSchedulerWorker: Form submission successful for CT ID #{contact_tracking.id}"
+        Sidekiq.logger.info "  Company: #{contact_tracking.customer&.company}"
+        Sidekiq.logger.info "  Contact URL: #{contact_tracking.contact_url}"
+        Sidekiq.logger.info "  Inquiry Email: #{inquiry&.from_mail}"
+        Sidekiq.logger.info "  IMAP Account: #{EmailVerificationWorker::IMAP_USERNAME}"
+        if inquiry&.from_mail != EmailVerificationWorker::IMAP_USERNAME
+          Sidekiq.logger.warn "AutoformSchedulerWorker: EMAIL MISMATCH - Auto-reply will go to #{inquiry.from_mail} but we check #{EmailVerificationWorker::IMAP_USERNAME}"
+        end
+        
         contact_tracking.update!(
           sended_at: Time.current,
           response_data: "Success: #{stdout.truncate(500)}"

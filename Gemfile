@@ -95,6 +95,7 @@ gem 'simple_enum'
 #gem 'will_paginate'
 
 gem 'haml-rails', '~> 2.0'
+gem 'haml', '~> 6.0'  # Lock to version 6.x for Ruby compatibility
 
 gem 'ransack'
 
@@ -140,5 +141,5 @@ gem 'mail', '~> 2.8'
 # Twilio for call handling
 gem 'twilio-ruby'
 
-# Google Cloud Speech for transcription (older version to satisfy deps)
-gem 'google-cloud-speech', '~> 0.36.0'
+# Google Cloud Speech for transcription
+gem 'google-cloud-speech'

@@ -166,4 +166,38 @@ class ContactTracking < ApplicationRecord
     contacted_ids = for_sender(sender_id).select(:customer_id)
     all_customer_ids - contacted_ids
   }
+
+  # Reset submission for resubmission
+  # Resets status to '自動送信予定' and clears email verification data
+  def reset_for_resubmission!(scheduled_date: nil)
+    scheduled_date ||= Time.current
+    
+    update!(
+      status: '自動送信予定',
+      scheduled_date: scheduled_date,
+      email_received: false,
+      email_received_at: nil,
+      email_subject: nil,
+      email_from: nil,
+      email_matched_at: nil,
+      sended_at: nil,
+      sending_started_at: nil,
+      sending_completed_at: nil,
+      response_data: nil
+    )
+    
+    # Trigger worker if needed
+    AutoformSchedulerWorker.perform_async(id) if scheduled_date <= Time.current
+  end
+
+  # Check if submission can be reset for resubmission
+  def can_resubmit?
+    # Must have been sent successfully
+    return false unless success?
+    # Must have contact_url
+    return false if contact_url.blank?
+    # Should not already be scheduled
+    return false if status == '自動送信予定'
+    true
+  end
 end
