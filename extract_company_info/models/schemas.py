@@ -38,7 +38,9 @@ class CompanyInfo(BaseModel):
             "- 全角英数字・記号（Ａ-Ｚａ-ｚ０-９・！-～）を含まない"
         ),
     )
-    tel: str = Field(
+    #tel: str = Field(
+    tel: Optional[str] = Field(
+        default=None,
         description=(
             "電話番号。半角数字とハイフンのみで、ハイフンを含む必要があります。"
             "数字のみや括弧( ) を含む形式は不可。"
@@ -96,14 +98,25 @@ class CompanyInfo(BaseModel):
         return v
 
     # 電話番号の形式チェック
+    #@field_validator("tel", mode="before")
+    #@classmethod
+    #def _format_tel(cls, v: str) -> str:
+    #    return normalize_tel_number(v)
     @field_validator("tel", mode="before")
     @classmethod
-    def _format_tel(cls, v: str) -> str:
+    def _format_tel(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
         return normalize_tel_number(v)
 
+    #@field_validator("tel", mode="after")
+    #@classmethod
+    #def _validate_tel(cls, v: str) -> str:
     @field_validator("tel", mode="after")
     @classmethod
-    def _validate_tel(cls, v: str) -> str:
+    def _validate_tel(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
         """電話番号をフォーマットルールに基づき検証する.
 
         ルールは utils/validator.validate_tel_format に準拠。
