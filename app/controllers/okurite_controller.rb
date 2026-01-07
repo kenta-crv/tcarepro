@@ -11,86 +11,74 @@ class OkuriteController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
 
 def index
-    # =========================================================================
-    # 🚨 追加するアクセス制御ロジック (最優先で実行) 🚨
-    # =========================================================================
-    if request.query_string.blank?
-      # クエリ文字列（?以降）が存在しない場合
-      
-      # ログイン中のワーカーを取得 (current_workerはauthenticate_worker_or_admin!などで利用可能と仮定)
-      worker = current_worker 
-      
-      if worker
-        # ワーカーIDを取得し、/workers/:id へリダイレクトし、noticeを表示
-        # 【注意】 `worker_path(worker)` は、実際のルーティングヘルパーに置き換えてください。
-        # 例: worker_dashboard_path(worker) など
-        redirect_to worker_path(worker), notice: "検索条件を外れました。再度実行をしてください。"
-      else
-        # ログイン情報がない場合は、ルートパスなどにリダイレクト
-        redirect_to root_path, alert: "アクセスエラーが発生しました。"
-      end
-      # リダイレクトが完了したら、このアクションの残りの処理を中断
-      return
-    end
-    # =========================================================================
-
-    # この`sender`に紐づく全ての`ContactTracking`をベースとして取得
-    base_contact_trackings = ContactTracking.for_sender(@sender.id)
-
-    # 条件分岐1: 一括設定直後（IDの配列が渡された場合）
-    # autosettingsアクションからリダイレクトされた際の、最も優先されるべき特殊な表示処理
-    if params[:q]&.dig(:contact_trackings_id_in).present?
-      # Ransackの検索オブジェクトを生成（検索フォームの状態を維持するため）
-      @q = Customer.ransack(params[:q])
-      
-      # 渡されたIDを持つContactTrackingに紐づくCustomerを、更新が新しい順に取得
-      @customers = Customer.joins(:contact_trackings)
-                           .where(contact_trackings: { id: params[:q][:contact_trackings_id_in] })
-                           .order('contact_trackings.updated_at DESC')
-                           .page(params[:page]).per(30)
-
-    # 条件分岐2: 検索モーダルで「状態」が指定された場合
-    elsif params[:q]&.dig(:contact_trackings_status_eq).present?
-      status = params[:q][:contact_trackings_status_eq]
-      
-      # パフォーマンスのため、各顧客の最新のContactTrackingレコードIDのみを取得
-      latest_ids = base_contact_trackings.select('MAX(id) as id').group(:customer_id)
-      # 最新レコードの中から、指定されたステータスを持つ顧客IDを絞り込む
-      customer_ids = base_contact_trackings.where(id: latest_ids).where(status: status).select(:customer_id)
-      
-      @q = Customer.where(id: customer_ids).ransack(params[:q])
-
-      # 「自動送信予定」の場合は、特別に更新順でソートする
-      if status == '自動送信予定'
-        @customers = @q.result.distinct
-                    .joins(:contact_trackings)
-                    .where(contact_trackings: {sender_id: @sender.id, status: '自動送信予定'})
-                    .order('contact_trackings.updated_at DESC')
-                    .page(params[:page]).per(30)
-      else
-        @customers = @q.result.distinct.order(:id).page(params[:page]).per(30)
-      end
-
-    # 条件分岐3: 検索モーダルで「未送信」がチェックされた場合
-    elsif params[:q]&.dig(:contact_tracking_id_null).present? && params[:q][:contact_tracking_id_null] == 'true'
-      # 一度でもコンタクト履歴がある顧客IDを除外する
-      contacted_customer_ids = base_contact_trackings.select(:customer_id)
-      @q = Customer.where.not(id: contacted_customer_ids).ransack(params[:q])
-      @customers = @q.result.distinct.order(:id).page(params[:page]).per(30)
-
-    # 条件分岐4: 上記以外の全てのケース（通常のページアクセス時）
+  # =========================================================================
+  # 🚨 アクセス制御ロジック（admin は常に通す）🚨
+  # =========================================================================
+  if request.query_string.blank? && !admin_signed_in?
+    if worker_signed_in?
+      redirect_to worker_path(current_worker),
+                  notice: "検索条件を外れました。再度実行をしてください。"
     else
-      @q = Customer.ransack(params[:q])
+      redirect_to root_path, alert: "アクセスエラーが発生しました。"
+    end
+    return
+  end
+  # =========================================================================
+
+  # この sender に紐づく全ての ContactTracking をベースとして取得
+  base_contact_trackings = ContactTracking.for_sender(@sender.id)
+
+  # 条件分岐1: 一括設定直後（ID配列あり）
+  if params[:q]&.dig(:contact_trackings_id_in).present?
+    @q = Customer.ransack(params[:q])
+
+    @customers = Customer.joins(:contact_trackings)
+                         .where(contact_trackings: { id: params[:q][:contact_trackings_id_in] })
+                         .order('contact_trackings.updated_at DESC')
+                         .page(params[:page]).per(30)
+
+  # 条件分岐2: 状態指定
+  elsif params[:q]&.dig(:contact_trackings_status_eq).present?
+    status = params[:q][:contact_trackings_status_eq]
+
+    latest_ids = base_contact_trackings.select('MAX(id) as id').group(:customer_id)
+    customer_ids = base_contact_trackings.where(id: latest_ids)
+                                         .where(status: status)
+                                         .select(:customer_id)
+
+    @q = Customer.where(id: customer_ids).ransack(params[:q])
+
+    if status == '自動送信予定'
+      @customers = @q.result.distinct
+                     .joins(:contact_trackings)
+                     .where(contact_trackings: { sender_id: @sender.id, status: '自動送信予定' })
+                     .order('contact_trackings.updated_at DESC')
+                     .page(params[:page]).per(30)
+    else
       @customers = @q.result.distinct.order(:id).page(params[:page]).per(30)
     end
-    
-    # パフォーマンス対策: 画面に表示する顧客のContactTracking情報を一括で取得し、N+1問題を回避する
-    customer_ids_on_page = @customers.pluck(:id)
-    @contact_trackings_hash = base_contact_trackings
-                              .where(customer_id: customer_ids_on_page)
-                              .includes(:customer, :worker, :inquiry)
-                              .group_by(&:customer_id)
+
+  # 条件分岐3: 未送信
+  elsif params[:q]&.dig(:contact_tracking_id_null) == 'true'
+    contacted_customer_ids = base_contact_trackings.select(:customer_id)
+
+    @q = Customer.where.not(id: contacted_customer_ids).ransack(params[:q])
+    @customers = @q.result.distinct.order(:id).page(params[:page]).per(30)
+
+  # 条件分岐4: 通常アクセス
+  else
+    @q = Customer.ransack(params[:q])
+    @customers = @q.result.distinct.order(:id).page(params[:page]).per(30)
   end
+
+  # N+1 回避
+  customer_ids_on_page = @customers.pluck(:id)
+  @contact_trackings_hash =
+    base_contact_trackings
+      .where(customer_id: customer_ids_on_page)
+      .includes(:customer, :worker, :inquiry)
+      .group_by(&:customer_id)
+end
   
   def show
     @customer = Customer.find(params[:id])
