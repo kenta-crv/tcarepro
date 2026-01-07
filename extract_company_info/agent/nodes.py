@@ -1,8 +1,7 @@
 import re
 import time
-import sys
 
-from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
+from google.genai.types import Tool as GenAITool, GoogleSearch
 from google.api_core.exceptions import ResourceExhausted
 from langchain_core.prompts.loading import load_prompt
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -44,7 +43,6 @@ def _invoke_with_retry(llm, prompt_str: str, *, retries: int = RETRY_ATTEMPTS, *
 def _wait_between_api_calls():
     """API呼び出し間の間隔を空ける."""
     logger.debug(f"  ⏳ API呼び出し間隔のため{API_CALL_INTERVAL_SECONDS}秒待機中...")
-    sys.stdout.flush()
     time.sleep(API_CALL_INTERVAL_SECONDS)
 
 
@@ -62,7 +60,6 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     logger.info("-" * 60)
     logger.info("[NODE 1/3] node_get_url_candidates - URL候補の取得")
     logger.info(f"  入力: {state.company} @ {state.location}")
-    sys.stdout.flush()
     
     # プロンプトをYAMLからロード
     prompt = load_prompt(str(BASE_DIR / "agent/prompts/extract_url.yaml"), encoding="utf-8")
@@ -75,16 +72,15 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-lite",
+            model="gemini-2.0-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
-            timeout=120,
         )
         resp = _invoke_with_retry(
             llm,
             prompt.format(company=state.company, location=state.location),
-            tools=[{'google_search': {}}],
+            tools=[GenAITool(google_search=GoogleSearch())],
         )
         api_elapsed = time.time() - api_start
         logger.info(f"  ✅ API呼び出し成功 ({api_elapsed:.2f}秒)")
@@ -99,9 +95,12 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     urls: list[str] = []
     
     # まず本文から全てのURLを抽出（最も信頼性が高い）
-    # より緩い正規表現を使用して、新しいTLD（.tech, .siteなど）を弾かないようにする
-    url_pattern = r'https?://[a-zA-Z0-9.-]+(?:\.[a-zA-Z]{2,})+(?:/[^\s<>"]*)?'
-    content_urls = re.findall(url_pattern, resp.content)
+    # より厳密なURL正規表現を使用（不完全なURLを除外）
+    url_pattern = r'https?://[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*(?:/[^\s<>"]*)?'
+    #content_urls = re.findall(url_pattern, resp.content)
+    # resp.contentがリストの場合は文字列に変換
+    content = resp.content if isinstance(resp.content, str) else str(resp.content)
+    content_urls = re.findall(url_pattern, content)
     # リダイレクトURLと不完全なURLを除外
     def _is_valid_url(url: str) -> bool:
         """URLが有効かどうかを判定する."""
@@ -115,6 +114,9 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
         try:
             domain = url.split('//')[1].split('/')[0]
             if '.' not in domain:
+                return False
+            # 日本語文字や全角文字を含むURLを除外（不完全な抽出を防ぐ）
+            if any(ord(c) > 127 for c in url):
                 return False
         except (IndexError, AttributeError):
             return False
@@ -135,12 +137,27 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
             for chunk in resp.response_metadata["grounding_metadata"]["grounding_chunks"]
         ]
         # リダイレクトURLを除外
-        direct_urls = [url for url in reference_urls if not url.startswith('https://vertexaisearch.cloud.google.com')]
+        #direct_urls = [url for url in reference_urls if not url.startswith('https://vertexaisearch.cloud.google.com')]
+        # リダイレクトURLから実際のURLを取得
+        import requests
+        direct_urls = []
+        for url in reference_urls:
+            if url.startswith('https://vertexaisearch.cloud.google.com'):
+                try:
+                    r = requests.head(url, allow_redirects=True, timeout=5)
+                    if r.url and not r.url.startswith('https://vertexaisearch'):
+                        direct_urls.append(r.url)
+                except:
+                    pass
+            else:
+                direct_urls.append(url)
         if direct_urls:
             logger.info(f"  ✅ Google検索から{len(direct_urls)}個の直接URL取得")
             urls.extend(direct_urls)
         else:
             logger.warning(f"  ⚠️ Google検索結果は全てリダイレクトURL（{len(reference_urls)}個）- スキップ")
+            for url in reference_urls:
+                logger.warning(f"    リダイレクトURL: {url}")
     except Exception:  # noqa: BLE001
         logger.warning("  ⚠️ Google検索結果なし")
     
@@ -170,7 +187,6 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     if len(state.urls) > 5:
         logger.info(f"     ... 他{len(state.urls) - 5}個")
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")
-    sys.stdout.flush()
     
     return state
 
@@ -189,7 +205,6 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     logger.info("-" * 60)
     logger.info("[NODE 2/3] node_select_official_website - 公式サイト選定")
     logger.info(f"  候補URL数: {len(state.urls)}個")
-    sys.stdout.flush()
     
     # URL候補が1個以下の場合、選定不要（最適化）
     if len(state.urls) <= 1:
@@ -220,11 +235,10 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-lite",
+            model="gemini-2.0-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
-            timeout=120,
         ).with_structured_output(URLScoreList)
         resp: URLScoreList = _invoke_with_retry(
             llm,
@@ -255,7 +269,6 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     node_elapsed = time.time() - node_start
     logger.info(f"  ✅ 選定されたURL: {len(state.urls)}個")
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")
-    sys.stdout.flush()
 
     return state
 
@@ -273,7 +286,6 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     node_start = time.time()
     logger.info("-" * 60)
     logger.info("[NODE 3/3] node_fetch_html - 会社情報抽出")
-    sys.stdout.flush()
     
     # URL候補が無い場合はエラーを発生させる（ValidationErrorを避けるため）
     if not state.urls:
@@ -302,11 +314,10 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-lite",
+            model="gemini-2.0-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
-            timeout=120,
         ).with_structured_output(LLMCompanyInfo)
         resp: LLMCompanyInfo = _invoke_with_retry(
             llm,
@@ -325,17 +336,21 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
         logger.info(f"     住所: {resp.address}")
         logger.info(f"     URL: {resp.url}")
         logger.info(f"     お問い合わせURL: {resp.contact_url}")
-        sys.stdout.flush()
     except Exception as e:
         api_elapsed = time.time() - api_start
         logger.error(f"  ❌ API呼び出し失敗 ({api_elapsed:.2f}秒)")
         logger.error(f"  エラー: {type(e).__name__}: {str(e)[:200]}")
         raise
 
+    #state.company_info = resp.model_dump()
+    # 住所が空の場合、入力のlocationをフォールバックとして使用
+    if not resp.address or resp.address.strip() == "":
+        logger.warning(f"  ⚠️ 住所が抽出できませんでした。入力のlocationを使用: {state.location}")
+        resp.address = state.location.replace(" ", "")  # スペースを除去
+
     state.company_info = resp.model_dump()
     
     node_elapsed = time.time() - node_start
     logger.info(f"  ⏱️ ノード処理時間: {node_elapsed:.2f}秒")
-    sys.stdout.flush()
     
     return state
