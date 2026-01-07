@@ -44,7 +44,13 @@ class CompanyInfo(BaseModel):
             "数字のみや括弧( ) を含む形式は不可。"
         ),
     )
-    address: str = Field(description="住所。『都/道/府/県』のいずれかを含む必要があります。")
+    ##########
+    # 「必須（絶対ないといけない）」から「なくてもOK（Optional）」に変える 2026/01/04(Sun) T.Abe
+    ##########
+    address: Optional[str] = Field(
+        default=None, 
+        description="住所。『都/道/府/県』のいずれかを含む必要があります。"
+    )
     first_name: Optional[str] = Field(
         default=None,  # ★追加: Geminiが返さない場合のデフォルト値
         description="担当者名/代表者名。肩書は含めず、苗字と名前の間には空欄をいれない",
@@ -139,7 +145,8 @@ class CompanyInfo(BaseModel):
     # 住所の形式チェック
     @field_validator("address", mode="after")
     @classmethod
-    def _validate_address(cls, v: str) -> str:
+    #def _validate_address(cls, v: str) -> str:
+    def _validate_address(cls, v: Optional[str]) -> Optional[str]:
         """住所をフォーマットルールに基づき検証する.
 
         ルールは utils/validator.validate_address_format に準拠。
@@ -154,6 +161,12 @@ class CompanyInfo(BaseModel):
             ValueError: 形式に合致しない場合。
 
         """
+        ##########
+        # ★追加: 値がない、または空文字の場合は None を返してチェックをスキップ 2026/01/04(Sun) T.Abe
+        ##########
+        if v is None or str(v).strip() == "":
+            return None
+            
         if not validate_address_format(v):
             msg = "住所の形式が不正です。『都/道/府/県』のいずれかを含めてください。"
             raise ValueError(msg)
