@@ -5,6 +5,8 @@
 - 2026/01/03: first_name を Optional[str] = None に変更（Geminiが返さない場合の対応）
 """
 
+import re   # ← これを追加する
+
 from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
@@ -51,7 +53,12 @@ class CompanyInfo(BaseModel):
         default=None,  # ★追加: Geminiが返さない場合のデフォルト値
         description="担当者名/代表者名。肩書は含めず、苗字と名前の間には空欄をいれない",
     )
-    url: str = Field(description="公式サイトのURL")
+    #--- 2026/01/12(Mon) URLを必須でなくする ---
+    #url: str = Field(description="公式サイトのURL")
+    url: Optional[str] = Field(
+        default=None,
+        description="公式サイトのURL",
+    )
     contact_url: Optional[str] = Field(
         default=None,  # ★追加: 明示的にデフォルト値を設定
         description="問い合わせページのURL。",
@@ -88,13 +95,18 @@ class CompanyInfo(BaseModel):
         """
         # バリデーションに失敗したら例外
         if not validate_company_format(v):
+            # 公式名称に「株式会社/有限会社…」等が含まれないケース（例: "OFAグループ"）もあるため、
+            # 文字種/禁止語だけを満たす場合は許容する（会社名の同一性チェックは agent 側で担保）
+            has_forbidden = any(x in v for x in ["支店", "営業所", "（", "）", "(", ")", " "])
+            relaxed_charset_ok = bool(re.fullmatch(r"[A-Za-z0-9\u3040-\u30FF\u4E00-\u9FFF\u3005\u30FC・&._-]+", v))
+            if (not has_forbidden) and relaxed_charset_ok:
+                return v
+
             msg = (
                 "会社名の形式が不正です。『株式会社/有限会社/社会福祉/合同会社/医療法人/行政書士/一般社団法人/合資会社/法律事務所』の"
                 "いずれかを含み、支店・営業所・括弧・スペースを含まず、全角英数字/記号を含まない必要があります。"
             )
-            raise ValueError(
-                msg,
-            )
+            raise ValueError(msg)
         return v
 
     # 電話番号の形式チェック
