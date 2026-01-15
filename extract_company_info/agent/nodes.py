@@ -72,7 +72,7 @@ def node_get_url_candidates(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
@@ -235,7 +235,7 @@ def node_select_official_website(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
@@ -314,7 +314,7 @@ def node_fetch_html(state: ExtractState) -> ExtractState:
     
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             temperature=0,
             google_api_key=settings.GOOGLE_API_KEY,
             max_retries=0,
