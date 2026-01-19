@@ -330,11 +330,11 @@ scope :before_sended_at, ->(sended_at){
   
 def self.ensure_defaults(row)
   h = row.to_h
-  h['industry'] ||= '人材関連業'
-  h['business'] ||= '人材派遣'
-  h['genre']    ||= '人材派遣'
-  h['url_2'] = h['url'] if h['url'].present?
-  h.delete('url')
+  #h['industry'] ||= '人材関連業'
+  #h['business'] ||= '人材派遣'
+  #h['genre']    ||= '人材派遣'
+  #h['url_2'] = h['url'] if h['url'].present?
+  #h.delete('url')
   h
 end
 
