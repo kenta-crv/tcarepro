@@ -29,10 +29,10 @@
        td.label-cell
         strong.label 必須
        th.arrow-box-cell
-        | 指定キーワード
+        | 指定キーワード（依頼内容から変更禁止）
        td.responsive-cell
         .input-container
-          = f.text_field :industry
+          = f.text_field :industry, value: (@customer.industry.presence || current_worker.crowdworks.last&.title)
       - else
        td.label-cell
         strong.label 

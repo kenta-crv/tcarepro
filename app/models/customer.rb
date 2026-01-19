@@ -817,11 +817,11 @@ end
 
   attr_accessor :skip_validation
 
-  validate :validate_company_format, if: -> { !new_record? && !skip_validation }
-  validate :validate_tel_format, if: -> { !new_record? && !skip_validation }
-  validate :validate_address_format, if: -> { !new_record? && !skip_validation }
-  validate :industry_matches_crowdwork_title_and_validate_business_and_genre, if: -> { !new_record? && !skip_validation }
-  validate :unique_industry_and_tel_or_company_for_same_worker, if: -> { !new_record? && !skip_validation }
+  validate :validate_company_format, if: -> { !skip_validation }
+  validate :validate_tel_format, if: -> { !skip_validation }
+  validate :validate_address_format, if: -> { !skip_validation }
+  validate :industry_matches_crowdwork_title_and_validate_business_and_genre, if: -> { !skip_validation }
+  validate :unique_industry_and_tel_or_company_for_same_worker, if: -> { !skip_validation }
   
   # その他のコード
   

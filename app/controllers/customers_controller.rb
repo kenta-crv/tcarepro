@@ -85,32 +85,30 @@ class CustomersController < ApplicationController
 def create
   @customer = Customer.new(customer_params)
 
-  # 🌟 修正ポイント: worker がログインしている場合、IDをモデルに一時的にセット
+  # worker がログインしている場合のみバリデーションを有効
   if worker_signed_in? && current_worker.present?
     @customer.current_worker_id_for_tracking = current_worker.id
-  end
-  
-  # バリデーションチェック
-  if @customer.valid?
-    # バリデーション成功 → 通常保存
-    @customer.save
+    @customer.skip_validation = false
   else
-    # バリデーション失敗 → 対象外として hidden で強制保存
-    @customer.status = "hidden"
-    # 🌟 current_worker_id_for_tracking がここでセットされることを保証するため、save(validate: false) の前にもう一度セット
-    if worker_signed_in? && current_worker.present?
-      @customer.current_worker_id_for_tracking = current_worker.id 
-    end
-    @customer.save(validate: false)
+    # worker 以外はバリデーションをスキップ
+    @customer.skip_validation = true
   end
-  
-  # 保存後のリダイレクト
-  if worker_signed_in?
-    # 🌟 worker_signed_in? の場合の共通リダイレクトを考慮し、ここでは edit_customer_path へリダイレクトする方が自然かもしれませんが、
-    # 既存のコードが extraction_path のため、そのまま維持します。
-    redirect_to new_customer_path
+
+  if @customer.save
+    # 保存成功
+    if worker_signed_in?
+      redirect_to new_customer_path, notice: "顧客を作成しました"
+    else
+      # admin/user などは一覧へ戻す
+      redirect_to customers_path, notice: "顧客を作成しました（バリデーションなし）"
+    end
+  else
+    # 保存失敗（worker の場合はバリデーションエラーが出る）
+    flash.now[:alert] = @customer.errors.full_messages.join(", ")
+    render :new
   end
 end
+
 
 def edit
   @customer = Customer.find(params[:id])
