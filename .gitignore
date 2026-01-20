@@ -68,3 +68,11 @@ venv/
 venvs/
 ENV/
 env/db/development.sqlite3
+
+# Rails logs
+/log/*
+!/log/.keep
+
+# Rails tmp
+/tmp/*
+!/tmp/.keep
