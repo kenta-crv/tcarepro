@@ -94,7 +94,7 @@ def create
     @customer.skip_validation = true
   end
 
-  if @customer.save
+  if @customer.save(context: :web)
     # 保存成功
     if worker_signed_in?
       redirect_to new_customer_path, notice: "顧客を作成しました"
@@ -337,7 +337,7 @@ def destroy
       file.write(uploaded_file.read)
     end
   
-    CustomerImportJob.perform_later(temp_file_path.to_s)
+    CustomerImportJob.perform_now(temp_file_path.to_s)
   
     redirect_to customers_url, notice: 'インポート処理をバックグラウンドで実行しています。完了までしばらくお待ちください。'
   end
