@@ -803,11 +803,11 @@ scope :before_sended_at, ->(sended_at){
 
   attr_accessor :skip_validation
 
-validate :validate_company_format, on: :web
-validate :validate_tel_format, on: :web
-validate :validate_address_format, on: :web
-validate :industry_matches_crowdwork_title_and_validate_business_and_genre, on: :web
-validate :unique_industry_and_tel_or_company_for_same_worker, on: :web
+  validate :validate_company_format, if: -> { !skip_validation }
+  validate :validate_tel_format, if: -> { !skip_validation }
+  validate :validate_address_format, if: -> { !skip_validation }
+  validate :industry_matches_crowdwork_title_and_validate_business_and_genre, if: -> { !skip_validation }
+  validate :unique_industry_and_tel_or_company_for_same_worker, if: -> { !skip_validation }
   
   # その他のコード
   
