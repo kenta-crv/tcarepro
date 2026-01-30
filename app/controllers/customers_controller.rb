@@ -141,20 +141,31 @@ end
 def update
   @customer = Customer.find(params[:id])
 
-  # 🌟 修正ポイント: worker がログインしている場合、初回更新者をセット
+  # worker がログインしている場合、初回更新者をセット
   if worker_signed_in? && current_worker.present?
     @customer.assign_first_editor(current_worker)
   end
 
+  # ===== validate を明示的に制御 =====
+  # デフォルトは validate する
+  @customer.skip_validation = false
+
+  # 管理者・ユーザーは validate しない
+  if admin_signed_in? || user_signed_in?
+    @customer.skip_validation = true
+  end
+
+  # ===== 特殊ボタン処理（validate 完全スキップ）=====
   if params[:commit] == '対象外リストとして登録'
     @customer.skip_validation = true
-    @customer.status = "hidden"
-    @customer.save(validate: false)
+    @customer.status = 'hidden'
+    @customer.save!(validate: false)
+    redirect_back(fallback_location: customers_path) and return
 
   elsif params[:commit] == '公開して一覧へ'
+    @customer.skip_validation = true
     @customer.status = nil
-    @customer.save(validate: false)
-
+    @customer.save!(validate: false)
     redirect_to customers_path(
       q: params[:q]&.permit!,
       industry_name: params[:industry_name],
@@ -162,23 +173,20 @@ def update
     ) and return
   end
 
-  # admin または user がサインインしている場合、バリデーションをスキップ
-  @customer.skip_validation = true if admin_signed_in? || user_signed_in?
-
-  # 次の draft 顧客を取得（フィルタ考慮）
+  # ===== 次の draft 顧客取得 =====
   @q = Customer.where(status: 'draft').where('id > ?', @customer.id)
   @q = @q.where(industry: params[:industry_name]) if params[:industry_name].present?
 
   case params[:tel_filter]
-  when "with_tel"
+  when 'with_tel'
     @q = @q.where.not("TRIM(tel) = ''")
-  when "without_tel"
+  when 'without_tel'
     @q = @q.where("TRIM(tel) = ''")
   end
 
   @next_draft = @q.order(:id).first
 
-  # update 実行
+  # ===== 通常 update（ここで validate が発動する）=====
   if @customer.update(customer_params)
     # メール送信
     if params[:commit] == '登録＋J Workメール送信'
@@ -189,7 +197,6 @@ def update
       CustomerMailer.document_reply_email(@customer, current_user).deliver_now
     end
 
-    # worker リダイレクト
     if worker_signed_in?
       if @next_draft
         redirect_to edit_customer_path(
@@ -198,7 +205,7 @@ def update
           tel_filter: params[:tel_filter]
         )
       else
-        redirect_to request.referer, notice: 'リストが終了しました。リスト追加を行いますので、管理者に連絡してください。'
+        redirect_to request.referer, notice: 'リストが終了しました。管理者に連絡してください。'
       end
     else
       redirect_to customer_path(
@@ -208,7 +215,7 @@ def update
       )
     end
   else
-    render 'edit'
+    render :edit
   end
 end
 
