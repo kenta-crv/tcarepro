@@ -2,12 +2,14 @@ class WorkersController < ApplicationController
   def show
     @worker = Worker.find(params[:id])
 
+    # 基本スコープ
     base_scope = @worker.first_edited_customers
                         .where(status: [nil, 'draft'])
                         .where.not(tel: [nil, ''])
 
     now = Time.current
 
+    # 日別・週別・月別・先月の件数
     @daily_number = base_scope.where(created_at: now.beginning_of_day..now.end_of_day).count
     @weekly_number = base_scope.where(created_at: now.beginning_of_week..now.end_of_week).count
     @monthly_number = base_scope.where(created_at: now.beginning_of_month..now.end_of_month).count
@@ -15,13 +17,18 @@ class WorkersController < ApplicationController
       created_at: now.last_month.beginning_of_month..now.last_month.end_of_month
     ).count
 
+    # 累計
     @total_number = base_scope.count
-
-    # 削除分は累計のみ
     @total_count = @total_number + @worker.deleted_customer_count
 
-    # Crowdworks
-    @assigned_crowdworks = @worker.crowdworks.index_by(&:worker_id)
+    # ビュー用変数を統一
+    @count_day = @daily_number
+    @count_week = @weekly_number
+    @count_month = @monthly_number
+    @count_before_month = @last_month_number
+
+    # Crowdworks → 配列としてビューに渡す
+    @assigned_crowdworks = @worker.crowdworks.to_a
 
     # Contact Trackings
     @contact_trackings_day = @worker.contact_trackings.where(created_at: now.beginning_of_day..now.end_of_day)
@@ -56,6 +63,7 @@ class WorkersController < ApplicationController
 
     @assigned_senders = @worker.senders
   end
+
 
   def upload
     @worker = Worker.find(params[:id])
