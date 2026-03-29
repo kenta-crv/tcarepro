@@ -66,25 +66,25 @@ class Worker < ApplicationRecord
   # =============================
   def daily_number
     base_customers.where(
-      created_at: Time.current.beginning_of_day..Time.current.end_of_day
+      updated_at: Time.current.beginning_of_day..Time.current.end_of_day
     ).count
   end
 
   def weekly_number
     base_customers.where(
-      created_at: Time.current.beginning_of_week..Time.current.end_of_week
+      updated_at: Time.current.beginning_of_week..Time.current.end_of_week
     ).count
   end
 
   def monthly_number
     base_customers.where(
-      created_at: Time.current.beginning_of_month..Time.current.end_of_month
+      updated_at: Time.current.beginning_of_month..Time.current.end_of_month
     ).count
   end
 
   def last_month_number
     base_customers.where(
-      created_at: Time.current.last_month.beginning_of_month..
+      updated_at: Time.current.last_month.beginning_of_month..
                   Time.current.last_month.end_of_month
     ).count
   end
@@ -109,6 +109,6 @@ class Worker < ApplicationRecord
         return 0
       end
 
-    first_edited_customers.where(created_at: range).count
+    first_edited_customers.where(updated_at: range).count
   end
 end

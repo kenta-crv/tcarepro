@@ -10,9 +10,9 @@ class WorkersController < ApplicationController
     now = Time.current
 
     # 日別・週別・月別・先月の件数
-    @daily_number = base_scope.where(created_at: now.beginning_of_day..now.end_of_day).count
-    @weekly_number = base_scope.where(created_at: now.beginning_of_week..now.end_of_week).count
-    @monthly_number = base_scope.where(created_at: now.beginning_of_month..now.end_of_month).count
+    @daily_number = base_scope.where(updated_at: now.beginning_of_day..now.end_of_day).count
+    @weekly_number = base_scope.where(updated_at: now.beginning_of_week..now.end_of_week).count
+    @monthly_number = base_scope.where(updated_at: now.beginning_of_month..now.end_of_month).count
     @last_month_number = base_scope.where(
       created_at: now.last_month.beginning_of_month..now.last_month.end_of_month
     ).count
